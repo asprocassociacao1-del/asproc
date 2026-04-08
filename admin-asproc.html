@@ -2220,7 +2220,8 @@
                 <h3 style="margin:0 0 .3rem;">&#x270F;&#xFE0F; Textos Edit&#xE1;veis do Site</h3>
                 <p style="font-size:.83rem;color:var(--text-muted);margin:0;">Edite os textos do
                   <code>index_asproc.html</code> por idioma. As altera&#xE7;&#xF5;es s&#xE3;o salvas no Supabase e
-                  aplicadas automaticamente.</p>
+                  aplicadas automaticamente.
+                </p>
               </div>
               <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
                 <div style="display:flex;gap:.25rem;">
@@ -2592,9 +2593,14 @@
       /* ══════════════════════════════════════════
          CONFIG & SUPABASE
       ══════════════════════════════════════════ */
-      const CONFIG_KEY = 'asproc_config_v2';
-      const DEFAULT_SUPABASE_URL = 'https://pajjntbnrmfweqrdpvpy.supabase.co';
-      const DEFAULT_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBhampudGJucm1md2VxcmRwdnB5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMyMzI3MDksImV4cCI6MjA4ODgwODcwOX0.a_krlTkjWT_mys_RpvzPRxyYpDn7eS9BB-OajLQepGM';
+      // Limpa configs antigas de projetos anteriores
+      localStorage.removeItem('asproc_config_v2');
+      localStorage.removeItem('asproc_token');
+      localStorage.removeItem('asproc_user');
+      localStorage.removeItem('asproc_refresh_token');
+      const CONFIG_KEY = 'asproc_config_v3';
+      const DEFAULT_SUPABASE_URL = 'https://wiatqtiyiznscjyoxxww.supabase.co';
+      const DEFAULT_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpYXRxdGl5aXpuc2NqeW94eHd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1Njc0MDEsImV4cCI6MjA5MTE0MzQwMX0.xgaaZWX5kG3XowDtpR9Xd8S2S0nV-JTnv4ZwnP33PY8';
 
       function getConfig() {
         try { return JSON.parse(localStorage.getItem(CONFIG_KEY)) || {}; } catch { return {}; }
