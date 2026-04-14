@@ -1,0 +1,1906 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesca Justa e Sustentável – ASPROC</title>
+    <meta name="description"
+        content="Projeto Pesca Justa e Sustentável da ASPROC em parceria com o Grupo JBS: infraestrutura, conformidade sanitária e dignidade para os pescadores do Médio Juruá.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --verde: #2d6a2d;
+            --verde-claro: #4a9e3f;
+            --verde-neon: #7bc95c;
+            --dourado: #c8a84b;
+            --azul: #1a6b8a;
+            --azul-claro: #3a9bbf;
+            --azul-neon: #7fd4f5;
+            --branco: #f5f0e8;
+            --escuro: #050f1a;
+            --cinza: #0d1e2e;
+            --cinza2: #142535;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--escuro);
+            color: var(--branco);
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        /* ── CURSOR ── */
+        #cursor-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--azul-neon);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+            transition: width .15s, height .15s, background .15s;
+            mix-blend-mode: screen;
+        }
+
+        #cursor-ring {
+            width: 38px;
+            height: 38px;
+            border: 2px solid var(--azul-neon);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 99998;
+            transform: translate(-50%, -50%);
+            transition: width .25s ease, height .25s ease, border-color .25s, opacity .25s;
+            opacity: .55;
+        }
+
+        #cursor-dot.hovered {
+            width: 6px;
+            height: 6px;
+            background: white;
+        }
+
+        #cursor-ring.hovered {
+            width: 56px;
+            height: 56px;
+            border-color: white;
+            opacity: .85;
+        }
+
+        @media (hover: none) {
+            body {
+                cursor: auto;
+            }
+
+            #cursor-dot,
+            #cursor-ring {
+                display: none;
+            }
+        }
+
+        /* ── PROGRESS BAR ── */
+        #progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--azul), var(--azul-neon));
+            z-index: 10001;
+            width: 0%;
+            transition: width .1s;
+        }
+
+        /* ── NAVBAR ── */
+        nav#navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 0 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+            background: rgba(5, 15, 26, .85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(127, 212, 245, .12);
+            transition: all .35s;
+        }
+
+        nav#navbar.scrolled {
+            background: rgba(5, 12, 20, .97);
+            height: 60px;
+        }
+
+        .nav-logo-text {
+            font-family: 'Fraunces', serif;
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: var(--azul-neon);
+            text-decoration: none;
+            letter-spacing: .02em;
+        }
+
+        .nav-logo-text span {
+            color: var(--dourado);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.8rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: rgba(245, 240, 232, .7);
+            text-decoration: none;
+            font-size: .82rem;
+            font-weight: 500;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            transition: color .3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--azul-neon);
+            transition: width .3s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.ativo {
+            color: var(--azul-neon);
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.ativo::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            background: var(--azul);
+            color: white !important;
+            padding: .45rem 1.1rem;
+            border-radius: 30px;
+            font-weight: 600 !important;
+            font-size: .82rem !important;
+            transition: background .3s, transform .2s !important;
+        }
+
+        .nav-cta:hover {
+            background: var(--azul-neon) !important;
+            transform: translateY(-2px);
+            color: var(--escuro) !important;
+        }
+
+        .nav-cta::after {
+            display: none !important;
+        }
+
+        /* ── MOBILE MENU ── */
+        #mob-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            gap: 5px;
+            width: 40px;
+            height: 40px;
+            background: rgba(127, 212, 245, .1);
+            border: 1px solid rgba(127, 212, 245, .2);
+            border-radius: 10px;
+            cursor: pointer;
+            padding: 0 10px;
+            transition: background .3s;
+            flex-shrink: 0;
+        }
+
+        #mob-toggle span {
+            display: block;
+            height: 2px;
+            background: var(--azul-neon);
+            border-radius: 2px;
+            transition: transform .35s cubic-bezier(.25, .46, .45, .94), opacity .25s, width .3s;
+            transform-origin: center;
+        }
+
+        #mob-toggle span:nth-child(1) {
+            width: 100%;
+        }
+
+        #mob-toggle span:nth-child(2) {
+            width: 70%;
+        }
+
+        #mob-toggle span:nth-child(3) {
+            width: 85%;
+        }
+
+        #mob-toggle.open span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+            width: 100%;
+        }
+
+        #mob-toggle.open span:nth-child(2) {
+            opacity: 0;
+            transform: scaleX(0);
+        }
+
+        #mob-toggle.open span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+            width: 100%;
+        }
+
+        #mob-drawer {
+            position: fixed;
+            inset: 0;
+            z-index: 999;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity .35s;
+        }
+
+        #mob-drawer.open {
+            pointer-events: all;
+            opacity: 1;
+        }
+
+        #mob-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(2, 8, 15, .88);
+            backdrop-filter: blur(24px);
+        }
+
+        #mob-panel {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(180deg, rgba(10, 20, 35, .97) 0%, rgba(5, 12, 20, 1) 100%);
+            border-top: 1px solid rgba(127, 212, 245, .18);
+            border-radius: 24px 24px 0 0;
+            padding: 0 0 env(safe-area-inset-bottom, 1.5rem);
+            transform: translateY(110%);
+            transition: transform .45s cubic-bezier(.25, .46, .45, .94);
+        }
+
+        #mob-drawer.open #mob-panel {
+            transform: translateY(0);
+        }
+
+        .mob-handle {
+            width: 40px;
+            height: 4px;
+            background: rgba(127, 212, 245, .25);
+            border-radius: 2px;
+            margin: 1rem auto .8rem;
+        }
+
+        .mob-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem 1rem;
+            border-bottom: 1px solid rgba(127, 212, 245, .08);
+        }
+
+        .mob-brand {
+            font-family: 'Fraunces', serif;
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: var(--azul-neon);
+        }
+
+        .mob-brand em {
+            color: var(--dourado);
+            font-style: normal;
+        }
+
+        .mob-close {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid rgba(255, 255, 255, .1);
+            color: rgba(245, 240, 232, .7);
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background .25s, color .25s;
+        }
+
+        .mob-close:hover {
+            background: rgba(127, 212, 245, .15);
+            color: var(--azul-neon);
+        }
+
+        .mob-nav {
+            list-style: none;
+            padding: .6rem 0;
+        }
+
+        .mob-nav li a {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: .95rem 1.5rem;
+            color: rgba(245, 240, 232, .75);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            letter-spacing: .03em;
+            transition: background .2s, color .2s, padding-left .25s;
+            border-left: 2px solid transparent;
+        }
+
+        .mob-nav li a:hover,
+        .mob-nav li a.ativo {
+            color: var(--azul-neon);
+            background: rgba(127, 212, 245, .06);
+            padding-left: 2rem;
+            border-left-color: var(--azul-neon);
+        }
+
+        .mob-nav li a .mob-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .9rem;
+            background: rgba(255, 255, 255, .05);
+            flex-shrink: 0;
+        }
+
+        .mob-nav li a .mob-arrow {
+            margin-left: auto;
+            font-size: .7rem;
+            opacity: .35;
+            transition: opacity .2s, transform .2s;
+        }
+
+        .mob-nav li a:hover .mob-arrow {
+            opacity: .8;
+            transform: translateX(3px);
+        }
+
+        .mob-nav li {
+            opacity: 0;
+            transform: translateX(-12px);
+            transition: opacity .3s, transform .3s;
+        }
+
+        #mob-drawer.open .mob-nav li:nth-child(1) {
+            opacity: 1;
+            transform: none;
+            transition-delay: .08s;
+        }
+
+        #mob-drawer.open .mob-nav li:nth-child(2) {
+            opacity: 1;
+            transform: none;
+            transition-delay: .13s;
+        }
+
+        #mob-drawer.open .mob-nav li:nth-child(3) {
+            opacity: 1;
+            transform: none;
+            transition-delay: .18s;
+        }
+
+        #mob-drawer.open .mob-nav li:nth-child(4) {
+            opacity: 1;
+            transform: none;
+            transition-delay: .23s;
+        }
+
+        #mob-drawer.open .mob-nav li:nth-child(5) {
+            opacity: 1;
+            transform: none;
+            transition-delay: .28s;
+        }
+
+        #mob-drawer.open .mob-nav li:nth-child(6) {
+            opacity: 1;
+            transform: none;
+            transition-delay: .33s;
+        }
+
+        #mob-drawer.open .mob-nav li:nth-child(7) {
+            opacity: 1;
+            transform: none;
+            transition-delay: .38s;
+        }
+
+        .mob-cta-row {
+            padding: 1rem 1.5rem 1.5rem;
+            border-top: 1px solid rgba(127, 212, 245, .08);
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity .3s .45s, transform .3s .45s;
+        }
+
+        #mob-drawer.open .mob-cta-row {
+            opacity: 1;
+            transform: none;
+        }
+
+        .mob-cta-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: .6rem;
+            width: 100%;
+            background: var(--azul);
+            color: white;
+            text-decoration: none;
+            padding: .9rem;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: .9rem;
+            transition: background .3s;
+        }
+
+        .mob-cta-btn:hover {
+            background: var(--azul-neon);
+            color: var(--escuro);
+        }
+
+        #mob-tabbar {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 998;
+            background: rgba(5, 12, 20, .95);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(127, 212, 245, .1);
+            padding: .5rem 0 env(safe-area-inset-bottom, .5rem);
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: .25rem;
+            padding: .2rem .8rem;
+            text-decoration: none;
+            color: rgba(245, 240, 232, .45);
+            transition: color .25s;
+            cursor: pointer;
+            background: none;
+            border: none;
+            flex: 1;
+        }
+
+        .tab-item.active,
+        .tab-item:hover {
+            color: var(--azul-neon);
+        }
+
+        .tab-icon {
+            font-size: 1.3rem;
+            line-height: 1;
+            transition: transform .25s;
+        }
+
+        .tab-item.active .tab-icon,
+        .tab-item:hover .tab-icon {
+            transform: translateY(-2px);
+        }
+
+        .tab-label {
+            font-size: .58rem;
+            font-weight: 600;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+        }
+
+        .tab-pip {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--azul-neon);
+            opacity: 0;
+            transition: opacity .25s;
+        }
+
+        .tab-item.active .tab-pip {
+            opacity: 1;
+        }
+
+        @media (max-width: 900px) {
+            #mob-toggle {
+                display: flex;
+            }
+
+            #mob-tabbar {
+                display: flex;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            body {
+                padding-bottom: 70px;
+            }
+        }
+
+        /* ── HERO ── */
+        .hero {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            background: var(--escuro);
+            padding: 0 5%;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 70% 70% at 5% 40%, rgba(26, 107, 138, .5) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 60% at 90% 60%, rgba(45, 106, 45, .2) 0%, transparent 55%),
+                radial-gradient(ellipse 40% 40% at 50% 95%, rgba(127, 212, 245, .07) 0%, transparent 50%);
+        }
+
+        .hero-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(127, 212, 245, .03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(127, 212, 245, .03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            animation: gridMove 22s linear infinite;
+        }
+
+        @keyframes gridMove {
+            to {
+                background-position: 60px 60px;
+            }
+        }
+
+        .hero-particles {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            animation: float-particle linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes float-particle {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: .6;
+            }
+
+            90% {
+                opacity: .3;
+            }
+
+            100% {
+                transform: translateY(-20vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .hero-inner {
+            position: relative;
+            z-index: 2;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding-top: 80px;
+            width: 100%;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .7rem;
+            background: rgba(127, 212, 245, .1);
+            border: 1px solid rgba(127, 212, 245, .28);
+            padding: .45rem 1.2rem;
+            border-radius: 40px;
+            font-size: .68rem;
+            font-weight: 700;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            color: var(--azul-neon);
+            margin-bottom: 1.5rem;
+            animation: fadeInUp .8s .2s both;
+        }
+
+        .hero-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--azul-neon);
+            border-radius: 50%;
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1
+            }
+
+            50% {
+                transform: scale(1.6);
+                opacity: .5
+            }
+        }
+
+        .hero-eyebrow {
+            font-size: .7rem;
+            font-weight: 700;
+            letter-spacing: .28em;
+            text-transform: uppercase;
+            color: var(--dourado);
+            margin-bottom: .8rem;
+            animation: fadeInUp .8s .1s both;
+        }
+
+        .hero-title {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(2.8rem, 6vw, 5.5rem);
+            font-weight: 900;
+            line-height: 1.05;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp .8s .35s both;
+        }
+
+        .hero-title em {
+            color: var(--azul-neon);
+            font-style: italic;
+        }
+
+        .hero-sub {
+            font-size: clamp(.95rem, 1.5vw, 1.15rem);
+            line-height: 1.85;
+            color: rgba(245, 240, 232, .68);
+            margin-bottom: 2.5rem;
+            animation: fadeInUp .8s .5s both;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            animation: fadeInUp .8s .65s both;
+        }
+
+        .btn-primary {
+            background: var(--azul);
+            color: white;
+            padding: .85rem 2.2rem;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: .9rem;
+            text-decoration: none;
+            transition: background .3s, transform .25s;
+            letter-spacing: .04em;
+        }
+
+        .btn-primary:hover {
+            background: var(--azul-neon);
+            color: var(--escuro);
+            transform: translateY(-3px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: rgba(245, 240, 232, .8);
+            padding: .85rem 2.2rem;
+            border-radius: 40px;
+            border: 1px solid rgba(127, 212, 245, .25);
+            font-weight: 600;
+            font-size: .9rem;
+            text-decoration: none;
+            transition: border-color .3s, color .3s, transform .25s;
+            letter-spacing: .04em;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--azul-neon);
+            color: var(--azul-neon);
+            transform: translateY(-3px);
+        }
+
+        /* Hero visual side */
+        .hero-visual {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeInUp .8s .5s both;
+        }
+
+        .hero-visual-frame {
+            width: 100%;
+            max-width: 520px;
+            aspect-ratio: 1 / 1;
+            position: relative;
+        }
+
+        .hero-vis-ring {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 1px solid rgba(127, 212, 245, .15);
+            animation: ring-spin 30s linear infinite;
+        }
+
+        .hero-vis-ring:nth-child(2) {
+            inset: 8%;
+            border-color: rgba(127, 212, 245, .1);
+            animation-duration: 20s;
+            animation-direction: reverse;
+        }
+
+        .hero-vis-ring:nth-child(3) {
+            inset: 16%;
+            border-color: rgba(45, 106, 45, .2);
+            animation-duration: 40s;
+        }
+
+        @keyframes ring-spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ── ANIMAÇÕES GERAIS ── */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity .75s, transform .75s;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: none;
+        }
+
+        .reveal-delay-1 {
+            transition-delay: .15s;
+        }
+
+        .reveal-delay-2 {
+            transition-delay: .3s;
+        }
+
+        .reveal-delay-3 {
+            transition-delay: .45s;
+        }
+
+        /* ── SECTION COMMON ── */
+        .section-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 5%;
+        }
+
+        .section-label {
+            font-size: .7rem;
+            font-weight: 700;
+            letter-spacing: .25em;
+            text-transform: uppercase;
+            color: var(--azul-neon);
+            margin-bottom: .8rem;
+        }
+
+        .section-title {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            font-weight: 900;
+            line-height: 1.15;
+            margin-bottom: 1.2rem;
+        }
+
+        .section-title em {
+            font-style: italic;
+            color: var(--azul-neon);
+        }
+
+        /* ── SOBRE O PROJETO ── */
+        .sobre-sec {
+            padding: 9rem 0 6rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sobre-sec::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 60% 80% at 100% 20%, rgba(26, 107, 138, .12) 0%, transparent 55%),
+                radial-gradient(ellipse 40% 50% at 0% 80%, rgba(45, 106, 45, .08) 0%, transparent 50%);
+        }
+
+        .sobre-grid {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+            align-items: center;
+        }
+
+        .sobre-text p {
+            color: rgba(245, 240, 232, .72);
+            font-size: 1.05rem;
+            line-height: 1.9;
+            margin-bottom: 1.4rem;
+        }
+
+        .sobre-text p:last-child {
+            margin-bottom: 0;
+        }
+
+        .sobre-text strong {
+            color: var(--azul-neon);
+            font-weight: 600;
+        }
+
+        .sobre-card {
+            background: rgba(127, 212, 245, .05);
+            border: 1px solid rgba(127, 212, 245, .12);
+            border-radius: 20px;
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sobre-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--azul), var(--azul-neon));
+        }
+
+        .sobre-card-icon {
+            font-size: 3rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .sobre-card-title {
+            font-family: 'Fraunces', serif;
+            font-size: 1.6rem;
+            font-weight: 900;
+            margin-bottom: .8rem;
+            color: var(--azul-neon);
+        }
+
+        .sobre-card-text {
+            color: rgba(245, 240, 232, .65);
+            font-size: .95rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .sobre-parceiro {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(255, 255, 255, .04);
+            border: 1px solid rgba(127, 212, 245, .1);
+            border-radius: 12px;
+            padding: 1rem 1.2rem;
+        }
+
+        .sobre-parceiro-badge {
+            width: 48px;
+            height: 48px;
+            background: rgba(26, 107, 138, .3);
+            border: 1px solid rgba(127, 212, 245, .2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        .sobre-parceiro-name {
+            font-family: 'Fraunces', serif;
+            font-weight: 900;
+            font-size: 1.1rem;
+            color: var(--azul-neon);
+        }
+
+        .sobre-parceiro-sub {
+            font-size: .75rem;
+            color: rgba(245, 240, 232, .5);
+            letter-spacing: .06em;
+        }
+
+        /* ── OBJETIVOS ── */
+        .objetivos-sec {
+            padding: 6rem 0;
+            background: linear-gradient(180deg, transparent 0%, rgba(10, 25, 40, .6) 50%, transparent 100%);
+        }
+
+        .objetivos-header {
+            text-align: center;
+            max-width: 620px;
+            margin: 0 auto 4rem;
+        }
+
+        .objetivos-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .objetivo-card {
+            background: rgba(255, 255, 255, .03);
+            border: 1px solid rgba(127, 212, 245, .1);
+            border-radius: 18px;
+            padding: 2.2rem 1.8rem;
+            position: relative;
+            overflow: hidden;
+            transition: border-color .3s, transform .3s, background .3s;
+        }
+
+        .objetivo-card:hover {
+            border-color: rgba(127, 212, 245, .35);
+            transform: translateY(-6px);
+            background: rgba(127, 212, 245, .05);
+        }
+
+        .objetivo-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--azul-neon), transparent);
+            opacity: 0;
+            transition: opacity .3s;
+        }
+
+        .objetivo-card:hover::after {
+            opacity: .5;
+        }
+
+        .objetivo-num {
+            font-family: 'Fraunces', serif;
+            font-size: 4rem;
+            font-weight: 900;
+            line-height: 1;
+            color: rgba(127, 212, 245, .1);
+            margin-bottom: .5rem;
+            user-select: none;
+        }
+
+        .objetivo-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .objetivo-title {
+            font-family: 'Fraunces', serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: .8rem;
+            color: var(--branco);
+        }
+
+        .objetivo-desc {
+            color: rgba(245, 240, 232, .62);
+            font-size: .92rem;
+            line-height: 1.75;
+        }
+
+        /* ── IMPACTO ── */
+        .impacto-sec {
+            padding: 7rem 0;
+        }
+
+        .impacto-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+            align-items: center;
+            margin-top: 3rem;
+        }
+
+        .impacto-left p {
+            color: rgba(245, 240, 232, .7);
+            font-size: 1.05rem;
+            line-height: 1.9;
+            margin-bottom: 1.4rem;
+        }
+
+        .impacto-left strong {
+            color: var(--azul-neon);
+        }
+
+        .prog-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: .75rem;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: rgba(245, 240, 232, .5);
+            margin-bottom: .6rem;
+            margin-top: 2rem;
+        }
+
+        .prog-label strong {
+            color: var(--azul-neon);
+            font-size: .85rem;
+        }
+
+        .prog-bg {
+            height: 8px;
+            background: rgba(255, 255, 255, .07);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .prog-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--azul), var(--azul-neon));
+            border-radius: 4px;
+            transition: width 1.6s cubic-bezier(.25, .46, .45, .94) .4s;
+        }
+
+        .prog-fill.animated {
+            width: 94%;
+        }
+
+        .impacto-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+        }
+
+        .impacto-card {
+            background: rgba(127, 212, 245, .05);
+            border: 1px solid rgba(127, 212, 245, .12);
+            border-radius: 16px;
+            padding: 1.8rem 1.4rem;
+            text-align: center;
+            transition: border-color .3s, transform .3s;
+        }
+
+        .impacto-card:hover {
+            border-color: rgba(127, 212, 245, .3);
+            transform: translateY(-4px);
+        }
+
+        .impacto-icon {
+            font-size: 2rem;
+            margin-bottom: .8rem;
+        }
+
+        .impacto-val {
+            font-family: 'Fraunces', serif;
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--azul-neon);
+            line-height: 1;
+            margin-bottom: .4rem;
+        }
+
+        .impacto-lbl {
+            font-size: .8rem;
+            color: rgba(245, 240, 232, .55);
+            line-height: 1.5;
+        }
+
+        /* ── PARCERIA JBS ── */
+        .parceria-sec {
+            padding: 6rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .parceria-sec::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(26, 107, 138, .1) 0%, transparent 65%);
+        }
+
+        .parceria-wrap {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+            align-items: center;
+            margin-top: 3rem;
+        }
+
+        .parceria-text p {
+            color: rgba(245, 240, 232, .7);
+            font-size: 1.05rem;
+            line-height: 1.9;
+            margin-bottom: 1.4rem;
+        }
+
+        .parceria-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .6rem;
+            background: rgba(200, 168, 75, .1);
+            border: 1px solid rgba(200, 168, 75, .25);
+            color: var(--dourado);
+            font-size: .72rem;
+            font-weight: 700;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            padding: .4rem .9rem;
+            border-radius: 30px;
+            margin-bottom: 1.5rem;
+        }
+
+        .parceria-logo {
+            background: rgba(255, 255, 255, .03);
+            border: 1px solid rgba(127, 212, 245, .12);
+            border-radius: 24px;
+            padding: 3rem 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .parceria-emblem {
+            font-size: 4rem;
+        }
+
+        .parceria-name {
+            font-family: 'Fraunces', serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--azul-neon);
+        }
+
+        .parceria-sub {
+            font-size: .8rem;
+            color: rgba(245, 240, 232, .5);
+            letter-spacing: .12em;
+            text-transform: uppercase;
+        }
+
+        /* ── CTA ── */
+        .cta-section {
+            padding: 7rem 5%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 50% 50%, rgba(26, 107, 138, .15) 0%, transparent 65%);
+        }
+
+        .cta-inner {
+            position: relative;
+            z-index: 1;
+            max-width: 680px;
+            margin: 0 auto;
+        }
+
+        .cta-title {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(2.2rem, 5vw, 4rem);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1.2rem;
+        }
+
+        .cta-title em {
+            font-style: italic;
+            color: var(--azul-neon);
+        }
+
+        .cta-desc {
+            color: rgba(245, 240, 232, .65);
+            font-size: 1.05rem;
+            line-height: 1.85;
+            margin-bottom: 2.5rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            background: rgba(3, 8, 15, .95);
+            border-top: 1px solid rgba(127, 212, 245, .08);
+            padding: 3rem 5% 2rem;
+        }
+
+        .footer-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .footer-brand {
+            font-family: 'Fraunces', serif;
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: var(--azul-neon);
+        }
+
+        .footer-brand span {
+            color: var(--dourado);
+        }
+
+        .footer-nav {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-nav a {
+            color: rgba(245, 240, 232, .45);
+            text-decoration: none;
+            font-size: .82rem;
+            transition: color .25s;
+            letter-spacing: .06em;
+        }
+
+        .footer-nav a:hover {
+            color: var(--azul-neon);
+        }
+
+        .footer-copy {
+            font-size: .75rem;
+            color: rgba(245, 240, 232, .25);
+            letter-spacing: .06em;
+            text-align: center;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 900px) {
+            .hero-inner {
+                grid-template-columns: 1fr;
+                padding-top: 100px;
+            }
+
+            .hero-visual {
+                display: none;
+            }
+
+            .sobre-grid,
+            .objetivos-grid,
+            .impacto-grid,
+            .parceria-wrap {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+
+            .objetivos-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .impacto-cards {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .footer-inner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="cursor-dot"></div>
+    <div id="cursor-ring"></div>
+    <div id="progress-bar"></div>
+
+    <!-- ── NAVBAR ── -->
+    <nav id="navbar">
+        <a href="index.html" class="nav-logo-text">ASPROC<span>.</span></a>
+        <ul class="nav-links">
+            <li><a href="index.html">Início</a></li>
+            <li><a href="sobre.html">Sobre</a></li>
+            <li><a href="programas-projetos.html" class="ativo">Projetos</a></li>
+            <li><a href="noticias.html">Notícias</a></li>
+            <li><a href="avisos.html">Avisos</a></li>
+            <li><a href="https://loja.asproc.org.br" target="_blank" class="nav-cta">🛒 Loja</a></li>
+        </ul>
+        <button id="mob-toggle" aria-label="Menu" onclick="toggleMobMenu()">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
+
+    <!-- ── MOBILE DRAWER ── -->
+    <div id="mob-drawer" role="dialog" aria-modal="true" aria-label="Menu de navegação">
+        <div id="mob-backdrop" onclick="closeMobMenu()"></div>
+        <div id="mob-panel">
+            <div class="mob-handle"></div>
+            <div class="mob-header">
+                <div class="mob-brand">ASPROC<em>.</em></div>
+                <button class="mob-close" onclick="closeMobMenu()" aria-label="Fechar menu">✕</button>
+            </div>
+            <ul class="mob-nav">
+                <li><a href="index.html"><span class="mob-icon">🏠</span>Início<span class="mob-arrow">›</span></a></li>
+                <li><a href="sobre.html"><span class="mob-icon">🌿</span>Sobre a ASPROC<span
+                            class="mob-arrow">›</span></a></li>
+                <li><a href="programas-projetos.html" class="ativo"><span class="mob-icon">📋</span>Projetos<span
+                            class="mob-arrow">›</span></a></li>
+                <li><a href="noticias.html"><span class="mob-icon">📰</span>Notícias<span class="mob-arrow">›</span></a>
+                </li>
+                <li><a href="avisos.html"><span class="mob-icon">📢</span>Avisos<span class="mob-arrow">›</span></a>
+                </li>
+                <li><a href="trabalhe-conosco.html"><span class="mob-icon">👥</span>Trabalhe Conosco<span
+                            class="mob-arrow">›</span></a></li>
+                <li><a href="https://loja.asproc.org.br" target="_blank"><span class="mob-icon">🛒</span>Loja
+                        Online<span class="mob-arrow">›</span></a></li>
+            </ul>
+            <div class="mob-cta-row">
+                <a href="https://loja.asproc.org.br" target="_blank" class="mob-cta-btn">🌿 Visitar a Loja ASPROC</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── MOBILE BOTTOM TAB BAR ── -->
+    <nav id="mob-tabbar">
+        <a href="index.html" class="tab-item">
+            <span class="tab-icon">🏠</span>
+            <span class="tab-label">Início</span>
+            <span class="tab-pip"></span>
+        </a>
+        <a href="programas-projetos.html" class="tab-item active">
+            <span class="tab-icon">📋</span>
+            <span class="tab-label">Projetos</span>
+            <span class="tab-pip"></span>
+        </a>
+        <a href="noticias.html" class="tab-item">
+            <span class="tab-icon">📰</span>
+            <span class="tab-label">Notícias</span>
+            <span class="tab-pip"></span>
+        </a>
+        <button class="tab-item" onclick="toggleMobMenu()">
+            <span class="tab-icon">☰</span>
+            <span class="tab-label">Menu</span>
+            <span class="tab-pip"></span>
+        </button>
+    </nav>
+
+    <!-- ══════════════════════════════════
+         HERO
+    ══════════════════════════════════ -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-grid"></div>
+        <div class="hero-particles" id="particles"></div>
+
+        <div class="hero-inner">
+            <div class="hero-text">
+                <div class="hero-eyebrow">ASPROC × JBS · Médio Juruá</div>
+                <div class="hero-badge">Projeto em Execução</div>
+                <h1 class="hero-title">
+                    Pesca Justa:<br>
+                    <em>Infraestrutura</em><br>
+                    que Gera Dignidade
+                </h1>
+                <p class="hero-sub">
+                    Em parceria com o Grupo JBS, modernizamos o Entreposto de Pescado da ASPROC
+                    — a base técnica que garante ao pirarucu manejado chegar ao consumidor com
+                    excelência e todas as certificações exigidas.
+                </p>
+                <div class="hero-btns">
+                    <a href="#sobre" class="btn-primary">🐟 Conhecer o Projeto</a>
+                    <a href="programas-projetos.html" class="btn-secondary">← Todos os Projetos</a>
+                </div>
+            </div>
+
+            <div class="hero-visual">
+                <div class="hero-visual-frame">
+                    <div class="hero-vis-ring"></div>
+                    <div class="hero-vis-ring"></div>
+                    <div class="hero-vis-ring"></div>
+                    <svg viewBox="0 0 500 500" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <radialGradient id="heroGlow" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" stop-color="#1a6b8a" stop-opacity=".5" />
+                                <stop offset="100%" stop-color="#1a6b8a" stop-opacity="0" />
+                            </radialGradient>
+                            <linearGradient id="heroFishGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#1a6b8a" />
+                                <stop offset="50%" stop-color="#7fd4f5" />
+                                <stop offset="100%" stop-color="#1a6b8a" />
+                            </linearGradient>
+                        </defs>
+                        <!-- Glow -->
+                        <circle cx="250" cy="250" r="180" fill="url(#heroGlow)" />
+
+                        <!-- Water waves -->
+                        <g opacity=".18">
+                            <ellipse cx="250" cy="340" rx="200" ry="22" fill="none" stroke="#7fd4f5" stroke-width="1.5">
+                                <animate attributeName="rx" values="200;220;200" dur="5s" repeatCount="indefinite" />
+                                <animate attributeName="opacity" values=".18;.06;.18" dur="5s"
+                                    repeatCount="indefinite" />
+                            </ellipse>
+                            <ellipse cx="250" cy="360" rx="160" ry="15" fill="none" stroke="#7fd4f5" stroke-width="1">
+                                <animate attributeName="rx" values="160;178;160" dur="4s" repeatCount="indefinite" />
+                            </ellipse>
+                            <ellipse cx="250" cy="380" rx="120" ry="10" fill="none" stroke="#7fd4f5" stroke-width="1">
+                                <animate attributeName="rx" values="120;138;120" dur="3.5s" repeatCount="indefinite" />
+                            </ellipse>
+                        </g>
+
+                        <!-- Large pirarucu fish -->
+                        <g>
+                            <animateTransform attributeName="transform" type="translate" values="0,0; 0,-12; 0,0"
+                                dur="5s" repeatCount="indefinite" calcMode="spline" keySplines=".4 0 .6 1; .4 0 .6 1" />
+                            <!-- Body -->
+                            <ellipse cx="250" cy="235" rx="120" ry="42" fill="url(#heroFishGrad)" opacity=".85" />
+                            <ellipse cx="250" cy="235" rx="120" ry="42" fill="none" stroke="#7fd4f5" stroke-width="1"
+                                opacity=".4" />
+                            <!-- Tail -->
+                            <path d="M135,235 L95,195 L82,235 L95,275 Z" fill="#1a6b8a" opacity=".85">
+                                <animateTransform attributeName="transform" type="rotate"
+                                    values="0,135,235; 6,135,235; -6,135,235; 0,135,235" dur="1.8s"
+                                    repeatCount="indefinite" />
+                            </path>
+                            <!-- Eye -->
+                            <circle cx="355" cy="222" r="8" fill="#7fd4f5" opacity=".9" />
+                            <circle cx="356" cy="222" r="4" fill="#050f1a" />
+                            <!-- Scales -->
+                            <path d="M280,210 Q296,220 280,232 M255,206 Q272,218 255,230 M228,210 Q244,222 228,232"
+                                fill="none" stroke="#7fd4f5" stroke-width="1.2" opacity=".35" />
+                            <!-- Dorsal fin -->
+                            <path d="M250,193 L290,160 L330,178 L310,190 L270,190 Z" fill="#1a6b8a" opacity=".7" />
+                            <!-- Pectoral fin -->
+                            <path d="M300,240 L340,265 L310,255 Z" fill="#1a6b8a" opacity=".5" />
+                        </g>
+
+                        <!-- Bubbles -->
+                        <circle cx="310" cy="160" r="5" fill="none" stroke="#7fd4f5" stroke-width="1" opacity=".5">
+                            <animate attributeName="cy" values="160;100" dur="3.5s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values=".5;0" dur="3.5s" repeatCount="indefinite" />
+                        </circle>
+                        <circle cx="285" cy="175" r="3" fill="none" stroke="#7fd4f5" stroke-width="1" opacity=".4">
+                            <animate attributeName="cy" values="175;115" dur="3s" repeatCount="indefinite"
+                                begin="1.2s" />
+                            <animate attributeName="opacity" values=".4;0" dur="3s" repeatCount="indefinite"
+                                begin="1.2s" />
+                        </circle>
+                        <circle cx="330" cy="185" r="4" fill="none" stroke="#7fd4f5" stroke-width="1" opacity=".3">
+                            <animate attributeName="cy" values="185;120" dur="4s" repeatCount="indefinite" begin="2s" />
+                            <animate attributeName="opacity" values=".3;0" dur="4s" repeatCount="indefinite"
+                                begin="2s" />
+                        </circle>
+
+                        <!-- Factory badge at bottom -->
+                        <g transform="translate(160, 390)">
+                            <rect width="180" height="50" rx="25" fill="rgba(26,107,138,.3)"
+                                stroke="rgba(127,212,245,.25)" stroke-width="1" />
+                            <text x="90" y="21" text-anchor="middle" font-family="sans-serif" font-size="8.5"
+                                fill="#7fd4f5" font-weight="700" letter-spacing="2">ENTREPOSTO DE PESCADO</text>
+                            <text x="90" y="36" text-anchor="middle" font-family="sans-serif" font-size="7.5"
+                                fill="rgba(245,240,232,.5)" letter-spacing="1.5">ASPROC · CARAUARI</text>
+                        </g>
+
+                        <!-- 94% badge -->
+                        <g transform="translate(50, 80)">
+                            <circle r="45" cx="45" cy="45" fill="rgba(5,15,26,.8)" stroke="rgba(127,212,245,.2)"
+                                stroke-width="1" />
+                            <text x="45" y="40" text-anchor="middle" font-family="serif" font-size="20" fill="#7fd4f5"
+                                font-weight="900">94%</text>
+                            <text x="45" y="56" text-anchor="middle" font-family="sans-serif" font-size="7.5"
+                                fill="rgba(245,240,232,.5)" letter-spacing="1">EXECUTADO</text>
+                        </g>
+
+                        <!-- Communities badge -->
+                        <g transform="translate(370, 80)">
+                            <circle r="45" cx="45" cy="45" fill="rgba(5,15,26,.8)" stroke="rgba(200,168,75,.2)"
+                                stroke-width="1" />
+                            <text x="45" y="36" text-anchor="middle" font-family="serif" font-size="16" fill="#c8a84b"
+                                font-weight="900">4.791</text>
+                            <text x="45" y="50" text-anchor="middle" font-family="sans-serif" font-size="7"
+                                fill="rgba(245,240,232,.5)" letter-spacing="0.5">COMUNIT.</text>
+                            <text x="45" y="62" text-anchor="middle" font-family="sans-serif" font-size="7"
+                                fill="rgba(245,240,232,.5)" letter-spacing="0.5">BENEFICIADOS</text>
+                        </g>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════
+         SOBRE O PROJETO
+    ══════════════════════════════════ -->
+    <section class="sobre-sec" id="sobre">
+        <div class="section-inner">
+            <div class="sobre-grid">
+                <div class="sobre-text reveal">
+                    <div class="section-label">Sobre o Projeto</div>
+                    <h2 class="section-title">A base que<br>o pescado <em>exige</em></h2>
+                    <p>
+                        A cadeia do pescado exige <strong>rigor técnico e infraestrutura robusta</strong>.
+                        O Projeto Pesca Justa e Sustentável foca exatamente na base estrutural necessária
+                        para que o pirarucu manejado seja processado com excelência e chegue ao consumidor
+                        final com todas as certificações exigidas.
+                    </p>
+                    <p>
+                        Realizado em parceria estratégica com o <strong>Grupo JBS</strong>, o projeto tem como
+                        ativo central a reconstrução e modernização do Entreposto de Processamento de Pescado,
+                        um ativo vital para a ASPROC e para toda a cadeia produtiva do Médio Juruá.
+                    </p>
+                    <p>
+                        Ao fortalecer a infraestrutura do processamento, garantimos que o trabalho
+                        de décadas dos manejadores ribeirinhos resulte em produtos de alta qualidade,
+                        gerando renda justa e segurança alimentar para as comunidades do rio.
+                    </p>
+                </div>
+
+                <div class="sobre-card reveal reveal-delay-1">
+                    <div class="sobre-card-icon">🏗️</div>
+                    <div class="sobre-card-title">Entreposto de Pescado</div>
+                    <p class="sobre-card-text">
+                        Reconstrução e modernização completa do Entreposto de Processamento de Pescado
+                        da ASPROC — adequando instalações, equipamentos e fluxos às normas sanitárias
+                        nacionais para garantir certificações e acesso a novos mercados.
+                    </p>
+                    <div class="sobre-parceiro">
+                        <div class="sobre-parceiro-badge">🤝</div>
+                        <div>
+                            <div class="sobre-parceiro-name">Grupo JBS</div>
+                            <div class="sobre-parceiro-sub">Parceiro Estratégico</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════
+         OBJETIVOS E AÇÕES
+    ══════════════════════════════════ -->
+    <section class="objetivos-sec">
+        <div class="section-inner">
+            <div class="objetivos-header reveal">
+                <div class="section-label">Objetivos e Ações</div>
+                <h2 class="section-title">Três frentes,<br>um <em>propósito</em></h2>
+            </div>
+            <div class="objetivos-grid">
+                <div class="objetivo-card reveal">
+                    <div class="objetivo-num">01</div>
+                    <div class="objetivo-icon">✅</div>
+                    <div class="objetivo-title">Conformidade Sanitária</div>
+                    <p class="objetivo-desc">
+                        Adequação de todas as instalações físicas às normas dos órgãos de vigilância sanitária,
+                        garantindo que o Entreposto opere com os mais altos padrões de segurança alimentar
+                        e higiene exigidos para certificação e comercialização.
+                    </p>
+                </div>
+                <div class="objetivo-card reveal reveal-delay-1">
+                    <div class="objetivo-num">02</div>
+                    <div class="objetivo-icon">📊</div>
+                    <div class="objetivo-title">Gestão Administrativa</div>
+                    <p class="objetivo-desc">
+                        Implementação de suporte administrativo para gerenciar a operação do entreposto,
+                        garantindo <strong style="color:var(--azul-neon)">transparência e eficiência financeira</strong>
+                        em toda a cadeia — do manejador ao mercado consumidor.
+                    </p>
+                </div>
+                <div class="objetivo-card reveal reveal-delay-2">
+                    <div class="objetivo-num">03</div>
+                    <div class="objetivo-icon">🛒</div>
+                    <div class="objetivo-title">Acesso ao Mercado</div>
+                    <p class="objetivo-desc">
+                        Criação de canais de venda que <strong style="color:var(--azul-neon)">eliminam
+                            atravessadores</strong>,
+                        garantindo que o preço pago ao manejador seja justo e que o produto
+                        chegue ao consumidor final com rastreabilidade e valor agregado.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════
+         IMPACTO
+    ══════════════════════════════════ -->
+    <section class="impacto-sec">
+        <div class="section-inner">
+            <div class="reveal" style="text-align:center;max-width:580px;margin:0 auto 1rem;">
+                <div class="section-label">Fase de Execução</div>
+                <h2 class="section-title">Impacto quase<br><em>concluído</em></h2>
+            </div>
+            <div class="impacto-grid">
+                <div class="impacto-left reveal">
+                    <p>
+                        O projeto está quase concluído com <strong>94% de execução</strong> — um resultado
+                        expressivo que já se traduz em transformação real para as comunidades ribeirinhas
+                        da calha do rio.
+                    </p>
+                    <p>
+                        Cada etapa finalizada representa mais capacidade de processamento, melhor remuneração
+                        aos pescadores e produtos com qualidade suficiente para alcançar mercados nacionais.
+                    </p>
+
+                    <div class="prog-label">
+                        <span>Progresso de execução</span>
+                        <strong>94%</strong>
+                    </div>
+                    <div class="prog-bg">
+                        <div class="prog-fill" id="progFill"></div>
+                    </div>
+                    <div class="prog-label" style="margin-top:-.6rem;">
+                        <span style="color:rgba(245,240,232,.35);">Em andamento</span>
+                        <span style="color:rgba(245,240,232,.35);">Quase concluído</span>
+                    </div>
+                </div>
+
+                <div class="impacto-cards">
+                    <div class="impacto-card reveal">
+                        <div class="impacto-icon">👥</div>
+                        <div class="impacto-val">4.791</div>
+                        <div class="impacto-lbl">Comunitários beneficiados diretamente</div>
+                    </div>
+                    <div class="impacto-card reveal reveal-delay-1">
+                        <div class="impacto-icon">🏘️</div>
+                        <div class="impacto-val">62</div>
+                        <div class="impacto-lbl">Comunidades atendidas no projeto</div>
+                    </div>
+                    <div class="impacto-card reveal reveal-delay-2">
+                        <div class="impacto-icon">🐟</div>
+                        <div class="impacto-val">Justo</div>
+                        <div class="impacto-lbl">Preço garantido sem atravessadores</div>
+                    </div>
+                    <div class="impacto-card reveal reveal-delay-3">
+                        <div class="impacto-icon">🌊</div>
+                        <div class="impacto-val">1 Rio</div>
+                        <div class="impacto-lbl">Toda a calha do Médio Juruá fortalecida</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════
+         PARCERIA JBS
+    ══════════════════════════════════ -->
+    <section class="parceria-sec">
+        <div class="section-inner">
+            <div class="section-label reveal" style="text-align:center;">Aliança Estratégica</div>
+            <h2 class="section-title reveal" style="text-align:center;margin-bottom:0;">Parceria <em>JBS</em></h2>
+            <div class="parceria-wrap reveal">
+                <div class="parceria-text">
+                    <div class="parceria-badge">🤝 Parceiro Estratégico</div>
+                    <p>
+                        O Grupo JBS é uma das maiores empresas de proteínas animais do mundo,
+                        com forte compromisso com o desenvolvimento sustentável das comunidades
+                        onde atua em toda a cadeia produtiva.
+                    </p>
+                    <p>
+                        Sua parceria com a ASPROC no Projeto Pesca Justa representa um alinhamento
+                        de objetivos: enquanto a ASPROC traz décadas de conhecimento territorial
+                        e o relacionamento profundo com as comunidades ribeirinhas, a JBS aporta
+                        expertise técnica na cadeia de pescado, redes de mercado e investimento
+                        em infraestrutura de processamento.
+                    </p>
+                    <p>
+                        Juntos, estão construindo um modelo que demonstra ser possível
+                        gerar <strong style="color:var(--azul-neon)">prosperidade econômica com dignidade</strong>
+                        — preservando o modo de vida ribeirinho e a biodiversidade amazônica.
+                    </p>
+                </div>
+                <div class="parceria-logo">
+                    <div class="parceria-emblem">🌎</div>
+                    <div class="parceria-name">JBS</div>
+                    <div class="parceria-sub">Grupo JBS</div>
+                    <p
+                        style="font-size:.82rem;color:rgba(245,240,232,.5);text-align:center;max-width:220px;line-height:1.6;margin-top:.5rem;">
+                        Parceiro estratégico no processamento sustentável de pescado na Amazônia.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════
+         CTA
+    ══════════════════════════════════ -->
+    <section class="cta-section">
+        <div class="cta-inner reveal">
+            <div class="section-label">Faça Parte</div>
+            <h2 class="cta-title">Apoie a pesca<br><em>que respeita</em> o rio</h2>
+            <p class="cta-desc">
+                Ao comprar produtos ASPROC, você apoia iniciativas como a Pesca Justa —
+                garantindo que o pirarucu amazônico chegue ao seu prato com dignidade,
+                rastreabilidade e preço justo para quem o maneja.
+            </p>
+            <div class="cta-buttons">
+                <a href="https://loja.asproc.org.br" target="_blank" class="btn-primary">🛒 Visitar a Loja</a>
+                <a href="programas-projetos.html" class="btn-secondary">← Todos os Projetos</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── FOOTER ── -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-brand">ASPROC<span>.</span></div>
+            <nav class="footer-nav">
+                <a href="index.html">Início</a>
+                <a href="sobre.html">Sobre</a>
+                <a href="programas-projetos.html">Projetos</a>
+                <a href="noticias.html">Notícias</a>
+                <a href="avisos.html">Avisos</a>
+                <a href="trabalhe-conosco.html">Trabalhe Conosco</a>
+                <a href="https://loja.asproc.org.br" target="_blank">Loja</a>
+            </nav>
+        </div>
+        <p class="footer-copy">© 2025 ASPROC – Associação dos Produtores Rurais de Carauari. Todos os direitos
+            reservados.</p>
+    </footer>
+
+    <script>
+        // Cursor
+        const dot = document.getElementById('cursor-dot');
+        const ring = document.getElementById('cursor-ring');
+        let mx = 0, my = 0, rx = 0, ry = 0;
+        document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+        function animCursor() {
+            dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+            rx += (mx - rx) * .12; ry += (my - ry) * .12;
+            ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+            requestAnimationFrame(animCursor);
+        }
+        animCursor();
+        document.querySelectorAll('a,button').forEach(el => {
+            el.addEventListener('mouseenter', () => { dot.classList.add('hovered'); ring.classList.add('hovered'); });
+            el.addEventListener('mouseleave', () => { dot.classList.remove('hovered'); ring.classList.remove('hovered'); });
+        });
+
+        // Progress bar
+        const pb = document.getElementById('progress-bar');
+        window.addEventListener('scroll', () => {
+            const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+            pb.style.width = pct + '%';
+        });
+
+        // Navbar
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => navbar.classList.toggle('scrolled', window.scrollY > 50));
+
+        // Particles
+        const pc = document.getElementById('particles');
+        for (let i = 0; i < 20; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            const size = Math.random() * 4 + 2;
+            p.style.cssText = `left:${Math.random() * 100}%;width:${size}px;height:${size}px;background:${Math.random() > .6 ? '#7fd4f5' : 'rgba(200,168,75,.6)'};animation-duration:${Math.random() * 15 + 10}s;animation-delay:${Math.random() * 10}s;`;
+            pc.appendChild(p);
+        }
+
+        // Reveal
+        const reveals = document.querySelectorAll('.reveal');
+        const obs = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+        }, { threshold: .12 });
+        reveals.forEach(r => obs.observe(r));
+
+        // Progress bar fill
+        const progFill = document.getElementById('progFill');
+        if (progFill) {
+            const pObs = new IntersectionObserver(entries => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) { progFill.classList.add('animated'); pObs.unobserve(e.target); }
+                });
+            }, { threshold: .4 });
+            pObs.observe(progFill);
+        }
+
+        // Mobile menu
+        const mobDrawer = document.getElementById('mob-drawer');
+        const mobToggle = document.getElementById('mob-toggle');
+        let menuOpen = false;
+        function toggleMobMenu() { menuOpen ? closeMobMenu() : openMobMenu(); }
+        function openMobMenu() { menuOpen = true; mobDrawer.classList.add('open'); mobToggle.classList.add('open'); document.body.style.overflow = 'hidden'; }
+        function closeMobMenu() { menuOpen = false; mobDrawer.classList.remove('open'); mobToggle.classList.remove('open'); document.body.style.overflow = ''; }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape' && menuOpen) closeMobMenu(); });
+    </script>
+</body>
+
+</html>

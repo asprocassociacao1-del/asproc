@@ -1845,6 +1845,78 @@
     .acai-bar-fill.animated {
       width: 14%;
     }
+
+    /* ── PESCA JUSTA THEME ── */
+    .card-pesca-justa {
+      background: linear-gradient(135deg, #050f1a 0%, #0d2030 100%);
+    }
+
+    .card-pesca-justa .projeto-info {
+      color: var(--branco);
+    }
+
+    .pesca-justa-tag {
+      background: rgba(26, 107, 138, .22);
+      color: #7fd4f5;
+      border: 1px solid rgba(127, 212, 245, .22);
+    }
+
+    .pesca-justa-visual {
+      background: linear-gradient(135deg, #03090f 0%, #091825 100%);
+    }
+
+    .pesca-justa-cta {
+      background: #1a6b8a;
+      color: white;
+    }
+
+    .pesca-justa-cta:hover {
+      background: #7fd4f5;
+      color: #050f1a;
+    }
+
+    .pesca-justa-bullets li::before {
+      color: #7fd4f5;
+    }
+
+    /* Progress bar for Pesca Justa */
+    .pesca-justa-progress-wrap {
+      margin-bottom: 1.8rem;
+    }
+
+    .pesca-justa-progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: .72rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: rgba(245, 240, 232, .5);
+      margin-bottom: .5rem;
+    }
+
+    .pesca-justa-progress-label span:last-child {
+      color: #7fd4f5;
+      font-weight: 700;
+    }
+
+    .pesca-justa-bar-bg {
+      height: 6px;
+      background: rgba(255, 255, 255, .07);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .pesca-justa-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #1a6b8a, #7fd4f5);
+      border-radius: 3px;
+      transition: width 1.4s cubic-bezier(.25, .46, .45, .94) .4s;
+    }
+
+    .pesca-justa-bar-fill.animated {
+      width: 94%;
+    }
   </style>
 </head>
 
@@ -2727,6 +2799,123 @@
         </div>
       </article>
 
+      <!-- PESCA JUSTA E SUSTENTÁVEL -->
+      <article class="projeto-card card-pesca-justa reveal reveal-delay-1">
+        <div class="projeto-visual pesca-justa-visual">
+          <div class="projeto-visual-overlay"
+            style="background: linear-gradient(135deg, rgba(3,9,15,.93) 0%, rgba(9,24,37,.88) 100%);"></div>
+
+          <!-- Animated Fish / Entreposto SVG -->
+          <div class="fish-svg">
+            <svg viewBox="0 0 400 300" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="pescaGlow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#1a6b8a" stop-opacity=".4" />
+                  <stop offset="100%" stop-color="#1a6b8a" stop-opacity="0" />
+                </radialGradient>
+                <linearGradient id="pescaFishGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#1a6b8a" />
+                  <stop offset="50%" stop-color="#7fd4f5" />
+                  <stop offset="100%" stop-color="#1a6b8a" />
+                </linearGradient>
+              </defs>
+              <!-- Glow -->
+              <ellipse cx="200" cy="150" r="110" fill="url(#pescaGlow)" />
+              <!-- Water waves -->
+              <g opacity=".15">
+                <ellipse cx="200" cy="235" rx="170" ry="18" fill="none" stroke="#7fd4f5" stroke-width="1.2">
+                  <animate attributeName="rx" values="170;190;170" dur="5s" repeatCount="indefinite" />
+                </ellipse>
+                <ellipse cx="200" cy="252" rx="130" ry="12" fill="none" stroke="#7fd4f5" stroke-width="1">
+                  <animate attributeName="rx" values="130;148;130" dur="4s" repeatCount="indefinite" />
+                </ellipse>
+              </g>
+              <!-- Pirarucu -->
+              <g>
+                <animateTransform attributeName="transform" type="translate" values="0,0; 0,-10; 0,0" dur="4.5s"
+                  repeatCount="indefinite" calcMode="spline" keySplines=".4 0 .6 1; .4 0 .6 1" />
+                <ellipse cx="200" cy="145" rx="100" ry="34" fill="url(#pescaFishGrad)" opacity=".85" />
+                <ellipse cx="200" cy="145" rx="100" ry="34" fill="none" stroke="#7fd4f5" stroke-width="1"
+                  opacity=".35" />
+                <!-- Tail -->
+                <path d="M108,145 L78,118 L68,145 L78,172 Z" fill="#1a6b8a" opacity=".85">
+                  <animateTransform attributeName="transform" type="rotate"
+                    values="0,108,145; 7,108,145; -7,108,145; 0,108,145" dur="1.6s" repeatCount="indefinite" />
+                </path>
+                <!-- Eye -->
+                <circle cx="286" cy="135" r="7" fill="#7fd4f5" opacity=".9" />
+                <circle cx="287" cy="135" r="3.5" fill="#03090f" />
+                <!-- Scales -->
+                <path d="M225,128 Q238,138 225,148 M204,125 Q218,136 204,147" fill="none" stroke="#7fd4f5"
+                  stroke-width="1" opacity=".3" />
+                <!-- Dorsal fin -->
+                <path d="M200,111 L230,88 L262,104 L245,111 L215,111 Z" fill="#1a6b8a" opacity=".7" />
+              </g>
+              <!-- Bubbles -->
+              <circle cx="255" cy="100" r="4" fill="none" stroke="#7fd4f5" stroke-width="1" opacity=".45">
+                <animate attributeName="cy" values="100;50" dur="3s" repeatCount="indefinite" />
+                <animate attributeName="opacity" values=".45;0" dur="3s" repeatCount="indefinite" />
+              </circle>
+              <circle cx="235" cy="115" r="2.5" fill="none" stroke="#7fd4f5" stroke-width="1" opacity=".35">
+                <animate attributeName="cy" values="115;65" dur="2.8s" repeatCount="indefinite" begin="1s" />
+                <animate attributeName="opacity" values=".35;0" dur="2.8s" repeatCount="indefinite" begin="1s" />
+              </circle>
+              <!-- JBS badge -->
+              <g transform="translate(20,230)">
+                <rect width="90" height="26" rx="13" fill="rgba(26,107,138,.4)" stroke="rgba(127,212,245,.3)"
+                  stroke-width="1" />
+                <text x="45" y="17" text-anchor="middle" font-family="sans-serif" font-size="8.5" fill="#7fd4f5"
+                  font-weight="700" letter-spacing="2">JBS × ASPROC</text>
+              </g>
+              <!-- 94% badge -->
+              <g transform="translate(295,220)">
+                <circle r="34" cx="34" cy="34" fill="rgba(5,15,26,.8)" stroke="rgba(127,212,245,.22)"
+                  stroke-width="1" />
+                <text x="34" y="29" text-anchor="middle" font-family="serif" font-size="16" fill="#7fd4f5"
+                  font-weight="900">94%</text>
+                <text x="34" y="43" text-anchor="middle" font-family="sans-serif" font-size="7"
+                  fill="rgba(245,240,232,.5)" letter-spacing="1">EXEC.</text>
+              </g>
+              <!-- Label -->
+              <text x="200" y="285" text-anchor="middle" font-family="serif" font-size="10" fill="#7fd4f5" opacity=".65"
+                letter-spacing="3">PESCA JUSTA E SUSTENTÁVEL</text>
+            </svg>
+          </div>
+          <div class="projeto-visual-number">07</div>
+        </div>
+
+        <div class="projeto-info" style="background:linear-gradient(135deg,#050f1a 0%,#0d2030 100%);">
+          <div class="projeto-tag pesca-justa-tag">🐟 Pesca & Infraestrutura</div>
+          <h2 class="projeto-title">Pesca Justa e<br><em style="color:#7fd4f5;font-style:italic;">Sustentável</em></h2>
+          <p class="projeto-desc">
+            Em parceria com o Grupo JBS, o projeto reconstrói e moderniza o Entreposto de
+            Processamento de Pescado da ASPROC — garantindo conformidade sanitária, gestão
+            eficiente e acesso direto ao mercado para os manejadores do Médio Juruá.
+          </p>
+
+          <!-- Execution progress -->
+          <div class="pesca-justa-progress-wrap">
+            <div class="pesca-justa-progress-label">
+              <span>Execução do Projeto</span>
+              <span>94% concluído</span>
+            </div>
+            <div class="pesca-justa-bar-bg">
+              <div class="pesca-justa-bar-fill" id="pescaJustaBar"></div>
+            </div>
+          </div>
+
+          <ul class="projeto-bullets pesca-justa-bullets">
+            <li>Reconstrução e modernização do Entreposto de Pescado</li>
+            <li>Adequação sanitária conforme exigências dos órgãos de vigilância</li>
+            <li>Eliminação de atravessadores com canais de venda diretos</li>
+            <li>4.791 comunitários beneficiados em 62 comunidades</li>
+          </ul>
+          <a href="pesca-justa-sustentavel.html" class="projeto-cta pesca-justa-cta">
+            Ver projeto completo <span>→</span>
+          </a>
+        </div>
+      </article>
+
     </div>
   </section>
 
@@ -2983,6 +3172,17 @@
         });
       }, { threshold: .4 });
       acaiBarObserver.observe(acaiBar);
+    }
+
+    // Animate Pesca Justa progress bar when in view
+    const pescaJustaBar = document.getElementById('pescaJustaBar');
+    if (pescaJustaBar) {
+      const pescaJustaBarObserver = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) { pescaJustaBar.classList.add('animated'); pescaJustaBarObserver.unobserve(e.target); }
+        });
+      }, { threshold: .4 });
+      pescaJustaBarObserver.observe(pescaJustaBar);
     }
   </script>
 </body>
