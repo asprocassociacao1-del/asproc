@@ -1246,6 +1246,7 @@
             <li><a href="sobre.html" class="ativo">Sobre</a></li>
             <li><a href="noticias.html">Notícias</a></li>
             <li><a href="avisos.html">Avisos</a></li>
+            <li><a href="programas-projetos.html">Projetos</a></li>
             <li><a href="trabalhe-conosco.html">Trabalhe Conosco</a></li>
             <li><a href="https://loja.asproc.org.br/" class="nav-cta" target="_blank">Loja Virtual</a></li>
         </ul>
@@ -1544,7 +1545,10 @@
                 <div class="item">
                     <div class="ic">📧</div>
                     <div>
-                        <h4>E-mail</h4><a href="mailto:contato@asproc.org.br">contato@asproc.org.br</a>
+                        <h4>E-mail</h4><a
+                            href="/cdn-cgi/l/email-protection#7e1d11100a1f0a113e1f0d0e0c111d50110c19501c0c"><span
+                                class="__cf_email__"
+                                data-cfemail="41222e2f3520352e01203231332e226f2e33266f2333">[email&#160;protected]</span></a>
                     </div>
                 </div>
                 <div class="item">
@@ -1642,7 +1646,10 @@
             <div class="fc">
                 <h4>Contato</h4>
                 <ul>
-                    <li><a href="mailto:contato@asproc.org.br">contato@asproc.org.br</a></li>
+                    <li><a href="/cdn-cgi/l/email-protection#ff9c90918b9e8b90bf9e8c8f8d909cd1908d98d19d8d"><span
+                                class="__cf_email__"
+                                data-cfemail="f4979b9a8095809bb4958784869b97da9b8693da9686">[email&#160;protected]</span></a>
+                    </li>
                     <li><a href="https://loja.asproc.org.br" target="_blank">Loja Virtual</a></li>
                     <li><a href="trabalhe-conosco.html">Trabalhe Conosco</a></li>
                     <li><a href="#contato">Fale Conosco</a></li>
@@ -1672,6 +1679,7 @@
         <div class="toast-text" id="toastText"></div>
     </div>
 
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
     <script>
         /* CURSOR */
         (function () {
@@ -1734,12 +1742,15 @@
             const d = {
                 pt: { hero_tag: 'Fundada em 1994', hero_h1: 'A voz das <em>comunidades</em><br>do Médio Juruá', missao_lbl: 'Quem Somos', missao_tit: 'Missão, Visão e <span>Valores</span>' },
                 en: { hero_tag: 'Founded in 1994', hero_h1: 'The voice of <em>riverside</em><br>communities', missao_lbl: 'Who We Are', missao_tit: 'Mission, Vision & <span>Values</span>' },
-                es: { hero_tag: 'Fundada en 1994', hero_h1: 'La voz de las <em>comunidades</em><br>ribereñas', missao_lbl: 'Quiénes Somos', missao_tit: 'Misión, Visión y <span>Valores</span>' }
+                es: { hero_tag: 'Fundada en 1994', hero_h1: 'La voz de las <em>comunidades</em><br>del Medio Juruá', missao_lbl: 'Quiénes Somos', missao_tit: 'Misión, Visión y <span>Valores</span>' }
             };
             const t = d[lang];
-            document.querySelector('.ph-tag').textContent = t.hero_tag;
-            document.querySelector('.ph-title').innerHTML = t.hero_h1;
+            document.getElementById('hero-tag').innerText = t.hero_tag;
+            document.getElementById('hero-h1').innerHTML = t.hero_h1;
+            document.getElementById('missao-lbl').innerText = t.missao_lbl;
+            document.getElementById('missao-tit').innerHTML = t.missao_tit;
         }
+        setLang('pt');
     </script>
 </body>
 
