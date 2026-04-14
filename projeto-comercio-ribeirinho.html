@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projeto Comércio Ribeirinho da Cidadania e Solidário – ASPROC</title>
+  <meta name="description"
+    content="Fortalecendo a cadeia produtiva ribeirinha no Médio Juruá. Conheça o Projeto Comércio Ribeirinho da Cidadania e Solidário da ASPROC.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --fundo: #120a02;
+      --fundo2: #1e1004;
+      --fundo3: #2a1505;
+      --dourado: #c8a84b;
+      --dourado-claro: #e8c86a;
+      --dourado-pale: #f5e4a8;
+      --terra: #8b4513;
+      --terra-claro: #a05a2c;
+      --verde: #4a7a2a;
+      --branco: #fdf8ee;
+      --texto: rgba(253, 248, 238, .75);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--fundo);
+      color: var(--branco);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    #cursor-dot {
+      width: 10px;
+      height: 10px;
+      background: var(--dourado);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 99999;
+      transform: translate(-50%, -50%);
+      transition: width .15s, height .15s;
+      mix-blend-mode: screen;
+    }
+
+    #cursor-ring {
+      width: 38px;
+      height: 38px;
+      border: 2px solid var(--dourado);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 99998;
+      transform: translate(-50%, -50%);
+      transition: all .25s;
+      opacity: .5;
+    }
+
+    #cursor-dot.hovered {
+      width: 5px;
+      height: 5px;
+      background: white;
+    }
+
+    #cursor-ring.hovered {
+      width: 52px;
+      height: 52px;
+      opacity: .85;
+    }
+
+    @media (hover:none) {
+      body {
+        cursor: auto;
+      }
+
+      #cursor-dot,
+      #cursor-ring {
+        display: none;
+      }
+    }
+
+    #progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--terra), var(--dourado), var(--dourado-claro));
+      z-index: 10001;
+      width: 0%;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 0 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+      background: rgba(18, 10, 2, .85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(200, 168, 75, .1);
+      transition: all .35s;
+    }
+
+    nav.scrolled {
+      background: rgba(18, 10, 2, .97);
+      height: 60px;
+    }
+
+    .nav-back {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      color: var(--dourado);
+      text-decoration: none;
+      font-size: .8rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      transition: gap .3s;
+    }
+
+    .nav-back:hover {
+      gap: .2rem;
+    }
+
+    .nav-logo-text {
+      font-family: 'Fraunces', serif;
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: var(--dourado);
+      text-decoration: none;
+    }
+
+    .nav-logo-text span {
+      color: #7bc95c;
+    }
+
+    .nav-pill {
+      background: rgba(200, 168, 75, .15);
+      border: 1px solid rgba(200, 168, 75, .25);
+      color: var(--dourado);
+      padding: .4rem 1rem;
+      border-radius: 30px;
+      font-size: .78rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background .3s;
+    }
+
+    .nav-pill:hover {
+      background: rgba(200, 168, 75, .3);
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      position: relative;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg,
+          #120a02 0%,
+          #1e1004 30%,
+          #2a1a08 60%,
+          #1a1005 100%);
+    }
+
+    /* Ambient light streaks */
+    .hero-light {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 40% 60% at 75% 30%, rgba(200, 168, 75, .12) 0%, transparent 60%),
+        radial-gradient(ellipse 30% 40% at 20% 70%, rgba(139, 69, 19, .1) 0%, transparent 50%);
+      animation: lightPulse 6s ease-in-out infinite;
+    }
+
+    @keyframes lightPulse {
+
+      0%,
+      100% {
+        opacity: .8;
+      }
+
+      50% {
+        opacity: 1.2;
+      }
+    }
+
+    /* Texture dots */
+    .hero-texture {
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(200, 168, 75, .06) 1px, transparent 1px);
+      background-size: 30px 30px;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      padding: 8rem 8% 4rem;
+      max-width: 680px;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: rgba(200, 168, 75, .12);
+      border: 1px solid rgba(200, 168, 75, .25);
+      color: var(--dourado);
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      padding: .4rem 1rem;
+      border-radius: 30px;
+      margin-bottom: 1.5rem;
+      animation: fadeInUp .8s .2s both;
+    }
+
+    .hero-h1 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(2.5rem, 6.5vw, 5.5rem);
+      font-weight: 900;
+      line-height: 1.0;
+      margin-bottom: 1.5rem;
+      animation: fadeInUp .8s .4s both;
+    }
+
+    .hero-h1 em {
+      color: var(--dourado);
+      font-style: italic;
+    }
+
+    .hero-lead {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: var(--texto);
+      max-width: 520px;
+      margin-bottom: 2.5rem;
+      animation: fadeInUp .8s .6s both;
+    }
+
+    .hero-cta-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      animation: fadeInUp .8s .8s both;
+    }
+
+    .btn-hero {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      background: var(--dourado);
+      color: var(--fundo);
+      padding: .95rem 2.2rem;
+      border-radius: 40px;
+      font-weight: 700;
+      font-size: .95rem;
+      text-decoration: none;
+      transition: background .3s, transform .3s;
+    }
+
+    .btn-hero:hover {
+      background: var(--dourado-claro);
+      transform: translateY(-2px);
+    }
+
+    .btn-hero-ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      background: transparent;
+      color: var(--dourado);
+      border: 1px solid rgba(200, 168, 75, .35);
+      padding: .95rem 2.2rem;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: .95rem;
+      text-decoration: none;
+      transition: border-color .3s, background .3s;
+    }
+
+    .btn-hero-ghost:hover {
+      border-color: var(--dourado);
+      background: rgba(200, 168, 75, .08);
+    }
+
+    /* Hero right illustration */
+    .hero-right {
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 45%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .hero-right svg {
+      width: 90%;
+      height: auto;
+    }
+
+    /* ── MANIFESTO ── */
+    .manifesto {
+      padding: 6rem 8%;
+      background: var(--fundo2);
+      border-top: 1px solid rgba(200, 168, 75, .06);
+    }
+
+    .manifesto-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .manifesto-title {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(1.8rem, 3.5vw, 3rem);
+      font-weight: 900;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+    }
+
+    .manifesto-title em {
+      color: var(--dourado);
+      font-style: italic;
+    }
+
+    .manifesto-text {
+      font-size: 1.05rem;
+      line-height: 1.9;
+      color: var(--texto);
+      margin-bottom: 1.2rem;
+    }
+
+    .manifesto-text strong {
+      color: var(--dourado);
+    }
+
+    /* ── PRODUTOS ── */
+    .produtos-section {
+      padding: 6rem 8%;
+    }
+
+    .produtos-header {
+      margin-bottom: 3.5rem;
+    }
+
+    .section-label {
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .25em;
+      text-transform: uppercase;
+      color: var(--dourado);
+      margin-bottom: .8rem;
+    }
+
+    .section-title {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 900;
+      line-height: 1.15;
+    }
+
+    .section-title em {
+      color: var(--dourado);
+      font-style: italic;
+    }
+
+    .produtos-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .produto-card {
+      background: var(--fundo2);
+      border: 1px solid rgba(200, 168, 75, .1);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: border-color .3s, transform .4s;
+    }
+
+    .produto-card:hover {
+      border-color: rgba(200, 168, 75, .3);
+      transform: translateY(-5px);
+    }
+
+    .produto-img {
+      height: 200px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .produto-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(.8) brightness(.75);
+      transition: filter .4s, transform .5s;
+    }
+
+    .produto-card:hover .produto-img img {
+      filter: saturate(1) brightness(.9);
+      transform: scale(1.06);
+    }
+
+    .produto-img-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(18, 10, 2, .7) 0%, transparent 60%);
+    }
+
+    .produto-badge {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background: var(--dourado);
+      color: var(--fundo);
+      font-size: .62rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: .25rem .7rem;
+      border-radius: 20px;
+    }
+
+    .produto-body {
+      padding: 1.5rem;
+    }
+
+    .produto-icon {
+      font-size: 1.5rem;
+      margin-bottom: .6rem;
+    }
+
+    .produto-name {
+      font-family: 'Fraunces', serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: .5rem;
+    }
+
+    .produto-desc {
+      font-size: .85rem;
+      line-height: 1.6;
+      color: var(--texto);
+    }
+
+    /* ── MODELO ── */
+    .modelo-section {
+      padding: 6rem 8%;
+      background: var(--fundo2);
+    }
+
+    .modelo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+
+    .modelo-visual {
+      position: relative;
+    }
+
+    .modelo-diagram {
+      width: 100%;
+    }
+
+    .modelo-text p {
+      font-size: 1rem;
+      line-height: 1.9;
+      color: var(--texto);
+      margin-bottom: 1.2rem;
+    }
+
+    .modelo-text strong {
+      color: var(--dourado);
+    }
+
+    .pilares-list {
+      list-style: none;
+      margin-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: .8rem;
+    }
+
+    .pilares-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: .8rem;
+      padding: .8rem 1rem;
+      background: rgba(200, 168, 75, .06);
+      border: 1px solid rgba(200, 168, 75, .1);
+      border-radius: 10px;
+      font-size: .9rem;
+      line-height: 1.5;
+      color: var(--texto);
+      transition: background .3s, border-color .3s;
+    }
+
+    .pilares-list li:hover {
+      background: rgba(200, 168, 75, .1);
+      border-color: rgba(200, 168, 75, .2);
+    }
+
+    .pilares-list li span:first-child {
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    /* ── CADEIA PRODUTIVA ── */
+    .cadeia-section {
+      padding: 5rem 8%;
+    }
+
+    .cadeia-flow {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-top: 3rem;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding-bottom: 1rem;
+    }
+
+    .cadeia-step {
+      flex: 1;
+      min-width: 140px;
+      text-align: center;
+      padding: 1.5rem 1rem;
+      background: var(--fundo2);
+      border: 1px solid rgba(200, 168, 75, .1);
+      position: relative;
+      transition: background .3s;
+    }
+
+    .cadeia-step:hover {
+      background: rgba(200, 168, 75, .06);
+    }
+
+    .cadeia-step:not(:last-child)::after {
+      content: '→';
+      position: absolute;
+      right: -12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--dourado);
+      font-size: 1rem;
+      z-index: 1;
+      background: var(--fundo);
+      padding: 0 2px;
+    }
+
+    .cadeia-icon {
+      font-size: 1.8rem;
+      margin-bottom: .6rem;
+    }
+
+    .cadeia-title {
+      font-size: .85rem;
+      font-weight: 700;
+      margin-bottom: .3rem;
+    }
+
+    .cadeia-sub {
+      font-size: .72rem;
+      color: var(--texto);
+    }
+
+    /* ── LOJA HIGHLIGHT ── */
+    .loja-section {
+      padding: 5rem 8%;
+      background: linear-gradient(135deg, rgba(200, 168, 75, .08) 0%, rgba(18, 10, 2, .5) 100%);
+      border-top: 1px solid rgba(200, 168, 75, .1);
+      border-bottom: 1px solid rgba(200, 168, 75, .1);
+    }
+
+    .loja-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .loja-badge-label {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: rgba(200, 168, 75, .12);
+      border: 1px solid rgba(200, 168, 75, .25);
+      color: var(--dourado);
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      padding: .35rem .9rem;
+      border-radius: 30px;
+      margin-bottom: 1rem;
+    }
+
+    .loja-h2 {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+
+    .loja-h2 em {
+      color: var(--dourado);
+      font-style: italic;
+    }
+
+    .loja-p {
+      color: var(--texto);
+      font-size: .95rem;
+      line-height: 1.8;
+      margin-bottom: 2rem;
+    }
+
+    .loja-screen {
+      width: 100%;
+      aspect-ratio: 16/10;
+      background: var(--fundo2);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(200, 168, 75, .15);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, .5);
+      position: relative;
+    }
+
+    .loja-screen-bar {
+      height: 34px;
+      background: rgba(30, 20, 10, .9);
+      display: flex;
+      align-items: center;
+      padding: 0 .8rem;
+      gap: .4rem;
+    }
+
+    .dot-r {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #ff5f56;
+    }
+
+    .dot-y {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #ffbd2e;
+    }
+
+    .dot-g {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #27c93f;
+    }
+
+    .loja-url {
+      flex: 1;
+      background: rgba(255, 255, 255, .06);
+      border-radius: 4px;
+      height: 20px;
+      margin: 0 .8rem;
+      display: flex;
+      align-items: center;
+      padding: 0 .6rem;
+      font-size: .65rem;
+      color: rgba(255, 255, 255, .35);
+    }
+
+    .loja-screen iframe {
+      width: 130%;
+      height: 130%;
+      transform: scale(.77) translate(-11.5%, -11.5%);
+      border: none;
+      pointer-events: none;
+    }
+
+    .loja-screen-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      background: linear-gradient(to top, rgba(18, 10, 2, .8) 0%, transparent 40%);
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 1.5rem;
+    }
+
+    .loja-screen-overlay a {
+      background: var(--dourado);
+      color: var(--fundo);
+      padding: .6rem 1.8rem;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: .85rem;
+      text-decoration: none;
+      transition: background .3s;
+    }
+
+    .loja-screen-overlay a:hover {
+      background: var(--dourado-claro);
+    }
+
+    /* ── IMPACTO ── */
+    .impacto-section {
+      padding: 5rem 8%;
+    }
+
+    .impacto-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: rgba(200, 168, 75, .08);
+      border: 1px solid rgba(200, 168, 75, .08);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-top: 3rem;
+    }
+
+    .impacto-item {
+      background: var(--fundo2);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      transition: background .3s;
+    }
+
+    .impacto-item:hover {
+      background: rgba(200, 168, 75, .05);
+    }
+
+    .impacto-num {
+      font-family: 'Fraunces', serif;
+      font-size: 2.8rem;
+      font-weight: 900;
+      color: var(--dourado);
+      line-height: 1;
+      margin-bottom: .5rem;
+    }
+
+    .impacto-label {
+      font-size: .78rem;
+      color: var(--texto);
+      letter-spacing: .06em;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: rgba(8, 4, 1, .95);
+      padding: 3rem 8% 1.5rem;
+      border-top: 1px solid rgba(200, 168, 75, .07);
+    }
+
+    .footer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-brand {
+      font-family: 'Fraunces', serif;
+      font-size: 1.2rem;
+      font-weight: 900;
+      color: var(--dourado);
+    }
+
+    .footer-brand span {
+      color: #7bc95c;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: rgba(253, 248, 238, .4);
+      text-decoration: none;
+      font-size: .78rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      transition: color .3s;
+    }
+
+    .footer-links a:hover {
+      color: var(--dourado);
+    }
+
+    .footer-copy {
+      text-align: center;
+      font-size: .72rem;
+      color: rgba(253, 248, 238, .25);
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, .04);
+    }
+
+    /* REVEAL */
+    .reveal {
+      opacity: 0;
+      transform: translateY(35px);
+      transition: opacity .8s cubic-bezier(.25, .46, .45, .94), transform .8s cubic-bezier(.25, .46, .45, .94);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-delay-1 {
+      transition-delay: .15s;
+    }
+
+    .reveal-delay-2 {
+      transition-delay: .3s;
+    }
+
+    .reveal-delay-3 {
+      transition-delay: .45s;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width:900px) {
+      .hero-right {
+        display: none;
+      }
+
+      .produtos-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .modelo-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .loja-inner {
+        grid-template-columns: 1fr;
+      }
+
+      .impacto-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .cadeia-flow {
+        gap: 0;
+      }
+    }
+
+    @media (max-width:600px) {
+      .produtos-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .impacto-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+  <div id="progress-bar"></div>
+
+  <nav id="navbar">
+    <a href="programas-projetos.html" class="nav-back">← Projetos</a>
+    <a href="index_asproc.html" class="nav-logo-text">ASPROC<span>.</span></a>
+    <div>
+      <a href="https://loja.asproc.org.br" target="_blank" class="nav-pill">🛒 Comprar Produtos</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-light"></div>
+    <div class="hero-texture"></div>
+
+    <div class="hero-content">
+      <div class="hero-tag">🚢 Economia Solidária · Cidadania</div>
+      <h1 class="hero-h1">
+        Comércio<br>
+        <em>Ribeirinho</em><br>
+        da Cidadania
+      </h1>
+      <p class="hero-lead">
+        Da floresta ao mercado com dignidade. Conectamos produtores agroextrativistas
+        do Médio Juruá ao mercado justo, fortalecendo a economia solidária ribeirinha.
+      </p>
+      <div class="hero-cta-row">
+        <a href="https://loja.asproc.org.br" target="_blank" class="btn-hero">🛒 Ver Produtos</a>
+        <a href="#sobre" class="btn-hero-ghost">Saiba mais ↓</a>
+      </div>
+    </div>
+
+    <!-- Illustration -->
+    <div class="hero-right">
+      <svg viewBox="0 0 500 450" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="riverGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#c8a84b" stop-opacity=".15" />
+            <stop offset="100%" stop-color="#8b4513" stop-opacity=".1" />
+          </linearGradient>
+          <filter id="goldGlow">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+
+        <!-- River -->
+        <path d="M50,350 Q150,340 200,360 Q280,380 350,355 Q420,335 470,350" fill="none" stroke="#c8a84b"
+          stroke-width="2" opacity=".2" />
+        <path d="M30,370 Q130,355 200,375 Q300,400 380,370 Q440,355 490,365" fill="none" stroke="#c8a84b"
+          stroke-width="1.5" opacity=".12" />
+
+        <!-- Boat -->
+        <g transform="translate(250,305)">
+          <animateTransform attributeName="transform" type="translate" values="250,305;250,295;250,315;250,305" dur="6s"
+            repeatCount="indefinite" calcMode="spline" keySplines=".4 0 .6 1; .4 0 .6 1; .4 0 .6 1" />
+
+          <!-- Hull -->
+          <path d="M-120,15 Q-80,35 0,38 Q80,35 120,15 L105,-5 L-105,-5 Z" fill="#8b4513" opacity=".9" />
+          <!-- Deck -->
+          <rect x="-100" y="-20" width="200" height="20" fill="#c8a84b" opacity=".8" rx="3" />
+          <!-- Products on deck -->
+          <rect x="-80" y="-45" width="30" height="26" fill="#6b3510" rx="3" opacity=".9" />
+          <rect x="-42" y="-50" width="30" height="31" fill="#5a2d0c" rx="3" opacity=".9" />
+          <rect x="-5" y="-43" width="28" height="24" fill="#7a4020" rx="3" opacity=".9" />
+          <rect x="28" y="-48" width="26" height="29" fill="#6b3510" rx="3" opacity=".9" />
+          <rect x="60" y="-43" width="28" height="24" fill="#5a2d0c" rx="3" opacity=".9" />
+          <!-- Mast & Flag -->
+          <line x1="0" y1="-20" x2="0" y2="-100" stroke="#c8a84b" stroke-width="2.5" opacity=".8" />
+          <path d="M0,-100 L45,-88 L0,-75 Z" fill="#c8a84b" opacity=".85">
+            <animateTransform attributeName="transform" type="skewX" values="0;8;0;-5;0" dur="2.5s"
+              repeatCount="indefinite" />
+          </path>
+          <!-- Water reflection -->
+          <ellipse cx="0" cy="40" rx="120" ry="8" fill="#c8a84b" opacity=".06" />
+        </g>
+
+        <!-- Forest silhouette -->
+        <g opacity=".15" fill="#c8a84b">
+          <path
+            d="M0,340 L0,280 L20,280 L20,250 L30,250 L30,220 L40,220 L40,200 L50,200 L50,180 L60,180 L60,200 L70,200 L70,220 L80,220 L80,240 L90,240 L90,260 L100,260 L100,280 L110,280 L110,300 L120,300 L120,320 L130,320 L130,340 Z" />
+          <path
+            d="M370,340 L370,290 L385,290 L385,260 L400,260 L400,230 L415,230 L415,200 L430,200 L430,180 L445,180 L445,200 L460,200 L460,225 L475,225 L475,255 L490,255 L490,280 L500,280 L500,340 Z" />
+        </g>
+
+        <!-- Stars/fireflies -->
+        <g fill="#c8a84b">
+          <circle cx="80" cy="100" r="2" opacity=".6">
+            <animate attributeName="opacity" values=".6;0;.6" dur="2.5s" repeatCount="indefinite" />
+          </circle>
+          <circle cx="180" cy="60" r="1.5" opacity=".5">
+            <animate attributeName="opacity" values=".5;0;.5" dur="2s" repeatCount="indefinite" begin=".8s" />
+          </circle>
+          <circle cx="320" cy="80" r="2" opacity=".6">
+            <animate attributeName="opacity" values=".6;0;.6" dur="3s" repeatCount="indefinite" begin="1.2s" />
+          </circle>
+          <circle cx="420" cy="120" r="1.5" opacity=".5">
+            <animate attributeName="opacity" values=".5;0;.5" dur="1.8s" repeatCount="indefinite" begin=".4s" />
+          </circle>
+          <circle cx="140" cy="140" r="1" opacity=".4">
+            <animate attributeName="opacity" values=".4;0;.4" dur="2.2s" repeatCount="indefinite" begin="1.5s" />
+          </circle>
+          <circle cx="380" cy="150" r="1.5" opacity=".5">
+            <animate attributeName="opacity" values=".5;0;.5" dur="2.8s" repeatCount="indefinite" begin=".6s" />
+          </circle>
+        </g>
+
+        <!-- Moon/sun -->
+        <circle cx="400" cy="80" r="35" fill="none" stroke="#c8a84b" stroke-width="1" opacity=".15" />
+        <circle cx="400" cy="80" r="25" fill="#c8a84b" opacity=".08" />
+      </svg>
+    </div>
+  </section>
+
+  <!-- MANIFESTO -->
+  <section class="manifesto" id="sobre">
+    <div class="manifesto-inner reveal">
+      <div class="section-label" style="margin-bottom:1rem;">Nossa Filosofia</div>
+      <h2 class="manifesto-title">Cidadania que navega<br><em>pelo rio</em></h2>
+      <p class="manifesto-text">
+        O Projeto Comércio Ribeirinho da Cidadania e Solidário nasce da convicção de que os
+        produtos da floresta amazônica valem o que os <strong>produtores ribeirinhos merecem receber</strong>.
+        Por décadas, intermediários exploratórios ditaram os preços enquanto as comunidades
+        que trabalham na floresta ficavam com a menor fatia.
+      </p>
+      <p class="manifesto-text">
+        A ASPROC inverteu essa lógica: <strong>criou canais diretos de comercialização</strong>,
+        organizou a produção coletiva e garantiu que o valor gerado no coração da Amazônia
+        retornasse para quem realmente o produz — fortalecendo a cidadania, a solidariedade
+        e a autonomia das famílias ribeirinhas do Médio Juruá.
+      </p>
+    </div>
+  </section>
+
+  <!-- PRODUTOS -->
+  <section class="produtos-section">
+    <div class="produtos-header reveal">
+      <div class="section-label">Da Floresta</div>
+      <h2 class="section-title">Produtos <em>agroextrativistas</em></h2>
+      <p style="color:var(--texto);font-size:1rem;line-height:1.8;max-width:600px;margin-top:.8rem;">
+        Colhidos com respeito à natureza e ao território, processados pelas próprias comunidades.
+      </p>
+    </div>
+    <div class="produtos-grid">
+      <div class="produto-card reveal">
+        <div class="produto-img">
+          <img src="https://images.unsplash.com/photo-1558905586-b4e72f90ad3f?w=600&q=80" alt="Óleos vegetais"
+            loading="lazy" onerror="this.style.background='linear-gradient(135deg,#8b4513,#5a2d0c)'">
+          <div class="produto-img-overlay"></div>
+          <div class="produto-badge">Destaque</div>
+        </div>
+        <div class="produto-body">
+          <div class="produto-icon">🫙</div>
+          <div class="produto-name">Óleos Vegetais</div>
+          <div class="produto-desc">Andiroba, copaíba e outros óleos amazônicos com propriedades medicinais e cosméticas
+            únicas.</div>
+        </div>
+      </div>
+      <div class="produto-card reveal reveal-delay-1">
+        <div class="produto-img">
+          <img src="https://images.unsplash.com/photo-1509479100390-f83a8349e79c?w=600&q=80" alt="Castanhas"
+            loading="lazy" onerror="this.style.background='linear-gradient(135deg,#7a4020,#3a1a05)'">
+          <div class="produto-img-overlay"></div>
+          <div class="produto-badge">Orgânico</div>
+        </div>
+        <div class="produto-body">
+          <div class="produto-icon">🌰</div>
+          <div class="produto-name">Castanhas & Sementes</div>
+          <div class="produto-desc">Castanha-da-amazônia, cumaru e outras sementes coletadas de forma sustentável na
+            floresta.</div>
+        </div>
+      </div>
+      <div class="produto-card reveal reveal-delay-2">
+        <div class="produto-img">
+          <img src="https://images.unsplash.com/photo-1565608087341-404b25492fee?w=600&q=80" alt="Artesanato"
+            loading="lazy" onerror="this.style.background='linear-gradient(135deg,#c8a84b,#8b6a20)'">
+          <div class="produto-img-overlay"></div>
+          <div class="produto-badge">Artesanal</div>
+        </div>
+        <div class="produto-body">
+          <div class="produto-icon">🎨</div>
+          <div class="produto-name">Artesanato Ribeirinho</div>
+          <div class="produto-desc">Peças únicas feitas pelas mãos dos artesãos ribeirinhos com materiais naturais da
+            região.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODELO SOLIDÁRIO -->
+  <section class="modelo-section">
+    <div class="modelo-grid">
+      <!-- SVG Diagram -->
+      <div class="modelo-visual reveal">
+        <svg class="modelo-diagram" viewBox="0 0 420 420" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="centerGrad" cx="50%" cy="50%" r="50%" gradientUnits="objectBoundingBox">
+              <stop offset="0%" stop-color="#c8a84b" stop-opacity=".3" />
+              <stop offset="100%" stop-color="#c8a84b" stop-opacity=".05" />
+            </linearGradient>
+          </defs>
+          <!-- Center circle -->
+          <circle cx="210" cy="210" r="65" fill="url(#centerGrad)" stroke="#c8a84b" stroke-width="1.5" opacity=".7" />
+          <text x="210" y="203" text-anchor="middle" fill="#c8a84b" font-family="Fraunces, serif" font-size="14"
+            font-weight="bold">ASPROC</text>
+          <text x="210" y="222" text-anchor="middle" fill="rgba(200,168,75,.6)" font-family="DM Sans, sans-serif"
+            font-size="10">Comercio</text>
+          <text x="210" y="234" text-anchor="middle" fill="rgba(200,168,75,.6)" font-family="DM Sans, sans-serif"
+            font-size="10">Ribeirinho</text>
+
+          <!-- Orbit rings -->
+          <circle cx="210" cy="210" r="130" fill="none" stroke="rgba(200,168,75,.08)" stroke-width="1"
+            stroke-dasharray="5,5" />
+          <circle cx="210" cy="210" r="170" fill="none" stroke="rgba(200,168,75,.05)" stroke-width="1"
+            stroke-dasharray="3,7" />
+
+          <!-- Nodes -->
+          <!-- Producers (top) -->
+          <g transform="translate(210,65)">
+            <circle cx="0" cy="0" r="35" fill="rgba(139,69,19,.25)" stroke="#8b4513" stroke-width="1.5" />
+            <text y="-5" text-anchor="middle" fill="#fdf8ee" font-family="DM Sans" font-size="9"
+              font-weight="600">👨‍🌾</text>
+            <text y="8" text-anchor="middle" fill="#fdf8ee" font-family="DM Sans" font-size="9">Produtores</text>
+            <text y="19" text-anchor="middle" fill="rgba(253,248,238,.5)" font-family="DM Sans"
+              font-size="8">Ribeirinhos</text>
+            <line x1="0" y1="35" x2="0" y2="80" stroke="rgba(200,168,75,.3)" stroke-width="1.5"
+              stroke-dasharray="4,3" />
+          </g>
+
+          <!-- Market (right) -->
+          <g transform="translate(360,210)">
+            <circle cx="0" cy="0" r="35" fill="rgba(200,168,75,.15)" stroke="#c8a84b" stroke-width="1.5" />
+            <text y="-5" text-anchor="middle" fill="#fdf8ee" font-family="DM Sans" font-size="9"
+              font-weight="600">🏪</text>
+            <text y="8" text-anchor="middle" fill="#fdf8ee" font-family="DM Sans" font-size="9">Mercado</text>
+            <text y="19" text-anchor="middle" fill="rgba(253,248,238,.5)" font-family="DM Sans"
+              font-size="8">Justo</text>
+            <line x1="-35" y1="0" x2="-85" y2="0" stroke="rgba(200,168,75,.3)" stroke-width="1.5"
+              stroke-dasharray="4,3" />
+          </g>
+
+          <!-- Community (bottom) -->
+          <g transform="translate(210,355)">
+            <circle cx="0" cy="0" r="35" fill="rgba(74,122,42,.2)" stroke="#4a7a2a" stroke-width="1.5" />
+            <text y="-5" text-anchor="middle" fill="#fdf8ee" font-family="DM Sans" font-size="9"
+              font-weight="600">🏘️</text>
+            <text y="8" text-anchor="middle" fill="#fdf8ee" font-family="DM Sans" font-size="9">Comunidade</text>
+            <text y="19" text-anchor="middle" fill="rgba(253,248,238,.5)" font-family="DM Sans"
+              font-size="8">Fortalecida</text>
+            <line x1="0" y1="-35" x2="0" y2="-80" stroke="rgba(200,168,75,.3)" stroke-width="1.5"
+              stroke-dasharray="4,3" />
+          </g>
+
+          <!-- Store (left) -->
+          <g transform="translate(60,210)">
+            <circle cx="0" cy="0" r="35" fill="rgba(26,107,138,.2)" stroke="#1a6b8a" stroke-width="1.5" />
+            <text y="-5" text-anchor="middle" fill="#fdf8ee" font-family="DM Sans" font-size="9"
+              font-weight="600">🛒</text>
+            <text y="8" text-anchor="middle" fill="#fdf8ee" font-family="DM Sans" font-size="9">Loja Online</text>
+            <text y="19" text-anchor="middle" fill="rgba(253,248,238,.5)" font-family="DM Sans"
+              font-size="8">ASPROC</text>
+            <line x1="35" y1="0" x2="85" y2="0" stroke="rgba(200,168,75,.3)" stroke-width="1.5"
+              stroke-dasharray="4,3" />
+          </g>
+
+          <!-- Arrows indicating flow (animated) -->
+          <path d="M210,145 L210,155" stroke="#c8a84b" stroke-width="2" opacity=".5">
+            <animate attributeName="opacity" values=".5;1;.5" dur="2s" repeatCount="indefinite" />
+          </path>
+        </svg>
+      </div>
+
+      <div class="modelo-text reveal reveal-delay-1">
+        <div class="section-label">O Modelo</div>
+        <h2 class="section-title">Economia <em>solidária</em> no rio</h2>
+        <p>
+          O modelo de comércio ribeirinho da ASPROC elimina intermediários exploratórios e
+          <strong>coloca o produtor no centro da cadeia de valor</strong>. Com organização
+          coletiva, acesso a mercados e capacitação, as comunidades ganham
+          poder de barganha e autonomia econômica.
+        </p>
+        <ul class="pilares-list">
+          <li><span>⚖️</span><span>Preços <strong>justos</strong> definidos em assembleia com os produtores</span></li>
+          <li><span>🤝</span><span>Compra coletiva garante volume e <strong>reduz custos</strong></span></li>
+          <li><span>📦</span><span>Logística integrada pelo rio, chegando onde o mercado não chega</span></li>
+          <li><span>🌐</span><span>Loja online conecta produtores a consumidores de <strong>todo o
+                Brasil</strong></span></li>
+          <li><span>📚</span><span>Capacitação em gestão, produção e boas práticas para lideranças</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- CADEIA PRODUTIVA -->
+  <section class="cadeia-section">
+    <div class="reveal" style="margin-bottom:1rem;">
+      <div class="section-label">Do Extrativismo ao Mercado</div>
+      <h2 class="section-title">A cadeia <em>produtiva</em></h2>
+    </div>
+    <div class="cadeia-flow reveal">
+      <div class="cadeia-step">
+        <div class="cadeia-icon">🌿</div>
+        <div class="cadeia-title">Coleta/Cultivo</div>
+        <div class="cadeia-sub">Famílias ribeirinhas</div>
+      </div>
+      <div class="cadeia-step">
+        <div class="cadeia-icon">⚙️</div>
+        <div class="cadeia-title">Processamento</div>
+        <div class="cadeia-sub">Beneficiamento local</div>
+      </div>
+      <div class="cadeia-step">
+        <div class="cadeia-icon">🏷️</div>
+        <div class="cadeia-title">Certificação</div>
+        <div class="cadeia-sub">Qualidade e origem</div>
+      </div>
+      <div class="cadeia-step">
+        <div class="cadeia-icon">🚢</div>
+        <div class="cadeia-title">Logística</div>
+        <div class="cadeia-sub">Via rio e estrada</div>
+      </div>
+      <div class="cadeia-step">
+        <div class="cadeia-icon">🛒</div>
+        <div class="cadeia-title">Comercialização</div>
+        <div class="cadeia-sub">Loja & mercados</div>
+      </div>
+      <div class="cadeia-step">
+        <div class="cadeia-icon">💰</div>
+        <div class="cadeia-title">Renda Justa</div>
+        <div class="cadeia-sub">Para as famílias</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOJA HIGHLIGHT -->
+  <section class="loja-section">
+    <div class="loja-inner">
+      <div class="reveal">
+        <div class="loja-badge-label">🌿 Compre Amazônia</div>
+        <h2 class="loja-h2">Nossa <em>loja</em> online</h2>
+        <p class="loja-p">
+          A loja online da ASPROC é a vitrine digital do Comércio Ribeirinho.
+          Produtos agroextrativistas com procedência garantida,
+          chegando diretamente das mãos das famílias ribeirinhas para a sua casa.
+        </p>
+        <a href="https://loja.asproc.org.br" target="_blank" class="btn-hero">
+          🛒 Acessar loja.asproc.org.br
+        </a>
+      </div>
+      <div class="reveal reveal-delay-1">
+        <div class="loja-screen">
+          <div class="loja-screen-bar">
+            <div class="dot-r"></div>
+            <div class="dot-y"></div>
+            <div class="dot-g"></div>
+            <div class="loja-url">🔒 loja.asproc.org.br</div>
+          </div>
+          <iframe src="https://loja.asproc.org.br" title="Loja ASPROC" loading="lazy"
+            sandbox="allow-same-origin allow-scripts"></iframe>
+          <div class="loja-screen-overlay">
+            <a href="https://loja.asproc.org.br" target="_blank">Abrir Loja →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- IMPACTO -->
+  <section class="impacto-section">
+    <div class="reveal" style="text-align:center;margin-bottom:1rem;">
+      <div class="section-label">Impacto</div>
+      <h2 class="section-title">Números do <em>Comércio Ribeirinho</em></h2>
+    </div>
+    <div class="impacto-grid">
+      <div class="impacto-item reveal">
+        <div class="impacto-num" data-target="64">0</div>
+        <div class="impacto-label">Comunidades atendidas</div>
+      </div>
+      <div class="impacto-item reveal reveal-delay-1">
+        <div class="impacto-num" data-target="1200">0</div>
+        <div class="impacto-label">Famílias produtoras</div>
+      </div>
+      <div class="impacto-item reveal reveal-delay-2">
+        <div class="impacto-num">20+</div>
+        <div class="impacto-label">Produtos no catálogo</div>
+      </div>
+      <div class="impacto-item reveal reveal-delay-3">
+        <div class="impacto-num">100%</div>
+        <div class="impacto-label">Produção sustentável</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-row">
+      <div class="footer-brand">ASPROC<span>.</span></div>
+      <div class="footer-links">
+        <a href="index.html">Início</a>
+        <a href="sobre.html">Sobre</a>
+        <a href="programas-projetos.html">Projetos</a>
+        <a href="noticias.html">Notícias</a>
+        <a href="https://loja.asproc.org.br" target="_blank">Loja</a>
+      </div>
+    </div>
+    <p class="footer-copy">© 2025 ASPROC – Associação dos Produtores Rurais de Carauari. Todos os direitos reservados.
+    </p>
+  </footer>
+
+  <script>
+    const dot = document.getElementById('cursor-dot');
+    const ring = document.getElementById('cursor-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    function animCursor() { dot.style.left = mx + 'px'; dot.style.top = my + 'px'; rx += (mx - rx) * .12; ry += (my - ry) * .12; ring.style.left = rx + 'px'; ring.style.top = ry + 'px'; requestAnimationFrame(animCursor); }
+    animCursor();
+    document.querySelectorAll('a,button').forEach(el => {
+      el.addEventListener('mouseenter', () => { dot.classList.add('hovered'); ring.classList.add('hovered'); });
+      el.addEventListener('mouseleave', () => { dot.classList.remove('hovered'); ring.classList.remove('hovered'); });
+    });
+    const pb = document.getElementById('progress-bar');
+    window.addEventListener('scroll', () => { pb.style.width = (window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100) + '%'; });
+    const nav = document.getElementById('navbar');
+    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 50));
+    const observer = new IntersectionObserver(e => e.forEach(x => { if (x.isIntersecting) x.target.classList.add('visible'); }), { threshold: .12 });
+    document.querySelectorAll('.reveal').forEach(r => observer.observe(r));
+    function animCounter(el) { const t = parseInt(el.dataset.target); if (!t) return; const dur = 2000; const s = performance.now(); function u(now) { const p = Math.min((now - s) / dur, 1); const e = 1 - Math.pow(1 - p, 3); el.textContent = Math.round(e * t).toLocaleString('pt-BR'); if (p < 1) requestAnimationFrame(u); } requestAnimationFrame(u); }
+    const co = new IntersectionObserver(e => e.forEach(x => { if (x.isIntersecting) { animCounter(x.target); co.unobserve(x.target); } }), { threshold: .5 });
+    document.querySelectorAll('[data-target]').forEach(el => co.observe(el));
+  </script>
+</body>
+
+</html>
