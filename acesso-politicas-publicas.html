@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Acesso a Políticas Públicas – ASPROC</title>
+    <meta name="description" content="A ASPROC atua como laboratório de inovação na execução de programas públicos como PAA, PNAE e Subvenções da Sociobiodiversidade no Médio Juruá.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --verde: #2d6a2d;
+            --verde-claro: #4a9e3f;
+            --verde-neon: #7bc95c;
+            --dourado: #c8a84b;
+            --terra: #8b4513;
+            --agua: #1a6b8a;
+            --branco: #f5f0e8;
+            --escuro: #0f1a0f;
+            --cinza: #1e2e1e;
+            --cinza2: #2a3a2a;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0 }
+        html { scroll-behavior: smooth }
+        body { font-family: 'DM Sans', sans-serif; background: var(--escuro); color: var(--branco); overflow-x: hidden; cursor: none }
+
+        /* CURSOR */
+        #cursor-dot { width: 10px; height: 10px; background: var(--verde-neon); border-radius: 50%; position: fixed; pointer-events: none; z-index: 99999; transform: translate(-50%,-50%); transition: width .15s, height .15s; mix-blend-mode: screen }
+        #cursor-ring { width: 38px; height: 38px; border: 2px solid var(--verde-neon); border-radius: 50%; position: fixed; pointer-events: none; z-index: 99998; transform: translate(-50%,-50%); transition: width .25s, height .25s, border-color .25s; opacity: .55 }
+        #cursor-dot.h { width: 6px; height: 6px; background: #fff }
+        #cursor-ring.h { width: 56px; height: 56px; border-color: #fff; opacity: .85 }
+        @media(hover:none) { body { cursor: auto } #cursor-dot, #cursor-ring { display: none } }
+
+        /* PROGRESS */
+        #pb { position: fixed; top: 0; left: 0; height: 3px; background: linear-gradient(90deg, var(--verde-claro), var(--verde-neon)); z-index: 10001; width: 0; transition: width .1s }
+
+        /* NAV */
+        nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; padding: 0 5%; display: flex; align-items: center; justify-content: space-between; height: 70px; background: rgba(10,20,10,.88); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(123,201,92,.12); transition: all .35s }
+        nav.scrolled { background: rgba(8,15,8,.97); height: 60px }
+        .nav-logo { height: 44px; object-fit: contain }
+        .nav-links { display: flex; gap: 1.8rem; list-style: none }
+        .nav-links a { color: rgba(245,240,232,.7); text-decoration: none; font-size: .82rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; transition: color .3s; position: relative }
+        .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: var(--verde-neon); transition: width .3s }
+        .nav-links a:hover, .nav-links a.ativo { color: var(--verde-neon) }
+        .nav-links a:hover::after, .nav-links a.ativo::after { width: 100% }
+        .nav-right { display: flex; align-items: center; gap: 1rem }
+        .nav-cta { background: var(--verde-claro) !important; color: #fff !important; padding: .45rem 1.1rem; border-radius: 30px; font-weight: 600 !important; font-size: .82rem !important; transition: background .3s, transform .2s !important }
+        .nav-cta:hover { background: var(--verde-neon) !important; transform: translateY(-2px); color: var(--escuro) !important }
+        .nav-cta::after { display: none !important }
+        .lang-switcher { display: flex; gap: 4px }
+        .lang-btn { background: none; border: 1px solid rgba(123,201,92,.3); color: rgba(245,240,232,.5); font-size: .72rem; font-weight: 600; padding: 3px 7px; border-radius: 4px; cursor: pointer; transition: all .25s; font-family: 'DM Sans', sans-serif }
+        .lang-btn:hover, .lang-btn.active { border-color: var(--verde-neon); color: var(--verde-neon); background: rgba(123,201,92,.08) }
+        .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px }
+        .hamburger span { width: 26px; height: 2px; background: var(--branco); border-radius: 2px; transition: all .3s }
+
+        /* HERO */
+        .page-hero { position: relative; overflow: hidden; display: flex; align-items: flex-end; padding: 0 8% 7%; margin-top: 70px; min-height: 560px }
+        .ph-bg { position: absolute; inset: 0; background-size: cover; background-position: center 40%; filter: brightness(.38); transform: scale(1.05); animation: szoom 14s ease-out forwards }
+        @keyframes szoom { from { transform: scale(1.05) } to { transform: scale(1) } }
+        .ph-ov { position: absolute; inset: 0; background: linear-gradient(to top, rgba(15,26,15,.95) 0%, rgba(0,0,0,.1) 60%) }
+        .ph-cnt { position: relative; z-index: 1; max-width: 720px }
+        .bc { font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.45); margin-bottom: .8rem; display: flex; align-items: center; gap: .5rem }
+        .bc a { color: var(--verde-neon); text-decoration: none }
+        .ph-tag { display: inline-block; background: var(--verde-claro); color: #fff; font-size: .7rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; padding: .32rem .85rem; border-radius: 20px; margin-bottom: 1rem; opacity: 0; animation: hin .7s .2s forwards }
+        .ph-title { font-family: 'Fraunces', serif; font-size: clamp(2.6rem, 6vw, 5rem); font-weight: 900; line-height: .95; margin-bottom: 1.2rem; opacity: 0; transform: translateY(30px); animation: hin .9s .35s ease forwards }
+        .ph-title em { font-style: italic; color: var(--verde-neon) }
+        .ph-sub { font-size: 1.05rem; color: rgba(255,255,255,.68); max-width: 560px; line-height: 1.75; opacity: 0; transform: translateY(20px); animation: hin .8s .65s ease forwards }
+        @keyframes hin { to { opacity: 1; transform: translateY(0) } }
+        .ph-stats { display: flex; gap: 2.5rem; margin-top: 2.5rem; flex-wrap: wrap; opacity: 0; animation: hin .8s .9s ease forwards }
+        .ph-stat .n { font-family: 'Fraunces', serif; font-size: 2.4rem; font-weight: 900; color: #fff; line-height: 1 }
+        .ph-stat .l { font-size: .72rem; color: rgba(255,255,255,.55); letter-spacing: .1em; text-transform: uppercase; margin-top: .2rem }
+
+        /* SECTIONS */
+        section { padding: 90px 5% }
+        .slbl { font-size: .7rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--verde-neon); margin-bottom: .8rem }
+        .stit { font-family: 'Fraunces', serif; font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 700; line-height: 1.15; margin-bottom: 1rem }
+        .stit span { color: var(--verde-neon) }
+        .sdesc { font-size: 1rem; color: rgba(245,240,232,.65); line-height: 1.85; max-width: 700px }
+        .sdesc p + p { margin-top: 1.2rem }
+        .reveal { opacity: 0; transform: translateY(40px); transition: opacity .7s ease, transform .7s ease }
+        .reveal.visible { opacity: 1; transform: translateY(0) }
+
+        /* INTRO SECTION */
+        .intro-section { background: var(--cinza); display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center }
+        .intro-img-wrap { position: relative }
+        .intro-img-wrap img { width: 100%; height: 520px; object-fit: cover; border-radius: 16px; display: block }
+        .intro-badge { position: absolute; bottom: -20px; right: -20px; width: 120px; height: 120px; background: var(--verde-claro); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-family: 'Fraunces', serif; font-weight: 900; border: 4px solid var(--cinza); z-index: 2; text-align: center; padding: 10px }
+        .intro-badge .n { font-size: 1.6rem; line-height: 1; color: #fff }
+        .intro-badge .l { font-size: .45rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: rgba(255,255,255,.85); margin-top: 3px }
+        .intro-text .sdesc { max-width: 100% }
+        .intro-text p + p { margin-top: 1.2rem }
+
+        /* PROGRAMAS CARDS */
+        .programas-section { background: var(--escuro) }
+        .prog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem }
+        .prog-card { background: var(--cinza); border-radius: 16px; padding: 2rem; border: 1px solid rgba(123,201,92,.08); transition: all .4s; position: relative; overflow: hidden }
+        .prog-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--verde-claro), var(--verde-neon)); transform: scaleX(0); transition: transform .4s; transform-origin: left }
+        .prog-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(0,0,0,.45); border-color: rgba(123,201,92,.25) }
+        .prog-card:hover::before { transform: scaleX(1) }
+        .prog-icon { font-size: 2.5rem; margin-bottom: 1rem }
+        .prog-card h3 { font-family: 'Fraunces', serif; font-size: 1.15rem; font-weight: 700; margin-bottom: .6rem; color: var(--branco) }
+        .prog-card .prog-sigla { font-size: .68rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: var(--verde-neon); margin-bottom: .8rem }
+        .prog-card p { font-size: .875rem; color: rgba(245,240,232,.6); line-height: 1.75 }
+
+        /* PARCEIROS / CONTRATOS */
+        .contratos-section { background: var(--cinza2) }
+        .contratos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 3rem }
+        .contrato-card { background: var(--cinza); border-radius: 16px; padding: 2rem 2.5rem; border: 1px solid rgba(123,201,92,.1); display: flex; align-items: flex-start; gap: 1.5rem; transition: all .4s }
+        .contrato-card:hover { border-color: rgba(123,201,92,.3); box-shadow: 0 15px 40px rgba(0,0,0,.35) }
+        .contrato-icon { width: 56px; height: 56px; border-radius: 50%; background: rgba(74,158,63,.15); border: 1px solid rgba(123,201,92,.2); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; flex-shrink: 0 }
+        .contrato-body h4 { font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 700; margin-bottom: .4rem }
+        .contrato-body p { font-size: .875rem; color: rgba(245,240,232,.6); line-height: 1.7 }
+
+        /* IMPACTO / STATS */
+        .impacto-section { background: var(--verde); overflow: hidden; position: relative }
+        .impacto-section::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 70% 50%, rgba(123,201,92,.15) 0%, transparent 70%); pointer-events: none }
+        .impacto-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; margin-top: 3rem }
+        .impacto-item { text-align: center }
+        .impacto-item .n { font-family: 'Fraunces', serif; font-size: 3.2rem; font-weight: 900; color: #fff; line-height: 1 }
+        .impacto-item .l { font-size: .78rem; color: rgba(255,255,255,.65); letter-spacing: .1em; text-transform: uppercase; margin-top: .5rem; line-height: 1.4 }
+
+        /* DESAFIOS */
+        .desafios-section { background: var(--escuro); display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: center }
+        .desafios-list { margin-top: 2rem }
+        .desafio-item { display: flex; align-items: flex-start; gap: 1.2rem; padding: 1.4rem 0; border-bottom: 1px solid rgba(123,201,92,.1) }
+        .desafio-item:last-child { border-bottom: none }
+        .desafio-num { font-family: 'Fraunces', serif; font-size: 2rem; font-weight: 900; color: rgba(123,201,92,.25); line-height: 1; flex-shrink: 0; width: 48px }
+        .desafio-body h4 { font-size: .95rem; font-weight: 600; margin-bottom: .35rem; color: var(--branco) }
+        .desafio-body p { font-size: .85rem; color: rgba(245,240,232,.55); line-height: 1.7 }
+        .desafios-img { border-radius: 16px; overflow: hidden; position: relative }
+        .desafios-img img { width: 100%; height: 520px; object-fit: cover; display: block }
+        .desafios-img-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(15,26,15,.6) 0%, transparent 60%) }
+
+        /* CTA SECTION */
+        .cta-section { background: var(--cinza); text-align: center; padding: 100px 5% }
+        .cta-section .stit { margin-bottom: 1.2rem }
+        .cta-section .sdesc { margin: 0 auto 2.5rem; text-align: center }
+        .cta-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap }
+        .btn-primary { background: var(--verde-claro); color: #fff; text-decoration: none; padding: .85rem 2.2rem; border-radius: 30px; font-weight: 600; font-size: .9rem; transition: all .3s; display: inline-block }
+        .btn-primary:hover { background: var(--verde-neon); color: var(--escuro); transform: translateY(-2px) }
+        .btn-outline { border: 1px solid rgba(123,201,92,.4); color: var(--verde-neon); text-decoration: none; padding: .85rem 2.2rem; border-radius: 30px; font-weight: 600; font-size: .9rem; transition: all .3s; display: inline-block }
+        .btn-outline:hover { background: rgba(123,201,92,.1); border-color: var(--verde-neon); transform: translateY(-2px) }
+
+        /* FOOTER */
+        footer { background: #050d05; padding: 60px 5% 28px; border-top: 1px solid rgba(123,201,92,.12) }
+        .fg { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 3rem }
+        .footer-brand img { height: 48px; margin-bottom: 1.1rem; display: block }
+        .footer-brand p { font-size: .83rem; color: rgba(245,240,232,.45); line-height: 1.7; margin-bottom: 1.4rem }
+        .sl { display: flex; gap: .7rem }
+        .sb { width: 37px; height: 37px; border: 1px solid rgba(123,201,92,.28); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: rgba(245,240,232,.45); text-decoration: none; font-size: .78rem; font-weight: 700; transition: all .3s }
+        .sb:hover { border-color: var(--verde-neon); color: var(--verde-neon); transform: translateY(-3px); background: rgba(123,201,92,.08) }
+        .fc h4 { font-size: .72rem; font-weight: 700; letter-spacing: .15em; text-transform: uppercase; color: var(--verde-neon); margin-bottom: 1.1rem }
+        .fc ul { list-style: none }
+        .fc li { margin-bottom: .55rem }
+        .fc a { color: rgba(245,240,232,.45); text-decoration: none; font-size: .85rem; transition: color .3s }
+        .fc a:hover { color: var(--branco) }
+        .fbot { border-top: 1px solid rgba(255,255,255,.07); padding-top: 1.4rem; display: flex; justify-content: space-between; align-items: center; font-size: .78rem; color: rgba(245,240,232,.3); flex-wrap: wrap; gap: .5rem }
+
+        /* RESPONSIVE */
+        @media(max-width:960px) {
+            .intro-section, .desafios-section { grid-template-columns: 1fr; gap: 3rem }
+            .prog-grid { grid-template-columns: 1fr 1fr }
+            .contratos-grid { grid-template-columns: 1fr }
+            .impacto-grid { grid-template-columns: repeat(2,1fr) }
+            .fg { grid-template-columns: 1fr 1fr }
+            .nav-links { display: none }
+            .nav-links.open { display: flex; flex-direction: column; position: absolute; top: 70px; left: 0; right: 0; background: rgba(8,15,8,.97); padding: 1.5rem; gap: 1.2rem; border-bottom: 1px solid rgba(123,201,92,.15) }
+            .hamburger { display: flex }
+            .lang-switcher { display: none }
+        }
+        @media(max-width:640px) {
+            .prog-grid { grid-template-columns: 1fr }
+            .impacto-grid { grid-template-columns: 1fr 1fr }
+            .fg { grid-template-columns: 1fr }
+            .intro-img-wrap img, .desafios-img img { height: 300px }
+        }
+    </style>
+</head>
+<body>
+
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+<div id="pb"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+    <img src="data:image/png;base64,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"
+        alt="ASPROC" class="nav-logo">
+    <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Início</a></li>
+        <li><a href="sobre.html">Sobre</a></li>
+        <li><a href="noticias.html">Notícias</a></li>
+        <li><a href="avisos.html">Avisos</a></li>
+        <li><a href="programas-projetos.html" class="ativo">Projetos</a></li>
+        <li><a href="trabalhe-conosco.html">Trabalhe Conosco</a></li>
+        <li><a href="https://loja.asproc.org.br/" class="nav-cta" target="_blank">Loja Virtual</a></li>
+    </ul>
+    <div class="nav-right">
+        <div class="lang-switcher">
+            <button class="lang-btn active">PT</button>
+            <button class="lang-btn">EN</button>
+            <button class="lang-btn">ES</button>
+        </div>
+        <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+    </div>
+</nav>
+
+<!-- HERO -->
+<header class="page-hero">
+    <div class="ph-bg" style="background-image: url('https://images.unsplash.com/photo-1560493676-04071185765e?w=1600&q=80')"></div>
+    <div class="ph-ov"></div>
+    <div class="ph-cnt">
+        <div class="bc"><a href="index.html">Início</a> › <a href="programas-projetos.html">Projetos</a> › <span>Acesso a Políticas Públicas</span></div>
+        <span class="ph-tag">Programa Estratégico</span>
+        <h1 class="ph-title">Acesso a <em>Políticas</em><br>Públicas</h1>
+        <p class="ph-sub">A ASPROC como laboratório de inovação na gestão e execução de programas públicos estratégicos para as comunidades ribeirinhas do Médio Juruá.</p>
+        <div class="ph-stats">
+            <div class="ph-stat"><div class="n">15+</div><div class="l">Anos de atuação</div></div>
+            <div class="ph-stat"><div class="n">3</div><div class="l">Programas federais</div></div>
+            <div class="ph-stat"><div class="n">100+</div><div class="l">Famílias beneficiadas</div></div>
+        </div>
+    </div>
+</header>
+
+<!-- INTRO -->
+<section class="intro-section reveal">
+    <div class="intro-img-wrap">
+        <img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=900&q=80" alt="Comunidades ribeirinhas do Médio Juruá">
+        <div class="intro-badge">
+            <span class="n">30</span>
+            <span class="l">anos defendendo a floresta</span>
+        </div>
+    </div>
+    <div class="intro-text">
+        <p class="slbl">Contexto</p>
+        <h2 class="stit">Organização<br>comunitária que <span>transforma</span></h2>
+        <div class="sdesc">
+            <p>Nos últimos 15 anos, o processo de organização comunitária no Médio Juruá avançou significativamente, com destaque para a produção da sociobiodiversidade pelas comunidades extrativistas e o apoio de parceiros sociais. Esse fortalecimento impulsionou o Comércio Ribeirinho da Cidadania e Solidário, promovendo inovações em tecnologias de coleta, processamento e comercialização, gerando renda sustentável no território.</p>
+            <p>No contexto amazônico, a articulação entre organizações de povos e comunidades tradicionais é uma estratégia essencial para garantir o acesso a mercados justos e solidários para os produtos da floresta.</p>
+            <p>A ASPROC, como organização de base comunitária, acumula conhecimento técnico e experiências práticas que potencializam a aplicação de políticas públicas, transformando sua atuação em um verdadeiro <strong style="color:var(--verde-neon)">laboratório de inovação</strong> em planejamento, gestão e execução de programas públicos estratégicos.</p>
+        </div>
+    </div>
+</section>
+
+<!-- PROGRAMAS -->
+<section class="programas-section">
+    <div class="reveal">
+        <p class="slbl">Programas em destaque</p>
+        <h2 class="stit">Políticas públicas que <span>chegam à floresta</span></h2>
+        <p class="sdesc">A ASPROC atua diretamente na execução de três grandes programas federais voltados à agricultura familiar e ao extrativismo sustentável.</p>
+    </div>
+    <div class="prog-grid reveal">
+        <div class="prog-card">
+            <div class="prog-icon">🌾</div>
+            <div class="prog-sigla">PAA</div>
+            <h3>Programa de Aquisição de Alimentos</h3>
+            <p>A ASPROC demonstra competência e compromisso na execução de contratos com a Conab-AM, especialmente na venda de farinha d'água para o PAA, conectando produtores ribeirinhos a mercados institucionais.</p>
+        </div>
+        <div class="prog-card">
+            <div class="prog-icon">🏫</div>
+            <div class="prog-sigla">PNAE</div>
+            <h3>Programa Nacional de Alimentação Escolar</h3>
+            <p>Em parceria com a Secretaria de Estado de Educação do Amazonas (SEDUC-AM), a ASPROC fornece produtos da sociobiodiversidade para a alimentação escolar, garantindo renda e nutrição de qualidade.</p>
+        </div>
+        <div class="prog-card">
+            <div class="prog-icon">🌿</div>
+            <div class="prog-sigla">Subvenções</div>
+            <h3>Subvenção à Sociobiodiversidade</h3>
+            <p>A ASPROC se destaca na gestão de recursos provenientes de incentivos financeiros por meio de subvenções voltadas ao extrativismo, valorizando os produtos da floresta amazônica.</p>
+        </div>
+    </div>
+</section>
+
+<!-- CONTRATOS / PARCEIROS -->
+<section class="contratos-section reveal">
+    <p class="slbl">Parceiros institucionais</p>
+    <h2 class="stit">Contratos e <span>parcerias estratégicas</span></h2>
+    <div class="contratos-grid">
+        <div class="contrato-card">
+            <div class="contrato-icon">🏛️</div>
+            <div class="contrato-body">
+                <h4>Conab-AM</h4>
+                <p>Contrato de fornecimento de farinha d'água no âmbito do Programa de Aquisição de Alimentos (PAA), garantindo escoamento da produção das famílias extrativistas do Médio Juruá.</p>
+            </div>
+        </div>
+        <div class="contrato-card">
+            <div class="contrato-icon">📚</div>
+            <div class="contrato-body">
+                <h4>SEDUC-AM</h4>
+                <p>Fornecimento de produtos da sociobiodiversidade para o Programa Nacional de Alimentação Escolar (PNAE), unindo educação, alimentação saudável e geração de renda comunitária.</p>
+            </div>
+        </div>
+        <div class="contrato-card">
+            <div class="contrato-icon">🌱</div>
+            <div class="contrato-body">
+                <h4>Subvenções ao Extrativismo</h4>
+                <p>Gestão de recursos de incentivos financeiros por meio de subvenções voltadas ao extrativismo sustentável, ampliando a capacidade produtiva das comunidades da floresta.</p>
+            </div>
+        </div>
+        <div class="contrato-card">
+            <div class="contrato-icon">🤝</div>
+            <div class="contrato-body">
+                <h4>Mercados Justos e Solidários</h4>
+                <p>Articulação com organizações de povos e comunidades tradicionais para garantir o acesso a mercados justos, conectando os produtos da floresta a redes de consumo consciente.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- IMPACTO -->
+<section class="impacto-section reveal">
+    <p class="slbl" style="color:rgba(255,255,255,.7)">Impacto gerado</p>
+    <h2 class="stit" style="color:#fff">Resultados que <span style="color:rgba(123,201,92,.9)">transformam vidas</span></h2>
+    <div class="impacto-grid">
+        <div class="impacto-item">
+            <div class="n">15+</div>
+            <div class="l">Anos de organização<br>comunitária</div>
+        </div>
+        <div class="impacto-item">
+            <div class="n">3</div>
+            <div class="l">Programas federais<br>executados</div>
+        </div>
+        <div class="impacto-item">
+            <div class="n">100+</div>
+            <div class="l">Famílias com renda<br>sustentável</div>
+        </div>
+        <div class="impacto-item">
+            <div class="n">∞</div>
+            <div class="l">Floresta preservada<br>pelo extrativismo</div>
+        </div>
+    </div>
+</section>
+
+<!-- DESAFIOS -->
+<section class="desafios-section reveal">
+    <div>
+        <p class="slbl">Fortalecimento contínuo</p>
+        <h2 class="stit">Desafios e <span>capacitação</span></h2>
+        <p class="sdesc" style="margin-bottom:0">Os resultados conquistados são fruto de um longo processo de capacitação, que visa lidar com as exigências institucionais e burocráticas na implementação das políticas.</p>
+        <div class="desafios-list">
+            <div class="desafio-item">
+                <div class="desafio-num">01</div>
+                <div class="desafio-body">
+                    <h4>Formação Técnica</h4>
+                    <p>Capacitação das organizações comunitárias para o acesso pleno e qualificado às políticas públicas, superando barreiras burocráticas e institucionais.</p>
+                </div>
+            </div>
+            <div class="desafio-item">
+                <div class="desafio-num">02</div>
+                <div class="desafio-body">
+                    <h4>Participação Ampliada</h4>
+                    <p>Fortalecimento da participação das comunidades amazônicas na formulação e execução de políticas voltadas ao extrativismo e à sociobiodiversidade.</p>
+                </div>
+            </div>
+            <div class="desafio-item">
+                <div class="desafio-num">03</div>
+                <div class="desafio-body">
+                    <h4>Inovação em Gestão</h4>
+                    <p>Desenvolvimento de tecnologias sociais em coleta, processamento e comercialização para aumento da eficiência e da renda sustentável no território.</p>
+                </div>
+            </div>
+            <div class="desafio-item">
+                <div class="desafio-num">04</div>
+                <div class="desafio-body">
+                    <h4>Acesso a Mercados</h4>
+                    <p>Ampliação das redes de comercialização para produtos da floresta, conectando comunidades ribeirinhas a mercados institucionais e solidários.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="desafios-img">
+        <img src="https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=900&q=80" alt="Floresta amazônica e comunidades">
+        <div class="desafios-img-overlay"></div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section reveal">
+    <p class="slbl">Faça parte</p>
+    <h2 class="stit">Juntos pela <span>Amazônia</span></h2>
+    <p class="sdesc">Conheça outros projetos da ASPROC ou entre em contato para saber como apoiar as comunidades ribeirinhas do Médio Juruá.</p>
+    <div class="cta-btns">
+        <a href="programas-projetos.html" class="btn-primary">Ver todos os projetos →</a>
+        <a href="sobre.html#contato" class="btn-outline">Fale conosco</a>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="fg">
+        <div class="footer-brand">
+            <img src="data:image/png;base64,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" alt="ASPROC">
+            <p>Associação dos Produtores Rurais de Carauari. Defendendo os direitos das comunidades tradicionais do Médio Juruá desde 1994.</p>
+            <div class="sl">
+                <a class="sb" href="https://facebook.com/asproc.jurua" target="_blank">f</a>
+                <a class="sb" href="https://instagram.com/asproc" target="_blank">in</a>
+                <a class="sb" href="https://youtube.com/@asproc" target="_blank">▶</a>
+            </div>
+        </div>
+        <div class="fc">
+            <h4>Navegação</h4>
+            <ul>
+                <li><a href="index.html">Início</a></li>
+                <li><a href="sobre.html">A ASPROC</a></li>
+                <li><a href="noticias.html">Notícias</a></li>
+                <li><a href="avisos.html">Avisos</a></li>
+            </ul>
+        </div>
+        <div class="fc">
+            <h4>Projetos</h4>
+            <ul>
+                <li><a href="programas-projetos.html">Todos os Projetos</a></li>
+                <li><a href="#">Manejo do Pirarucu</a></li>
+                <li><a href="#">Sanear Amazônia</a></li>
+                <li><a href="#">Comércio Ribeirinho</a></li>
+                <li><a href="acesso-politicas-publicas.html">Políticas Públicas</a></li>
+            </ul>
+        </div>
+        <div class="fc">
+            <h4>Contato</h4>
+            <ul>
+                <li><a href="mailto:contato@asproc.org.br">contato@asproc.org.br</a></li>
+                <li><a href="https://loja.asproc.org.br" target="_blank">Loja Virtual</a></li>
+                <li><a href="trabalhe-conosco.html">Trabalhe Conosco</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="fbot">
+        <span>© 2025 ASPROC – Associação dos Produtores Rurais de Carauari. Todos os direitos reservados.</span>
+        <span>Médio Juruá, Amazônia 🌿</span>
+    </div>
+</footer>
+
+<script>
+    /* CURSOR */
+    (function () {
+        const dot = document.getElementById('cursor-dot'), ring = document.getElementById('cursor-ring');
+        let mx = 0, my = 0, rx = 0, ry = 0;
+        document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; dot.style.left = mx + 'px'; dot.style.top = my + 'px' });
+        (function anim() { rx += (mx - rx) * .12; ry += (my - ry) * .12; ring.style.left = rx + 'px'; ring.style.top = ry + 'px'; requestAnimationFrame(anim) })();
+        document.querySelectorAll('a,button,.prog-card,.contrato-card').forEach(el => {
+            el.addEventListener('mouseenter', () => { dot.classList.add('h'); ring.classList.add('h') });
+            el.addEventListener('mouseleave', () => { dot.classList.remove('h'); ring.classList.remove('h') });
+        });
+        document.addEventListener('mouseleave', () => { dot.style.opacity = '0'; ring.style.opacity = '0' });
+        document.addEventListener('mouseenter', () => { dot.style.opacity = '1'; ring.style.opacity = '.55' });
+    })();
+
+    /* PROGRESS + NAV */
+    const nb = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+        nb.classList.toggle('scrolled', window.scrollY > 50);
+        const h = document.documentElement;
+        document.getElementById('pb').style.width = (window.scrollY / (h.scrollHeight - h.clientHeight) * 100) + '%';
+    });
+    function toggleMenu() { document.getElementById('navLinks').classList.toggle('open') }
+
+    /* REVEAL */
+    const ro = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible') }), { threshold: .1 });
+    document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+</script>
+</body>
+</html>
