@@ -1773,6 +1773,78 @@
       left: 0;
       right: 0;
     }
+
+    /* ── FRUTOS DA FLORESTA (AÇAÍ) THEME ── */
+    .card-acai {
+      background: linear-gradient(135deg, #1a0a2e 0%, #0d1a0d 100%);
+    }
+
+    .card-acai .projeto-info {
+      color: var(--branco);
+    }
+
+    .acai-tag {
+      background: rgba(74, 26, 107, .28);
+      color: #c87bef;
+      border: 1px solid rgba(200, 123, 239, .28);
+    }
+
+    .acai-visual {
+      background: linear-gradient(135deg, #120820 0%, #0a1a0a 100%);
+    }
+
+    .acai-cta {
+      background: #7a3a9b;
+      color: white;
+    }
+
+    .acai-cta:hover {
+      background: #c87bef;
+      color: #1a0a2e;
+    }
+
+    .acai-bullets li::before {
+      color: #c87bef;
+    }
+
+    /* Progress bar for açaí */
+    .acai-progress-wrap {
+      margin-bottom: 1.8rem;
+    }
+
+    .acai-progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: .72rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: rgba(245, 240, 232, .5);
+      margin-bottom: .5rem;
+    }
+
+    .acai-progress-label span:last-child {
+      color: #c87bef;
+      font-weight: 700;
+    }
+
+    .acai-bar-bg {
+      height: 6px;
+      background: rgba(255, 255, 255, .07);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .acai-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #7a3a9b, #c87bef);
+      border-radius: 3px;
+      transition: width 1.4s cubic-bezier(.25, .46, .45, .94) .4s;
+    }
+
+    .acai-bar-fill.animated {
+      width: 14%;
+    }
   </style>
 </head>
 
@@ -2516,6 +2588,145 @@
         </div>
       </article>
 
+      <!-- FRUTOS DA FLORESTA -->
+      <article class="projeto-card card-acai reveal">
+        <div class="projeto-visual acai-visual">
+          <div class="projeto-visual-overlay"
+            style="background: linear-gradient(135deg, rgba(18,8,32,.92) 0%, rgba(10,26,10,.85) 100%);"></div>
+
+          <!-- Animated Açaí SVG -->
+          <div class="fish-svg">
+            <svg viewBox="0 0 400 300" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="acaiGlowCard" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#c87bef" stop-opacity=".2" />
+                  <stop offset="100%" stop-color="#c87bef" stop-opacity="0" />
+                </radialGradient>
+                <linearGradient id="acaiBerryCard" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#7a3a9b" />
+                  <stop offset="100%" stop-color="#2a0a4b" />
+                </linearGradient>
+                <linearGradient id="acaiStemCard" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#7bc95c" />
+                  <stop offset="100%" stop-color="#2d6a2d" />
+                </linearGradient>
+              </defs>
+
+              <!-- Background glow -->
+              <ellipse cx="200" cy="180" rx="130" ry="90" fill="url(#acaiGlowCard)" />
+
+              <!-- Palm trunk -->
+              <rect x="196" y="220" width="8" height="60" rx="4" fill="url(#acaiStemCard)" opacity=".7" />
+
+              <!-- Palm fronds -->
+              <g opacity=".65">
+                <path d="M200,130 Q155,100 115,112" fill="none" stroke="#4a9e3f" stroke-width="2"
+                  stroke-linecap="round" />
+                <path d="M200,130 Q245,100 285,112" fill="none" stroke="#4a9e3f" stroke-width="2"
+                  stroke-linecap="round" />
+                <path d="M200,130 Q198,88 200,65" fill="none" stroke="#4a9e3f" stroke-width="2"
+                  stroke-linecap="round" />
+                <path d="M200,130 Q170,95 158,72" fill="none" stroke="#4a9e3f" stroke-width="1.5"
+                  stroke-linecap="round" />
+                <path d="M200,130 Q230,95 242,72" fill="none" stroke="#4a9e3f" stroke-width="1.5"
+                  stroke-linecap="round" />
+                <ellipse cx="106" cy="106" rx="15" ry="7" fill="#4a9e3f" transform="rotate(-15,106,106)" />
+                <ellipse cx="292" cy="106" rx="15" ry="7" fill="#4a9e3f" transform="rotate(15,292,106)" />
+                <ellipse cx="200" cy="58" rx="8" ry="14" fill="#4a9e3f" />
+                <ellipse cx="150" cy="66" rx="12" ry="6" fill="#4a9e3f" transform="rotate(-30,150,66)" />
+                <ellipse cx="250" cy="66" rx="12" ry="6" fill="#4a9e3f" transform="rotate(30,250,66)" />
+              </g>
+
+              <!-- Açaí bunch with float animation -->
+              <g>
+                <animateTransform attributeName="transform" type="translate" values="0,0;0,-6;0,0" dur="5s"
+                  repeatCount="indefinite" calcMode="spline" keySplines=".4 0 .6 1;.4 0 .6 1" />
+                <!-- Bunch stems -->
+                <path d="M200,145 Q192,170 185,200 M200,145 Q203,173 210,200 M200,145 Q199,172 200,202" fill="none"
+                  stroke="#c8a84b" stroke-width="1.2" opacity=".6" />
+                <!-- Berry cluster -->
+                <circle cx="200" cy="206" r="12" fill="url(#acaiBerryCard)" opacity=".95" />
+                <circle cx="186" cy="196" r="10" fill="url(#acaiBerryCard)" opacity=".9" />
+                <circle cx="214" cy="196" r="10" fill="url(#acaiBerryCard)" opacity=".9" />
+                <circle cx="177" cy="207" r="9" fill="url(#acaiBerryCard)" opacity=".85" />
+                <circle cx="223" cy="207" r="9" fill="url(#acaiBerryCard)" opacity=".85" />
+                <circle cx="190" cy="218" r="8" fill="url(#acaiBerryCard)" opacity=".8" />
+                <circle cx="210" cy="218" r="8" fill="url(#acaiBerryCard)" opacity=".8" />
+                <circle cx="200" cy="193" r="8" fill="url(#acaiBerryCard)" opacity=".88" />
+                <!-- Berry highlights -->
+                <circle cx="196" cy="203" r="2.5" fill="white" opacity=".14" />
+                <circle cx="183" cy="193" r="2" fill="white" opacity=".12" />
+                <circle cx="211" cy="193" r="2" fill="white" opacity=".12" />
+              </g>
+
+              <!-- Glow under bunch -->
+              <ellipse cx="200" cy="225" rx="50" ry="14" fill="url(#acaiGlowCard)" />
+
+              <!-- Floating berries -->
+              <circle cx="110" cy="170" r="4" fill="#7a3a9b" opacity=".45">
+                <animate attributeName="cy" values="170;154;170" dur="4s" repeatCount="indefinite" />
+                <animate attributeName="opacity" values=".45;.15;.45" dur="4s" repeatCount="indefinite" />
+              </circle>
+              <circle cx="295" cy="160" r="3.5" fill="#c87bef" opacity=".35">
+                <animate attributeName="cy" values="160;143;160" dur="5s" begin="1.2s" repeatCount="indefinite" />
+                <animate attributeName="opacity" values=".35;.1;.35" dur="5s" begin="1.2s" repeatCount="indefinite" />
+              </circle>
+              <circle cx="130" cy="230" r="3" fill="#c87bef" opacity=".3">
+                <animate attributeName="cy" values="230;218;230" dur="3.5s" begin=".6s" repeatCount="indefinite" />
+              </circle>
+              <circle cx="275" cy="240" r="3" fill="#7a3a9b" opacity=".3">
+                <animate attributeName="cy" values="240;226;240" dur="4.2s" begin="2s" repeatCount="indefinite" />
+              </circle>
+
+              <!-- FUNBIO badge -->
+              <g transform="translate(20,240)">
+                <rect width="80" height="22" rx="11" fill="rgba(74,26,107,.5)" stroke="rgba(200,123,239,.3)"
+                  stroke-width="1" />
+                <text x="40" y="15" text-anchor="middle" font-family="sans-serif" font-size="7.5" fill="#c87bef"
+                  font-weight="bold" letter-spacing="1">FUNBIO</text>
+              </g>
+
+              <!-- Label -->
+              <text x="200" y="280" text-anchor="middle" font-family="serif" font-size="10" fill="#c87bef" opacity=".65"
+                letter-spacing="3">FRUTOS DA FLORESTA</text>
+            </svg>
+          </div>
+
+          <div class="projeto-visual-number">06</div>
+        </div>
+
+        <div class="projeto-info">
+          <div class="projeto-tag acai-tag">🍇 Sociobioeconomia</div>
+          <h2 class="projeto-title">Frutos da<br><em style="color:#c87bef;font-style:italic">Floresta</em></h2>
+          <p class="projeto-desc">
+            Apoiado pelo FUNBIO, este projeto amplia estrategicamente a cadeia de valor
+            do açaí manejado, transformando as 45 comunidades ribeirinhas em protagonistas
+            do processamento e da venda — com marca própria, tecnologia industrial e equidade de gênero.
+          </p>
+
+          <!-- Execution progress -->
+          <div class="acai-progress-wrap">
+            <div class="acai-progress-label">
+              <span>Execução do Projeto</span>
+              <span>14% concluído</span>
+            </div>
+            <div class="acai-bar-bg">
+              <div class="acai-bar-fill" id="acaiBar"></div>
+            </div>
+          </div>
+
+          <ul class="projeto-bullets acai-bullets">
+            <li>Projeto técnico e logística para agroindústria do açaí</li>
+            <li>Criação de marca e registro no INPI</li>
+            <li>Equipamentos industriais de ponta para despolpa</li>
+            <li>Investimento previsto de R$ 6,8 milhões</li>
+          </ul>
+          <a href="projeto-frutos-da-floresta.html" class="projeto-cta acai-cta">
+            Ver projeto completo <span>→</span>
+          </a>
+        </div>
+      </article>
+
     </div>
   </section>
 
@@ -2761,6 +2972,17 @@
         });
       }, { threshold: .4 });
       barObserver.observe(polpasBar);
+    }
+
+    // Animate açaí progress bar when in view
+    const acaiBar = document.getElementById('acaiBar');
+    if (acaiBar) {
+      const acaiBarObserver = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) { acaiBar.classList.add('animated'); acaiBarObserver.unobserve(e.target); }
+        });
+      }, { threshold: .4 });
+      acaiBarObserver.observe(acaiBar);
     }
   </script>
 </body>

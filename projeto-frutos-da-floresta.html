@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frutos da Floresta: Expandindo a Cadeia do Açaí Manejado – ASPROC</title>
+    <meta name="description"
+        content="Projeto Frutos da Floresta: ampliando a cadeia de valor do açaí manejado nas comunidades do Médio Juruá, com foco em equidade de gênero e biodiversidade.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --verde: #2d6a2d;
+            --verde-claro: #4a9e3f;
+            --verde-neon: #7bc95c;
+            --dourado: #c8a84b;
+            --terra: #8b4513;
+            --agua: #1a6b8a;
+            --agua-claro: #3a9bbf;
+            --branco: #f5f0e8;
+            --escuro: #0f1a0f;
+            --cinza: #1e2e1e;
+            --cinza2: #2a3a2a;
+            /* Açaí palette */
+            --acai: #4a1a6b;
+            --acai-claro: #7a3a9b;
+            --acai-neon: #c87bef;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--escuro);
+            color: var(--branco);
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        /* ── CURSOR ── */
+        #cursor-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--acai-neon);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+            transition: width .15s, height .15s, background .15s;
+            mix-blend-mode: screen;
+        }
+
+        #cursor-ring {
+            width: 38px;
+            height: 38px;
+            border: 2px solid var(--acai-neon);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 99998;
+            transform: translate(-50%, -50%);
+            transition: width .25s ease, height .25s ease, border-color .25s, opacity .25s;
+            opacity: .55;
+        }
+
+        #cursor-dot.hovered {
+            width: 6px;
+            height: 6px;
+            background: white;
+        }
+
+        #cursor-ring.hovered {
+            width: 56px;
+            height: 56px;
+            border-color: white;
+            opacity: .85;
+        }
+
+        @media (hover: none) {
+            body {
+                cursor: auto;
+            }
+
+            #cursor-dot,
+            #cursor-ring {
+                display: none;
+            }
+        }
+
+        /* ── PROGRESS BAR ── */
+        #progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--acai-claro), var(--acai-neon));
+            z-index: 10001;
+            width: 0%;
+            transition: width .1s;
+        }
+
+        /* ── NAVBAR ── */
+        nav#navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 0 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+            background: rgba(10, 20, 10, .85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(123, 201, 92, .12);
+            transition: all .35s;
+        }
+
+        nav#navbar.scrolled {
+            background: rgba(8, 15, 8, .97);
+            height: 60px;
+        }
+
+        .nav-logo-text {
+            font-family: 'Fraunces', serif;
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: var(--verde-neon);
+            text-decoration: none;
+            letter-spacing: .02em;
+        }
+
+        .nav-logo-text span {
+            color: var(--dourado);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.8rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: rgba(245, 240, 232, .7);
+            text-decoration: none;
+            font-size: .82rem;
+            font-weight: 500;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            transition: color .3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--verde-neon);
+            transition: width .3s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.ativo {
+            color: var(--verde-neon);
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.ativo::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            background: var(--verde-claro);
+            color: white !important;
+            padding: .45rem 1.1rem;
+            border-radius: 30px;
+            font-weight: 600 !important;
+            font-size: .82rem !important;
+            transition: background .3s, transform .2s !important;
+        }
+
+        .nav-cta:hover {
+            background: var(--verde-neon) !important;
+            transform: translateY(-2px);
+            color: var(--escuro) !important;
+        }
+
+        .nav-cta::after {
+            display: none !important;
+        }
+
+        /* ── MOBILE NAV ── */
+        #mob-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            z-index: 1001;
+        }
+
+        #mob-toggle span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--branco);
+            border-radius: 2px;
+            transition: all .3s;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            #mob-toggle {
+                display: flex;
+            }
+        }
+
+        /* ── HERO ── */
+        .hero-projeto {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: var(--escuro);
+        }
+
+        .hero-canvas {
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 20% 40%, rgba(74, 26, 107, .45) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 80% at 80% 60%, rgba(45, 106, 45, .3) 0%, transparent 55%),
+                radial-gradient(ellipse 40% 40% at 50% 80%, rgba(200, 168, 75, .1) 0%, transparent 50%);
+        }
+
+        .hero-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(200, 123, 239, .04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(200, 123, 239, .04) 1px, transparent 1px);
+            background-size: 60px 60px;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% {
+                background-position: 0 0;
+            }
+
+            100% {
+                background-position: 60px 60px;
+            }
+        }
+
+        .hero-particles {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            animation: float-particle linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes float-particle {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: .6;
+            }
+
+            90% {
+                opacity: .3;
+            }
+
+            100% {
+                transform: translateY(-20vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 900px;
+            padding: 0 5%;
+        }
+
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: .7rem;
+            background: rgba(200, 123, 239, .1);
+            border: 1px solid rgba(200, 123, 239, .3);
+            padding: .5rem 1.4rem;
+            border-radius: 40px;
+            font-size: .72rem;
+            font-weight: 700;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            color: var(--acai-neon);
+            margin-bottom: 2rem;
+            animation: fadeInUp .8s .2s both;
+        }
+
+        .hero-eyebrow::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--acai-neon);
+            border-radius: 50%;
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.6);
+                opacity: .5;
+            }
+        }
+
+        .hero-title {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(2.8rem, 7vw, 6rem);
+            font-weight: 900;
+            line-height: 1.05;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp .8s .4s both;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            line-height: 1.8;
+            color: rgba(245, 240, 232, .7);
+            max-width: 620px;
+            margin: 0 auto 3rem;
+            animation: fadeInUp .8s .6s both;
+        }
+
+        .hero-badges {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp .8s .8s both;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            padding: .5rem 1.2rem;
+            border-radius: 30px;
+            font-size: .78rem;
+            font-weight: 600;
+            letter-spacing: .06em;
+        }
+
+        .badge-acai {
+            background: rgba(74, 26, 107, .35);
+            color: var(--acai-neon);
+            border: 1px solid rgba(200, 123, 239, .3);
+        }
+
+        .badge-verde {
+            background: rgba(45, 106, 45, .3);
+            color: var(--verde-neon);
+            border: 1px solid rgba(123, 201, 92, .25);
+        }
+
+        .badge-dourado {
+            background: rgba(200, 168, 75, .2);
+            color: var(--dourado);
+            border: 1px solid rgba(200, 168, 75, .25);
+        }
+
+        .hero-scroll {
+            position: absolute;
+            bottom: 2.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: .6rem;
+            animation: fadeIn 1s 1.2s both;
+        }
+
+        .hero-scroll span {
+            font-size: .65rem;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            color: rgba(245, 240, 232, .4);
+        }
+
+        .scroll-line {
+            width: 1px;
+            height: 50px;
+            background: linear-gradient(to bottom, var(--acai-neon), transparent);
+            animation: scrollPulse 2s infinite;
+        }
+
+        @keyframes scrollPulse {
+
+            0%,
+            100% {
+                opacity: .3;
+                transform: scaleY(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scaleY(1.1);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* ── REVEAL ── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity .8s ease, transform .8s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-delay-1 {
+            transition-delay: .15s;
+        }
+
+        .reveal-delay-2 {
+            transition-delay: .3s;
+        }
+
+        .reveal-delay-3 {
+            transition-delay: .45s;
+        }
+
+        /* ── SECTION LABEL ── */
+        .section-label {
+            font-size: .7rem;
+            font-weight: 700;
+            letter-spacing: .25em;
+            text-transform: uppercase;
+            color: var(--acai-neon);
+            margin-bottom: .8rem;
+        }
+
+        .section-title {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 900;
+            line-height: 1.15;
+            margin-bottom: 1.2rem;
+        }
+
+        /* ── SOBRE SECTION ── */
+        .sobre-section {
+            padding: 7rem 5%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sobre-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 60% 70% at 80% 50%, rgba(74, 26, 107, .12) 0%, transparent 60%);
+        }
+
+        .sobre-inner {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: center;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .sobre-text-block .section-label {
+            color: var(--acai-neon);
+        }
+
+        .sobre-desc {
+            font-size: 1.05rem;
+            line-height: 1.9;
+            color: rgba(245, 240, 232, .75);
+            margin-bottom: 2rem;
+        }
+
+        .sobre-highlights {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .highlight-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem 1.2rem;
+            background: rgba(74, 26, 107, .12);
+            border: 1px solid rgba(200, 123, 239, .15);
+            border-radius: 12px;
+        }
+
+        .highlight-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .highlight-text {
+            font-size: .9rem;
+            line-height: 1.6;
+            color: rgba(245, 240, 232, .8);
+        }
+
+        .highlight-text strong {
+            color: var(--acai-neon);
+        }
+
+        /* Visual block */
+        .sobre-visual {
+            position: relative;
+        }
+
+        .acai-illustration {
+            width: 100%;
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #1a0a2e 0%, #0d1a0d 100%);
+            border-radius: 24px;
+            border: 1px solid rgba(200, 123, 239, .2);
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 40px 80px rgba(74, 26, 107, .3);
+        }
+
+        /* ── OBJETIVOS SECTION ── */
+        .objetivos-section {
+            padding: 6rem 5%;
+            background: linear-gradient(180deg, transparent 0%, rgba(74, 26, 107, .07) 50%, transparent 100%);
+        }
+
+        .objetivos-inner {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .objetivos-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .objetivos-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .objetivo-card {
+            background: linear-gradient(135deg, rgba(74, 26, 107, .18) 0%, rgba(15, 26, 15, .8) 100%);
+            border: 1px solid rgba(200, 123, 239, .18);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: transform .3s, border-color .3s, box-shadow .3s;
+        }
+
+        .objetivo-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(200, 123, 239, .4);
+            box-shadow: 0 20px 50px rgba(74, 26, 107, .3);
+        }
+
+        .objetivo-icon {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            background: rgba(200, 123, 239, .1);
+            border: 1px solid rgba(200, 123, 239, .2);
+            border-radius: 16px;
+        }
+
+        .objetivo-title {
+            font-family: 'Fraunces', serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--acai-neon);
+            margin-bottom: .8rem;
+        }
+
+        .objetivo-desc {
+            font-size: .88rem;
+            line-height: 1.7;
+            color: rgba(245, 240, 232, .7);
+        }
+
+        /* ── IMPACTO SECTION ── */
+        .impacto-section {
+            padding: 7rem 5%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .impacto-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 50% 60% at 30% 50%, rgba(45, 106, 45, .1) 0%, transparent 60%);
+        }
+
+        .impacto-inner {
+            position: relative;
+            z-index: 1;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .impacto-layout {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 6rem;
+            align-items: center;
+        }
+
+        .impacto-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(45, 106, 45, .15) 0%, rgba(15, 26, 15, .9) 100%);
+            border: 1px solid rgba(123, 201, 92, .2);
+            border-radius: 16px;
+            padding: 1.8rem 1.5rem;
+            text-align: center;
+        }
+
+        .stat-icon {
+            font-size: 1.8rem;
+            margin-bottom: .8rem;
+        }
+
+        .stat-val {
+            font-family: 'Fraunces', serif;
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--verde-neon);
+            line-height: 1;
+            margin-bottom: .4rem;
+        }
+
+        .stat-label {
+            font-size: .78rem;
+            color: rgba(245, 240, 232, .55);
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .impacto-text .section-label {
+            color: var(--verde-neon);
+        }
+
+        .impacto-desc {
+            font-size: 1rem;
+            line-height: 1.85;
+            color: rgba(245, 240, 232, .75);
+            margin-bottom: 2rem;
+        }
+
+        /* Progress bar */
+        .progress-wrap {
+            margin-bottom: 2rem;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: .72rem;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: rgba(245, 240, 232, .5);
+            margin-bottom: .6rem;
+        }
+
+        .progress-label span:last-child {
+            color: var(--acai-neon);
+            font-weight: 700;
+        }
+
+        .progress-bg {
+            height: 8px;
+            background: rgba(255, 255, 255, .07);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--acai-claro), var(--acai-neon));
+            border-radius: 4px;
+            transition: width 1.6s cubic-bezier(.25, .46, .45, .94) .4s;
+        }
+
+        .progress-fill.animated {
+            width: 14%;
+        }
+
+        .investimento-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .8rem;
+            background: rgba(200, 168, 75, .1);
+            border: 1px solid rgba(200, 168, 75, .25);
+            border-radius: 14px;
+            padding: 1rem 1.5rem;
+            font-size: .9rem;
+            color: var(--dourado);
+        }
+
+        .investimento-badge strong {
+            font-family: 'Fraunces', serif;
+            font-size: 1.4rem;
+            font-weight: 900;
+        }
+
+        /* ── CTA SECTION ── */
+        .cta-section {
+            padding: 6rem 5%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 60% 80% at 50% 50%, rgba(74, 26, 107, .2) 0%, transparent 65%);
+        }
+
+        .cta-inner {
+            position: relative;
+            z-index: 1;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .cta-title {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 900;
+            margin-bottom: 1.2rem;
+        }
+
+        .cta-desc {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: rgba(245, 240, 232, .7);
+            margin-bottom: 3rem;
+        }
+
+        .cta-btns {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: .6rem;
+            background: var(--acai-claro);
+            color: white;
+            padding: 1rem 2.2rem;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: .95rem;
+            text-decoration: none;
+            transition: background .3s, transform .3s;
+        }
+
+        .btn-primary:hover {
+            background: var(--acai-neon);
+            color: var(--escuro);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: .6rem;
+            background: transparent;
+            color: var(--branco);
+            border: 1px solid rgba(245, 240, 232, .3);
+            padding: 1rem 2.2rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: .95rem;
+            text-decoration: none;
+            transition: border-color .3s, background .3s;
+        }
+
+        .btn-secondary:hover {
+            border-color: rgba(245, 240, 232, .7);
+            background: rgba(245, 240, 232, .06);
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            padding: 2.5rem 5%;
+            border-top: 1px solid rgba(123, 201, 92, .1);
+            background: rgba(8, 15, 8, .6);
+        }
+
+        .footer-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-brand {
+            font-family: 'Fraunces', serif;
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: var(--verde-neon);
+        }
+
+        .footer-brand span {
+            color: var(--dourado);
+        }
+
+        .footer-nav {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-nav a {
+            color: rgba(245, 240, 232, .55);
+            text-decoration: none;
+            font-size: .82rem;
+            transition: color .3s;
+        }
+
+        .footer-nav a:hover {
+            color: var(--verde-neon);
+        }
+
+        .footer-copy {
+            text-align: center;
+            font-size: .75rem;
+            color: rgba(245, 240, 232, .3);
+        }
+
+        /* ── MOBILE ── */
+        @media (max-width: 900px) {
+
+            .sobre-inner,
+            .impacto-layout {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .objetivos-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sobre-visual {
+                display: none;
+            }
+
+            .impacto-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .impacto-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-inner {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="cursor-dot"></div>
+    <div id="cursor-ring"></div>
+    <div id="progress-bar"></div>
+
+    <!-- ── NAVBAR ── -->
+    <nav id="navbar">
+        <a href="index.html" class="nav-logo-text">ASPROC<span>.</span></a>
+        <ul class="nav-links">
+            <li><a href="index.html">Início</a></li>
+            <li><a href="sobre.html">Sobre</a></li>
+            <li><a href="programas-projetos.html" class="ativo">Projetos</a></li>
+            <li><a href="noticias.html">Notícias</a></li>
+            <li><a href="avisos.html">Avisos</a></li>
+            <li><a href="https://loja.asproc.org.br" target="_blank" class="nav-cta">🛒 Loja</a></li>
+        </ul>
+        <button id="mob-toggle" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
+
+    <!-- ── HERO ── -->
+    <section class="hero-projeto">
+        <div class="hero-canvas"></div>
+        <div class="hero-grid"></div>
+        <div class="hero-particles" id="particles"></div>
+
+        <div class="hero-content">
+            <div class="hero-eyebrow">FUNBIO · Médio Juruá</div>
+            <h1 class="hero-title">
+                Frutos da<br>
+                <em style="color:var(--acai-neon);font-style:italic;">Floresta</em>
+            </h1>
+            <p class="hero-subtitle">
+                Expandindo a cadeia do açaí manejado e transformando comunidades ribeirinhas
+                em protagonistas do processamento e venda dos seus próprios produtos.
+            </p>
+            <div class="hero-badges">
+                <span class="hero-badge badge-acai">🍇 Açaí Manejado</span>
+                <span class="hero-badge badge-verde">🌿 45 Comunidades</span>
+                <span class="hero-badge badge-dourado">💰 R$ 6,8 milhões</span>
+            </div>
+        </div>
+
+        <div class="hero-scroll">
+            <span>Explorar</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- ── SOBRE O PROJETO ── -->
+    <section class="sobre-section">
+        <div class="sobre-inner">
+            <div class="sobre-text-block reveal">
+                <div class="section-label">Sobre o Projeto</div>
+                <h2 class="section-title">
+                    O açaí como pilar da<br>
+                    <span style="color:var(--acai-neon)">sociobioeconomia</span>
+                </h2>
+                <p class="sobre-desc">
+                    O açaí é um dos pilares da sociobioeconomia amazônica. O projeto Frutos da Floresta,
+                    apoiado pelo FUNBIO, foca na ampliação estratégica desta cadeia de valor, garantindo
+                    que as comunidades tradicionais deixem de ser apenas fornecedoras de matéria-prima
+                    para se tornarem protagonistas do processamento e venda.
+                </p>
+                <div class="sobre-highlights">
+                    <div class="highlight-item">
+                        <div class="highlight-icon">✊</div>
+                        <div class="highlight-text"><strong>Inclusão social</strong> com forte foco na equidade de
+                            gênero e proteção da biodiversidade em 45 comunidades ribeirinhas.</div>
+                    </div>
+                    <div class="highlight-item">
+                        <div class="highlight-icon">🌱</div>
+                        <div class="highlight-text"><strong>Manejo sustentável</strong> do açaí nativo, preservando o
+                            ecossistema amazônico e fortalecendo a identidade territorial.</div>
+                    </div>
+                    <div class="highlight-item">
+                        <div class="highlight-icon">📦</div>
+                        <div class="highlight-text"><strong>Agregação de valor</strong> com processamento local,
+                            reduzindo a dependência de intermediários e aumentando a renda familiar.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sobre-visual reveal reveal-delay-1">
+                <div class="acai-illustration">
+                    <!-- Animated SVG Açaí illustration -->
+                    <svg viewBox="0 0 500 500" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <radialGradient id="acaiGlow" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" stop-color="#c87bef" stop-opacity=".25" />
+                                <stop offset="100%" stop-color="#c87bef" stop-opacity="0" />
+                            </radialGradient>
+                            <radialGradient id="acaiGlow2" cx="50%" cy="50%" r="50%">
+                                <stop offset="0%" stop-color="#4a1a6b" stop-opacity=".5" />
+                                <stop offset="100%" stop-color="#4a1a6b" stop-opacity="0" />
+                            </radialGradient>
+                            <linearGradient id="stemGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#7bc95c" />
+                                <stop offset="100%" stop-color="#2d6a2d" />
+                            </linearGradient>
+                            <linearGradient id="berryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#7a3a9b" />
+                                <stop offset="100%" stop-color="#2a0a4b" />
+                            </linearGradient>
+                        </defs>
+
+                        <!-- Background glow -->
+                        <ellipse cx="250" cy="280" rx="160" ry="120" fill="url(#acaiGlow)" />
+
+                        <!-- Palm trunk -->
+                        <rect x="242" y="340" width="16" height="120" rx="8" fill="url(#stemGrad)" opacity=".8" />
+
+                        <!-- Main bunch stem -->
+                        <line x1="250" y1="200" x2="250" y2="340" stroke="#4a9e3f" stroke-width="4"
+                            stroke-linecap="round" opacity=".9" />
+
+                        <!-- Palm fronds -->
+                        <g opacity=".7">
+                            <path d="M250,200 Q190,160 140,175" fill="none" stroke="#4a9e3f" stroke-width="2.5"
+                                stroke-linecap="round" />
+                            <path d="M250,200 Q310,160 360,175" fill="none" stroke="#4a9e3f" stroke-width="2.5"
+                                stroke-linecap="round" />
+                            <path d="M250,200 Q240,140 250,105" fill="none" stroke="#4a9e3f" stroke-width="2.5"
+                                stroke-linecap="round" />
+                            <path d="M250,200 Q200,145 185,115" fill="none" stroke="#4a9e3f" stroke-width="2"
+                                stroke-linecap="round" />
+                            <path d="M250,200 Q300,145 315,115" fill="none" stroke="#4a9e3f" stroke-width="2"
+                                stroke-linecap="round" />
+                            <!-- Leaf shapes -->
+                            <ellipse cx="130" cy="168" rx="22" ry="10" fill="#4a9e3f" transform="rotate(-15,130,168)" />
+                            <ellipse cx="368" cy="168" rx="22" ry="10" fill="#4a9e3f" transform="rotate(15,368,168)" />
+                            <ellipse cx="250" cy="96" rx="12" ry="20" fill="#4a9e3f" />
+                            <ellipse cx="178" cy="106" rx="18" ry="8" fill="#4a9e3f" transform="rotate(-30,178,106)" />
+                            <ellipse cx="322" cy="106" rx="18" ry="8" fill="#4a9e3f" transform="rotate(30,322,106)" />
+                        </g>
+
+                        <!-- Açaí bunch -->
+                        <g>
+                            <animateTransform attributeName="transform" type="translate" values="0,0;0,-5;0,0" dur="5s"
+                                repeatCount="indefinite" calcMode="spline" keySplines=".4 0 .6 1;.4 0 .6 1" />
+                            <!-- Bunch stem -->
+                            <path d="M250,220 Q240,260 230,300 M250,220 Q255,265 265,300 M250,220 Q248,262 250,305"
+                                fill="none" stroke="#c8a84b" stroke-width="1.5" opacity=".7" />
+
+                            <!-- Berry clusters -->
+                            <!-- Center cluster -->
+                            <circle cx="250" cy="310" r="14" fill="url(#berryGrad)" opacity=".95" />
+                            <circle cx="232" cy="298" r="12" fill="url(#berryGrad)" opacity=".9" />
+                            <circle cx="268" cy="298" r="12" fill="url(#berryGrad)" opacity=".9" />
+                            <circle cx="220" cy="312" r="11" fill="url(#berryGrad)" opacity=".85" />
+                            <circle cx="280" cy="312" r="11" fill="url(#berryGrad)" opacity=".85" />
+                            <circle cx="242" cy="326" r="10" fill="url(#berryGrad)" opacity=".8" />
+                            <circle cx="258" cy="326" r="10" fill="url(#berryGrad)" opacity=".8" />
+                            <circle cx="250" cy="295" r="10" fill="url(#berryGrad)" opacity=".88" />
+                            <!-- Highlight dots on berries -->
+                            <circle cx="245" cy="307" r="3" fill="white" opacity=".15" />
+                            <circle cx="228" cy="295" r="2.5" fill="white" opacity=".12" />
+                            <circle cx="265" cy="295" r="2.5" fill="white" opacity=".12" />
+                        </g>
+
+                        <!-- Glow under bunch -->
+                        <ellipse cx="250" cy="330" rx="60" ry="18" fill="url(#acaiGlow2)" />
+
+                        <!-- Floating particles (açaí berries) -->
+                        <circle cx="140" cy="260" r="5" fill="#7a3a9b" opacity=".5">
+                            <animate attributeName="cy" values="260;240;260" dur="4s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values=".5;.2;.5" dur="4s" repeatCount="indefinite" />
+                        </circle>
+                        <circle cx="370" cy="250" r="4" fill="#7a3a9b" opacity=".4">
+                            <animate attributeName="cy" values="250;228;250" dur="5s" begin="1s"
+                                repeatCount="indefinite" />
+                            <animate attributeName="opacity" values=".4;.15;.4" dur="5s" begin="1s"
+                                repeatCount="indefinite" />
+                        </circle>
+                        <circle cx="160" cy="320" r="3" fill="#c87bef" opacity=".35">
+                            <animate attributeName="cy" values="320;305;320" dur="3.5s" begin=".5s"
+                                repeatCount="indefinite" />
+                        </circle>
+                        <circle cx="345" cy="315" r="3.5" fill="#c87bef" opacity=".3">
+                            <animate attributeName="cy" values="315;298;315" dur="4.5s" begin="2s"
+                                repeatCount="indefinite" />
+                        </circle>
+
+                        <!-- Label -->
+                        <text x="250" y="470" text-anchor="middle" font-family="serif" font-size="11" fill="#c87bef"
+                            opacity=".7" letter-spacing="3">AÇAÍ DO MÉDIO JURUÁ</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── OBJETIVOS E AÇÕES ── -->
+    <section class="objetivos-section">
+        <div class="objetivos-inner">
+            <div class="objetivos-header reveal">
+                <div class="section-label">Objetivos e Ações</div>
+                <h2 class="section-title">
+                    Da matéria-prima ao <span style="color:var(--acai-neon)">mercado</span>
+                </h2>
+                <p style="color:rgba(245,240,232,.65);font-size:1rem;line-height:1.7;max-width:600px;margin:0 auto;">
+                    A atuação é pautada na inclusão social, com forte foco na equidade de gênero
+                    e na proteção da biodiversidade em 45 comunidades.
+                </p>
+            </div>
+
+            <div class="objetivos-grid">
+                <div class="objetivo-card reveal">
+                    <div class="objetivo-icon">🏗️</div>
+                    <div class="objetivo-title">Engenharia & Logística</div>
+                    <p class="objetivo-desc">
+                        Desenvolvimento do projeto técnico detalhado para a agroindústria,
+                        incluindo o mapeamento de cenários logísticos para o escoamento
+                        eficiente da produção das comunidades ao mercado consumidor.
+                    </p>
+                </div>
+
+                <div class="objetivo-card reveal reveal-delay-1">
+                    <div class="objetivo-icon">🎨</div>
+                    <div class="objetivo-title">Branding & Mercado</div>
+                    <p class="objetivo-desc">
+                        Criação da identidade visual e registro oficial da marca no INPI,
+                        preparando o produto para o mercado competitivo com diferencial
+                        de origem e sustentabilidade amazônica.
+                    </p>
+                </div>
+
+                <div class="objetivo-card reveal reveal-delay-2">
+                    <div class="objetivo-icon">⚙️</div>
+                    <div class="objetivo-title">Tecnologia Industrial</div>
+                    <p class="objetivo-desc">
+                        Aquisição de equipamentos industriais de ponta para a despolpa,
+                        garantindo a manutenção das propriedades nutricionais do açaí
+                        e o padrão de qualidade exigido pelos mercados nacionais e internacionais.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── IMPACTO ── -->
+    <section class="impacto-section">
+        <div class="impacto-inner">
+            <div class="impacto-layout">
+
+                <div class="impacto-stats reveal">
+                    <div class="stat-card">
+                        <div class="stat-icon">🏘️</div>
+                        <div class="stat-val">45</div>
+                        <div class="stat-label">Comunidades</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">♀️</div>
+                        <div class="stat-val">+</div>
+                        <div class="stat-label">Equidade de gênero</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🌿</div>
+                        <div class="stat-val">14%</div>
+                        <div class="stat-label">Execução física</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🍇</div>
+                        <div class="stat-val">1</div>
+                        <div class="stat-label">Agroindústria local</div>
+                    </div>
+                </div>
+
+                <div class="impacto-text reveal reveal-delay-1">
+                    <div class="section-label">Impacto</div>
+                    <h2 class="section-title">
+                        Empoderamento das<br>
+                        <span style="color:var(--verde-neon)">famílias ribeirinhas</span>
+                    </h2>
+                    <p class="impacto-desc">
+                        Este é um projeto de futuro que visa transformar o açaí em uma ferramenta
+                        de empoderamento para as famílias ribeirinhas. Com investimento previsto de
+                        R$ 6,8 milhões, as comunidades passarão de fornecedoras de matéria-prima
+                        a protagonistas de toda a cadeia produtiva — com marca própria, tecnologia
+                        e acesso a novos mercados.
+                    </p>
+
+                    <div class="progress-wrap">
+                        <div class="progress-label">
+                            <span>Execução do Projeto</span>
+                            <span>14% concluído</span>
+                        </div>
+                        <div class="progress-bg">
+                            <div class="progress-fill" id="acaiProgressBar"></div>
+                        </div>
+                    </div>
+
+                    <div class="investimento-badge">
+                        <span>💰</span>
+                        <div>
+                            <div
+                                style="font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;opacity:.7;margin-bottom:.2rem;">
+                                Investimento total previsto</div>
+                            <strong>R$ 6,8 milhões</strong>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ── CTA ── -->
+    <section class="cta-section">
+        <div class="cta-inner reveal">
+            <div class="section-label">Faça Parte</div>
+            <h2 class="cta-title">
+                Juntos pela <span style="color:var(--acai-neon)">Amazônia</span>
+            </h2>
+            <p class="cta-desc">
+                Cada projeto da ASPROC é construído em parceria com as comunidades do Médio Juruá.
+                Conheça todos os nossos programas e veja como você pode apoiar essa transformação.
+            </p>
+            <div class="cta-btns">
+                <a href="programas-projetos.html" class="btn-primary">← Ver todos os projetos</a>
+                <a href="https://loja.asproc.org.br" target="_blank" class="btn-secondary">🛒 Apoie comprando na
+                    loja</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── FOOTER ── -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-brand">ASPROC<span>.</span></div>
+            <nav class="footer-nav">
+                <a href="index.html">Início</a>
+                <a href="sobre.html">Sobre</a>
+                <a href="programas-projetos.html">Projetos</a>
+                <a href="noticias.html">Notícias</a>
+                <a href="avisos.html">Avisos</a>
+                <a href="trabalhe-conosco.html">Trabalhe Conosco</a>
+                <a href="https://loja.asproc.org.br" target="_blank">Loja</a>
+            </nav>
+        </div>
+        <p class="footer-copy">© 2025 ASPROC – Associação dos Produtores Rurais de Carauari. Todos os direitos
+            reservados.</p>
+    </footer>
+
+    <script>
+        // Cursor
+        const dot = document.getElementById('cursor-dot');
+        const ring = document.getElementById('cursor-ring');
+        let mx = 0, my = 0, rx = 0, ry = 0;
+        document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+        function animCursor() {
+            dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+            rx += (mx - rx) * .12; ry += (my - ry) * .12;
+            ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+            requestAnimationFrame(animCursor);
+        }
+        animCursor();
+        document.querySelectorAll('a, button').forEach(el => {
+            el.addEventListener('mouseenter', () => { dot.classList.add('hovered'); ring.classList.add('hovered'); });
+            el.addEventListener('mouseleave', () => { dot.classList.remove('hovered'); ring.classList.remove('hovered'); });
+        });
+
+        // Progress bar
+        const pb = document.getElementById('progress-bar');
+        window.addEventListener('scroll', () => {
+            const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+            pb.style.width = pct + '%';
+        });
+
+        // Navbar
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        // Particles
+        const pc = document.getElementById('particles');
+        for (let i = 0; i < 22; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            const size = Math.random() * 4 + 2;
+            const isAcai = Math.random() > .5;
+            p.style.cssText = `
+        left: ${Math.random() * 100}%;
+        width: ${size}px; height: ${size}px;
+        background: ${isAcai ? '#c87bef' : 'rgba(74,26,107,.8)'};
+        animation-duration: ${Math.random() * 15 + 10}s;
+        animation-delay: ${Math.random() * 10}s;
+      `;
+            pc.appendChild(p);
+        }
+
+        // Reveal on scroll
+        const reveals = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+        }, { threshold: .12 });
+        reveals.forEach(r => observer.observe(r));
+
+        // Progress bar animation
+        const acaiBar = document.getElementById('acaiProgressBar');
+        if (acaiBar) {
+            const barObs = new IntersectionObserver(entries => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) { acaiBar.classList.add('animated'); barObs.unobserve(e.target); }
+                });
+            }, { threshold: .4 });
+            barObs.observe(acaiBar);
+        }
+    </script>
+</body>
+
+</html>
