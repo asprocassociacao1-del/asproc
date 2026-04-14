@@ -1879,6 +1879,39 @@
       color: #7fd4f5;
     }
 
+    /* ── JURUÁ SUSTENTÁVEL THEME ── */
+    .card-jurua {
+      background: linear-gradient(135deg, #1a1005 0%, #0d2010 100%);
+    }
+
+    .card-jurua .projeto-info {
+      color: var(--branco);
+    }
+
+    .jurua-tag {
+      background: rgba(212, 168, 49, .2);
+      color: #d4a831;
+      border: 1px solid rgba(212, 168, 49, .28);
+    }
+
+    .jurua-bullets li::before {
+      color: #d4a831;
+    }
+
+    .jurua-cta {
+      background: #d4a831;
+      color: #1a0f05;
+    }
+
+    .jurua-cta:hover {
+      background: #e8c06b;
+      color: #1a0f05;
+    }
+
+    .jurua-visual {
+      background: linear-gradient(135deg, #0a1a05 0%, #1a2d08 50%, #0d2010 100%);
+    }
+
     /* Progress bar for Pesca Justa */
     .pesca-justa-progress-wrap {
       margin-bottom: 1.8rem;
@@ -2011,7 +2044,7 @@
       </p>
       <div class="hero-stats">
         <div class="hero-stat">
-          <div class="hero-stat-num" data-target="7">0</div>
+          <div class="hero-stat-num" data-target="8">0</div>
           <div class="hero-stat-label">Projetos ativos</div>
         </div>
         <div class="hero-stat">
@@ -2911,6 +2944,142 @@
             <li>4.791 comunitários beneficiados em 62 comunidades</li>
           </ul>
           <a href="pesca-justa-sustentavel.html" class="projeto-cta pesca-justa-cta">
+            Ver projeto completo <span>→</span>
+          </a>
+        </div>
+      </article>
+
+      <!-- JURUÁ SUSTENTÁVEL E SOLIDÁRIO -->
+      <article class="projeto-card card-jurua reveal reveal-delay-2">
+        <div class="projeto-visual jurua-visual">
+          <div class="projeto-visual-overlay"
+            style="background: linear-gradient(135deg, rgba(10,26,5,.93) 0%, rgba(26,20,5,.88) 100%);"></div>
+
+          <!-- Animated Cantina Boat SVG -->
+          <div class="fish-svg">
+            <svg viewBox="0 0 400 300" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="jurua-glow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#d4a831" stop-opacity=".25" />
+                  <stop offset="100%" stop-color="#d4a831" stop-opacity="0" />
+                </radialGradient>
+                <linearGradient id="jurua-water" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#1a4a2a" />
+                  <stop offset="100%" stop-color="#0a1a10" />
+                </linearGradient>
+                <linearGradient id="jurua-boat" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#d4a831" />
+                  <stop offset="100%" stop-color="#8b6a1f" />
+                </linearGradient>
+              </defs>
+              <!-- Background glow -->
+              <ellipse cx="200" cy="180" rx="140" ry="100" fill="url(#jurua-glow)" />
+              <!-- River -->
+              <ellipse cx="200" cy="250" rx="280" ry="55" fill="url(#jurua-water)" opacity=".7" />
+              <!-- River ripples -->
+              <g opacity=".18">
+                <ellipse cx="200" cy="268" rx="200" ry="16" fill="none" stroke="#7bc95c" stroke-width="1.2">
+                  <animate attributeName="rx" values="200;220;200" dur="5s" repeatCount="indefinite" />
+                </ellipse>
+                <ellipse cx="200" cy="282" rx="150" ry="10" fill="none" stroke="#d4a831" stroke-width=".8">
+                  <animate attributeName="rx" values="150;165;150" dur="4s" repeatCount="indefinite" />
+                </ellipse>
+              </g>
+              <!-- Forest silhouettes -->
+              <g opacity=".35">
+                <path d="M0,200 Q15,170 30,190 Q45,155 60,180 Q75,158 90,182 Q105,162 120,188 L120,250 L0,250 Z"
+                  fill="#2d6a2d" />
+                <path
+                  d="M280,200 Q295,170 310,190 Q325,155 340,180 Q355,158 370,182 Q385,162 400,188 L400,250 L280,250 Z"
+                  fill="#2d6a2d" />
+              </g>
+              <!-- Stars -->
+              <g fill="#d4a831" opacity=".55">
+                <circle cx="60" cy="60" r="1.5">
+                  <animate attributeName="opacity" values=".55;.1;.55" dur="3s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="180" cy="40" r="1.2">
+                  <animate attributeName="opacity" values=".55;.1;.55" dur="2.5s" repeatCount="indefinite"
+                    begin=".7s" />
+                </circle>
+                <circle cx="320" cy="70" r="1.5">
+                  <animate attributeName="opacity" values=".55;.1;.55" dur="4s" repeatCount="indefinite" begin="1.3s" />
+                </circle>
+                <circle cx="350" cy="45" r="1">
+                  <animate attributeName="opacity" values=".55;.1;.55" dur="3.5s" repeatCount="indefinite" begin="2s" />
+                </circle>
+              </g>
+              <!-- Moon reflection -->
+              <ellipse cx="340" cy="260" rx="18" ry="7" fill="#d4a831" opacity=".1">
+                <animate attributeName="rx" values="18;22;18" dur="4s" repeatCount="indefinite" />
+              </ellipse>
+              <!-- Cantina Boat (animated float) -->
+              <g>
+                <animateTransform attributeName="transform" type="translate" values="0,0;0,-5;0,0" dur="5s"
+                  repeatCount="indefinite" calcMode="spline" keySplines=".4 0 .6 1;.4 0 .6 1" />
+                <!-- Hull -->
+                <path d="M110,248 Q130,262 200,264 Q270,262 290,248 L283,236 L117,236 Z" fill="#6b4010" opacity=".95" />
+                <!-- Deck -->
+                <rect x="122" y="220" width="156" height="18" fill="url(#jurua-boat)" rx="2" opacity=".9" />
+                <!-- Cabin -->
+                <rect x="138" y="194" width="65" height="28" fill="#3a2005" rx="3" opacity=".95" />
+                <rect x="144" y="199" width="16" height="14" fill="#7fd4f5" opacity=".2" rx="1" />
+                <rect x="164" y="199" width="12" height="14" fill="#7fd4f5" opacity=".15" rx="1" />
+                <!-- Cargo boxes -->
+                <rect x="214" y="205" width="28" height="17" fill="#2a1505" rx="2" opacity=".9" />
+                <rect x="246" y="208" width="22" height="14" fill="#3a2008" rx="2" opacity=".9" />
+                <rect x="271" y="210" width="18" height="12" fill="#2a1505" rx="2" opacity=".9" />
+                <!-- Mast -->
+                <line x1="200" y1="220" x2="200" y2="170" stroke="#d4a831" stroke-width="2" opacity=".8" />
+                <line x1="200" y1="182" x2="168" y2="196" stroke="#c8a84b" stroke-width="1" opacity=".45" />
+                <line x1="200" y1="182" x2="232" y2="196" stroke="#c8a84b" stroke-width="1" opacity=".45" />
+                <!-- Flag -->
+                <path d="M200,170 L226,179 L200,188 Z" fill="#7bc95c" opacity=".9">
+                  <animateTransform attributeName="transform" type="skewX" values="0;7;0;-7;0" dur="2.2s"
+                    repeatCount="indefinite" />
+                </path>
+              </g>
+              <!-- BNDES / Fundo Amazônia badge -->
+              <g transform="translate(15,240)">
+                <rect width="110" height="24" rx="12" fill="rgba(45,106,45,.5)" stroke="rgba(123,201,92,.3)"
+                  stroke-width="1" />
+                <text x="55" y="16" text-anchor="middle" font-family="sans-serif" font-size="7.5" fill="#7bc95c"
+                  font-weight="700" letter-spacing="1">FUNDO AMAZÔNIA</text>
+              </g>
+              <!-- Budget badge -->
+              <g transform="translate(270,228)">
+                <rect width="115" height="32" rx="10" fill="rgba(15,20,8,.8)" stroke="rgba(212,168,49,.25)"
+                  stroke-width="1" />
+                <text x="57" y="13" text-anchor="middle" font-family="sans-serif" font-size="7"
+                  fill="rgba(245,240,232,.5)" letter-spacing="1">ORÇAMENTO</text>
+                <text x="57" y="26" text-anchor="middle" font-family="serif" font-size="13" fill="#d4a831"
+                  font-weight="900">R$ 38,9M</text>
+              </g>
+              <!-- Label -->
+              <text x="200" y="290" text-anchor="middle" font-family="serif" font-size="9.5" fill="#d4a831"
+                opacity=".65" letter-spacing="3">JURUÁ SUSTENTÁVEL</text>
+            </svg>
+          </div>
+          <div class="projeto-visual-number">08</div>
+        </div>
+
+        <div class="projeto-info">
+          <div class="projeto-tag jurua-tag">🌿 Maior Projeto em Escala</div>
+          <h2 class="projeto-title">Juruá Sustentável<br><em style="color:#d4a831;font-style:italic">e Solidário</em>
+          </h2>
+          <p class="projeto-desc">
+            O maior projeto em escala da ASPROC, apoiado pelo Fundo Amazônia (BNDES)
+            e pelo Ministério do Meio Ambiente. Foca na consolidação do Comércio Ribeirinho,
+            garantindo o abastecimento de itens básicos e a compra da produção
+            das famílias em áreas remotas do Médio Juruá.
+          </p>
+          <ul class="projeto-bullets jurua-bullets">
+            <li>Logística de comercialização via sistema de "Cantinas"</li>
+            <li>Vigilância territorial e monitoramento de lagos</li>
+            <li>Equipamentos de transporte e processamento para produtores</li>
+            <li>R$ 38,9 milhões investidos nas cadeias socioprodutivas</li>
+          </ul>
+          <a href="jurua-sustentavel-solidario.html" class="projeto-cta jurua-cta">
             Ver projeto completo <span>→</span>
           </a>
         </div>

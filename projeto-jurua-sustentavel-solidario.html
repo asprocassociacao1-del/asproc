@@ -1,0 +1,1744 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juruá Sustentável: O Fortalecimento do Comércio Ribeirinho – ASPROC</title>
+    <meta name="description"
+        content="O maior projeto em escala da ASPROC, realizado com apoio do Fundo Amazônia (BNDES) e do Ministério do Meio Ambiente. Fortalecimento do Comércio Ribeirinho e cadeias socioprodutivas sustentáveis.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --verde: #2d6a2d;
+            --verde-claro: #4a9e3f;
+            --verde-neon: #7bc95c;
+            --dourado: #c8a84b;
+            --terra: #8b4513;
+            --agua: #1a6b8a;
+            --agua-claro: #3a9bbf;
+            --branco: #f5f0e8;
+            --escuro: #0f1a0f;
+            --cinza: #1e2e1e;
+            --cinza2: #2a3a2a;
+
+            /* Jurua accent colors */
+            --jurua-verde: #3a8a2a;
+            --jurua-ouro: #d4a831;
+            --jurua-agua: #1e7a9a;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--escuro);
+            color: var(--branco);
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        /* ── CURSOR ── */
+        #cursor-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--verde-neon);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+            transition: width .15s, height .15s, background .15s;
+            mix-blend-mode: screen;
+        }
+
+        #cursor-ring {
+            width: 38px;
+            height: 38px;
+            border: 2px solid var(--verde-neon);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 99998;
+            transform: translate(-50%, -50%);
+            transition: width .25s ease, height .25s ease, border-color .25s, opacity .25s;
+            opacity: .55;
+        }
+
+        #cursor-dot.hovered {
+            width: 6px;
+            height: 6px;
+            background: white;
+        }
+
+        #cursor-ring.hovered {
+            width: 56px;
+            height: 56px;
+            border-color: white;
+            opacity: .85;
+        }
+
+        @media (hover: none) {
+            body {
+                cursor: auto;
+            }
+
+            #cursor-dot,
+            #cursor-ring {
+                display: none;
+            }
+        }
+
+        /* ── PROGRESS BAR ── */
+        #progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--jurua-verde), var(--jurua-ouro));
+            z-index: 10001;
+            width: 0%;
+            transition: width .1s;
+        }
+
+        /* ── NAVBAR ── */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 0 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+            background: rgba(10, 20, 10, .85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(123, 201, 92, .12);
+            transition: all .35s;
+        }
+
+        nav.scrolled {
+            background: rgba(8, 15, 8, .97);
+            height: 60px;
+        }
+
+        .nav-logo-text {
+            font-family: 'Fraunces', serif;
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: var(--verde-neon);
+            text-decoration: none;
+            letter-spacing: .02em;
+        }
+
+        .nav-logo-text span {
+            color: var(--dourado);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.8rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: rgba(245, 240, 232, .7);
+            text-decoration: none;
+            font-size: .82rem;
+            font-weight: 500;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            transition: color .3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--verde-neon);
+            transition: width .3s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.ativo {
+            color: var(--verde-neon);
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.ativo::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            background: var(--verde-claro);
+            color: white !important;
+            padding: .45rem 1.1rem;
+            border-radius: 30px;
+            font-weight: 600 !important;
+            font-size: .82rem !important;
+            transition: background .3s, transform .2s !important;
+        }
+
+        .nav-cta:hover {
+            background: var(--verde-neon) !important;
+            transform: translateY(-2px);
+            color: var(--escuro) !important;
+        }
+
+        .nav-cta::after {
+            display: none !important;
+        }
+
+        /* Mobile hamburger */
+        #mob-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        #mob-toggle span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--branco);
+            border-radius: 2px;
+            transition: all .3s;
+        }
+
+        @media (max-width: 768px) {
+            #mob-toggle {
+                display: flex;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+
+        /* ── HERO ── */
+        .hero-jurua {
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: var(--escuro);
+        }
+
+        .hero-canvas {
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 70% 70% at 15% 30%, rgba(45, 106, 45, .5) 0%, transparent 55%),
+                radial-gradient(ellipse 50% 60% at 85% 70%, rgba(26, 107, 138, .2) 0%, transparent 50%),
+                radial-gradient(ellipse 60% 40% at 50% 90%, rgba(200, 168, 75, .15) 0%, transparent 50%);
+        }
+
+        .hero-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(123, 201, 92, .04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(123, 201, 92, .04) 1px, transparent 1px);
+            background-size: 60px 60px;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% {
+                background-position: 0 0;
+            }
+
+            100% {
+                background-position: 60px 60px;
+            }
+        }
+
+        .hero-particles {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            animation: float-particle linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes float-particle {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: .6;
+            }
+
+            90% {
+                opacity: .3;
+            }
+
+            100% {
+                transform: translateY(-20vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 960px;
+            padding: 0 5%;
+        }
+
+        .hero-breadcrumb {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            font-size: .72rem;
+            color: rgba(245, 240, 232, .45);
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp .8s .1s both;
+        }
+
+        .hero-breadcrumb a {
+            color: var(--verde-neon);
+            text-decoration: none;
+        }
+
+        .hero-breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: .7rem;
+            background: rgba(212, 168, 49, .12);
+            border: 1px solid rgba(212, 168, 49, .3);
+            padding: .5rem 1.4rem;
+            border-radius: 40px;
+            font-size: .72rem;
+            font-weight: 700;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            color: var(--jurua-ouro);
+            margin-bottom: 2rem;
+            animation: fadeInUp .8s .2s both;
+        }
+
+        .hero-eyebrow::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            background: var(--jurua-ouro);
+            border-radius: 50%;
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.6);
+                opacity: .5;
+            }
+        }
+
+        .hero-title {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(2.5rem, 7vw, 6rem);
+            font-weight: 900;
+            line-height: 1.0;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp .8s .4s both;
+        }
+
+        .hero-title .word-verde {
+            color: var(--verde-neon);
+        }
+
+        .hero-title .word-ouro {
+            color: var(--jurua-ouro);
+        }
+
+        .hero-subtitle {
+            font-size: clamp(.95rem, 2vw, 1.2rem);
+            line-height: 1.8;
+            color: rgba(245, 240, 232, .7);
+            max-width: 680px;
+            margin: 0 auto 3rem;
+            animation: fadeInUp .8s .6s both;
+        }
+
+        .hero-badges {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp .8s .7s both;
+            margin-bottom: 2.5rem;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            background: rgba(255, 255, 255, .05);
+            border: 1px solid rgba(255, 255, 255, .1);
+            padding: .4rem 1rem;
+            border-radius: 30px;
+            font-size: .75rem;
+            font-weight: 500;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 2.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp .8s .8s both;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat-num {
+            font-family: 'Fraunces', serif;
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--jurua-ouro);
+            line-height: 1;
+        }
+
+        .hero-stat-label {
+            font-size: .75rem;
+            color: rgba(245, 240, 232, .55);
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            margin-top: .4rem;
+        }
+
+        .hero-scroll {
+            position: absolute;
+            bottom: 2.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: .6rem;
+            animation: fadeIn 1s 1.2s both;
+        }
+
+        .hero-scroll span {
+            font-size: .65rem;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            color: rgba(245, 240, 232, .4);
+        }
+
+        .scroll-line {
+            width: 1px;
+            height: 50px;
+            background: linear-gradient(to bottom, var(--jurua-ouro), transparent);
+            animation: scrollPulse 2s infinite;
+        }
+
+        @keyframes scrollPulse {
+
+            0%,
+            100% {
+                opacity: .3;
+                transform: scaleY(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scaleY(1.1);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* ── REVEAL ── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity .8s ease, transform .8s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-delay-1 {
+            transition-delay: .15s;
+        }
+
+        .reveal-delay-2 {
+            transition-delay: .3s;
+        }
+
+        .reveal-delay-3 {
+            transition-delay: .45s;
+        }
+
+        /* ── SECTION ── */
+        .section-label {
+            font-size: .7rem;
+            font-weight: 700;
+            letter-spacing: .25em;
+            text-transform: uppercase;
+            color: var(--jurua-ouro);
+            margin-bottom: .8rem;
+        }
+
+        .section-title {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 900;
+            line-height: 1.15;
+            margin-bottom: 1.2rem;
+        }
+
+        .section-desc {
+            color: rgba(245, 240, 232, .65);
+            font-size: 1.05rem;
+            line-height: 1.8;
+            max-width: 600px;
+        }
+
+        /* ── SOBRE SECTION ── */
+        .sobre-section {
+            padding: 8rem 5% 5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sobre-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 50% 60% at 0% 50%, rgba(45, 106, 45, .08) 0%, transparent 60%),
+                radial-gradient(ellipse 40% 50% at 100% 50%, rgba(200, 168, 75, .05) 0%, transparent 50%);
+        }
+
+        .sobre-inner {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+            align-items: start;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .sobre-text {}
+
+        .sobre-lead {
+            font-size: 1.15rem;
+            line-height: 1.9;
+            color: rgba(245, 240, 232, .8);
+            margin-bottom: 2rem;
+        }
+
+        .sobre-lead strong {
+            color: var(--jurua-ouro);
+            font-weight: 600;
+        }
+
+        .sobre-parceiros {
+            display: flex;
+            flex-direction: column;
+            gap: .8rem;
+            margin-top: 2rem;
+        }
+
+        .parceiro-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: .8rem 1.2rem;
+            background: rgba(255, 255, 255, .03);
+            border: 1px solid rgba(255, 255, 255, .07);
+            border-radius: 10px;
+        }
+
+        .parceiro-icon {
+            font-size: 1.4rem;
+        }
+
+        .parceiro-name {
+            font-weight: 600;
+            font-size: .9rem;
+        }
+
+        .parceiro-desc {
+            font-size: .8rem;
+            color: rgba(245, 240, 232, .5);
+            margin-top: .15rem;
+        }
+
+        /* Budget highlight */
+        .budget-box {
+            background: linear-gradient(135deg, rgba(212, 168, 49, .12) 0%, rgba(45, 106, 45, .08) 100%);
+            border: 1px solid rgba(212, 168, 49, .25);
+            border-radius: 16px;
+            padding: 2.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .budget-box::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(45deg,
+                    transparent 0px, transparent 14px,
+                    rgba(212, 168, 49, .02) 14px, rgba(212, 168, 49, .02) 15px);
+        }
+
+        .budget-label {
+            font-size: .7rem;
+            font-weight: 700;
+            letter-spacing: .25em;
+            text-transform: uppercase;
+            color: var(--jurua-ouro);
+            margin-bottom: .5rem;
+        }
+
+        .budget-value {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(3rem, 6vw, 5rem);
+            font-weight: 900;
+            color: var(--jurua-ouro);
+            line-height: 1;
+            margin-bottom: .5rem;
+        }
+
+        .budget-sub {
+            font-size: .85rem;
+            color: rgba(245, 240, 232, .5);
+            letter-spacing: .05em;
+        }
+
+        .budget-divider {
+            width: 40px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--jurua-ouro), transparent);
+            margin: 1.2rem auto;
+        }
+
+        .budget-desc {
+            font-size: .9rem;
+            line-height: 1.7;
+            color: rgba(245, 240, 232, .65);
+        }
+
+        /* ── OBJETIVOS SECTION ── */
+        .objetivos-section {
+            padding: 5rem 5%;
+            position: relative;
+        }
+
+        .objetivos-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 0%, rgba(45, 106, 45, .04) 50%, transparent 100%);
+        }
+
+        .objetivos-inner {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .objetivos-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .objetivos-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .objetivo-card {
+            background: var(--cinza);
+            border: 1px solid rgba(255, 255, 255, .06);
+            border-radius: 16px;
+            padding: 2.5rem 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: border-color .3s, transform .3s;
+        }
+
+        .objetivo-card:hover {
+            border-color: rgba(212, 168, 49, .3);
+            transform: translateY(-4px);
+        }
+
+        .objetivo-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(212, 168, 49, .05) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity .3s;
+        }
+
+        .objetivo-card:hover::before {
+            opacity: 1;
+        }
+
+        .objetivo-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.2rem;
+            display: block;
+        }
+
+        .objetivo-title {
+            font-family: 'Fraunces', serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: .8rem;
+            color: var(--branco);
+        }
+
+        .objetivo-desc {
+            font-size: .9rem;
+            line-height: 1.7;
+            color: rgba(245, 240, 232, .6);
+        }
+
+        .objetivo-accent {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--jurua-ouro), transparent);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform .4s ease;
+        }
+
+        .objetivo-card:hover .objetivo-accent {
+            transform: scaleX(1);
+        }
+
+        /* ── AÇÕES SECTION ── */
+        .acoes-section {
+            padding: 5rem 5%;
+            background: rgba(0, 0, 0, .15);
+        }
+
+        .acoes-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .acoes-header {
+            margin-bottom: 3.5rem;
+        }
+
+        .acoes-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .acao-item {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 2rem;
+            align-items: start;
+            padding: 2.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, .06);
+            transition: background .3s;
+        }
+
+        .acao-item:first-child {
+            border-top: 1px solid rgba(255, 255, 255, .06);
+        }
+
+        .acao-item:hover {
+            background: rgba(212, 168, 49, .03);
+            padding-left: 1rem;
+            padding-right: 1rem;
+            margin-left: -1rem;
+            margin-right: -1rem;
+            border-radius: 8px;
+        }
+
+        .acao-num {
+            font-family: 'Fraunces', serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--jurua-ouro);
+            opacity: .2;
+            line-height: 1;
+        }
+
+        .acao-content {}
+
+        .acao-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            font-size: .65rem;
+            font-weight: 700;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            color: var(--jurua-ouro);
+            margin-bottom: .7rem;
+        }
+
+        .acao-title {
+            font-family: 'Fraunces', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: .8rem;
+        }
+
+        .acao-desc {
+            font-size: .95rem;
+            line-height: 1.75;
+            color: rgba(245, 240, 232, .65);
+            max-width: 700px;
+        }
+
+        .acao-bullets {
+            list-style: none;
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: .45rem;
+        }
+
+        .acao-bullets li {
+            display: flex;
+            align-items: flex-start;
+            gap: .6rem;
+            font-size: .88rem;
+            color: rgba(245, 240, 232, .65);
+        }
+
+        .acao-bullets li::before {
+            content: '→';
+            color: var(--jurua-ouro);
+            font-weight: 700;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        /* ── IMPACTO SECTION ── */
+        .impacto-section {
+            padding: 6rem 5%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .impacto-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 60% 60% at 50% 50%, rgba(212, 168, 49, .07) 0%, transparent 70%);
+        }
+
+        .impacto-inner {
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .impacto-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .impacto-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .impacto-card {
+            background: linear-gradient(135deg, rgba(212, 168, 49, .08) 0%, rgba(45, 106, 45, .05) 100%);
+            border: 1px solid rgba(212, 168, 49, .15);
+            border-radius: 20px;
+            padding: 2.5rem;
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+        }
+
+        .impacto-icon-wrap {
+            width: 56px;
+            height: 56px;
+            flex-shrink: 0;
+            background: rgba(212, 168, 49, .15);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .impacto-title {
+            font-family: 'Fraunces', serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: .5rem;
+        }
+
+        .impacto-desc {
+            font-size: .88rem;
+            line-height: 1.7;
+            color: rgba(245, 240, 232, .6);
+        }
+
+        /* ── CTA FINAL ── */
+        .cta-section {
+            padding: 6rem 5%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(45, 106, 45, .12) 0%, rgba(212, 168, 49, .08) 50%, rgba(26, 107, 138, .1) 100%);
+        }
+
+        .cta-inner {
+            position: relative;
+            z-index: 1;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .cta-title {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 1.2rem;
+        }
+
+        .cta-title span {
+            color: var(--jurua-ouro);
+        }
+
+        .cta-desc {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: rgba(245, 240, 232, .65);
+            margin-bottom: 2.5rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: .6rem;
+            background: var(--jurua-ouro);
+            color: #1a0f05;
+            padding: 1rem 2.2rem;
+            border-radius: 40px;
+            font-weight: 700;
+            font-size: .95rem;
+            text-decoration: none;
+            transition: background .3s, transform .3s;
+        }
+
+        .btn-primary:hover {
+            background: #e8c06b;
+            transform: translateY(-3px);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: .6rem;
+            background: transparent;
+            border: 1.5px solid rgba(212, 168, 49, .4);
+            color: var(--jurua-ouro);
+            padding: 1rem 2.2rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: .95rem;
+            text-decoration: none;
+            transition: border-color .3s, background .3s, transform .3s;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--jurua-ouro);
+            background: rgba(212, 168, 49, .08);
+            transform: translateY(-3px);
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            padding: 3rem 5%;
+            border-top: 1px solid rgba(255, 255, 255, .06);
+            background: rgba(0, 0, 0, .2);
+        }
+
+        .footer-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .footer-brand {
+            font-family: 'Fraunces', serif;
+            font-size: 1.6rem;
+            font-weight: 900;
+            color: var(--verde-neon);
+        }
+
+        .footer-brand span {
+            color: var(--dourado);
+        }
+
+        .footer-nav {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            list-style: none;
+        }
+
+        .footer-nav a {
+            color: rgba(245, 240, 232, .45);
+            text-decoration: none;
+            font-size: .82rem;
+            transition: color .3s;
+        }
+
+        .footer-nav a:hover {
+            color: var(--verde-neon);
+        }
+
+        .footer-copy {
+            text-align: center;
+            font-size: .75rem;
+            color: rgba(245, 240, 232, .25);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 900px) {
+            .sobre-inner {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .objetivos-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .impacto-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .acao-item {
+                grid-template-columns: 60px 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .objetivos-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .acao-item {
+                grid-template-columns: 1fr;
+            }
+
+            .acao-num {
+                font-size: 2rem;
+            }
+
+            .hero-badges {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="cursor-dot"></div>
+    <div id="cursor-ring"></div>
+    <div id="progress-bar"></div>
+
+    <!-- ── NAVBAR ── -->
+    <nav id="navbar">
+        <a href="index.html" class="nav-logo-text">ASPROC<span>.</span></a>
+        <ul class="nav-links">
+            <li><a href="index.html">Início</a></li>
+            <li><a href="sobre.html">Sobre</a></li>
+            <li><a href="programas-projetos.html" class="ativo">Projetos</a></li>
+            <li><a href="noticias.html">Notícias</a></li>
+            <li><a href="avisos.html">Avisos</a></li>
+            <li><a href="https://loja.asproc.org.br" target="_blank" class="nav-cta">🛒 Loja</a></li>
+        </ul>
+        <button id="mob-toggle" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+    </nav>
+
+    <!-- ── HERO ── -->
+    <section class="hero-jurua">
+        <div class="hero-canvas"></div>
+        <div class="hero-grid"></div>
+        <div class="hero-particles" id="particles"></div>
+
+        <!-- Animated river SVG -->
+        <svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.08;"
+            viewBox="0 0 1400 900" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+            <defs>
+                <linearGradient id="riverGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#1a6b8a" stop-opacity="0" />
+                    <stop offset="30%" stop-color="#7bc95c" stop-opacity="1" />
+                    <stop offset="70%" stop-color="#c8a84b" stop-opacity="1" />
+                    <stop offset="100%" stop-color="#1a6b8a" stop-opacity="0" />
+                </linearGradient>
+            </defs>
+            <!-- Meandering river lines -->
+            <path d="M-100,500 Q200,420 400,480 Q600,540 800,460 Q1000,380 1200,440 Q1400,500 1600,420" fill="none"
+                stroke="url(#riverGrad)" stroke-width="3">
+                <animate attributeName="d"
+                    values="M-100,500 Q200,420 400,480 Q600,540 800,460 Q1000,380 1200,440 Q1400,500 1600,420;M-100,520 Q200,440 400,500 Q600,560 800,480 Q1000,400 1200,460 Q1400,520 1600,440;M-100,500 Q200,420 400,480 Q600,540 800,460 Q1000,380 1200,440 Q1400,500 1600,420"
+                    dur="12s" repeatCount="indefinite" />
+            </path>
+            <path d="M-100,550 Q250,470 450,530 Q650,590 850,510 Q1050,430 1250,490 Q1450,550 1650,470" fill="none"
+                stroke="url(#riverGrad)" stroke-width="1.5" opacity=".6">
+                <animate attributeName="d"
+                    values="M-100,550 Q250,470 450,530 Q650,590 850,510 Q1050,430 1250,490 Q1450,550 1650,470;M-100,570 Q250,490 450,550 Q650,610 850,530 Q1050,450 1250,510 Q1450,570 1650,490;M-100,550 Q250,470 450,530 Q650,590 850,510 Q1050,430 1250,490 Q1450,550 1650,470"
+                    dur="15s" repeatCount="indefinite" />
+            </path>
+            <!-- Cantina boat -->
+            <g opacity=".5">
+                <animateTransform attributeName="transform" type="translate" values="-200,0;1600,0" dur="25s"
+                    repeatCount="indefinite" />
+                <path d="M-50,0 Q-30,15 0,16 Q30,15 50,0 L45,-8 L-45,-8 Z" fill="#c8a84b"
+                    transform="translate(700,465)" />
+                <rect x="670" y="449" width="60" height="10" fill="#d4a831" rx="2" />
+                <line x1="700" y1="449" x2="700" y2="430" stroke="#c8a84b" stroke-width="1.5" />
+                <path d="M700,430 L718,438 L700,446 Z" fill="#c8a84b" />
+            </g>
+        </svg>
+
+        <div class="hero-content">
+            <div class="hero-breadcrumb">
+                <a href="programas-projetos.html">Projetos</a>
+                <span>›</span>
+                <span>Juruá Sustentável</span>
+            </div>
+
+            <div class="hero-eyebrow">🌿 Maior Projeto em Escala da ASPROC</div>
+
+            <h1 class="hero-title">
+                Juruá<br>
+                <span class="word-verde">Sustentável</span> &amp;<br>
+                <span class="word-ouro">Solidário</span>
+            </h1>
+
+            <p class="hero-subtitle">
+                O fortalecimento do Comércio Ribeirinho como motor das cadeias
+                socioprodutivas sustentáveis do Médio Juruá — da última milha da floresta
+                ao mercado nacional.
+            </p>
+
+            <div class="hero-badges">
+                <div class="hero-badge">🏛️ Fundo Amazônia – BNDES</div>
+                <div class="hero-badge">🌿 Ministério do Meio Ambiente</div>
+                <div class="hero-badge">🚢 Comércio Ribeirinho</div>
+            </div>
+
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="hero-stat-num">R$ 38,9M</div>
+                    <div class="hero-stat-label">Orçamento total</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-num" data-target="64">0</div>
+                    <div class="hero-stat-label">Comunidades</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-num" data-target="5000">0</div>
+                    <div class="hero-stat-label">Famílias beneficiadas</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="hero-stat-num">3</div>
+                    <div class="hero-stat-label">Eixos de ação</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-scroll">
+            <span>Explorar</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- ── SOBRE O PROJETO ── -->
+    <section class="sobre-section">
+        <div class="sobre-inner">
+            <div class="sobre-text reveal">
+                <div class="section-label">Sobre o Projeto</div>
+                <h2 class="section-title">O maior projeto<br>em <span style="color:var(--jurua-ouro)">escala</span> da
+                    ASPROC</h2>
+                <p class="sobre-lead">
+                    O <strong>Projeto Juruá Sustentável e Solidário</strong> representa o mais ambicioso programa
+                    já executado pela ASPROC. Com apoio do <strong>Fundo Amazônia (BNDES)</strong> e do
+                    <strong>Ministério do Meio Ambiente</strong>, ele coloca o Comércio Ribeirinho
+                    no centro da estratégia de desenvolvimento sustentável do Médio Juruá.
+                </p>
+                <p class="sobre-lead" style="margin-top:-.5rem;">
+                    O projeto atua como um grande motor para as cadeias socioprodutivas da região,
+                    integrando logística, vigilância territorial e suporte ao produtor em um sistema
+                    coeso e solidário que garante o abastecimento de itens básicos e a compra
+                    da produção das famílias em áreas remotas.
+                </p>
+
+                <div class="sobre-parceiros">
+                    <div class="parceiro-item">
+                        <div class="parceiro-icon">🏛️</div>
+                        <div>
+                            <div class="parceiro-name">Fundo Amazônia – BNDES</div>
+                            <div class="parceiro-desc">Financiamento principal para preservação e desenvolvimento
+                                sustentável</div>
+                        </div>
+                    </div>
+                    <div class="parceiro-item">
+                        <div class="parceiro-icon">🌿</div>
+                        <div>
+                            <div class="parceiro-name">Ministério do Meio Ambiente</div>
+                            <div class="parceiro-desc">Parceiro institucional e articulador de políticas públicas
+                                ambientais</div>
+                        </div>
+                    </div>
+                    <div class="parceiro-item">
+                        <div class="parceiro-icon">🤝</div>
+                        <div>
+                            <div class="parceiro-name">Associações Parceiras</div>
+                            <div class="parceiro-desc">Rede de organizações comunitárias que executam as ações no
+                                território</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="reveal reveal-delay-1">
+                <div class="budget-box">
+                    <div class="budget-label">Orçamento Total do Projeto</div>
+                    <div class="budget-value">R$ 38,9M</div>
+                    <div class="budget-sub">milhões investidos no Médio Juruá</div>
+                    <div class="budget-divider"></div>
+                    <p class="budget-desc">
+                        Com este orçamento, o projeto é o <strong style="color:var(--jurua-ouro)">alicerce para a
+                            manutenção
+                            das cadeias de valor</strong> no Médio Juruá, garantindo que o
+                        desenvolvimento chegue até a última milha da floresta.
+                    </p>
+                </div>
+
+                <!-- Animated boat SVG illustration -->
+                <div
+                    style="margin-top:2rem; background:var(--cinza); border-radius:16px; overflow:hidden; aspect-ratio:16/9; position:relative;">
+                    <svg viewBox="0 0 600 340" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+                        <defs>
+                            <linearGradient id="skyGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#071525" />
+                                <stop offset="100%" stop-color="#0d2d1a" />
+                            </linearGradient>
+                            <linearGradient id="waterGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#1a4a6a" />
+                                <stop offset="100%" stop-color="#0a1f30" />
+                            </linearGradient>
+                            <linearGradient id="boatGold" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#d4a831" />
+                                <stop offset="100%" stop-color="#8b6a1f" />
+                            </linearGradient>
+                        </defs>
+                        <!-- Sky -->
+                        <rect width="600" height="340" fill="url(#skyGrad2)" />
+                        <!-- Stars -->
+                        <g fill="white" opacity=".5">
+                            <circle cx="80" cy="40" r="1.2">
+                                <animate attributeName="opacity" values=".5;.1;.5" dur="3s" repeatCount="indefinite" />
+                            </circle>
+                            <circle cx="200" cy="25" r="1">
+                                <animate attributeName="opacity" values=".5;.1;.5" dur="2.5s" repeatCount="indefinite"
+                                    begin=".5s" />
+                            </circle>
+                            <circle cx="350" cy="50" r="1.5">
+                                <animate attributeName="opacity" values=".5;.1;.5" dur="4s" repeatCount="indefinite"
+                                    begin="1s" />
+                            </circle>
+                            <circle cx="480" cy="30" r="1">
+                                <animate attributeName="opacity" values=".5;.1;.5" dur="3.2s" repeatCount="indefinite"
+                                    begin="1.5s" />
+                            </circle>
+                            <circle cx="540" cy="60" r="1.2">
+                                <animate attributeName="opacity" values=".5;.1;.5" dur="2.8s" repeatCount="indefinite"
+                                    begin=".8s" />
+                            </circle>
+                            <circle cx="130" cy="70" r="1">
+                                <animate attributeName="opacity" values=".5;.1;.5" dur="3.5s" repeatCount="indefinite"
+                                    begin="2s" />
+                            </circle>
+                        </g>
+                        <!-- Moon -->
+                        <circle cx="480" cy="55" r="22" fill="#f5d070" opacity=".8" />
+                        <circle cx="490" cy="48" r="18" fill="#0d1f30" opacity=".9" />
+                        <!-- Forest silhouette L -->
+                        <path
+                            d="M0,220 Q20,170 40,200 Q60,155 80,190 Q100,150 120,185 Q140,155 160,195 Q180,165 200,200 Q220,170 240,205 L240,340 L0,340 Z"
+                            fill="#0d2a0d" opacity=".8" />
+                        <!-- Forest silhouette R -->
+                        <path
+                            d="M360,210 Q380,165 400,195 Q420,155 440,185 Q460,158 480,190 Q500,162 520,195 Q540,165 560,200 Q580,170 600,205 L600,340 L360,340 Z"
+                            fill="#0d2a0d" opacity=".8" />
+                        <!-- River / water -->
+                        <ellipse cx="300" cy="280" rx="320" ry="70" fill="url(#waterGrad2)" />
+                        <!-- Water ripples -->
+                        <g opacity=".2">
+                            <ellipse cx="300" cy="300" rx="200" ry="20" fill="none" stroke="#7fd4f5" stroke-width="1">
+                                <animate attributeName="rx" values="200;220;200" dur="5s" repeatCount="indefinite" />
+                            </ellipse>
+                            <ellipse cx="300" cy="315" rx="150" ry="14" fill="none" stroke="#7fd4f5" stroke-width=".8">
+                                <animate attributeName="rx" values="150;165;150" dur="4s" repeatCount="indefinite" />
+                            </ellipse>
+                        </g>
+                        <!-- Cantina Boat -->
+                        <g>
+                            <animateTransform attributeName="transform" type="translate" values="0,0;0,-4;0,0" dur="5s"
+                                repeatCount="indefinite" calcMode="spline" keySplines=".4 0 .6 1;.4 0 .6 1" />
+                            <!-- Hull -->
+                            <path d="M180,280 Q200,298 300,300 Q400,298 420,280 L410,268 L190,268 Z" fill="#8b5a1f"
+                                opacity=".95" />
+                            <!-- Deck -->
+                            <rect x="195" y="252" width="210" height="18" fill="url(#boatGold)" rx="2" opacity=".9" />
+                            <!-- Cabin structure -->
+                            <rect x="210" y="225" width="80" height="30" fill="#5a3a10" rx="3" />
+                            <rect x="215" y="230" width="18" height="16" fill="#7fd4f5" opacity=".25" rx="2" />
+                            <rect x="237" y="230" width="14" height="16" fill="#7fd4f5" opacity=".2" rx="2" />
+                            <!-- Cargo -->
+                            <rect x="305" y="237" width="35" height="18" fill="#3a2808" rx="3" />
+                            <rect x="345" y="240" width="28" height="15" fill="#4a3510" rx="3" />
+                            <rect x="375" y="242" width="22" height="13" fill="#3a2808" rx="3" />
+                            <!-- Mast -->
+                            <line x1="300" y1="252" x2="300" y2="200" stroke="#d4a831" stroke-width="2" opacity=".85" />
+                            <line x1="300" y1="215" x2="260" y2="230" stroke="#c8a84b" stroke-width="1" opacity=".5" />
+                            <line x1="300" y1="215" x2="340" y2="230" stroke="#c8a84b" stroke-width="1" opacity=".5" />
+                            <!-- Flag -->
+                            <path d="M300,200 L328,210 L300,220 Z" fill="#7bc95c" opacity=".9">
+                                <animateTransform attributeName="transform" type="skewX" values="0;6;0;-6;0" dur="2.5s"
+                                    repeatCount="indefinite" />
+                            </path>
+                            <!-- Name plate -->
+                            <rect x="220" y="260" width="80" height="10" fill="#d4a831" opacity=".15" rx="2" />
+                        </g>
+                        <!-- Moon reflection on water -->
+                        <ellipse cx="480" cy="295" rx="20" ry="8" fill="#f5d070" opacity=".12">
+                            <animate attributeName="rx" values="20;24;20" dur="4s" repeatCount="indefinite" />
+                        </ellipse>
+                        <!-- Label -->
+                        <text x="300" y="330" text-anchor="middle" font-family="serif" font-size="11" fill="#d4a831"
+                            opacity=".7" letter-spacing="4">CANTINA RIBEIRINHA</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── OBJETIVOS ── -->
+    <section class="objetivos-section">
+        <div class="objetivos-inner">
+            <div class="objetivos-header reveal">
+                <div class="section-label">Estrutura do Projeto</div>
+                <h2 class="section-title">Três <span style="color:var(--jurua-ouro)">pilares</span> de atuação</h2>
+                <p class="section-desc" style="margin:0 auto">
+                    O projeto se organiza em eixos complementares que, juntos, formam
+                    um ecossistema de desenvolvimento sustentável para o Médio Juruá.
+                </p>
+            </div>
+
+            <div class="objetivos-grid">
+                <div class="objetivo-card reveal">
+                    <span class="objetivo-icon">🚢</span>
+                    <h3 class="objetivo-title">Logística de Comercialização</h3>
+                    <p class="objetivo-desc">
+                        Apoio direto a viagens de escoamento e venda da produção através
+                        do sistema de "Cantinas" — embarcações que levam insumos para comunidades
+                        remotas e trazem de volta a produção agroextrativista.
+                    </p>
+                    <div class="objetivo-accent"></div>
+                </div>
+
+                <div class="objetivo-card reveal reveal-delay-1">
+                    <span class="objetivo-icon">🛡️</span>
+                    <h3 class="objetivo-title">Vigilância Territorial</h3>
+                    <p class="objetivo-desc">
+                        Implementação de planos de monitoramento de lagos e proteção de
+                        territórios contra a pesca e caça ilegais, preservando os recursos
+                        naturais que sustentam as comunidades ribeirinhas.
+                    </p>
+                    <div class="objetivo-accent"></div>
+                </div>
+
+                <div class="objetivo-card reveal reveal-delay-2">
+                    <span class="objetivo-icon">⚙️</span>
+                    <h3 class="objetivo-title">Suporte ao Produtor</h3>
+                    <p class="objetivo-desc">
+                        Aquisição de novos equipamentos de transporte e processamento
+                        para melhorar o fluxo da produção comunitária, reduzindo perdas
+                        e aumentando a competitividade dos produtos da floresta.
+                    </p>
+                    <div class="objetivo-accent"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── AÇÕES ── -->
+    <section class="acoes-section">
+        <div class="acoes-inner">
+            <div class="acoes-header reveal">
+                <div class="section-label">Objetivos e Ações</div>
+                <h2 class="section-title">Como o projeto<br><span style="color:var(--jurua-ouro)">funciona</span></h2>
+            </div>
+
+            <div class="acoes-list">
+
+                <div class="acao-item reveal">
+                    <div class="acao-num">01</div>
+                    <div class="acao-content">
+                        <div class="acao-tag">🚢 Logística & Comércio</div>
+                        <h3 class="acao-title">Sistema de Cantinas Ribeirinhas</h3>
+                        <p class="acao-desc">
+                            As "Cantinas" são o coração do Comércio Ribeirinho Solidário — embarcações que percorrem
+                            os rios do Médio Juruá, abastecendo comunidades com itens básicos e
+                            comprando a produção local a preços justos, eliminando atravessadores e
+                            garantindo renda digna às famílias.
+                        </p>
+                        <ul class="acao-bullets">
+                            <li>Viagens regulares de escoamento da produção agroextrativista</li>
+                            <li>Abastecimento de itens básicos em áreas de difícil acesso</li>
+                            <li>Preços justos negociados diretamente com os produtores</li>
+                            <li>Integração com múltiplas associações parceiras do território</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="acao-item reveal">
+                    <div class="acao-num">02</div>
+                    <div class="acao-content">
+                        <div class="acao-tag">🛡️ Proteção Territorial</div>
+                        <h3 class="acao-title">Monitoramento e Vigilância de Lagos</h3>
+                        <p class="acao-desc">
+                            Um sistema integrado de monitoramento protege os recursos pesqueiros
+                            e territoriais das comunidades. Planos de vigilância contra a pesca predatória
+                            e caça ilegal garantem a sustentabilidade dos ecossistemas que sustentam
+                            as cadeias produtivas da região.
+                        </p>
+                        <ul class="acao-bullets">
+                            <li>Implementação de planos de monitoramento de lagos comunitários</li>
+                            <li>Redes de vigilância territorial com participação comunitária</li>
+                            <li>Proteção contra pesca ilegal e exploração predatória</li>
+                            <li>Preservação dos recursos naturais para as próximas gerações</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="acao-item reveal">
+                    <div class="acao-num">03</div>
+                    <div class="acao-content">
+                        <div class="acao-tag">⚙️ Infraestrutura & Equipamentos</div>
+                        <h3 class="acao-title">Modernização da Produção Comunitária</h3>
+                        <p class="acao-desc">
+                            O projeto investe diretamente em novos equipamentos de transporte e
+                            processamento que melhoram o fluxo da produção nas comunidades ribeirinhas.
+                            Da embarcação ao equipamento de beneficiamento, cada recurso é direcionado
+                            a ampliar a capacidade produtiva local.
+                        </p>
+                        <ul class="acao-bullets">
+                            <li>Aquisição de equipamentos de transporte fluvial</li>
+                            <li>Equipamentos de processamento e beneficiamento da produção</li>
+                            <li>Suporte técnico para operação e manutenção</li>
+                            <li>Capacitação dos produtores no uso das novas tecnologias</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ── IMPACTO ── -->
+    <section class="impacto-section">
+        <div class="impacto-inner">
+            <div class="impacto-header reveal">
+                <div class="section-label">Impacto</div>
+                <h2 class="section-title">O alicerce do <span style="color:var(--jurua-ouro)">Médio Juruá</span></h2>
+                <p class="section-desc" style="margin:0 auto">
+                    Com R$ 38,9 milhões investidos, este projeto garante que o desenvolvimento
+                    chegue até a última milha da floresta.
+                </p>
+            </div>
+
+            <div class="impacto-grid">
+                <div class="impacto-card reveal">
+                    <div class="impacto-icon-wrap">🌊</div>
+                    <div>
+                        <h3 class="impacto-title">Última Milha da Floresta</h3>
+                        <p class="impacto-desc">
+                            O projeto garante que comunidades nos pontos mais remotos do
+                            Médio Juruá — locais que só são acessíveis por rio — tenham acesso
+                            a insumos básicos e mercado para sua produção, integrando-as
+                            à economia regional.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="impacto-card reveal reveal-delay-1">
+                    <div class="impacto-icon-wrap">🔗</div>
+                    <div>
+                        <h3 class="impacto-title">Cadeias de Valor Integradas</h3>
+                        <p class="impacto-desc">
+                            O projeto fortalece e consolida as cadeias de valor do pirarucu,
+                            do açaí, das polpas de frutas e dos demais produtos agroextrativistas,
+                            criando um sistema econômico sustentável e robusto para a região.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="impacto-card reveal reveal-delay-2">
+                    <div class="impacto-icon-wrap">🤝</div>
+                    <div>
+                        <h3 class="impacto-title">Rede de Associações</h3>
+                        <p class="impacto-desc">
+                            Diversas associações parceiras são fortalecidas e integradas ao
+                            sistema de Comércio Ribeirinho, expandindo o alcance do projeto
+                            para além das comunidades diretamente atendidas pela ASPROC.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="impacto-card reveal reveal-delay-3">
+                    <div class="impacto-icon-wrap">🌿</div>
+                    <div>
+                        <h3 class="impacto-title">Conservação pelo Desenvolvimento</h3>
+                        <p class="impacto-desc">
+                            O modelo demonstra que conservação ambiental e geração de renda
+                            são complementares: quanto mais prósperas as comunidades ribeirinhas,
+                            maior o interesse e capacidade de preservar a floresta e os rios.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── CTA FINAL ── -->
+    <section class="cta-section">
+        <div class="cta-inner reveal">
+            <div class="section-label" style="text-align:center;">Faça Parte</div>
+            <h2 class="cta-title">
+                Juntos pela floresta<br>e pelo <span>rio</span>
+            </h2>
+            <p class="cta-desc">
+                Conheça a ASPROC, apoie o Comércio Ribeirinho e descubra como você
+                pode contribuir para o desenvolvimento sustentável do Médio Juruá.
+            </p>
+            <div class="cta-buttons">
+                <a href="https://loja.asproc.org.br" target="_blank" class="btn-primary">
+                    🛒 Visitar a Loja da ASPROC
+                </a>
+                <a href="programas-projetos.html" class="btn-secondary">
+                    ← Ver todos os projetos
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── FOOTER ── -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-brand">ASPROC<span>.</span></div>
+            <nav class="footer-nav">
+                <a href="index.html">Início</a>
+                <a href="sobre.html">Sobre</a>
+                <a href="programas-projetos.html">Projetos</a>
+                <a href="noticias.html">Notícias</a>
+                <a href="avisos.html">Avisos</a>
+                <a href="trabalhe-conosco.html">Trabalhe Conosco</a>
+                <a href="https://loja.asproc.org.br" target="_blank">Loja</a>
+            </nav>
+        </div>
+        <p class="footer-copy">© 2025 ASPROC – Associação dos Produtores Rurais de Carauari. Todos os direitos
+            reservados.</p>
+    </footer>
+
+    <script>
+        // Cursor
+        const dot = document.getElementById('cursor-dot');
+        const ring = document.getElementById('cursor-ring');
+        let mx = 0, my = 0, rx = 0, ry = 0;
+        document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+        function animCursor() {
+            dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+            rx += (mx - rx) * .12; ry += (my - ry) * .12;
+            ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+            requestAnimationFrame(animCursor);
+        }
+        animCursor();
+        document.querySelectorAll('a, button').forEach(el => {
+            el.addEventListener('mouseenter', () => { dot.classList.add('hovered'); ring.classList.add('hovered'); });
+            el.addEventListener('mouseleave', () => { dot.classList.remove('hovered'); ring.classList.remove('hovered'); });
+        });
+
+        // Progress bar
+        const pb = document.getElementById('progress-bar');
+        window.addEventListener('scroll', () => {
+            const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+            pb.style.width = pct + '%';
+        });
+
+        // Navbar
+        const nav = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            nav.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        // Particles
+        const pc = document.getElementById('particles');
+        for (let i = 0; i < 22; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            const size = Math.random() * 4 + 2;
+            const isLeaf = Math.random() > .5;
+            p.style.cssText = `
+        left: ${Math.random() * 100}%;
+        width: ${size}px; height: ${size}px;
+        background: ${isLeaf ? '#7bc95c' : 'rgba(212,168,49,.7)'};
+        animation-duration: ${Math.random() * 15 + 10}s;
+        animation-delay: ${Math.random() * 10}s;
+      `;
+            pc.appendChild(p);
+        }
+
+        // Reveal on scroll
+        const reveals = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+        }, { threshold: .12 });
+        reveals.forEach(r => observer.observe(r));
+
+        // Counter animation
+        function animateCounter(el) {
+            const target = parseInt(el.dataset.target);
+            if (!target) return;
+            const duration = 2000;
+            const start = performance.now();
+            function update(now) {
+                const progress = Math.min((now - start) / duration, 1);
+                const ease = 1 - Math.pow(1 - progress, 3);
+                el.textContent = Math.round(ease * target).toLocaleString('pt-BR');
+                if (progress < 1) requestAnimationFrame(update);
+            }
+            requestAnimationFrame(update);
+        }
+        const counterObserver = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting) { animateCounter(e.target); counterObserver.unobserve(e.target); }
+            });
+        }, { threshold: .5 });
+        document.querySelectorAll('[data-target]').forEach(el => counterObserver.observe(el));
+    </script>
+</body>
+
+</html>
