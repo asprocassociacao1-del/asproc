@@ -545,6 +545,7 @@
       position: absolute;
       inset: 0;
       opacity: .04;
+      pointer-events: none;
       background-image: repeating-linear-gradient(45deg,
           currentColor 0px, currentColor 1px,
           transparent 1px, transparent 12px);
@@ -614,6 +615,8 @@
       width: fit-content;
       transition: gap .3s, transform .3s;
       letter-spacing: .04em;
+      position: relative;
+      z-index: 2;
     }
 
     .projeto-cta:hover {
@@ -1146,6 +1149,615 @@
       }
     }
 
+    /* ── GOSTO DA AMAZÔNIA THEME ── */
+    .card-gosto {
+      background: linear-gradient(135deg, #1a0d03 0%, #0f1a0a 100%);
+    }
+
+    .card-gosto .projeto-info {
+      color: var(--branco);
+    }
+
+    .gosto-tag {
+      background: rgba(232, 164, 74, .18);
+      color: #e8a44a;
+      border: 1px solid rgba(232, 164, 74, .25);
+    }
+
+    .gosto-visual {
+      background: linear-gradient(135deg, #1a0d03 0%, #0f2010 100%);
+    }
+
+    .gosto-cta {
+      background: #c8621a;
+      color: white;
+    }
+
+    .gosto-cta:hover {
+      background: #e8a44a;
+      color: #1a0d03;
+    }
+
+    /* Gosto detail expandable */
+    .gosto-detail-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(232, 164, 74, .08);
+      border: 1px solid rgba(232, 164, 74, .18);
+      border-radius: 10px;
+      padding: .7rem 1.2rem;
+      cursor: pointer;
+      font-size: .82rem;
+      font-weight: 600;
+      color: #e8a44a;
+      letter-spacing: .06em;
+      transition: background .3s;
+      margin-bottom: .8rem;
+    }
+
+    .gosto-detail-toggle:hover {
+      background: rgba(232, 164, 74, .14);
+    }
+
+    .gosto-chevron {
+      display: inline-block;
+      transition: transform .4s;
+      font-style: normal;
+    }
+
+    .gosto-chevron.open {
+      transform: rotate(180deg);
+    }
+
+    .gosto-detail {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .6s cubic-bezier(.25, .46, .45, .94), opacity .4s;
+      opacity: 0;
+      margin-bottom: 0;
+    }
+
+    .gosto-detail.expanded {
+      max-height: 600px;
+      opacity: 1;
+      margin-bottom: 1.5rem;
+    }
+
+    .gosto-subsection {
+      margin-bottom: 1rem;
+    }
+
+    .gosto-subsec-title {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: #e8a44a;
+      margin-bottom: .4rem;
+    }
+
+    .gosto-subsec-text {
+      font-size: .85rem;
+      line-height: 1.65;
+      color: rgba(245, 240, 232, .65);
+    }
+
+    .gosto-acoes {
+      display: flex;
+      flex-direction: column;
+      gap: .8rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .gosto-acao {
+      display: flex;
+      gap: .9rem;
+      align-items: flex-start;
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid rgba(232, 164, 74, .1);
+      border-radius: 10px;
+      padding: .8rem 1rem;
+    }
+
+    .gosto-acao-icon {
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    .gosto-acao-title {
+      font-size: .78rem;
+      font-weight: 700;
+      color: #e8a44a;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: .3rem;
+    }
+
+    .gosto-acao-text {
+      font-size: .82rem;
+      line-height: 1.55;
+      color: rgba(245, 240, 232, .6);
+    }
+
+    .gosto-impacto {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      background: linear-gradient(135deg, rgba(200, 98, 26, .15) 0%, rgba(232, 164, 74, .1) 100%);
+      border: 1px solid rgba(232, 164, 74, .2);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      margin-bottom: .6rem;
+    }
+
+    .gosto-impacto-num {
+      font-family: 'Fraunces', serif;
+      font-size: 2rem;
+      font-weight: 900;
+      color: #e8a44a;
+      line-height: 1;
+    }
+
+    .gosto-impacto-label {
+      font-size: .7rem;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: rgba(245, 240, 232, .5);
+      margin-top: .2rem;
+    }
+
+    /* ══════════════════════════════════════
+       MOBILE MENU — SMART BOTTOM NAVIGATION
+    ══════════════════════════════════════ */
+
+    /* Hamburger button — only on mobile */
+    #mob-toggle {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 40px;
+      height: 40px;
+      background: rgba(123, 201, 92, .1);
+      border: 1px solid rgba(123, 201, 92, .2);
+      border-radius: 10px;
+      cursor: pointer;
+      padding: 0 10px;
+      transition: background .3s;
+      flex-shrink: 0;
+    }
+
+    #mob-toggle span {
+      display: block;
+      height: 2px;
+      background: var(--verde-neon);
+      border-radius: 2px;
+      transition: transform .35s cubic-bezier(.25, .46, .45, .94), opacity .25s, width .3s;
+      transform-origin: center;
+    }
+
+    #mob-toggle span:nth-child(1) {
+      width: 100%;
+    }
+
+    #mob-toggle span:nth-child(2) {
+      width: 70%;
+    }
+
+    #mob-toggle span:nth-child(3) {
+      width: 85%;
+    }
+
+    #mob-toggle.open span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+      width: 100%;
+    }
+
+    #mob-toggle.open span:nth-child(2) {
+      opacity: 0;
+      transform: scaleX(0);
+    }
+
+    #mob-toggle.open span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+      width: 100%;
+    }
+
+    /* Full-screen overlay drawer */
+    #mob-drawer {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .35s;
+    }
+
+    #mob-drawer.open {
+      pointer-events: all;
+      opacity: 1;
+    }
+
+    /* Backdrop blur layer */
+    #mob-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(5, 12, 5, .88);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+    }
+
+    /* The actual panel sliding up from bottom */
+    #mob-panel {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(180deg, rgba(18, 30, 18, .97) 0%, rgba(10, 18, 10, 1) 100%);
+      border-top: 1px solid rgba(123, 201, 92, .18);
+      border-radius: 24px 24px 0 0;
+      padding: 0 0 env(safe-area-inset-bottom, 1.5rem);
+      transform: translateY(110%);
+      transition: transform .45s cubic-bezier(.25, .46, .45, .94);
+    }
+
+    #mob-drawer.open #mob-panel {
+      transform: translateY(0);
+    }
+
+    /* Drag handle */
+    .mob-handle {
+      width: 40px;
+      height: 4px;
+      background: rgba(123, 201, 92, .25);
+      border-radius: 2px;
+      margin: 1rem auto .8rem;
+    }
+
+    /* Menu header inside panel */
+    .mob-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem 1rem;
+      border-bottom: 1px solid rgba(123, 201, 92, .08);
+    }
+
+    .mob-brand {
+      font-family: 'Fraunces', serif;
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: var(--verde-neon);
+    }
+
+    .mob-brand em {
+      color: var(--dourado);
+      font-style: normal;
+    }
+
+    .mob-close {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .06);
+      border: 1px solid rgba(255, 255, 255, .1);
+      color: rgba(245, 240, 232, .7);
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background .25s, color .25s;
+    }
+
+    .mob-close:hover {
+      background: rgba(123, 201, 92, .15);
+      color: var(--verde-neon);
+    }
+
+    /* Nav links in panel */
+    .mob-nav {
+      list-style: none;
+      padding: .6rem 0;
+    }
+
+    .mob-nav li a {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: .95rem 1.5rem;
+      color: rgba(245, 240, 232, .75);
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 500;
+      letter-spacing: .03em;
+      transition: background .2s, color .2s, padding-left .25s;
+      border-left: 2px solid transparent;
+      position: relative;
+    }
+
+    .mob-nav li a:hover,
+    .mob-nav li a.ativo {
+      color: var(--verde-neon);
+      background: rgba(123, 201, 92, .06);
+      padding-left: 2rem;
+      border-left-color: var(--verde-neon);
+    }
+
+    .mob-nav li a .mob-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .9rem;
+      background: rgba(255, 255, 255, .05);
+      flex-shrink: 0;
+      transition: background .2s;
+    }
+
+    .mob-nav li a:hover .mob-icon,
+    .mob-nav li a.ativo .mob-icon {
+      background: rgba(123, 201, 92, .15);
+    }
+
+    .mob-nav li a .mob-arrow {
+      margin-left: auto;
+      font-size: .7rem;
+      opacity: .35;
+      transition: opacity .2s, transform .2s;
+    }
+
+    .mob-nav li a:hover .mob-arrow {
+      opacity: .8;
+      transform: translateX(3px);
+    }
+
+    /* Stagger entrance for each item */
+    .mob-nav li {
+      opacity: 0;
+      transform: translateX(-12px);
+      transition: opacity .3s, transform .3s;
+    }
+
+    #mob-drawer.open .mob-nav li:nth-child(1) {
+      opacity: 1;
+      transform: none;
+      transition-delay: .08s;
+    }
+
+    #mob-drawer.open .mob-nav li:nth-child(2) {
+      opacity: 1;
+      transform: none;
+      transition-delay: .13s;
+    }
+
+    #mob-drawer.open .mob-nav li:nth-child(3) {
+      opacity: 1;
+      transform: none;
+      transition-delay: .18s;
+    }
+
+    #mob-drawer.open .mob-nav li:nth-child(4) {
+      opacity: 1;
+      transform: none;
+      transition-delay: .23s;
+    }
+
+    #mob-drawer.open .mob-nav li:nth-child(5) {
+      opacity: 1;
+      transform: none;
+      transition-delay: .28s;
+    }
+
+    #mob-drawer.open .mob-nav li:nth-child(6) {
+      opacity: 1;
+      transform: none;
+      transition-delay: .33s;
+    }
+
+    #mob-drawer.open .mob-nav li:nth-child(7) {
+      opacity: 1;
+      transform: none;
+      transition-delay: .38s;
+    }
+
+    /* CTA button row at bottom of panel */
+    .mob-cta-row {
+      padding: 1rem 1.5rem 1.5rem;
+      border-top: 1px solid rgba(123, 201, 92, .08);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity .3s .45s, transform .3s .45s;
+    }
+
+    #mob-drawer.open .mob-cta-row {
+      opacity: 1;
+      transform: none;
+    }
+
+    .mob-cta-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .6rem;
+      width: 100%;
+      background: var(--verde-claro);
+      color: white;
+      text-decoration: none;
+      padding: .9rem;
+      border-radius: 14px;
+      font-weight: 700;
+      font-size: .9rem;
+      letter-spacing: .04em;
+      transition: background .3s, transform .2s;
+    }
+
+    .mob-cta-btn:hover {
+      background: var(--verde-neon);
+      color: var(--escuro);
+      transform: scale(1.02);
+    }
+
+    /* Bottom tab bar — persistent, always visible on mobile */
+    #mob-tabbar {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 998;
+      background: rgba(10, 18, 10, .95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(123, 201, 92, .1);
+      padding: .5rem 0 env(safe-area-inset-bottom, .5rem);
+      flex-direction: row;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .tab-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .25rem;
+      padding: .2rem .8rem;
+      text-decoration: none;
+      color: rgba(245, 240, 232, .45);
+      transition: color .25s;
+      cursor: pointer;
+      background: none;
+      border: none;
+      flex: 1;
+    }
+
+    .tab-item.active,
+    .tab-item:hover {
+      color: var(--verde-neon);
+    }
+
+    .tab-icon {
+      font-size: 1.3rem;
+      line-height: 1;
+      transition: transform .25s;
+    }
+
+    .tab-item.active .tab-icon,
+    .tab-item:hover .tab-icon {
+      transform: translateY(-2px);
+    }
+
+    .tab-label {
+      font-size: .58rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    /* Active pip indicator */
+    .tab-pip {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--verde-neon);
+      opacity: 0;
+      transition: opacity .25s;
+    }
+
+    .tab-item.active .tab-pip {
+      opacity: 1;
+    }
+
+    /* Push content up on mobile so tabbar doesn't cover it */
+    @media (max-width: 900px) {
+      #mob-toggle {
+        display: flex;
+      }
+
+      #mob-tabbar {
+        display: flex;
+      }
+
+      body {
+        padding-bottom: 70px;
+      }
+    }
+
+    /* ── FÁBRICA DE POLPAS THEME ── */
+    .card-polpas {
+      background: linear-gradient(135deg, #0d1f10 0%, #1a1005 100%);
+    }
+
+    .card-polpas .projeto-info {
+      color: var(--branco);
+    }
+
+    .polpas-tag {
+      background: rgba(90, 180, 60, .18);
+      color: #7bc95c;
+      border: 1px solid rgba(123, 201, 92, .25);
+    }
+
+    .polpas-visual {
+      background: linear-gradient(135deg, #061208 0%, #1a1205 100%);
+    }
+
+    .polpas-cta {
+      background: var(--verde-claro);
+      color: white;
+    }
+
+    .polpas-cta:hover {
+      background: var(--verde-neon);
+      color: var(--escuro);
+    }
+
+    .polpas-bullets li::before {
+      color: var(--verde-neon);
+    }
+
+    /* Progress bar badge inside card */
+    .polpas-progress-wrap {
+      margin-bottom: 1.8rem;
+    }
+
+    .polpas-progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: .72rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: rgba(245, 240, 232, .5);
+      margin-bottom: .5rem;
+    }
+
+    .polpas-progress-label span:last-child {
+      color: var(--verde-neon);
+      font-weight: 700;
+    }
+
+    .polpas-bar-bg {
+      height: 6px;
+      background: rgba(255, 255, 255, .07);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .polpas-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--verde-claro), var(--verde-neon));
+      border-radius: 3px;
+      transition: width 1.4s cubic-bezier(.25, .46, .45, .94) .4s;
+    }
+
+    .polpas-bar-fill.animated {
+      width: 38%;
+    }
+
     /* ── ANIMATED SVG ILLUSTRATIONS ── */
     .fish-svg {
       position: absolute;
@@ -1181,6 +1793,60 @@
       <li><a href="avisos.html">Avisos</a></li>
       <li><a href="https://loja.asproc.org.br" target="_blank" class="nav-cta">🛒 Loja</a></li>
     </ul>
+    <!-- Mobile hamburger -->
+    <button id="mob-toggle" aria-label="Menu" onclick="toggleMobMenu()">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ── MOBILE DRAWER ── -->
+  <div id="mob-drawer" role="dialog" aria-modal="true" aria-label="Menu de navegação">
+    <div id="mob-backdrop" onclick="closeMobMenu()"></div>
+    <div id="mob-panel">
+      <div class="mob-handle"></div>
+      <div class="mob-header">
+        <div class="mob-brand">ASPROC<em>.</em></div>
+        <button class="mob-close" onclick="closeMobMenu()" aria-label="Fechar menu">✕</button>
+      </div>
+      <ul class="mob-nav">
+        <li><a href="index.html"><span class="mob-icon">🏠</span>Início<span class="mob-arrow">›</span></a></li>
+        <li><a href="sobre.html"><span class="mob-icon">🌿</span>Sobre a ASPROC<span class="mob-arrow">›</span></a></li>
+        <li><a href="#" class="ativo"><span class="mob-icon">📋</span>Projetos<span class="mob-arrow">›</span></a></li>
+        <li><a href="noticias.html"><span class="mob-icon">📰</span>Notícias<span class="mob-arrow">›</span></a></li>
+        <li><a href="avisos.html"><span class="mob-icon">📢</span>Avisos<span class="mob-arrow">›</span></a></li>
+        <li><a href="trabalhe-conosco.html"><span class="mob-icon">👥</span>Trabalhe Conosco<span
+              class="mob-arrow">›</span></a></li>
+        <li><a href="https://loja.asproc.org.br" target="_blank"><span class="mob-icon">🛒</span>Loja Online<span
+              class="mob-arrow">›</span></a></li>
+      </ul>
+      <div class="mob-cta-row">
+        <a href="https://loja.asproc.org.br" target="_blank" class="mob-cta-btn">🌿 Visitar a Loja ASPROC</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MOBILE BOTTOM TAB BAR ── -->
+  <nav id="mob-tabbar" aria-label="Navegação rápida">
+    <a href="index.html" class="tab-item">
+      <span class="tab-icon">🏠</span>
+      <span class="tab-label">Início</span>
+      <span class="tab-pip"></span>
+    </a>
+    <a href="#" class="tab-item active">
+      <span class="tab-icon">📋</span>
+      <span class="tab-label">Projetos</span>
+      <span class="tab-pip"></span>
+    </a>
+    <a href="noticias.html" class="tab-item">
+      <span class="tab-icon">📰</span>
+      <span class="tab-label">Notícias</span>
+      <span class="tab-pip"></span>
+    </a>
+    <button class="tab-item" onclick="toggleMobMenu()" aria-label="Abrir menu completo">
+      <span class="tab-icon">☰</span>
+      <span class="tab-label">Menu</span>
+      <span class="tab-pip"></span>
+    </button>
   </nav>
 
   <!-- ── HERO ── -->
@@ -1201,7 +1867,7 @@
       </p>
       <div class="hero-stats">
         <div class="hero-stat">
-          <div class="hero-stat-num" data-target="3">0</div>
+          <div class="hero-stat-num" data-target="4">0</div>
           <div class="hero-stat-label">Projetos ativos</div>
         </div>
         <div class="hero-stat">
@@ -1510,6 +2176,346 @@
         </div>
       </article>
 
+      <!-- GOSTO DA AMAZÔNIA -->
+      <article class="projeto-card card-gosto reveal">
+        <div class="projeto-visual gosto-visual">
+          <!-- Background image from gostodaamazonia.com.br -->
+          <div class="projeto-visual-bg"
+            style="background-image:url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80'); opacity:.18; mix-blend-mode:luminosity;">
+          </div>
+          <div class="projeto-visual-overlay"
+            style="background: linear-gradient(135deg, rgba(10,25,5,.92) 0%, rgba(50,15,5,.85) 100%);"></div>
+
+          <!-- Gosto da Amazônia animated SVG illustration -->
+          <div class="fish-svg">
+            <svg viewBox="0 0 400 300" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="gostGlow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#e8a44a" stop-opacity=".35" />
+                  <stop offset="100%" stop-color="#e8a44a" stop-opacity="0" />
+                </radialGradient>
+                <linearGradient id="gostGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#c8621a" />
+                  <stop offset="50%" stop-color="#e8a44a" />
+                  <stop offset="100%" stop-color="#c8621a" />
+                </linearGradient>
+                <linearGradient id="plateGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#f0d080" />
+                  <stop offset="100%" stop-color="#c09040" />
+                </linearGradient>
+              </defs>
+
+              <!-- Steam animations above plate -->
+              <g opacity=".5">
+                <path d="M160,95 Q155,80 165,68 Q175,56 165,44" fill="none" stroke="#e8a44a" stroke-width="2"
+                  stroke-linecap="round">
+                  <animate attributeName="opacity" values="0;.6;0" dur="3s" begin="0s" repeatCount="indefinite" />
+                  <animate attributeName="d"
+                    values="M160,95 Q155,80 165,68 Q175,56 165,44;M160,95 Q168,80 158,68 Q148,56 160,44;M160,95 Q155,80 165,68 Q175,56 165,44"
+                    dur="3s" repeatCount="indefinite" />
+                </path>
+                <path d="M200,88 Q195,73 205,61 Q215,49 205,37" fill="none" stroke="#e8a44a" stroke-width="2"
+                  stroke-linecap="round">
+                  <animate attributeName="opacity" values="0;.5;0" dur="3.5s" begin="1s" repeatCount="indefinite" />
+                  <animate attributeName="d"
+                    values="M200,88 Q195,73 205,61;M200,88 Q208,73 198,61;M200,88 Q195,73 205,61" dur="3.5s"
+                    repeatCount="indefinite" />
+                </path>
+                <path d="M240,95 Q235,80 245,68 Q255,56 245,44" fill="none" stroke="#e8a44a" stroke-width="2"
+                  stroke-linecap="round">
+                  <animate attributeName="opacity" values="0;.55;0" dur="2.8s" begin="0.5s" repeatCount="indefinite" />
+                  <animate attributeName="d"
+                    values="M240,95 Q235,80 245,68;M240,95 Q248,80 238,68;M240,95 Q235,80 245,68" dur="2.8s"
+                    repeatCount="indefinite" />
+                </path>
+              </g>
+
+              <!-- Plate base -->
+              <ellipse cx="200" cy="210" rx="130" ry="20" fill="rgba(0,0,0,.3)" />
+              <ellipse cx="200" cy="200" rx="125" ry="18" fill="#2a1a08" />
+              <ellipse cx="200" cy="197" rx="118" ry="15" fill="url(#plateGrad)" opacity=".9" />
+              <ellipse cx="200" cy="194" rx="95" ry="11" fill="#1a0f05" />
+
+              <!-- Pirarucu fish on plate -->
+              <g transform="translate(200,175)">
+                <animateTransform attributeName="transform" type="translate" values="200,175;200,172;200,175" dur="5s"
+                  repeatCount="indefinite" calcMode="spline" keySplines=".4 0 .6 1;.4 0 .6 1" />
+                <!-- Body -->
+                <ellipse cx="0" cy="0" rx="75" ry="22" fill="url(#gostGrad)" opacity=".95" />
+                <!-- Grilled stripes -->
+                <line x1="-40" y1="-15" x2="-40" y2="15" stroke="#8a3a10" stroke-width="3" opacity=".5" />
+                <line x1="-20" y1="-17" x2="-20" y2="17" stroke="#8a3a10" stroke-width="3" opacity=".5" />
+                <line x1="0" y1="-18" x2="0" y2="18" stroke="#8a3a10" stroke-width="3" opacity=".5" />
+                <line x1="20" y1="-17" x2="20" y2="17" stroke="#8a3a10" stroke-width="3" opacity=".5" />
+                <line x1="40" y1="-15" x2="40" y2="15" stroke="#8a3a10" stroke-width="3" opacity=".5" />
+                <!-- Tail -->
+                <path d="M65,0 L90,-20 L95,0 L90,20 Z" fill="#c8621a" opacity=".85" />
+                <!-- Eye -->
+                <circle cx="-58" cy="-6" r="5" fill="#e8a44a" opacity=".9" />
+                <circle cx="-59" cy="-6" r="2.5" fill="#1a0a00" />
+                <!-- Glow halo -->
+                <ellipse cx="0" cy="0" rx="85" ry="30" fill="url(#gostGlow)" />
+              </g>
+
+              <!-- Herbs / garnish -->
+              <g opacity=".7">
+                <circle cx="145" cy="190" r="6" fill="#4a9e3f" />
+                <circle cx="135" cy="185" r="4" fill="#7bc95c" />
+                <circle cx="255" cy="190" r="6" fill="#4a9e3f" />
+                <circle cx="265" cy="186" r="4" fill="#7bc95c" />
+              </g>
+
+              <!-- Amazônia leaf motif -->
+              <g transform="translate(330,50)" opacity=".6">
+                <path d="M0,0 Q15,-30 30,-10 Q15,10 0,0 Z" fill="#4a9e3f" />
+                <line x1="15" y1="-10" x2="15" y2="5" stroke="#2d6a2d" stroke-width="1" />
+              </g>
+              <g transform="translate(55,60)" opacity=".5">
+                <path d="M0,0 Q-12,-25 -25,-8 Q-12,8 0,0 Z" fill="#4a9e3f" />
+                <line x1="-12" y1="-8" x2="-12" y2="5" stroke="#2d6a2d" stroke-width="1" />
+              </g>
+
+              <!-- Label -->
+              <text x="200" y="250" text-anchor="middle" font-family="serif" font-size="11" fill="#e8a44a" opacity=".8"
+                letter-spacing="3">GOSTO DA AMAZÔNIA</text>
+            </svg>
+          </div>
+
+          <!-- Site preview frame overlay -->
+          <div
+            style="position:absolute;bottom:1.5rem;left:1.5rem;background:rgba(10,5,0,.85);border:1px solid rgba(232,164,74,.25);border-radius:10px;padding:.6rem 1rem;display:flex;align-items:center;gap:.5rem;backdrop-filter:blur(8px);">
+            <div style="width:7px;height:7px;background:#e8a44a;border-radius:50%;animation:pulse-dot 2s infinite;">
+            </div>
+            <span
+              style="font-size:.65rem;color:rgba(245,240,232,.6);letter-spacing:.15em;text-transform:uppercase;">gostodaamazonia.com.br</span>
+          </div>
+
+          <div class="projeto-visual-number">04</div>
+        </div>
+
+        <div class="projeto-info" style="background:linear-gradient(135deg,#1a0d03 0%,#0f1a0a 100%);">
+          <div class="projeto-tag gosto-tag">🍽️ Gastronomia & Conservação</div>
+          <h2 class="projeto-title">Gosto da<br><em style="color:#e8a44a;font-style:italic;">Amazônia</em></h2>
+          <p class="projeto-desc">
+            Iniciativa estratégica que une a gastronomia à conservação ambiental, conectando
+            o trabalho dos manejadores do Médio Juruá aos grandes centros consumidores —
+            garantindo que o valor do produto retorne para a floresta e para as famílias que a protegem.
+          </p>
+
+          <!-- Expandable detail section -->
+          <div class="gosto-detail-toggle" id="gostoToggle" onclick="toggleGostoDetail()">
+            <span>Ver detalhes do projeto</span>
+            <span class="gosto-chevron">↓</span>
+          </div>
+
+          <div class="gosto-detail" id="gostoDetail">
+            <div class="gosto-subsection">
+              <div class="gosto-subsec-title">🎯 Objetivos</div>
+              <p class="gosto-subsec-text">Conciliar a conservação dos recursos naturais e a redução do desmatamento com
+                o bem-estar das populações tradicionais.</p>
+            </div>
+
+            <div class="gosto-acoes">
+              <div class="gosto-acao">
+                <div class="gosto-acao-icon">🏗️</div>
+                <div>
+                  <div class="gosto-acao-title">Infraestrutura</div>
+                  <div class="gosto-acao-text">Conclusão da reforma civil do Entreposto de Pescado da ASPROC, garantindo
+                    ambiente adequado e sanitariamente seguro para o beneficiamento.</div>
+                </div>
+              </div>
+              <div class="gosto-acao">
+                <div class="gosto-acao-icon">⚙️</div>
+                <div>
+                  <div class="gosto-acao-title">Equipamentos</div>
+                  <div class="gosto-acao-text">Aquisição de insumos modernos, maquinários para processamento e
+                    embalagens personalizadas que agregam valor ao produto final congelado.</div>
+                </div>
+              </div>
+              <div class="gosto-acao">
+                <div class="gosto-acao-icon">🔧</div>
+                <div>
+                  <div class="gosto-acao-title">Operação</div>
+                  <div class="gosto-acao-text">Suporte técnico para a manutenção do entreposto durante seu primeiro ano
+                    de funcionamento pleno.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="gosto-impacto">
+              <div class="gosto-impacto-num">R$ 8M</div>
+              <div class="gosto-impacto-label">investidos</div>
+              <div style="width:1px;height:40px;background:rgba(232,164,74,.2);"></div>
+              <div class="gosto-impacto-num">95%</div>
+              <div class="gosto-impacto-label">metas executadas</div>
+            </div>
+          </div>
+
+          <ul class="projeto-bullets">
+            <li>Manejo Comunitário do Pirarucu no Médio Juruá</li>
+            <li>Processamento e embalagem com rastreabilidade</li>
+            <li>Modelo de negócio sustentável comprovado</li>
+            <li>Renda digna ao ribeirinho mantendo a floresta</li>
+          </ul>
+          <a href="https://gostodaamazonia.com.br" target="_blank" class="projeto-cta gosto-cta">
+            Visitar o site <span>→</span>
+          </a>
+        </div>
+      </article>
+
+      <!-- FÁBRICA DE POLPAS DE FRUTAS -->
+      <article class="projeto-card card-polpas reveal">
+        <div class="projeto-visual polpas-visual">
+          <div class="projeto-visual-bg"
+            style="background-image:url('https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=800&q=80'); opacity:.15; mix-blend-mode:luminosity;">
+          </div>
+          <div class="projeto-visual-overlay"
+            style="background:linear-gradient(135deg,rgba(6,18,8,.93) 0%,rgba(20,12,2,.88) 100%);"></div>
+
+          <!-- Animated Fruits & Factory SVG -->
+          <div class="fish-svg">
+            <svg viewBox="0 0 400 300" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="fruitGlow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#7bc95c" stop-opacity=".3" />
+                  <stop offset="100%" stop-color="#c8a84b" stop-opacity="0" />
+                </radialGradient>
+                <linearGradient id="fruitGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#e84e1b" />
+                  <stop offset="100%" stop-color="#f09c2a" />
+                </linearGradient>
+                <linearGradient id="fruitGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#f7c52a" />
+                  <stop offset="100%" stop-color="#e88e10" />
+                </linearGradient>
+                <linearGradient id="fruitGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#7bc95c" />
+                  <stop offset="100%" stop-color="#2d8a20" />
+                </linearGradient>
+              </defs>
+
+              <!-- Background glow -->
+              <ellipse cx="200" cy="160" rx="120" ry="80" fill="url(#fruitGlow)" />
+
+              <!-- Factory silhouette -->
+              <g opacity=".25" transform="translate(80,170)">
+                <rect x="0" y="0" width="240" height="60" fill="#4a9e3f" rx="2" />
+                <rect x="20" y="-20" width="40" height="25" fill="#4a9e3f" />
+                <rect x="80" y="-30" width="40" height="35" fill="#4a9e3f" />
+                <rect x="160" y="-15" width="30" height="20" fill="#4a9e3f" />
+                <!-- Chimneys -->
+                <rect x="30" y="-55" width="8" height="38" fill="#2d6a2d" />
+                <rect x="55" y="-45" width="8" height="28" fill="#2d6a2d" />
+                <rect x="95" y="-65" width="8" height="38" fill="#2d6a2d" />
+                <!-- Windows -->
+                <rect x="10" y="10" width="20" height="18" fill="#7bc95c" opacity=".6" rx="2" />
+                <rect x="50" y="10" width="20" height="18" fill="#7bc95c" opacity=".6" rx="2" />
+                <rect x="120" y="10" width="20" height="18" fill="#c8a84b" opacity=".5" rx="2" />
+                <rect x="160" y="10" width="20" height="18" fill="#7bc95c" opacity=".4" rx="2" />
+                <rect x="200" y="10" width="20" height="18" fill="#c8a84b" opacity=".4" rx="2" />
+              </g>
+
+              <!-- Floating fruits with orbit animation -->
+              <!-- Açaí / dark berry -->
+              <g>
+                <animateTransform attributeName="transform" type="translate" values="200,100; 190,92; 200,100" dur="6s"
+                  repeatCount="indefinite" calcMode="spline" keySplines=".4 0 .6 1; .4 0 .6 1" />
+                <circle cx="200" cy="100" r="22" fill="url(#fruitGrad1)" opacity=".9" />
+                <circle cx="200" cy="100" r="22" fill="none" stroke="#f09c2a" stroke-width="1" opacity=".5" />
+                <!-- Leaf -->
+                <path d="M200,78 Q210,65 220,68 Q215,78 200,78 Z" fill="#7bc95c" opacity=".9" />
+                <!-- Shine -->
+                <ellipse cx="193" cy="92" rx="5" ry="4" fill="white" opacity=".25" transform="rotate(-30,193,92)" />
+              </g>
+
+              <!-- Pupunha / peach fruit -->
+              <g transform="translate(-70, 10)">
+                <animateTransform attributeName="transform" type="translate" values="-70,10; -65,4; -70,10" dur="7s"
+                  begin="1s" repeatCount="indefinite" calcMode="spline" keySplines=".4 0 .6 1; .4 0 .6 1" />
+                <circle cx="200" cy="110" r="18" fill="url(#fruitGrad2)" opacity=".9" />
+                <path d="M200,92 Q207,82 215,85 Q210,94 200,92 Z" fill="#7bc95c" opacity=".85" />
+                <ellipse cx="194" cy="104" rx="4" ry="3" fill="white" opacity=".2" transform="rotate(-25,194,104)" />
+              </g>
+
+              <!-- Cupuaçu / green fruit -->
+              <g transform="translate(65, 15)">
+                <animateTransform attributeName="transform" type="translate" values="65,15; 70,8; 65,15" dur="5.5s"
+                  begin="2s" repeatCount="indefinite" calcMode="spline" keySplines=".4 0 .6 1; .4 0 .6 1" />
+                <ellipse cx="200" cy="115" rx="24" ry="19" fill="url(#fruitGrad3)" opacity=".88" />
+                <path d="M200,96 Q208,84 218,88 Q212,98 200,96 Z" fill="#2d6a2d" opacity=".9" />
+                <path d="M196,98 L204,115 M200,96 L200,115" stroke="#2d8a20" stroke-width=".8" opacity=".4" />
+                <ellipse cx="194" cy="108" rx="5" ry="3.5" fill="white" opacity=".2" transform="rotate(-20,194,108)" />
+              </g>
+
+              <!-- Steam wisps from factory -->
+              <g opacity=".35">
+                <path d="M155,168 Q150,155 158,145 Q166,135 158,125" fill="none" stroke="#7bc95c" stroke-width="1.5"
+                  stroke-linecap="round">
+                  <animate attributeName="opacity" values="0;.5;0" dur="3.2s" begin="0s" repeatCount="indefinite" />
+                </path>
+                <path d="M185,162 Q180,149 188,139" fill="none" stroke="#c8a84b" stroke-width="1.5"
+                  stroke-linecap="round">
+                  <animate attributeName="opacity" values="0;.4;0" dur="2.8s" begin="1.2s" repeatCount="indefinite" />
+                </path>
+                <path d="M220,165 Q215,152 222,142 Q229,132 222,122" fill="none" stroke="#7bc95c" stroke-width="1.5"
+                  stroke-linecap="round">
+                  <animate attributeName="opacity" values="0;.45;0" dur="3.5s" begin="0.7s" repeatCount="indefinite" />
+                </path>
+              </g>
+
+              <!-- Polpa bag/packet -->
+              <g transform="translate(200,195)" opacity=".85">
+                <animateTransform attributeName="transform" type="translate" values="200,195; 200,191; 200,195" dur="4s"
+                  begin=".5s" repeatCount="indefinite" calcMode="spline" keySplines=".4 0 .6 1; .4 0 .6 1" />
+                <rect x="-22" y="-15" width="44" height="30" rx="5" fill="#1a3a10" stroke="#7bc95c" stroke-width="1"
+                  opacity=".9" />
+                <text x="0" y="6" text-anchor="middle" font-family="sans-serif" font-size="6" fill="#7bc95c"
+                  font-weight="bold" letter-spacing="1">POLPA</text>
+                <rect x="-15" y="-10" width="30" height="4" rx="2" fill="#7bc95c" opacity=".3" />
+              </g>
+
+              <!-- Label -->
+              <text x="200" y="260" text-anchor="middle" font-family="serif" font-size="10" fill="#7bc95c" opacity=".7"
+                letter-spacing="3">FÁBRICA DE POLPAS</text>
+            </svg>
+          </div>
+
+          <div class="projeto-visual-number">05</div>
+        </div>
+
+        <div class="projeto-info" style="background:linear-gradient(135deg,#0d1f10 0%,#1a1005 100%);">
+          <div class="projeto-tag polpas-tag">🍊 Agroindústria Sustentável</div>
+          <h2 class="projeto-title">Fábrica de<br><em style="color:var(--verde-neon);font-style:italic;">Polpas de
+              Frutas</em></h2>
+          <p class="projeto-desc">
+            Em parceria com o CLUA, a ASPROC dá passos decisivos para a implementação de uma unidade
+            de beneficiamento de frutas — transformando a produção primária em produtos de maior valor
+            agregado e menor perecibilidade, abrindo portas a novos mercados nacionais e internacionais.
+          </p>
+
+          <!-- Execution progress -->
+          <div class="polpas-progress-wrap">
+            <div class="polpas-progress-label">
+              <span>Execução do Projeto</span>
+              <span>38% concluído</span>
+            </div>
+            <div class="polpas-bar-bg">
+              <div class="polpas-bar-fill" id="polpasBar"></div>
+            </div>
+          </div>
+
+          <ul class="projeto-bullets polpas-bullets">
+            <li>Rondas comunitárias de vigilância e manejo produtivo</li>
+            <li>Encontros anuais entre manejadores e produtores</li>
+            <li>Selos de qualidade e novas redes de financiamento</li>
+            <li>Diversificação além da pesca: excelência em frutos</li>
+          </ul>
+          <a href="fabrica-polpas.html" class="projeto-cta polpas-cta">
+            Ver projeto completo <span>→</span>
+          </a>
+        </div>
+      </article>
+
     </div>
   </section>
 
@@ -1712,6 +2718,50 @@
       });
     }, { threshold: .5 });
     document.querySelectorAll('[data-target]').forEach(el => counterObserver.observe(el));
+    // Gosto da Amazônia detail toggle
+    function toggleGostoDetail() {
+      const detail = document.getElementById('gostoDetail');
+      const chevron = document.querySelector('.gosto-chevron');
+      const toggle = document.getElementById('gostoToggle');
+      const isOpen = detail.classList.contains('expanded');
+      detail.classList.toggle('expanded', !isOpen);
+      chevron.classList.toggle('open', !isOpen);
+      toggle.querySelector('span').textContent = isOpen ? 'Ver detalhes do projeto' : 'Fechar detalhes';
+    }
+
+    // ── MOBILE MENU ──
+    const mobDrawer = document.getElementById('mob-drawer');
+    const mobToggle = document.getElementById('mob-toggle');
+    let menuOpen = false;
+
+    function toggleMobMenu() {
+      menuOpen ? closeMobMenu() : openMobMenu();
+    }
+    function openMobMenu() {
+      menuOpen = true;
+      mobDrawer.classList.add('open');
+      mobToggle.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMobMenu() {
+      menuOpen = false;
+      mobDrawer.classList.remove('open');
+      mobToggle.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    // Close on escape
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && menuOpen) closeMobMenu(); });
+
+    // Animate polpas progress bar when in view
+    const polpasBar = document.getElementById('polpasBar');
+    if (polpasBar) {
+      const barObserver = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) { polpasBar.classList.add('animated'); barObserver.unobserve(e.target); }
+        });
+      }, { threshold: .4 });
+      barObserver.observe(polpasBar);
+    }
   </script>
 </body>
 
