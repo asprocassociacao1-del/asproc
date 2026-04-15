@@ -2874,8 +2874,8 @@
         document.getElementById('noticias-loading').style.display = 'none';
         if (!list.length) { table.style.display = 'none'; empty.style.display = 'block'; return; }
         table.style.display = 'table'; empty.style.display = 'none';
-        tbody.innerHTML = list.map(n => `
-      <tr data-search="${escSearch(n.titulo + ' ' + n.resumo)}" data-id="${escHtml(n.id)}">
+        tbody.innerHTML = list.map((n, idx) => `
+      <tr data-search="${escSearch(n.titulo + ' ' + n.resumo)}" data-idx="${idx}">
         <td class="td-title">${escHtml(n.titulo)}<div class="td-sub">${escHtml((n.resumo || '').substring(0, 80))}…</div></td>
         <td>${catBadge(n.categoria)}</td>
         <td style="white-space:nowrap;font-size:.8rem;">${fmtDate(n.data_pub)}</td>
@@ -2883,18 +2883,24 @@
         <td>${n.destaque ? '<span class="badge badge-amber">Destaque</span>' : '<span style="color:var(--text-muted);font-size:.8rem">—</span>'}</td>
         <td class="td-actions">
           ${n.url_externa ? `<a href="${escHtml(n.url_externa)}" target="_blank" class="btn btn-secondary btn-xs">↗</a>` : ''}
-          <button class="btn btn-secondary btn-xs btn-edit-noticia" data-id="${escHtml(n.id)}">Editar</button>
-          <button class="btn btn-danger btn-xs btn-delete-noticia" data-id="${escHtml(n.id)}">Excluir</button>
+          <button class="btn btn-secondary btn-xs" data-idx="${idx}" data-action="edit">Editar</button>
+          <button class="btn btn-danger btn-xs" data-idx="${idx}" data-action="delete">Excluir</button>
         </td>
       </tr>`).join('');
 
-        // Event delegation para editar e excluir
-        tbody.querySelectorAll('.btn-edit-noticia').forEach(btn => {
-          btn.addEventListener('click', function () { editNoticia(this.dataset.id); });
-        });
-        tbody.querySelectorAll('.btn-delete-noticia').forEach(btn => {
-          btn.addEventListener('click', function () { deleteItem('noticias', this.dataset.id, loadNoticias); });
-        });
+        // Guarda referência à lista renderizada para acesso por índice
+        tbody._renderedList = list;
+
+        // Event delegation: um único listener no tbody
+        tbody.onclick = function (e) {
+          const btn = e.target.closest('button[data-action]');
+          if (!btn) return;
+          const idx = parseInt(btn.dataset.idx, 10);
+          const item = tbody._renderedList[idx];
+          if (!item) return;
+          if (btn.dataset.action === 'edit') editNoticia(item.id);
+          if (btn.dataset.action === 'delete') deleteItem('noticias', item.id, loadNoticias);
+        };
       }
 
       function filterByCat(section, val) {
@@ -2957,7 +2963,7 @@
         document.getElementById('vagas-loading').style.display = 'none';
         if (!list.length) { table.style.display = 'none'; empty.style.display = 'block'; return; }
         table.style.display = 'table'; empty.style.display = 'none';
-        tbody.innerHTML = list.map(v => `
+        tbody.innerHTML = list.map((v, idx) => `
       <tr data-search="${escSearch(v.titulo + ' ' + v.local)}">
         <td class="td-title">${escHtml(v.titulo)}<div class="td-sub">${escHtml(v.escolaridade || '')}</div></td>
         <td style="font-size:.82rem;">${escHtml(v.local)}</td>
@@ -2965,10 +2971,19 @@
         <td style="white-space:nowrap;font-size:.8rem;">${v.prazo ? fmtDate(v.prazo) : '—'}</td>
         <td>${statusBadge(v.status)}</td>
         <td class="td-actions">
-          <button class="btn btn-secondary btn-xs" onclick="editVaga('${v.id}')">Editar</button>
-          <button class="btn btn-danger btn-xs" onclick="deleteItem('vagas','${v.id}',loadVagas)">Excluir</button>
+          <button class="btn btn-secondary btn-xs" data-idx="${idx}" data-action="edit">Editar</button>
+          <button class="btn btn-danger btn-xs" data-idx="${idx}" data-action="delete">Excluir</button>
         </td>
       </tr>`).join('');
+        tbody._renderedList = list;
+        tbody.onclick = function (e) {
+          const btn = e.target.closest('button[data-action]');
+          if (!btn) return;
+          const item = tbody._renderedList[parseInt(btn.dataset.idx, 10)];
+          if (!item) return;
+          if (btn.dataset.action === 'edit') editVaga(item.id);
+          if (btn.dataset.action === 'delete') deleteItem('vagas', item.id, loadVagas);
+        };
       }
 
       function filterByStatus(section, val) {
@@ -3030,7 +3045,7 @@
         document.getElementById('avisos-loading').style.display = 'none';
         if (!list.length) { table.style.display = 'none'; empty.style.display = 'block'; return; }
         table.style.display = 'table'; empty.style.display = 'none';
-        tbody.innerHTML = list.map(a => `
+        tbody.innerHTML = list.map((a, idx) => `
       <tr data-search="${escSearch(a.titulo + ' ' + a.descricao)}">
         <td class="td-title">${escHtml(a.titulo)}<div class="td-sub">${escHtml((a.descricao || '').substring(0, 70))}…</div></td>
         <td>${tipoBadge(a.tipo)}</td>
@@ -3038,10 +3053,19 @@
         <td>${a.publicado ? '<span class="badge badge-green">Publicado</span>' : '<span class="badge badge-muted">Oculto</span>'}</td>
         <td class="td-actions">
           ${a.doc_url ? `<a href="${escHtml(a.doc_url)}" target="_blank" class="btn btn-secondary btn-xs">📄</a>` : ''}
-          <button class="btn btn-secondary btn-xs" onclick="editAviso('${a.id}')">Editar</button>
-          <button class="btn btn-danger btn-xs" onclick="deleteItem('avisos','${a.id}',loadAvisos)">Excluir</button>
+          <button class="btn btn-secondary btn-xs" data-idx="${idx}" data-action="edit">Editar</button>
+          <button class="btn btn-danger btn-xs" data-idx="${idx}" data-action="delete">Excluir</button>
         </td>
       </tr>`).join('');
+        tbody._renderedList = list;
+        tbody.onclick = function (e) {
+          const btn = e.target.closest('button[data-action]');
+          if (!btn) return;
+          const item = tbody._renderedList[parseInt(btn.dataset.idx, 10)];
+          if (!item) return;
+          if (btn.dataset.action === 'edit') editAviso(item.id);
+          if (btn.dataset.action === 'delete') deleteItem('avisos', item.id, loadAvisos);
+        };
       }
 
       function filterByTipo(section, val) {
