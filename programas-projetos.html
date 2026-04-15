@@ -1601,6 +1601,104 @@
       transform: scale(1.02);
     }
 
+    /* ── RIOS VIVOS THEME ── */
+    .card-rios {
+      background: linear-gradient(135deg, #051520 0%, #082d20 100%);
+    }
+
+    .card-rios .projeto-info {
+      color: var(--branco);
+    }
+
+    .rios-tag {
+      background: rgba(26, 107, 138, .22);
+      color: #7fd4f5;
+      border: 1px solid rgba(127, 212, 245, .22);
+    }
+
+    .rios-visual {
+      background: linear-gradient(135deg, #03090f 0%, #051a10 100%);
+    }
+
+    .rios-cta {
+      background: #1a6b8a;
+      color: white;
+    }
+
+    .rios-cta:hover {
+      background: #7fd4f5;
+      color: #051520;
+    }
+
+    .rios-bullets li::before {
+      color: #7fd4f5;
+    }
+
+    /* ── SHARE BUTTON em cada card ── */
+    .projeto-share-row {
+      display: flex;
+      gap: .7rem;
+      align-items: center;
+      margin-top: 1.2rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid rgba(245, 240, 232, .07);
+      flex-wrap: wrap;
+    }
+
+    .btn-share-wpp {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: #25d366;
+      color: white;
+      padding: .5rem 1.1rem;
+      border-radius: 30px;
+      font-size: .78rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform .2s, background .2s;
+      white-space: nowrap;
+    }
+
+    .btn-share-wpp:hover {
+      background: #1ebe5d;
+      transform: translateY(-2px);
+    }
+
+    .btn-share-copy {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: rgba(245, 240, 232, .07);
+      color: rgba(245, 240, 232, .6);
+      border: 1px solid rgba(245, 240, 232, .12);
+      padding: .5rem 1.1rem;
+      border-radius: 30px;
+      font-size: .78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform .2s, background .2s;
+      font-family: 'DM Sans', sans-serif;
+      white-space: nowrap;
+    }
+
+    .btn-share-copy:hover {
+      background: rgba(245, 240, 232, .12);
+      transform: translateY(-2px);
+    }
+
+    .share-copied-tip {
+      font-size: .72rem;
+      color: var(--verde-neon);
+      opacity: 0;
+      transition: opacity .3s;
+      white-space: nowrap;
+    }
+
+    .share-copied-tip.show {
+      opacity: 1;
+    }
+
     /* Bottom tab bar — persistent, always visible on mobile */
     #mob-tabbar {
       display: none;
@@ -2169,6 +2267,22 @@
             class="projeto-cta pirarucu-cta">
             Conhecer o projeto <span>→</span>
           </a>
+          <div class="projeto-share-row">
+            <a href="https://wa.me/?text=🐟%20Conheça%20o%20Manejo%20do%20Pirarucu%20no%20Médio%20Juruá%20–%20ASPROC%3A%20referência%20nacional%20em%20manejo%20comunitário%20do%20maior%20peixe%20de%20escamas%20da%20Amazônia!%0A%0Ahttp%3A%2F%2Fwww.asproc.com.br%2Fprojeto-manejo-pirarucu.html"
+              target="_blank" class="btn-share-wpp">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
+                <path
+                  d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                <path
+                  d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.121 1.532 5.853L.057 23.636a.5.5 0 0 0 .601.628l5.998-1.57A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.959 0-3.782-.574-5.32-1.562l-.38-.232-3.961 1.037 1.044-3.875-.249-.389A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+              </svg>
+              WhatsApp
+            </a>
+            <button class="btn-share-copy"
+              onclick="copyProjectLink('http://www.asproc.com.br/projeto-manejo-pirarucu.html', this)">🔗 Copiar
+              link</button>
+            <span class="share-copied-tip">✓ Copiado!</span>
+          </div>
         </div>
       </article>
 
@@ -2257,6 +2371,22 @@
             class="projeto-cta comercio-cta">
             Conhecer o projeto <span>→</span>
           </a>
+          <div class="projeto-share-row">
+            <a href="https://wa.me/?text=🛶%20Conheça%20o%20Comércio%20Ribeirinho%20da%20ASPROC%3A%20levando%20abastecimento%20e%20economia%20às%20comunidades%20do%20Médio%20Juruá!%0A%0Ahttp%3A%2F%2Fwww.asproc.com.br%2Fprojeto-comercio-ribeirinho.html"
+              target="_blank" class="btn-share-wpp">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
+                <path
+                  d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                <path
+                  d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.121 1.532 5.853L.057 23.636a.5.5 0 0 0 .601.628l5.998-1.57A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.959 0-3.782-.574-5.32-1.562l-.38-.232-3.961 1.037 1.044-3.875-.249-.389A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+              </svg>
+              WhatsApp
+            </a>
+            <button class="btn-share-copy"
+              onclick="copyProjectLink('http://www.asproc.com.br/projeto-comercio-ribeirinho.html', this)">🔗 Copiar
+              link</button>
+            <span class="share-copied-tip">✓ Copiado!</span>
+          </div>
         </div>
       </article>
 
@@ -2350,6 +2480,21 @@
           <a href="http://www.asproc.com.br/projeto-sanear.html" target="_blank" class="projeto-cta sanear-cta">
             Conhecer o projeto <span>→</span>
           </a>
+          <div class="projeto-share-row">
+            <a href="https://wa.me/?text=💧%20Conheça%20o%20Projeto%20Sanear%20Amazônia%20–%20ASPROC%3A%20água%20tratada%20e%20saneamento%20básico%20para%20comunidades%20ribeirinhas!%0A%0Ahttp%3A%2F%2Fwww.asproc.com.br%2Fprojeto-sanear.html"
+              target="_blank" class="btn-share-wpp">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
+                <path
+                  d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                <path
+                  d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.121 1.532 5.853L.057 23.636a.5.5 0 0 0 .601.628l5.998-1.57A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.959 0-3.782-.574-5.32-1.562l-.38-.232-3.961 1.037 1.044-3.875-.249-.389A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+              </svg>
+              WhatsApp
+            </a>
+            <button class="btn-share-copy"
+              onclick="copyProjectLink('http://www.asproc.com.br/projeto-sanear.html', this)">🔗 Copiar link</button>
+            <span class="share-copied-tip">✓ Copiado!</span>
+          </div>
         </div>
       </article>
 
@@ -2537,6 +2682,21 @@
           <a href="https://gostodaamazonia.com.br" target="_blank" class="projeto-cta gosto-cta">
             Visitar o site <span>→</span>
           </a>
+          <div class="projeto-share-row">
+            <a href="https://wa.me/?text=🍴%20Conheça%20o%20Gosto%20da%20Amazônia%20–%20ASPROC%3A%20pirarucu%20processado%20com%20qualidade%20e%20rastreabilidade%20diretamente%20do%20Médio%20Juruá!%0A%0Ahttps%3A%2F%2Fgostodaamazonia.com.br"
+              target="_blank" class="btn-share-wpp">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
+                <path
+                  d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                <path
+                  d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.121 1.532 5.853L.057 23.636a.5.5 0 0 0 .601.628l5.998-1.57A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.959 0-3.782-.574-5.32-1.562l-.38-.232-3.961 1.037 1.044-3.875-.249-.389A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+              </svg>
+              WhatsApp
+            </a>
+            <button class="btn-share-copy" onclick="copyProjectLink('https://gostodaamazonia.com.br', this)">🔗 Copiar
+              link</button>
+            <span class="share-copied-tip">✓ Copiado!</span>
+          </div>
         </div>
       </article>
 
@@ -2690,6 +2850,22 @@
           <a href="fabrica-polpas-de-frutas.html" class="projeto-cta polpas-cta">
             Ver projeto completo <span>→</span>
           </a>
+          <div class="projeto-share-row">
+            <a href="https://wa.me/?text=🍊%20Conheça%20a%20Fábrica%20de%20Polpas%20de%20Frutas%20da%20ASPROC%3A%20frutos%20da%20Amazônia%20com%20mais%20valor%20agregado%20e%20acesso%20a%20novos%20mercados!%0A%0Ahttp%3A%2F%2Fwww.asproc.com.br%2Ffabrica-polpas-de-frutas.html"
+              target="_blank" class="btn-share-wpp">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
+                <path
+                  d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                <path
+                  d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.121 1.532 5.853L.057 23.636a.5.5 0 0 0 .601.628l5.998-1.57A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.959 0-3.782-.574-5.32-1.562l-.38-.232-3.961 1.037 1.044-3.875-.249-.389A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+              </svg>
+              WhatsApp
+            </a>
+            <button class="btn-share-copy"
+              onclick="copyProjectLink('http://www.asproc.com.br/fabrica-polpas-de-frutas.html', this)">🔗 Copiar
+              link</button>
+            <span class="share-copied-tip">✓ Copiado!</span>
+          </div>
         </div>
       </article>
 
@@ -2829,6 +3005,22 @@
           <a href="projeto-frutos-da-floresta.html" class="projeto-cta acai-cta">
             Ver projeto completo <span>→</span>
           </a>
+          <div class="projeto-share-row">
+            <a href="https://wa.me/?text=🫐%20Conheça%20o%20projeto%20Frutos%20da%20Floresta%20–%20ASPROC%3A%20valorização%20do%20açaí%20e%20outros%20frutos%20amazônicos%20com%20sustentabilidade!%0A%0Ahttp%3A%2F%2Fwww.asproc.com.br%2Fprojeto-frutos-da-floresta.html"
+              target="_blank" class="btn-share-wpp">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
+                <path
+                  d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                <path
+                  d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.121 1.532 5.853L.057 23.636a.5.5 0 0 0 .601.628l5.998-1.57A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.959 0-3.782-.574-5.32-1.562l-.38-.232-3.961 1.037 1.044-3.875-.249-.389A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+              </svg>
+              WhatsApp
+            </a>
+            <button class="btn-share-copy"
+              onclick="copyProjectLink('http://www.asproc.com.br/projeto-frutos-da-floresta.html', this)">🔗 Copiar
+              link</button>
+            <span class="share-copied-tip">✓ Copiado!</span>
+          </div>
         </div>
       </article>
 
@@ -2946,6 +3138,22 @@
           <a href="pesca-justa-sustentavel.html" class="projeto-cta pesca-justa-cta">
             Ver projeto completo <span>→</span>
           </a>
+          <div class="projeto-share-row">
+            <a href="https://wa.me/?text=🎣%20Conheça%20a%20Pesca%20Justa%20e%20Sustentável%20–%20ASPROC%3A%20pescadores%20ribeirinhos%20com%20renda%20justa%20e%20pesca%20responsável%20na%20Amazônia!%0A%0Ahttp%3A%2F%2Fwww.asproc.com.br%2Fpesca-justa-sustentavel.html"
+              target="_blank" class="btn-share-wpp">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
+                <path
+                  d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                <path
+                  d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.121 1.532 5.853L.057 23.636a.5.5 0 0 0 .601.628l5.998-1.57A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.959 0-3.782-.574-5.32-1.562l-.38-.232-3.961 1.037 1.044-3.875-.249-.389A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+              </svg>
+              WhatsApp
+            </a>
+            <button class="btn-share-copy"
+              onclick="copyProjectLink('http://www.asproc.com.br/pesca-justa-sustentavel.html', this)">🔗 Copiar
+              link</button>
+            <span class="share-copied-tip">✓ Copiado!</span>
+          </div>
         </div>
       </article>
 
@@ -3082,6 +3290,145 @@
           <a href="projeto-jurua-sustentavel-solidario.html" class="projeto-cta jurua-cta">
             Ver projeto completo <span>→</span>
           </a>
+          <div class="projeto-share-row">
+            <a href="https://wa.me/?text=🌿%20Conheça%20o%20Juruá%20Sustentável%20e%20Solidário%20–%20ASPROC%3A%20o%20maior%20projeto%20em%20escala%20da%20organização%2C%20com%20R%24%2038%2C9%20mi%20investidos%20nas%20cadeias%20socioprodutivas%20da%20Amazônia!%0A%0Ahttp%3A%2F%2Fwww.asproc.com.br%2Fprojeto-jurua-sustentavel-solidario.html"
+              target="_blank" class="btn-share-wpp">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
+                <path
+                  d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                <path
+                  d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.121 1.532 5.853L.057 23.636a.5.5 0 0 0 .601.628l5.998-1.57A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.959 0-3.782-.574-5.32-1.562l-.38-.232-3.961 1.037 1.044-3.875-.249-.389A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+              </svg>
+              WhatsApp
+            </a>
+            <button class="btn-share-copy"
+              onclick="copyProjectLink('http://www.asproc.com.br/projeto-jurua-sustentavel-solidario.html', this)">🔗
+              Copiar link</button>
+            <span class="share-copied-tip">✓ Copiado!</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- RIOS VIVOS -->
+      <article class="projeto-card card-rios reveal">
+        <div class="projeto-visual rios-visual">
+          <div class="projeto-visual-bg"
+            style="background-image:url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80'); mix-blend-mode:luminosity; opacity:.18;">
+          </div>
+          <div class="projeto-visual-overlay"
+            style="background:linear-gradient(135deg,rgba(3,9,15,.93) 0%,rgba(5,26,16,.88) 100%);"></div>
+
+          <!-- Animated River & Recycling SVG -->
+          <div class="fish-svg">
+            <svg viewBox="0 0 400 300" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="riosGlow" cx="50%" cy="60%" r="50%">
+                  <stop offset="0%" stop-color="#1a6b8a" stop-opacity=".4" />
+                  <stop offset="100%" stop-color="#1a6b8a" stop-opacity="0" />
+                </radialGradient>
+                <linearGradient id="riosWater" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#1a4d5a" />
+                  <stop offset="100%" stop-color="#0a2030" />
+                </linearGradient>
+              </defs>
+              <ellipse cx="200" cy="230" rx="160" ry="80" fill="url(#riosGlow)" />
+              <!-- Forest -->
+              <g opacity=".28">
+                <path d="M0,180 Q20,155 40,172 Q60,148 80,165 Q100,148 120,168 L120,240 L0,240 Z" fill="#2d6a2d" />
+                <path d="M280,180 Q300,155 320,172 Q340,148 360,165 Q380,148 400,168 L400,240 L280,240 Z"
+                  fill="#2d6a2d" />
+              </g>
+              <!-- River -->
+              <ellipse cx="200" cy="255" rx="240" ry="42" fill="url(#riosWater)" opacity=".8" />
+              <g opacity=".18">
+                <ellipse cx="200" cy="268" rx="200" ry="14" fill="none" stroke="#7fd4f5" stroke-width="1.2">
+                  <animate attributeName="rx" values="200;218;200" dur="5s" repeatCount="indefinite" />
+                </ellipse>
+                <ellipse cx="200" cy="280" rx="140" ry="9" fill="none" stroke="#7fd4f5" stroke-width=".8">
+                  <animate attributeName="rx" values="140;155;140" dur="4s" repeatCount="indefinite" begin="1s" />
+                </ellipse>
+              </g>
+              <!-- Recycling symbol floating -->
+              <g>
+                <animateTransform attributeName="transform" type="translate" values="0,0;0,-7;0,0" dur="4.5s"
+                  repeatCount="indefinite" calcMode="spline" keySplines=".4 0 .6 1;.4 0 .6 1" />
+                <circle cx="200" cy="130" r="50" fill="rgba(26,107,138,.2)" stroke="rgba(127,212,245,.35)"
+                  stroke-width="1.5" />
+                <path d="M200,88 L213,108 L205,108 L205,126 L186,126 L186,112 L178,112 Z" fill="none" stroke="#7fd4f5"
+                  stroke-width="2.5" stroke-linejoin="round" opacity=".75" />
+                <path d="M175,143 L162,123 L170,123 L178,105 L194,113 L183,118 Z" fill="none" stroke="#7bc95c"
+                  stroke-width="2.5" stroke-linejoin="round" opacity=".75" />
+                <path d="M225,143 L238,123 L230,123 L214,105 L207,118 L219,121 Z" fill="none" stroke="#c8a84b"
+                  stroke-width="2.5" stroke-linejoin="round" opacity=".75" />
+                <circle cx="200" cy="124" r="7" fill="rgba(127,212,245,.45)" />
+              </g>
+              <!-- Water drop -->
+              <g transform="translate(310,195)">
+                <animateTransform attributeName="transform" type="translate" values="310,195;310,189;310,195" dur="5s"
+                  repeatCount="indefinite" begin="1.5s" />
+                <path d="M0,-18 Q12,0 12,10 A12,12 0 0,1 -12,10 Q-12,0 0,-18 Z" fill="rgba(127,212,245,.55)"
+                  stroke="rgba(127,212,245,.8)" stroke-width="1" />
+              </g>
+              <!-- Trash bag -->
+              <g transform="translate(75,198)">
+                <animateTransform attributeName="transform" type="translate" values="75,198;75,193;75,198" dur="3.5s"
+                  repeatCount="indefinite" begin=".5s" />
+                <path d="M0,0 Q-12,4 -12,24 Q-12,44 0,48 Q12,44 12,24 Q12,4 0,0 Z" fill="#2d6a2d" opacity=".8"
+                  stroke="rgba(123,201,92,.3)" stroke-width="1" />
+                <circle cx="0" cy="0" r="4.5" fill="#4a9e3f" opacity=".8" />
+              </g>
+              <!-- Stars -->
+              <g fill="#7fd4f5" opacity=".5">
+                <circle cx="48" cy="40" r="1.5">
+                  <animate attributeName="opacity" values=".5;.1;.5" dur="3s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="170" cy="22" r="1.2">
+                  <animate attributeName="opacity" values=".5;.1;.5" dur="2.5s" repeatCount="indefinite" begin=".8s" />
+                </circle>
+                <circle cx="340" cy="50" r="1.5">
+                  <animate attributeName="opacity" values=".5;.1;.5" dur="4s" repeatCount="indefinite" begin="1.5s" />
+                </circle>
+              </g>
+              <text x="200" y="296" text-anchor="middle" font-family="sans-serif" font-size="8.5" fill="#7fd4f5"
+                opacity=".5" letter-spacing="3">RIOS VIVOS</text>
+            </svg>
+          </div>
+          <div class="projeto-visual-number">09</div>
+        </div>
+
+        <div class="projeto-info">
+          <div class="projeto-tag rios-tag">💧 Gestão Ambiental</div>
+          <h2 class="projeto-title">Rios Vivos<br><em style="color:#7fd4f5;font-style:italic">Meio Ambiente & Saúde</em>
+          </h2>
+          <p class="projeto-desc">
+            A resposta da ASPROC ao desafio do lixo em áreas isoladas. Gestão adequada
+            de resíduos sólidos e conscientização ambiental para que o cuidado com a
+            floresta comece dentro de casa e nas margens dos rios.
+          </p>
+          <ul class="projeto-bullets rios-bullets">
+            <li>Coleta sistemática em 10 comunidades piloto</li>
+            <li>3.000 kg de resíduos retirados da natureza</li>
+            <li>197 famílias beneficiadas diretamente</li>
+            <li>Logística reversa via parceria com "Nós Podemos"</li>
+          </ul>
+          <a href="projeto-rios-vivos.html" class="projeto-cta rios-cta">
+            Conhecer o projeto <span>→</span>
+          </a>
+          <div class="projeto-share-row">
+            <a href="https://wa.me/?text=🌊%20Conheça%20o%20Projeto%20Rios%20Vivos%20da%20ASPROC%3A%20gestão%20de%20resíduos%20e%20conscientização%20ambiental%20em%20comunidades%20ribeirinhas.%20Já%20retiramos%203.000%20kg%20de%20lixo%20dos%20rios!%0A%0Ahttp%3A%2F%2Fwww.asproc.com.br%2Frios-vivos.html"
+              target="_blank" class="btn-share-wpp">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
+                <path
+                  d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                <path
+                  d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.121 1.532 5.853L.057 23.636a.5.5 0 0 0 .601.628l5.998-1.57A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.959 0-3.782-.574-5.32-1.562l-.38-.232-3.961 1.037 1.044-3.875-.249-.389A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+              </svg>
+              WhatsApp
+            </a>
+            <button class="btn-share-copy"
+              onclick="copyProjectLink('http://www.asproc.com.br/rios-vivos.html', this)">🔗 Copiar link</button>
+            <span class="share-copied-tip">✓ Copiado!</span>
+          </div>
         </div>
       </article>
 
@@ -3208,6 +3555,30 @@
   </footer>
 
   <script>
+    // Compartilhar projeto: copia link e mostra feedback
+    function copyProjectLink(url, btn) {
+      navigator.clipboard.writeText(url).then(() => {
+        const tip = btn.nextElementSibling;
+        tip.classList.add('show');
+        btn.textContent = '✓ Copiado!';
+        setTimeout(() => {
+          tip.classList.remove('show');
+          btn.textContent = '🔗 Copiar link';
+        }, 2500);
+      }).catch(() => {
+        // fallback para navegadores sem clipboard API
+        const ta = document.createElement('textarea');
+        ta.value = url; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        const tip = btn.nextElementSibling;
+        tip.classList.add('show');
+        btn.textContent = '✓ Copiado!';
+        setTimeout(() => { tip.classList.remove('show'); btn.textContent = '🔗 Copiar link'; }, 2500);
+      });
+    }
+
     // Cursor
     const dot = document.getElementById('cursor-dot');
     const ring = document.getElementById('cursor-ring');
