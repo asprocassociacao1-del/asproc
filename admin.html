@@ -2266,6 +2266,8 @@
       <span class="ne-topbar-title" id="ne-topbar-title">Nova Notícia</span>
       <button class="btn btn-secondary btn-sm" onclick="previewNoticiaPage()">👁 Preview</button>
       <button class="btn btn-secondary btn-sm" onclick="downloadNoticiaPage()">⬇ Baixar</button>
+      <button class="btn btn-amber btn-sm" id="btn-ai-format" onclick="aiAutoFormat()"
+        title="Formata o conteúdo automaticamente com IA">✨ Auto-formatar</button>
       <button class="btn btn-success btn-sm" id="btn-gh-publish" onclick="publishToGithub()">🚀 Publicar no
         site</button>
       <button class="btn btn-primary btn-sm" onclick="saveNoticia()">💾 Salvar</button>
@@ -2873,7 +2875,7 @@
         if (!list.length) { table.style.display = 'none'; empty.style.display = 'block'; return; }
         table.style.display = 'table'; empty.style.display = 'none';
         tbody.innerHTML = list.map(n => `
-      <tr data-search="${escSearch(n.titulo + ' ' + n.resumo)}">
+      <tr data-search="${escSearch(n.titulo + ' ' + n.resumo)}" data-id="${escHtml(n.id)}">
         <td class="td-title">${escHtml(n.titulo)}<div class="td-sub">${escHtml((n.resumo || '').substring(0, 80))}…</div></td>
         <td>${catBadge(n.categoria)}</td>
         <td style="white-space:nowrap;font-size:.8rem;">${fmtDate(n.data_pub)}</td>
@@ -2881,10 +2883,18 @@
         <td>${n.destaque ? '<span class="badge badge-amber">Destaque</span>' : '<span style="color:var(--text-muted);font-size:.8rem">—</span>'}</td>
         <td class="td-actions">
           ${n.url_externa ? `<a href="${escHtml(n.url_externa)}" target="_blank" class="btn btn-secondary btn-xs">↗</a>` : ''}
-          <button class="btn btn-secondary btn-xs" onclick="editNoticia('${n.id}')">Editar</button>
-          <button class="btn btn-danger btn-xs" onclick="deleteItem('noticias','${n.id}',loadNoticias)">Excluir</button>
+          <button class="btn btn-secondary btn-xs btn-edit-noticia" data-id="${escHtml(n.id)}">Editar</button>
+          <button class="btn btn-danger btn-xs btn-delete-noticia" data-id="${escHtml(n.id)}">Excluir</button>
         </td>
       </tr>`).join('');
+
+        // Event delegation para editar e excluir
+        tbody.querySelectorAll('.btn-edit-noticia').forEach(btn => {
+          btn.addEventListener('click', function () { editNoticia(this.dataset.id); });
+        });
+        tbody.querySelectorAll('.btn-delete-noticia').forEach(btn => {
+          btn.addEventListener('click', function () { deleteItem('noticias', this.dataset.id, loadNoticias); });
+        });
       }
 
       function filterByCat(section, val) {
@@ -4137,6 +4147,114 @@ footer a{color:#10b981;}
       }
 
 
+      /* ══════════════════════════════════════════
+         AUTO-FORMATAÇÃO COM IA
+      ══════════════════════════════════════════ */
+      async function aiAutoFormat() {
+        const titulo = document.getElementById('n-titulo').value.trim();
+        const resumo = document.getElementById('n-resumo').value.trim();
+        const conteudoRaw = document.getElementById('n-rte-body').innerText.trim() ||
+          document.getElementById('n-conteudo').value.trim();
+
+        if (!titulo && !conteudoRaw) {
+          toast('Preencha ao menos o título ou o conteúdo antes de auto-formatar.', 'error');
+          return;
+        }
+
+        const btn = document.getElementById('btn-ai-format');
+        btn.disabled = true;
+        btn.textContent = '⏳ Formatando…';
+
+        // Mostra modal de loading
+        let aiModal = document.getElementById('ai-format-modal');
+        if (!aiModal) {
+          aiModal = document.createElement('div');
+          aiModal.id = 'ai-format-modal';
+          aiModal.style.cssText = `
+            position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:99999;
+            display:flex;align-items:center;justify-content:center;
+          `;
+          aiModal.innerHTML = `
+            <div style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;
+                        padding:2rem 2.5rem;text-align:center;max-width:380px;width:90%;">
+              <div style="font-size:2rem;margin-bottom:1rem;">✨</div>
+              <h3 style="font-size:1rem;font-weight:600;margin-bottom:.5rem;color:var(--text);">Formatando com IA</h3>
+              <p style="font-size:.83rem;color:var(--text-muted);margin-bottom:1.25rem;">
+                A IA está estruturando seu texto em formato jornalístico profissional...
+              </p>
+              <div style="display:flex;gap:.4rem;justify-content:center;" id="ai-dots">
+                <span style="width:8px;height:8px;background:var(--accent);border-radius:50%;animation:aiPulse 1.2s .0s ease-in-out infinite;display:inline-block;"></span>
+                <span style="width:8px;height:8px;background:var(--accent);border-radius:50%;animation:aiPulse 1.2s .4s ease-in-out infinite;display:inline-block;"></span>
+                <span style="width:8px;height:8px;background:var(--accent);border-radius:50%;animation:aiPulse 1.2s .8s ease-in-out infinite;display:inline-block;"></span>
+              </div>
+            </div>
+            <style>
+              @keyframes aiPulse {
+                0%,100%{transform:scale(.6);opacity:.4}
+                50%{transform:scale(1.1);opacity:1}
+              }
+            </style>
+          `;
+          document.body.appendChild(aiModal);
+        }
+        aiModal.style.display = 'flex';
+
+        try {
+          const prompt = `Você é um redator jornalístico profissional para a ASPROC (Associação dos Produtores Rurais de Carauari, Amazonas). 
+          
+Formate e melhore o seguinte conteúdo de notícia, produzindo HTML rico e bem estruturado para o corpo do artigo.
+
+TÍTULO: ${titulo || '(sem título)'}
+RESUMO: ${resumo || '(sem resumo)'}
+CONTEÚDO BRUTO:
+${conteudoRaw || '(sem conteúdo — crie um texto de exemplo baseado no título)'}
+
+INSTRUÇÕES:
+1. Estruture o texto com parágrafos introdutório, desenvolvimento e conclusão.
+2. Use tags HTML: <h2> para subtítulos, <p> para parágrafos, <blockquote> para citações relevantes, <ul>/<li> para listas quando apropriado, <strong> para ênfases importantes.
+3. Mantenha tom institucional, informativo e profissional, adequado à comunicação de uma associação rural amazônica.
+4. Se o conteúdo mencionar números, datas, nomes de comunidades ou programas, preserve-os com precisão.
+5. Adicione uma seção de contexto se o texto for muito curto.
+6. NÃO inclua o título principal nem o resumo no HTML retornado — apenas o corpo do artigo.
+7. Retorne SOMENTE o HTML puro (sem \`\`\`html, sem DOCTYPE, sem <body>).`;
+
+          const response = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              model: 'claude-sonnet-4-20250514',
+              max_tokens: 1000,
+              messages: [{ role: 'user', content: prompt }]
+            })
+          });
+
+          const data = await response.json();
+          if (!response.ok) throw new Error(data.error?.message || 'Erro na API');
+
+          const htmlFormatado = data.content
+            .filter(b => b.type === 'text')
+            .map(b => b.text)
+            .join('')
+            .replace(/```html?/gi, '')
+            .replace(/```/g, '')
+            .trim();
+
+          if (htmlFormatado) {
+            document.getElementById('n-rte-body').innerHTML = htmlFormatado;
+            syncRteToHidden();
+            toast('✅ Conteúdo formatado com sucesso!', 'success');
+          } else {
+            throw new Error('A IA não retornou conteúdo.');
+          }
+        } catch (e) {
+          toast('❌ Erro ao formatar: ' + e.message, 'error');
+        } finally {
+          aiModal.style.display = 'none';
+          btn.disabled = false;
+          btn.textContent = '✨ Auto-formatar';
+        }
+      }
+
       checkSession();
 
       // Expõe funções usadas em onclick="" para o escopo global
@@ -4178,6 +4296,7 @@ footer a{color:#10b981;}
       window.resetarTextos = resetarTextos;
       window.switchTextosLang = switchTextosLang;
       window.filtrarCamposTextos = filtrarCamposTextos;
+      window.aiAutoFormat = aiAutoFormat;
 
     }); // DOMContentLoaded
   </script>
