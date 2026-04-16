@@ -3423,58 +3423,6 @@
       }
 
       /* ── Descobre qual bucket usar: lista os existentes e tenta os candidatos ── */
-      async function resolverBucket(sbUrl, sbKey, authToken) {
-        // Candidatos em ordem de preferência
-        const CANDIDATOS = ['imagens', 'images', 'public', 'media', 'uploads', 'storage', 'files'];
-
-        // 1. Lista buckets disponíveis
-        try {
-          const listRes = await fetch(`${sbUrl}/storage/v1/bucket`, {
-            headers: { 'apikey': sbKey, 'Authorization': `Bearer ${authToken}` }
-          });
-          if (listRes.ok) {
-            const buckets = await listRes.json().catch(() => []);
-            if (Array.isArray(buckets) && buckets.length > 0) {
-              // Prefere um dos candidatos se existir
-              for (const c of CANDIDATOS) {
-                const found = buckets.find(b => b.name === c || b.id === c);
-                if (found) return found.name || found.id;
-              }
-              // Senão usa o primeiro bucket disponível
-              return buckets[0].name || buckets[0].id;
-            }
-          }
-        } catch (_) { /* ignora erro na listagem */ }
-
-        // 2. Sem buckets listados — tenta cada candidato com um upload de teste mínimo
-        // (some políticas RLS bloqueiam a listagem mas permitem upload)
-        for (const c of CANDIDATOS) {
-          const probe = await fetch(`${sbUrl}/storage/v1/object/info/${c}/probe-check`, {
-            headers: { 'apikey': sbKey, 'Authorization': `Bearer ${authToken}` }
-          }).catch(() => null);
-          // 404 = bucket existe mas arquivo não; 400/other = também pode existir
-          // só 404 "Bucket not found" indica ausência real
-          if (probe && probe.status !== 400) return c;
-        }
-
-        // 3. Último recurso — tenta criar bucket "imagens"
-        const createRes = await fetch(`${sbUrl}/storage/v1/bucket`, {
-          method: 'POST',
-          headers: {
-            'apikey': sbKey,
-            'Authorization': `Bearer ${authToken}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ id: 'imagens', name: 'imagens', public: true })
-        }).catch(() => null);
-        if (createRes && (createRes.ok || createRes.status === 409)) return 'imagens';
-
-        throw new Error(
-          'Nenhum bucket de Storage encontrado. Crie um bucket público no painel do Supabase ' +
-          '(Storage → New bucket → nome: "imagens" → Public ✓) e tente novamente.'
-        );
-      }
-
       async function uploadCapaImagem(input) {
         const file = input.files && input.files[0];
         if (!file) return;
@@ -3488,16 +3436,18 @@
         const { url: sbUrl, key: sbKey } = getSupabase();
         if (!sbUrl || !sbKey) { toast('Supabase não configurado.', 'error'); return; }
 
-        // UI — inicia progresso
+        // UI
         const wrap = document.getElementById('upload-progress-wrap');
         const bar = document.getElementById('upload-progress-bar');
         const msg = document.getElementById('upload-progress-msg');
         const lbl = document.getElementById('btn-upload-img');
+        const aviso = document.getElementById('upload-bucket-aviso');
+        if (aviso) aviso.style.display = 'none';
         wrap.style.display = 'block';
-        bar.style.width = '10%';
+        bar.style.width = '15%';
         bar.style.background = 'var(--accent)';
         msg.style.color = 'var(--text-muted)';
-        msg.textContent = 'Localizando bucket…';
+        msg.textContent = 'Enviando imagem…';
         lbl.style.pointerEvents = 'none';
         lbl.style.opacity = '.5';
 
@@ -3506,17 +3456,12 @@
           const sessionToken = localStorage.getItem('asproc_token');
           const authToken = sessionToken || sbKey;
 
-          // Passo 1 — descobre bucket disponível
-          bar.style.width = '25%';
-          const BUCKET = await resolverBucket(sbUrl, sbKey, authToken);
-
-          // Passo 2 — faz upload
           const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z]/g, '') || 'jpg';
           const nome = `capa-${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${ext}`;
           const path = `noticias/${nome}`;
+          const BUCKET = 'imagens';
 
-          msg.textContent = `Enviando para "${BUCKET}"…`;
-          bar.style.width = '55%';
+          bar.style.width = '50%';
 
           const res = await fetch(`${sbUrl}/storage/v1/object/${BUCKET}/${path}`, {
             method: 'POST',
@@ -3529,18 +3474,40 @@
             body: file
           });
 
-          bar.style.width = '85%';
+          bar.style.width = '90%';
 
           if (!res.ok) {
             const err = await res.json().catch(() => ({}));
-            // Se bucket não existe mesmo após resolverBucket, orienta o usuário
-            if (res.status === 400 && (err.message || '').toLowerCase().includes('bucket')) {
-              throw new Error(
-                `Bucket "${BUCKET}" não encontrado ou sem permissão. ` +
-                'Crie um bucket público no Supabase: Storage → New bucket → nome: "imagens" → marque Public → Create.'
-              );
+            const errMsg = err.message || err.error || '';
+
+            // Erro de RLS / permissão → mostra instrução específica
+            if (res.status === 400 || res.status === 403) {
+              if (aviso) {
+                aviso.innerHTML = `
+                  <div style="font-size:.75rem;font-weight:600;color:var(--amber);margin-bottom:.5rem;">⚠️ Falta política de acesso no bucket</div>
+                  <div style="font-size:.72rem;color:var(--text-muted);line-height:1.6;">
+                    O bucket <strong style="color:var(--text);">imagens</strong> existe mas precisa de uma política de upload.<br>
+                    No painel do Supabase:
+                  </div>
+                  <ol style="font-size:.72rem;color:var(--text-muted);line-height:1.8;padding-left:1.1rem;margin-top:.4rem;">
+                    <li>Acesse <strong style="color:var(--text);">Storage → Policies</strong></li>
+                    <li>Clique em <strong style="color:var(--text);">New policy</strong> no bucket <code style="background:var(--bg3);padding:.1rem .3rem;border-radius:3px;">imagens</code></li>
+                    <li>Selecione <strong style="color:var(--text);">For full customization</strong></li>
+                    <li>Policy name: <code style="background:var(--bg3);padding:.1rem .3rem;border-radius:3px;">allow_all</code></li>
+                    <li>Allowed operation: marque <strong style="color:var(--text);">ALL</strong></li>
+                    <li>Target roles: <strong style="color:var(--text);">authenticated</strong></li>
+                    <li>USING e WITH CHECK: digite <code style="background:var(--bg3);padding:.1rem .3rem;border-radius:3px;">true</code></li>
+                    <li>Clique <strong style="color:var(--text);">Review → Save policy</strong></li>
+                  </ol>
+                  <a href="https://supabase.com/dashboard/project/_/storage/buckets" target="_blank"
+                    style="display:inline-block;margin-top:.4rem;font-size:.72rem;font-weight:600;color:var(--accent);">
+                    🔗 Abrir Supabase Storage →
+                  </a>`;
+                aviso.style.display = 'block';
+              }
+              throw new Error(errMsg || `Sem permissão para upload (HTTP ${res.status})`);
             }
-            throw new Error(err.message || err.error || `HTTP ${res.status}`);
+            throw new Error(errMsg || `HTTP ${res.status}`);
           }
 
           const publicUrl = `${sbUrl}/storage/v1/object/public/${BUCKET}/${path}`;
@@ -3550,24 +3517,14 @@
           document.getElementById('n-imagem').value = publicUrl;
           updateImgPreview();
           toast('✅ Imagem anexada com sucesso!', 'success');
-          const _av = document.getElementById('upload-bucket-aviso'); if (_av) _av.style.display = 'none';
 
-          setTimeout(() => { wrap.style.display = 'none'; bar.style.width = '0%'; }, 2200);
+          setTimeout(() => { wrap.style.display = 'none'; bar.style.width = '0%'; }, 2000);
 
         } catch (e) {
           bar.style.background = 'var(--red)';
           bar.style.width = '100%';
           msg.style.color = 'var(--red)';
           msg.textContent = '❌ ' + e.message;
-          toast('❌ ' + e.message, 'error');
-          // Se for erro de bucket, mostra o painel de instrução
-          const aviso = document.getElementById('upload-bucket-aviso');
-          if (aviso && (e.message.includes('bucket') || e.message.includes('Bucket') || e.message.includes('Storage'))) {
-            const { url: _u } = getSupabase();
-            const linkEl = document.getElementById('upload-bucket-link');
-            if (linkEl && _u) linkEl.href = _u.replace('supabase.co', 'supabase.com/dashboard/project/') + '/storage/buckets';
-            aviso.style.display = 'block';
-          }
           setTimeout(() => {
             wrap.style.display = 'none';
             bar.style.width = '0%';
