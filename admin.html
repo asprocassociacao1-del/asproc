@@ -3405,47 +3405,86 @@
         updateImgPreview();
       }
 
+      /* ── Garante que o bucket existe; cria se necessário ── */
+      async function ensureBucket(sbUrl, sbKey, authToken, bucketName) {
+        // 1. Tenta listar os buckets para ver se já existe
+        const listRes = await fetch(`${sbUrl}/storage/v1/bucket`, {
+          headers: { 'apikey': sbKey, 'Authorization': `Bearer ${authToken}` }
+        });
+        if (listRes.ok) {
+          const buckets = await listRes.json().catch(() => []);
+          const exists = Array.isArray(buckets) && buckets.some(b => b.name === bucketName || b.id === bucketName);
+          if (exists) return true;
+        }
+        // 2. Bucket não encontrado — cria como público
+        const createRes = await fetch(`${sbUrl}/storage/v1/bucket`, {
+          method: 'POST',
+          headers: {
+            'apikey': sbKey,
+            'Authorization': `Bearer ${authToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ id: bucketName, name: bucketName, public: true, file_size_limit: 10485760 })
+        });
+        if (!createRes.ok) {
+          const err = await createRes.json().catch(() => ({}));
+          // Se for erro de conflito (já existe), ignora
+          if (createRes.status === 409 || (err.error || '').includes('already exists')) return true;
+          throw new Error('Não foi possível criar o bucket de imagens: ' + (err.message || err.error || createRes.status));
+        }
+        return true;
+      }
+
       async function uploadCapaImagem(input) {
         const file = input.files && input.files[0];
         if (!file) return;
 
         // Validações
-        const MAX = 5 * 1024 * 1024;
-        if (file.size > MAX) { toast('Imagem muito grande. Máximo 5 MB.', 'error'); input.value = ''; return; }
+        const MAX = 10 * 1024 * 1024;
+        if (file.size > MAX) { toast('Imagem muito grande. Máximo 10 MB.', 'error'); input.value = ''; return; }
         const TIPOS = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
         if (!TIPOS.includes(file.type)) { toast('Formato inválido. Use JPG, PNG ou WebP.', 'error'); input.value = ''; return; }
 
         const { url: sbUrl, key: sbKey } = getSupabase();
         if (!sbUrl || !sbKey) { toast('Supabase não configurado.', 'error'); return; }
 
-        // UI: mostra progresso, bloqueia botão
+        // UI — inicia progresso
         const wrap = document.getElementById('upload-progress-wrap');
         const bar = document.getElementById('upload-progress-bar');
         const msg = document.getElementById('upload-progress-msg');
         const lbl = document.getElementById('btn-upload-img');
         wrap.style.display = 'block';
-        bar.style.width = '15%';
+        bar.style.width = '10%';
         bar.style.background = 'var(--accent)';
         msg.style.color = 'var(--text-muted)';
-        msg.textContent = 'Enviando imagem…';
+        msg.textContent = 'Preparando…';
         lbl.style.pointerEvents = 'none';
         lbl.style.opacity = '.5';
 
         try {
           await ensureValidToken();
           const sessionToken = localStorage.getItem('asproc_token');
+          const authToken = sessionToken || sbKey;
 
+          // Passo 1 — garante bucket
+          msg.textContent = 'Verificando bucket…';
+          bar.style.width = '25%';
+          const BUCKET = 'imagens';
+          await ensureBucket(sbUrl, sbKey, authToken, BUCKET);
+
+          // Passo 2 — faz upload
           const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z]/g, '') || 'jpg';
           const nome = `capa-${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${ext}`;
           const path = `noticias/${nome}`;
 
-          bar.style.width = '45%';
+          msg.textContent = 'Enviando imagem…';
+          bar.style.width = '55%';
 
-          const res = await fetch(`${sbUrl}/storage/v1/object/imagens/${path}`, {
+          const res = await fetch(`${sbUrl}/storage/v1/object/${BUCKET}/${path}`, {
             method: 'POST',
             headers: {
               'apikey': sbKey,
-              'Authorization': `Bearer ${sessionToken || sbKey}`,
+              'Authorization': `Bearer ${authToken}`,
               'Content-Type': file.type,
               'x-upsert': 'true'
             },
@@ -3459,7 +3498,7 @@
             throw new Error(err.message || err.error || `HTTP ${res.status}`);
           }
 
-          const publicUrl = `${sbUrl}/storage/v1/object/public/imagens/${path}`;
+          const publicUrl = `${sbUrl}/storage/v1/object/public/${BUCKET}/${path}`;
           bar.style.width = '100%';
           msg.textContent = '✅ Upload concluído!';
 
@@ -3479,7 +3518,7 @@
             wrap.style.display = 'none';
             bar.style.width = '0%';
             bar.style.background = 'var(--accent)';
-          }, 3500);
+          }, 4000);
         } finally {
           lbl.style.pointerEvents = 'auto';
           lbl.style.opacity = '1';
