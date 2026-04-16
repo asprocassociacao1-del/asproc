@@ -1509,8 +1509,15 @@
                         </div>
                     </div>`).join('');
                 const ro = new IntersectionObserver(entries =>
-                    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible') }), { threshold: .1 });
-                grid.querySelectorAll('.nc.reveal').forEach(el => ro.observe(el));
+                    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); ro.unobserve(e.target); } }), { threshold: .05 });
+                grid.querySelectorAll('.nc.reveal').forEach(el => {
+                    const rect = el.getBoundingClientRect();
+                    if (rect.top < window.innerHeight && rect.bottom > 0) {
+                        requestAnimationFrame(() => el.classList.add('visible'));
+                    } else {
+                        ro.observe(el);
+                    }
+                });
                 renderPagButtons(totalNoticias, page);
                 if (page > 1) document.querySelector('.nf-wrap')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
             } catch (err) {
