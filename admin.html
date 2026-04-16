@@ -2416,6 +2416,23 @@
             </div>
           </div>
 
+          <!-- Aviso bucket não configurado -->
+          <div id="upload-bucket-aviso"
+            style="display:none;margin-bottom:.5rem;padding:.65rem .8rem;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:var(--radius);">
+            <div style="font-size:.75rem;font-weight:600;color:var(--amber);margin-bottom:.35rem;">⚠️ Storage não
+              configurado</div>
+            <div style="font-size:.72rem;color:var(--text-muted);line-height:1.5;">
+              Crie um bucket no Supabase:<br>
+              <strong style="color:var(--text);">Storage → New bucket</strong><br>
+              Nome: <code style="background:var(--bg3);padding:.1rem .3rem;border-radius:3px;">imagens</code>
+              &nbsp;·&nbsp; marque <strong style="color:var(--text);">Public</strong> ✓
+            </div>
+            <a id="upload-bucket-link" href="#" target="_blank"
+              style="display:inline-block;margin-top:.5rem;font-size:.72rem;font-weight:600;color:var(--accent);">
+              🔗 Abrir Supabase Storage →
+            </a>
+          </div>
+
           <!-- Separador ou URL manual -->
           <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;">
             <div style="flex:1;height:1px;background:var(--border);"></div>
@@ -3405,18 +3422,42 @@
         updateImgPreview();
       }
 
-      /* ── Garante que o bucket existe; cria se necessário ── */
-      async function ensureBucket(sbUrl, sbKey, authToken, bucketName) {
-        // 1. Tenta listar os buckets para ver se já existe
-        const listRes = await fetch(`${sbUrl}/storage/v1/bucket`, {
-          headers: { 'apikey': sbKey, 'Authorization': `Bearer ${authToken}` }
-        });
-        if (listRes.ok) {
-          const buckets = await listRes.json().catch(() => []);
-          const exists = Array.isArray(buckets) && buckets.some(b => b.name === bucketName || b.id === bucketName);
-          if (exists) return true;
+      /* ── Descobre qual bucket usar: lista os existentes e tenta os candidatos ── */
+      async function resolverBucket(sbUrl, sbKey, authToken) {
+        // Candidatos em ordem de preferência
+        const CANDIDATOS = ['imagens', 'images', 'public', 'media', 'uploads', 'storage', 'files'];
+
+        // 1. Lista buckets disponíveis
+        try {
+          const listRes = await fetch(`${sbUrl}/storage/v1/bucket`, {
+            headers: { 'apikey': sbKey, 'Authorization': `Bearer ${authToken}` }
+          });
+          if (listRes.ok) {
+            const buckets = await listRes.json().catch(() => []);
+            if (Array.isArray(buckets) && buckets.length > 0) {
+              // Prefere um dos candidatos se existir
+              for (const c of CANDIDATOS) {
+                const found = buckets.find(b => b.name === c || b.id === c);
+                if (found) return found.name || found.id;
+              }
+              // Senão usa o primeiro bucket disponível
+              return buckets[0].name || buckets[0].id;
+            }
+          }
+        } catch (_) { /* ignora erro na listagem */ }
+
+        // 2. Sem buckets listados — tenta cada candidato com um upload de teste mínimo
+        // (some políticas RLS bloqueiam a listagem mas permitem upload)
+        for (const c of CANDIDATOS) {
+          const probe = await fetch(`${sbUrl}/storage/v1/object/info/${c}/probe-check`, {
+            headers: { 'apikey': sbKey, 'Authorization': `Bearer ${authToken}` }
+          }).catch(() => null);
+          // 404 = bucket existe mas arquivo não; 400/other = também pode existir
+          // só 404 "Bucket not found" indica ausência real
+          if (probe && probe.status !== 400) return c;
         }
-        // 2. Bucket não encontrado — cria como público
+
+        // 3. Último recurso — tenta criar bucket "imagens"
         const createRes = await fetch(`${sbUrl}/storage/v1/bucket`, {
           method: 'POST',
           headers: {
@@ -3424,15 +3465,14 @@
             'Authorization': `Bearer ${authToken}`,
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ id: bucketName, name: bucketName, public: true, file_size_limit: 10485760 })
-        });
-        if (!createRes.ok) {
-          const err = await createRes.json().catch(() => ({}));
-          // Se for erro de conflito (já existe), ignora
-          if (createRes.status === 409 || (err.error || '').includes('already exists')) return true;
-          throw new Error('Não foi possível criar o bucket de imagens: ' + (err.message || err.error || createRes.status));
-        }
-        return true;
+          body: JSON.stringify({ id: 'imagens', name: 'imagens', public: true })
+        }).catch(() => null);
+        if (createRes && (createRes.ok || createRes.status === 409)) return 'imagens';
+
+        throw new Error(
+          'Nenhum bucket de Storage encontrado. Crie um bucket público no painel do Supabase ' +
+          '(Storage → New bucket → nome: "imagens" → Public ✓) e tente novamente.'
+        );
       }
 
       async function uploadCapaImagem(input) {
@@ -3457,7 +3497,7 @@
         bar.style.width = '10%';
         bar.style.background = 'var(--accent)';
         msg.style.color = 'var(--text-muted)';
-        msg.textContent = 'Preparando…';
+        msg.textContent = 'Localizando bucket…';
         lbl.style.pointerEvents = 'none';
         lbl.style.opacity = '.5';
 
@@ -3466,18 +3506,16 @@
           const sessionToken = localStorage.getItem('asproc_token');
           const authToken = sessionToken || sbKey;
 
-          // Passo 1 — garante bucket
-          msg.textContent = 'Verificando bucket…';
+          // Passo 1 — descobre bucket disponível
           bar.style.width = '25%';
-          const BUCKET = 'imagens';
-          await ensureBucket(sbUrl, sbKey, authToken, BUCKET);
+          const BUCKET = await resolverBucket(sbUrl, sbKey, authToken);
 
           // Passo 2 — faz upload
           const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z]/g, '') || 'jpg';
           const nome = `capa-${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${ext}`;
           const path = `noticias/${nome}`;
 
-          msg.textContent = 'Enviando imagem…';
+          msg.textContent = `Enviando para "${BUCKET}"…`;
           bar.style.width = '55%';
 
           const res = await fetch(`${sbUrl}/storage/v1/object/${BUCKET}/${path}`, {
@@ -3495,6 +3533,13 @@
 
           if (!res.ok) {
             const err = await res.json().catch(() => ({}));
+            // Se bucket não existe mesmo após resolverBucket, orienta o usuário
+            if (res.status === 400 && (err.message || '').toLowerCase().includes('bucket')) {
+              throw new Error(
+                `Bucket "${BUCKET}" não encontrado ou sem permissão. ` +
+                'Crie um bucket público no Supabase: Storage → New bucket → nome: "imagens" → marque Public → Create.'
+              );
+            }
             throw new Error(err.message || err.error || `HTTP ${res.status}`);
           }
 
@@ -3505,6 +3550,7 @@
           document.getElementById('n-imagem').value = publicUrl;
           updateImgPreview();
           toast('✅ Imagem anexada com sucesso!', 'success');
+          const _av = document.getElementById('upload-bucket-aviso'); if (_av) _av.style.display = 'none';
 
           setTimeout(() => { wrap.style.display = 'none'; bar.style.width = '0%'; }, 2200);
 
@@ -3513,12 +3559,20 @@
           bar.style.width = '100%';
           msg.style.color = 'var(--red)';
           msg.textContent = '❌ ' + e.message;
-          toast('❌ Falha no upload: ' + e.message, 'error');
+          toast('❌ ' + e.message, 'error');
+          // Se for erro de bucket, mostra o painel de instrução
+          const aviso = document.getElementById('upload-bucket-aviso');
+          if (aviso && (e.message.includes('bucket') || e.message.includes('Bucket') || e.message.includes('Storage'))) {
+            const { url: _u } = getSupabase();
+            const linkEl = document.getElementById('upload-bucket-link');
+            if (linkEl && _u) linkEl.href = _u.replace('supabase.co', 'supabase.com/dashboard/project/') + '/storage/buckets';
+            aviso.style.display = 'block';
+          }
           setTimeout(() => {
             wrap.style.display = 'none';
             bar.style.width = '0%';
             bar.style.background = 'var(--accent)';
-          }, 4000);
+          }, 6000);
         } finally {
           lbl.style.pointerEvents = 'auto';
           lbl.style.opacity = '1';
