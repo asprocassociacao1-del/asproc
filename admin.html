@@ -59,6 +59,66 @@
       line-height: 1.5;
     }
 
+    /* ── AVISO CONTEXT MENU ── */
+    .ae-ctx-item {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .45rem .75rem;
+      font-size: .83rem;
+      color: var(--text-dim);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background var(--transition), color var(--transition);
+    }
+
+    .ae-ctx-item:hover {
+      background: var(--accent-soft);
+      color: var(--text);
+    }
+
+    .ae-ctx-font-btn {
+      padding: .2rem .5rem;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text-dim);
+      font-size: .75rem;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: all var(--transition);
+    }
+
+    .ae-ctx-font-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .ae-ctx-size-btn {
+      padding: .18rem .4rem;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text-dim);
+      font-size: .72rem;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      transition: all var(--transition);
+    }
+
+    .ae-ctx-size-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    #aviso-editor-overlay {
+      display: none;
+    }
+
+    #aviso-editor-overlay.open {
+      display: flex;
+    }
+
     /* ── LOGIN ── */
     #login-screen {
       position: fixed;
@@ -2593,42 +2653,317 @@
     </div>
   </div>
 
-  <!-- ════ MODAL AVISOS ════ -->
-  <div class="modal-overlay" id="modal-avisos">
-    <div class="modal">
-      <div class="modal-head">
-        <h3 id="modal-avisos-title">Novo Aviso</h3><button class="modal-close" onclick="closeModal('avisos')">✕</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-grid">
-          <div class="field full form-field"><label>Título *</label><input type="text" id="a-titulo"
-              placeholder="Ex: Reunião de associados"></div>
-          <div class="field full form-field"><label>Descrição *</label><textarea id="a-descricao"
-              placeholder="Detalhes do aviso…"></textarea></div>
-          <div class="field form-field"><label>Tipo</label>
-            <select id="a-tipo">
-              <option value="info">Informativo</option>
-              <option value="doc">Documento</option>
-              <option value="urgente">Urgente</option>
+  <!-- ════ EDITOR DE AVISO (fullscreen) ════ -->
+  <div id="aviso-editor-overlay"
+    style="display:none;position:fixed;inset:0;background:var(--bg);z-index:998;flex-direction:column;">
+    <!-- TOPBAR -->
+    <div class="ne-topbar">
+      <button class="btn btn-secondary btn-sm" onclick="closeAvisoEditor()">← Voltar</button>
+      <span class="ne-topbar-title" id="ae-topbar-title">Novo Aviso</span>
+      <button class="btn btn-primary btn-sm" onclick="saveAviso()">💾 Salvar aviso</button>
+    </div>
+
+    <div class="ne-body">
+      <!-- EDITOR PRINCIPAL -->
+      <div class="ne-editor-panel">
+        <input class="ne-title-input" id="a-titulo" type="text" placeholder="Título do aviso…">
+        <textarea class="ne-resumo-input" id="a-resumo" placeholder="Resumo breve (aparece nos cards)…"
+          rows="2"></textarea>
+
+        <!-- Rich Text Editor -->
+        <div class="rte-wrap">
+          <div class="rte-toolbar" id="ae-rte-toolbar">
+            <select class="rte-select" onmousedown="aeRteSaveSelection()" onchange="aeRteBlock(this.value)"
+              title="Estilo do bloco">
+              <option value="p">Parágrafo</option>
+              <option value="h2">Título 2</option>
+              <option value="h3">Título 3</option>
+              <option value="blockquote">Citação</option>
+              <option value="pre">Código</option>
             </select>
-          </div>
-          <div class="field form-field"><label>Data de publicação</label><input type="date" id="a-data"></div>
-          <div class="field full form-field"><label>URL do documento (opcional)</label><input type="url" id="a-doc"
-              placeholder="https://…"></div>
-          <div class="field full">
-            <div class="toggle-row">
-              <span class="toggle-label">Publicado</span>
-              <label class="toggle"><input type="checkbox" id="a-publicado" checked><span
-                  class="toggle-slider"></span></label>
+            <select class="rte-select" onmousedown="aeRteSaveSelection()" onchange="aeRteExec('fontName',this.value)"
+              title="Fonte">
+              <option value="Inter,sans-serif">Inter</option>
+              <option value="Playfair Display,serif">Playfair Display</option>
+              <option value="Georgia,serif">Georgia</option>
+              <option value="Arial,sans-serif">Arial</option>
+              <option value="Courier New,monospace">Courier</option>
+            </select>
+            <input type="number" class="rte-fontsize" value="16" min="8" max="72" onmousedown="aeRteSaveSelection()"
+              onkeydown="if(event.key==='Enter'){event.preventDefault();aeRteFontSize(this.value);}"
+              onchange="aeRteFontSize(this.value)" title="Tamanho da fonte">
+            <div class="rte-sep"></div>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="aeRteExec('bold')"
+              title="Negrito"><b>B</b></button>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="aeRteExec('italic')"
+              title="Itálico"><i>I</i></button>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="aeRteExec('underline')"
+              title="Sublinhado"><u>U</u></button>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="aeRteExec('strikeThrough')"
+              title="Tachado"><s>S</s></button>
+            <div class="rte-sep"></div>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="aeRteExec('justifyLeft')"
+              title="Esquerda">⬅</button>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="aeRteExec('justifyCenter')"
+              title="Centro">☰</button>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="aeRteExec('justifyRight')"
+              title="Direita">➡</button>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="aeRteExec('justifyFull')"
+              title="Justificar">☷</button>
+            <div class="rte-sep"></div>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="aeRteExec('insertUnorderedList')"
+              title="Lista">• ≡</button>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="aeRteExec('insertOrderedList')"
+              title="Lista numerada">1.≡</button>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="aeRteExec('indent')"
+              title="Recuo">→|</button>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="aeRteExec('outdent')"
+              title="-Recuo">|←</button>
+            <div class="rte-sep"></div>
+            <div class="rte-color-btn" title="Cor do texto"
+              style="background:linear-gradient(135deg,#fff 50%,#e74c3c 50%)">
+              <input type="color" value="#e2e8f0" onchange="aeRteExec('foreColor',this.value)">
             </div>
+            <div class="rte-color-btn" title="Realce" style="background:linear-gradient(135deg,#fff 50%,#f1c40f 50%)">
+              <input type="color" value="#f1c40f" onchange="aeRteExec('hiliteColor',this.value)">
+            </div>
+            <div class="rte-sep"></div>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="aeRteInsertLink()"
+              title="Inserir link">🔗</button>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="aeRteExec('unlink')"
+              title="Remover link">🚫🔗</button>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="aeRteInsertDivider()"
+              title="Linha">—</button>
+            <div class="rte-sep"></div>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="aeRteExec('undo')"
+              title="Desfazer">↩</button>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="aeRteExec('redo')"
+              title="Refazer">↪</button>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="aeRteClearFormat()"
+              title="Limpar formatação">✕A</button>
+          </div>
+          <div id="ae-rte-body" class="rte-body" contenteditable="true" oninput="aeSync()"
+            oncontextmenu="aeContextMenu(event)" style="min-height:320px;">
           </div>
         </div>
+        <textarea id="a-descricao" style="display:none;"></textarea>
       </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary btn-sm" onclick="closeModal('avisos')">Cancelar</button>
-        <button class="btn btn-primary btn-sm" onclick="saveAviso()">💾 Salvar aviso</button>
+
+      <!-- PAINEL LATERAL -->
+      <div class="ne-preview-panel">
+
+        <!-- Metadados -->
+        <div class="ne-panel-section">
+          <div class="ne-panel-label">Metadados</div>
+          <select class="ne-panel-select" id="a-tipo">
+            <option value="info">📋 Informativo</option>
+            <option value="doc">📄 Documento</option>
+            <option value="urgente">🚨 Urgente</option>
+            <option value="reuniao">🤝 Reunião</option>
+            <option value="financeiro">💰 Financeiro</option>
+          </select>
+          <input type="date" class="ne-panel-input" id="a-data">
+        </div>
+
+        <div class="ne-divider"></div>
+
+        <!-- Imagem de capa -->
+        <div class="ne-panel-section">
+          <div class="ne-panel-label">Imagem de capa</div>
+          <div class="ne-img-preview" id="ae-img-preview">
+            <span id="ae-img-placeholder">Sem imagem</span>
+          </div>
+          <label for="a-capa-file"
+            style="display:flex;align-items:center;justify-content:center;gap:.4rem;width:100%;padding:.55rem;margin-bottom:.4rem;background:var(--accent-soft);border:1px solid rgba(59,130,246,.25);border-radius:var(--radius);color:var(--accent);font-size:.8rem;font-weight:600;cursor:pointer;transition:background var(--transition);"
+            onmouseover="this.style.background='rgba(59,130,246,.2)'"
+            onmouseout="this.style.background='var(--accent-soft)'">
+            📁 Anexar foto de capa
+          </label>
+          <input type="file" id="a-capa-file" accept="image/jpeg,image/png,image/webp,image/gif" style="display:none;"
+            onchange="aeUploadCapa(this)">
+          <div id="ae-upload-progress-wrap" style="display:none;margin-bottom:.5rem;">
+            <div style="height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;">
+              <div id="ae-upload-progress-bar"
+                style="height:100%;width:0%;background:var(--accent);transition:width .3s;"></div>
+            </div>
+            <div id="ae-upload-progress-msg" style="font-size:.72rem;color:var(--text-muted);margin-top:.3rem;">
+              Enviando…</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;">
+            <div style="flex:1;height:1px;background:var(--border);"></div>
+            <span style="font-size:.7rem;color:var(--text-muted);">ou cole a URL</span>
+            <div style="flex:1;height:1px;background:var(--border);"></div>
+          </div>
+          <input type="url" class="ne-panel-input" id="a-capa-url" placeholder="URL da imagem…"
+            oninput="aeUpdateImgPreview()">
+          <button id="ae-btn-remover-img" onclick="aeRemoverCapa()"
+            style="display:none;width:100%;margin-top:.4rem;padding:.4rem;background:var(--red-soft);border:1px solid rgba(239,68,68,.2);border-radius:var(--radius);color:var(--red);font-size:.75rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">
+            🗑 Remover imagem
+          </button>
+        </div>
+
+        <div class="ne-divider"></div>
+
+        <!-- Anexos de documentos -->
+        <div class="ne-panel-section">
+          <div class="ne-panel-label">Documentos para download</div>
+          <div id="ae-anexos-list" style="display:flex;flex-direction:column;gap:.4rem;margin-bottom:.6rem;"></div>
+
+          <label for="a-doc-file"
+            style="display:flex;align-items:center;justify-content:center;gap:.4rem;width:100%;padding:.55rem;margin-bottom:.4rem;background:var(--green-soft);border:1px solid rgba(16,185,129,.25);border-radius:var(--radius);color:var(--green);font-size:.8rem;font-weight:600;cursor:pointer;transition:background var(--transition);"
+            onmouseover="this.style.background='rgba(16,185,129,.2)'"
+            onmouseout="this.style.background='var(--green-soft)'">
+            📎 Anexar documento
+          </label>
+          <input type="file" id="a-doc-file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx" style="display:none;"
+            multiple onchange="aeUploadDocs(this)">
+
+          <p style="font-size:.7rem;color:var(--text-muted);text-align:center;margin-top:.2rem;">
+            PDF, Word, Excel, PowerPoint
+          </p>
+
+          <!-- URL manual de doc -->
+          <div style="display:flex;align-items:center;gap:.5rem;margin:.4rem 0;">
+            <div style="flex:1;height:1px;background:var(--border);"></div>
+            <span style="font-size:.7rem;color:var(--text-muted);">ou cole a URL</span>
+            <div style="flex:1;height:1px;background:var(--border);"></div>
+          </div>
+          <div style="display:flex;gap:.4rem;">
+            <input type="url" class="ne-panel-input" id="ae-doc-url-input" placeholder="URL do documento…"
+              style="margin:0;flex:1;">
+            <button onclick="aeAddDocUrl()"
+              style="padding:.4rem .6rem;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);color:var(--text-dim);font-size:.8rem;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;">
+              + Add
+            </button>
+          </div>
+        </div>
+
+        <div class="ne-divider"></div>
+
+        <!-- Publicação -->
+        <div class="ne-panel-section">
+          <div class="ne-panel-label">Publicação</div>
+          <div class="toggle-row">
+            <span class="toggle-label">🌐 Publicado</span>
+            <label class="toggle"><input type="checkbox" id="a-publicado" checked><span
+                class="toggle-slider"></span></label>
+          </div>
+          <div class="toggle-row" style="margin-top:.5rem;">
+            <span class="toggle-label">🔴 Urgente / Destaque</span>
+            <label class="toggle"><input type="checkbox" id="a-destaque"><span class="toggle-slider"></span></label>
+          </div>
+        </div>
+
       </div>
     </div>
+
+    <!-- Popup de link do aviso editor -->
+    <div class="rte-link-popup" id="ae-rte-link-popup" style="display:none;">
+      <div style="font-size:.82rem;font-weight:600;margin-bottom:.5rem;color:var(--accent);">🔗 Inserir link</div>
+      <input type="url" id="ae-rte-link-url" placeholder="https://"
+        style="width:100%;padding:.5rem .75rem;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Inter',sans-serif;font-size:.84rem;outline:none;margin-bottom:.5rem;">
+      <input type="text" id="ae-rte-link-text" placeholder="Texto do link"
+        style="width:100%;padding:.5rem .75rem;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Inter',sans-serif;font-size:.84rem;outline:none;margin-bottom:.75rem;">
+      <div style="display:flex;gap:.5rem;">
+        <button class="btn btn-primary btn-sm" onclick="aeRteConfirmLink()">Inserir</button>
+        <button class="btn btn-secondary btn-sm"
+          onclick="document.getElementById('ae-rte-link-popup').style.display='none'">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ MENU DE CONTEXTO DO EDITOR DE AVISOS ════ -->
+  <div id="ae-context-menu"
+    style="display:none;position:fixed;z-index:9999;background:var(--bg2);border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.5);padding:.4rem;min-width:220px;">
+    <div
+      style="padding:.3rem .6rem;font-size:.68rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.2rem;">
+      Formatação de Texto</div>
+
+    <div class="ae-ctx-item" onclick="aeRteExec('bold');aeHideCtx()"><b style="margin-right:.5rem;">B</b> Negrito</div>
+    <div class="ae-ctx-item" onclick="aeRteExec('italic');aeHideCtx()"><i style="margin-right:.5rem;">I</i> Itálico
+    </div>
+    <div class="ae-ctx-item" onclick="aeRteExec('underline');aeHideCtx()"><u style="margin-right:.5rem;">U</u>
+      Sublinhado</div>
+    <div class="ae-ctx-item" onclick="aeRteExec('strikeThrough');aeHideCtx()"><s style="margin-right:.5rem;">S</s>
+      Tachado</div>
+
+    <div style="height:1px;background:var(--border);margin:.35rem 0;"></div>
+    <div
+      style="padding:.3rem .6rem;font-size:.68rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.2rem;">
+      Fonte</div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:.3rem;padding:.2rem .6rem .4rem;">
+      <button class="ae-ctx-font-btn" onclick="aeRteExec('fontName','Inter,sans-serif');aeHideCtx()">Inter</button>
+      <button class="ae-ctx-font-btn" onclick="aeRteExec('fontName','Georgia,serif');aeHideCtx()">Georgia</button>
+      <button class="ae-ctx-font-btn" onclick="aeRteExec('fontName','Arial,sans-serif');aeHideCtx()">Arial</button>
+      <button class="ae-ctx-font-btn"
+        onclick="aeRteExec('fontName','Courier New,monospace');aeHideCtx()">Courier</button>
+      <button class="ae-ctx-font-btn"
+        onclick="aeRteExec('fontName','Playfair Display,serif');aeHideCtx()">Playfair</button>
+    </div>
+
+    <div style="padding:.2rem .6rem .4rem;display:flex;align-items:center;gap:.5rem;">
+      <span style="font-size:.75rem;color:var(--text-muted);">Tamanho:</span>
+      <div style="display:flex;flex-wrap:wrap;gap:.25rem;">
+        <button class="ae-ctx-size-btn" onclick="aeRteFontSize(12);aeHideCtx()">12</button>
+        <button class="ae-ctx-size-btn" onclick="aeRteFontSize(14);aeHideCtx()">14</button>
+        <button class="ae-ctx-size-btn" onclick="aeRteFontSize(16);aeHideCtx()">16</button>
+        <button class="ae-ctx-size-btn" onclick="aeRteFontSize(18);aeHideCtx()">18</button>
+        <button class="ae-ctx-size-btn" onclick="aeRteFontSize(20);aeHideCtx()">20</button>
+        <button class="ae-ctx-size-btn" onclick="aeRteFontSize(24);aeHideCtx()">24</button>
+        <button class="ae-ctx-size-btn" onclick="aeRteFontSize(32);aeHideCtx()">32</button>
+      </div>
+    </div>
+
+    <div style="height:1px;background:var(--border);margin:.35rem 0;"></div>
+    <div
+      style="padding:.3rem .6rem;font-size:.68rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.2rem;">
+      Cor</div>
+    <div style="display:flex;align-items:center;gap:.5rem;padding:.2rem .6rem .4rem;">
+      <span style="font-size:.75rem;color:var(--text-muted);">Texto:</span>
+      <div style="display:flex;gap:.3rem;">
+        <div onclick="aeRteExec('foreColor','#e2e8f0');aeHideCtx()" title="Padrão"
+          style="width:20px;height:20px;border-radius:4px;background:#e2e8f0;cursor:pointer;border:2px solid var(--border);">
+        </div>
+        <div onclick="aeRteExec('foreColor','#3b82f6');aeHideCtx()" title="Azul"
+          style="width:20px;height:20px;border-radius:4px;background:#3b82f6;cursor:pointer;"></div>
+        <div onclick="aeRteExec('foreColor','#10b981');aeHideCtx()" title="Verde"
+          style="width:20px;height:20px;border-radius:4px;background:#10b981;cursor:pointer;"></div>
+        <div onclick="aeRteExec('foreColor','#ef4444');aeHideCtx()" title="Vermelho"
+          style="width:20px;height:20px;border-radius:4px;background:#ef4444;cursor:pointer;"></div>
+        <div onclick="aeRteExec('foreColor','#f59e0b');aeHideCtx()" title="Âmbar"
+          style="width:20px;height:20px;border-radius:4px;background:#f59e0b;cursor:pointer;"></div>
+        <div onclick="aeRteExec('foreColor','#8b5cf6');aeHideCtx()" title="Roxo"
+          style="width:20px;height:20px;border-radius:4px;background:#8b5cf6;cursor:pointer;"></div>
+        <label title="Cor personalizada"
+          style="width:20px;height:20px;border-radius:4px;background:conic-gradient(red,yellow,lime,aqua,blue,magenta,red);cursor:pointer;overflow:hidden;position:relative;">
+          <input type="color" style="opacity:0;position:absolute;inset:0;cursor:pointer;"
+            onchange="aeRteExec('foreColor',this.value);aeHideCtx()">
+        </label>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:.5rem;padding:.2rem .6rem .4rem;">
+      <span style="font-size:.75rem;color:var(--text-muted);">Realce:</span>
+      <div style="display:flex;gap:.3rem;">
+        <div onclick="aeRteExec('hiliteColor','transparent');aeHideCtx()" title="Sem realce"
+          style="width:20px;height:20px;border-radius:4px;background:transparent;cursor:pointer;border:2px solid var(--border);font-size:9px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);">
+          ✕</div>
+        <div onclick="aeRteExec('hiliteColor','#fef08a');aeHideCtx()" title="Amarelo"
+          style="width:20px;height:20px;border-radius:4px;background:#fef08a;cursor:pointer;"></div>
+        <div onclick="aeRteExec('hiliteColor','#bbf7d0');aeHideCtx()" title="Verde"
+          style="width:20px;height:20px;border-radius:4px;background:#bbf7d0;cursor:pointer;"></div>
+        <div onclick="aeRteExec('hiliteColor','#bfdbfe');aeHideCtx()" title="Azul"
+          style="width:20px;height:20px;border-radius:4px;background:#bfdbfe;cursor:pointer;"></div>
+        <div onclick="aeRteExec('hiliteColor','#fecaca');aeHideCtx()" title="Rosa"
+          style="width:20px;height:20px;border-radius:4px;background:#fecaca;cursor:pointer;"></div>
+      </div>
+    </div>
+
+    <div style="height:1px;background:var(--border);margin:.35rem 0;"></div>
+
+    <div class="ae-ctx-item" onclick="aeRteInsertLink();aeHideCtx()">🔗 Criar link</div>
+    <div class="ae-ctx-item" onclick="aeRteExec('unlink');aeHideCtx()">🚫 Remover link</div>
+    <div class="ae-ctx-item" onclick="aeRteClearFormat();aeHideCtx()">✕A Limpar formatação</div>
   </div>
 
   <!-- ════ MODAL CANDIDATURA DETALHE ════ -->
@@ -3127,36 +3462,356 @@
         if (section === 'avisos') renderAvisos(val ? allAvisos.filter(a => a.tipo === val) : allAvisos);
       }
 
+      /* ══════════════════════════════════════════
+         EDITOR DE AVISOS (fullscreen)
+      ══════════════════════════════════════════ */
+      let aeAnexos = []; // [{nome, url, tipo}]
+      let aeSavedSel = null;
+
+      function openAvisoEditor() {
+        document.getElementById('aviso-editor-overlay').classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeAvisoEditor() {
+        document.getElementById('aviso-editor-overlay').classList.remove('open');
+        document.body.style.overflow = '';
+        editingId.avisos = null;
+        aeAnexos = [];
+        aeRenderAnexos();
+        document.getElementById('a-titulo').value = '';
+        document.getElementById('a-resumo').value = '';
+        document.getElementById('ae-rte-body').innerHTML = '';
+        document.getElementById('a-descricao').value = '';
+        document.getElementById('a-tipo').value = 'info';
+        document.getElementById('a-data').value = new Date().toISOString().split('T')[0];
+        document.getElementById('a-publicado').checked = true;
+        document.getElementById('a-destaque').checked = false;
+        document.getElementById('a-capa-url').value = '';
+        aeUpdateImgPreview();
+      }
+      window.closeAvisoEditor = closeAvisoEditor;
+
       function editAviso(id) {
         const a = allAvisos.find(x => x.id === id);
         if (!a) return;
         editingId.avisos = id;
-        document.getElementById('modal-avisos-title').textContent = 'Editar Aviso';
+        document.getElementById('ae-topbar-title').textContent = 'Editar Aviso';
         document.getElementById('a-titulo').value = a.titulo || '';
+        document.getElementById('a-resumo').value = a.resumo || '';
+        document.getElementById('ae-rte-body').innerHTML = a.descricao || '';
         document.getElementById('a-descricao').value = a.descricao || '';
         document.getElementById('a-tipo').value = a.tipo || 'info';
         document.getElementById('a-data').value = a.data_pub || '';
-        document.getElementById('a-doc').value = a.doc_url || '';
         document.getElementById('a-publicado').checked = !!a.publicado;
-        openModal('avisos');
+        document.getElementById('a-destaque').checked = !!a.destaque;
+        document.getElementById('a-capa-url').value = a.capa_url || '';
+        aeAnexos = Array.isArray(a.anexos) ? [...a.anexos] : (a.doc_url ? [{ nome: 'Documento', url: a.doc_url, tipo: 'link' }] : []);
+        aeRenderAnexos();
+        aeUpdateImgPreview();
+        openAvisoEditor();
       }
 
       async function saveAviso() {
+        const titulo = document.getElementById('a-titulo').value.trim();
+        const descricao = document.getElementById('ae-rte-body').innerHTML.trim();
+        if (!titulo || !descricao) { toast('Preencha título e conteúdo.', 'error'); return; }
         const data = {
-          titulo: document.getElementById('a-titulo').value.trim(),
-          descricao: document.getElementById('a-descricao').value.trim(),
+          titulo,
+          resumo: document.getElementById('a-resumo').value.trim(),
+          descricao,
           tipo: document.getElementById('a-tipo').value,
           data_pub: document.getElementById('a-data').value || new Date().toISOString().split('T')[0],
-          doc_url: document.getElementById('a-doc').value.trim() || null,
+          capa_url: document.getElementById('a-capa-url').value.trim() || null,
+          doc_url: aeAnexos.length ? aeAnexos[0].url : null,
+          anexos: aeAnexos,
           publicado: document.getElementById('a-publicado').checked,
+          destaque: document.getElementById('a-destaque').checked,
         };
-        if (!data.titulo || !data.descricao) { toast('Preencha título e descrição.', 'error'); return; }
         try {
           if (editingId.avisos) { await sbUpdate('avisos', editingId.avisos, data); toast('Aviso atualizado!', 'success'); }
           else { await sbInsert('avisos', data); toast('Aviso publicado!', 'success'); }
-          closeModal('avisos'); loadAvisos(); loadDashboard();
+          closeAvisoEditor(); loadAvisos(); loadDashboard();
         } catch (e) { toast('Erro: ' + e.message, 'error'); }
       }
+
+      // RTE helpers para o editor de avisos
+      function aeRteSaveSelection() {
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount) aeSavedSel = sel.getRangeAt(0).cloneRange();
+      }
+
+      function aeRteRestoreSelection() {
+        const rte = document.getElementById('ae-rte-body');
+        rte.focus();
+        if (aeSavedSel) {
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(aeSavedSel);
+        }
+      }
+
+      function aeRteExec(cmd, val) {
+        document.getElementById('ae-rte-body').focus();
+        document.execCommand(cmd, false, val || null);
+        aeSync();
+      }
+
+      function aeRteFontSize(px) {
+        aeRteRestoreSelection();
+        const span = document.createElement('span');
+        span.style.fontSize = px + 'px';
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount && !sel.isCollapsed) {
+          const range = sel.getRangeAt(0);
+          range.surroundContents(span);
+        } else {
+          document.getElementById('ae-rte-body').focus();
+          document.execCommand('fontSize', false, '3');
+          document.querySelectorAll('#ae-rte-body font[size="3"]').forEach(f => {
+            f.removeAttribute('size');
+            f.style.fontSize = px + 'px';
+          });
+        }
+        aeSync();
+      }
+
+      function aeRteBlock(tag) {
+        document.getElementById('ae-rte-body').focus();
+        document.execCommand('formatBlock', false, tag);
+        aeSync();
+      }
+
+      function aeRteClearFormat() {
+        document.getElementById('ae-rte-body').focus();
+        document.execCommand('removeFormat', false, null);
+        aeSync();
+      }
+
+      function aeRteInsertLink() {
+        aeRteSaveSelection();
+        const sel = window.getSelection();
+        const txt = sel && !sel.isCollapsed ? sel.toString() : '';
+        document.getElementById('ae-rte-link-text').value = txt;
+        document.getElementById('ae-rte-link-url').value = '';
+        const popup = document.getElementById('ae-rte-link-popup');
+        popup.style.cssText += ';display:block;top:50%;left:50%;transform:translate(-50%,-50%);';
+        document.getElementById('ae-rte-link-url').focus();
+      }
+
+      function aeRteConfirmLink() {
+        const url = document.getElementById('ae-rte-link-url').value.trim();
+        const txt = document.getElementById('ae-rte-link-text').value.trim();
+        if (!url) return;
+        aeRteRestoreSelection();
+        const sel = window.getSelection();
+        if (txt && sel && sel.isCollapsed) {
+          document.execCommand('insertHTML', false, `<a href="${url}" target="_blank" style="color:var(--accent)">${txt}</a>`);
+        } else {
+          document.execCommand('createLink', false, url);
+          if (sel && sel.anchorNode) {
+            const anchor = sel.anchorNode.parentElement?.closest('a') || sel.focusNode?.parentElement?.closest('a');
+            if (anchor) { anchor.target = '_blank'; anchor.style.color = 'var(--accent)'; }
+          }
+        }
+        document.getElementById('ae-rte-link-popup').style.display = 'none';
+        aeSync();
+      }
+      window.aeRteConfirmLink = aeRteConfirmLink;
+
+      function aeRteInsertDivider() {
+        document.getElementById('ae-rte-body').focus();
+        document.execCommand('insertHTML', false, '<hr style="border:none;border-top:1px solid rgba(255,255,255,.12);margin:1.5rem 0;"><p><br></p>');
+        aeSync();
+      }
+
+      function aeSync() {
+        document.getElementById('a-descricao').value = document.getElementById('ae-rte-body').innerHTML;
+      }
+
+      // Context menu
+      function aeContextMenu(e) {
+        const sel = window.getSelection();
+        if (!sel || sel.isCollapsed) return; // só mostra se houver texto selecionado
+        e.preventDefault();
+        aeRteSaveSelection();
+        const menu = document.getElementById('ae-context-menu');
+        menu.style.display = 'block';
+        const mx = Math.min(e.clientX, window.innerWidth - 240);
+        const my = Math.min(e.clientY, window.innerHeight - menu.offsetHeight - 20);
+        menu.style.left = mx + 'px';
+        menu.style.top = my + 'px';
+      }
+
+      function aeHideCtx() {
+        document.getElementById('ae-context-menu').style.display = 'none';
+      }
+      window.aeHideCtx = aeHideCtx;
+
+      document.addEventListener('click', function (e) {
+        const menu = document.getElementById('ae-context-menu');
+        if (menu && !menu.contains(e.target)) aeHideCtx();
+        const popup = document.getElementById('ae-rte-link-popup');
+        if (popup && !popup.contains(e.target) && popup.style.display !== 'none') {
+          const rte = document.getElementById('ae-rte-body');
+          const tb = document.getElementById('ae-rte-toolbar');
+          if (!rte?.contains(e.target) && !tb?.contains(e.target)) {
+            popup.style.display = 'none';
+          }
+        }
+      });
+
+      // Upload de capa do aviso
+      async function aeUploadCapa(input) {
+        const file = input.files[0];
+        if (!file) return;
+        const cfg = getSupabase();
+        if (!cfg) { toast('Configure o Supabase primeiro.', 'error'); return; }
+        const wrap = document.getElementById('ae-upload-progress-wrap');
+        const bar = document.getElementById('ae-upload-progress-bar');
+        const msg = document.getElementById('ae-upload-progress-msg');
+        wrap.style.display = 'block';
+        bar.style.width = '30%';
+        msg.textContent = 'Enviando imagem…';
+        try {
+          const ext = file.name.split('.').pop();
+          const path = `avisos/capa_${Date.now()}.${ext}`;
+          const xhr = new XMLHttpRequest();
+          xhr.upload.onprogress = e => { if (e.lengthComputable) bar.style.width = Math.round(e.loaded / e.total * 100) + '%'; };
+          await new Promise((res, rej) => {
+            xhr.open('POST', `${cfg.url}/storage/v1/object/imagens/${path}`);
+            xhr.setRequestHeader('Authorization', 'Bearer ' + cfg.key);
+            xhr.setRequestHeader('Content-Type', file.type);
+            xhr.onload = () => xhr.status < 300 ? res() : rej(new Error(xhr.responseText));
+            xhr.onerror = () => rej(new Error('Falha na rede'));
+            xhr.send(file);
+          });
+          const url = `${cfg.url}/storage/v1/object/public/imagens/${path}`;
+          document.getElementById('a-capa-url').value = url;
+          aeUpdateImgPreview();
+          bar.style.width = '100%';
+          msg.textContent = '✅ Imagem enviada!';
+          setTimeout(() => { wrap.style.display = 'none'; }, 2000);
+        } catch (e) {
+          toast('Erro no upload: ' + e.message, 'error');
+          wrap.style.display = 'none';
+        }
+        input.value = '';
+      }
+      window.aeUploadCapa = aeUploadCapa;
+
+      function aeUpdateImgPreview() {
+        const url = document.getElementById('a-capa-url').value.trim();
+        const preview = document.getElementById('ae-img-preview');
+        const placeholder = document.getElementById('ae-img-placeholder');
+        const remBtn = document.getElementById('ae-btn-remover-img');
+        if (url) {
+          preview.style.backgroundImage = `url('${url}')`;
+          preview.style.backgroundSize = 'cover';
+          preview.style.backgroundPosition = 'center';
+          if (placeholder) placeholder.style.display = 'none';
+          if (remBtn) remBtn.style.display = 'block';
+        } else {
+          preview.style.backgroundImage = '';
+          if (placeholder) placeholder.style.display = '';
+          if (remBtn) remBtn.style.display = 'none';
+        }
+      }
+      window.aeUpdateImgPreview = aeUpdateImgPreview;
+
+      function aeRemoverCapa() {
+        document.getElementById('a-capa-url').value = '';
+        aeUpdateImgPreview();
+      }
+      window.aeRemoverCapa = aeRemoverCapa;
+
+      // Upload de documentos
+      async function aeUploadDocs(input) {
+        const files = Array.from(input.files);
+        if (!files.length) return;
+        const cfg = getSupabase();
+        const hasSb = cfg && cfg.url;
+        for (const file of files) {
+          if (hasSb) {
+            try {
+              const ext = file.name.split('.').pop();
+              const path = `avisos/doc_${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
+              const xhr = new XMLHttpRequest();
+              await new Promise((res, rej) => {
+                xhr.open('POST', `${cfg.url}/storage/v1/object/imagens/${path}`);
+                xhr.setRequestHeader('Authorization', 'Bearer ' + cfg.key);
+                xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
+                xhr.onload = () => xhr.status < 300 ? res() : rej(new Error(xhr.responseText));
+                xhr.onerror = () => rej(new Error('Falha na rede'));
+                xhr.send(file);
+              });
+              const url = `${cfg.url}/storage/v1/object/public/imagens/${path}`;
+              aeAnexos.push({ nome: file.name, url, tipo: ext.toLowerCase() });
+              toast(`📎 "${file.name}" anexado!`, 'success');
+            } catch (e) {
+              toast(`Erro ao enviar "${file.name}": ${e.message}`, 'error');
+            }
+          } else {
+            // sem Supabase: apenas referencia localmente (blob URL)
+            const url = URL.createObjectURL(file);
+            aeAnexos.push({ nome: file.name, url, tipo: file.name.split('.').pop().toLowerCase() });
+            toast(`📎 "${file.name}" adicionado (sem upload — configure Supabase para persistir).`, 'info');
+          }
+        }
+        aeRenderAnexos();
+        input.value = '';
+      }
+      window.aeUploadDocs = aeUploadDocs;
+
+      function aeAddDocUrl() {
+        const input = document.getElementById('ae-doc-url-input');
+        const url = input.value.trim();
+        if (!url) return;
+        const nome = url.split('/').pop().split('?')[0] || 'Documento';
+        const ext = nome.split('.').pop().toLowerCase();
+        aeAnexos.push({ nome, url, tipo: ext });
+        aeRenderAnexos();
+        input.value = '';
+        toast('🔗 Link adicionado!', 'success');
+      }
+      window.aeAddDocUrl = aeAddDocUrl;
+
+      function aeDocIcon(tipo) {
+        if (['pdf'].includes(tipo)) return '📕';
+        if (['doc', 'docx'].includes(tipo)) return '📘';
+        if (['xls', 'xlsx'].includes(tipo)) return '📗';
+        if (['ppt', 'pptx'].includes(tipo)) return '📙';
+        return '📄';
+      }
+
+      function aeRenderAnexos() {
+        const list = document.getElementById('ae-anexos-list');
+        if (!list) return;
+        if (!aeAnexos.length) { list.innerHTML = ''; return; }
+        list.innerHTML = aeAnexos.map((a, i) => `
+          <div style="display:flex;align-items:center;gap:.4rem;padding:.4rem .6rem;background:var(--bg3);border:1px solid var(--border);border-radius:6px;">
+            <span style="font-size:.95rem;">${aeDocIcon(a.tipo)}</span>
+            <span style="flex:1;font-size:.75rem;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${a.nome}">${a.nome}</span>
+            <a href="${a.url}" target="_blank" style="font-size:.7rem;color:var(--accent);text-decoration:none;flex-shrink:0;">↗</a>
+            <button onclick="aeRemoveAnexo(${i})" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:.8rem;flex-shrink:0;" title="Remover">✕</button>
+          </div>`).join('');
+      }
+
+      function aeRemoveAnexo(i) {
+        aeAnexos.splice(i, 1);
+        aeRenderAnexos();
+      }
+      window.aeRemoveAnexo = aeRemoveAnexo;
+
+      // Expose remaining AE functions globally
+      window.aeRteSaveSelection = aeRteSaveSelection;
+      window.aeRteBlock = aeRteBlock;
+      window.aeRteExec = aeRteExec;
+      window.aeRteFontSize = aeRteFontSize;
+      window.aeRteClearFormat = aeRteClearFormat;
+      window.aeRteInsertLink = aeRteInsertLink;
+      window.aeRteInsertDivider = aeRteInsertDivider;
+      window.aeContextMenu = aeContextMenu;
 
       /* ══════════════════════════════════════════
          CANDIDATURAS
@@ -3234,15 +3889,35 @@
       ══════════════════════════════════════════ */
       function openModal(name) {
         if (name === 'noticias') { openNewsEditorNew(); return; }
+        if (name === 'avisos') {
+          if (!editingId.avisos) {
+            document.getElementById('ae-topbar-title').textContent = 'Novo Aviso';
+            document.getElementById('a-titulo').value = '';
+            document.getElementById('a-resumo').value = '';
+            document.getElementById('ae-rte-body').innerHTML = '';
+            document.getElementById('a-descricao').value = '';
+            document.getElementById('a-tipo').value = 'info';
+            document.getElementById('a-data').value = new Date().toISOString().split('T')[0];
+            document.getElementById('a-publicado').checked = true;
+            document.getElementById('a-destaque').checked = false;
+            document.getElementById('a-capa-url').value = '';
+            aeAnexos = [];
+            aeRenderAnexos();
+            aeUpdateImgPreview();
+          }
+          openAvisoEditor();
+          return;
+        }
         if (!editingId[name]) {
           const titleEl = document.getElementById('modal-' + name + '-title');
-          if (titleEl) titleEl.textContent = { vagas: 'Nova Vaga', avisos: 'Novo Aviso' }[name] || 'Novo';
+          if (titleEl) titleEl.textContent = { vagas: 'Nova Vaga' }[name] || 'Novo';
           clearForm(name);
         }
         document.getElementById('modal-' + name).classList.add('open');
       }
 
       function closeModal(name) {
+        if (name === 'avisos') { closeAvisoEditor(); return; }
         document.getElementById('modal-' + name).classList.remove('open');
         editingId[name] = null;
       }
@@ -3256,12 +3931,6 @@
           document.getElementById('v-escolaridade').value = 'Ensino Superior';
           document.getElementById('v-prazo').value = '';
           document.getElementById('v-status').value = 'aberta';
-        }
-        if (name === 'avisos') {
-          ['a-titulo', 'a-descricao', 'a-doc'].forEach(id => document.getElementById(id).value = '');
-          document.getElementById('a-tipo').value = 'info';
-          document.getElementById('a-data').value = new Date().toISOString().split('T')[0];
-          document.getElementById('a-publicado').checked = true;
         }
       }
 
@@ -4478,6 +5147,7 @@ INSTRUÇÕES:
       window.editVaga = editVaga;
       window.saveAviso = saveAviso;
       window.editAviso = editAviso;
+      window.closeAvisoEditor = closeAvisoEditor;
       window.deleteItem = deleteItem;
       window.viewCandidatura = viewCandidatura;
       window.saveConfig = saveConfig;
