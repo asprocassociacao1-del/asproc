@@ -3662,40 +3662,86 @@
 
       // Upload de capa do aviso
       async function aeUploadCapa(input) {
-        const file = input.files[0];
+        const file = input.files && input.files[0];
         if (!file) return;
-        const cfg = getSupabase();
-        if (!cfg) { toast('Configure o Supabase primeiro.', 'error'); return; }
+
+        const MAX = 10 * 1024 * 1024;
+        if (file.size > MAX) { toast('Imagem muito grande. Máximo 10 MB.', 'error'); input.value = ''; return; }
+        const TIPOS = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+        if (!TIPOS.includes(file.type)) { toast('Formato inválido. Use JPG, PNG ou WebP.', 'error'); input.value = ''; return; }
+
+        const { url: sbUrl, key: sbKey } = getSupabase();
+        if (!sbUrl || !sbKey) { toast('Supabase não configurado.', 'error'); return; }
+
         const wrap = document.getElementById('ae-upload-progress-wrap');
         const bar = document.getElementById('ae-upload-progress-bar');
         const msg = document.getElementById('ae-upload-progress-msg');
+        const lbl = document.querySelector('label[for="a-capa-file"]');
         wrap.style.display = 'block';
-        bar.style.width = '30%';
+        bar.style.width = '15%';
+        bar.style.background = 'var(--accent)';
+        msg.style.color = 'var(--text-muted)';
         msg.textContent = 'Enviando imagem…';
+        if (lbl) { lbl.style.pointerEvents = 'none'; lbl.style.opacity = '.5'; }
+
         try {
-          const ext = file.name.split('.').pop();
-          const path = `avisos/capa_${Date.now()}.${ext}`;
-          const xhr = new XMLHttpRequest();
-          xhr.upload.onprogress = e => { if (e.lengthComputable) bar.style.width = Math.round(e.loaded / e.total * 100) + '%'; };
-          await new Promise((res, rej) => {
-            xhr.open('POST', `${cfg.url}/storage/v1/object/imagens/${path}`);
-            xhr.setRequestHeader('Authorization', 'Bearer ' + cfg.key);
-            xhr.setRequestHeader('Content-Type', file.type);
-            xhr.onload = () => xhr.status < 300 ? res() : rej(new Error(xhr.responseText));
-            xhr.onerror = () => rej(new Error('Falha na rede'));
-            xhr.send(file);
+          await ensureValidToken();
+          const sessionToken = localStorage.getItem('asproc_token');
+          const authToken = sessionToken || sbKey;
+
+          const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z]/g, '') || 'jpg';
+          const nome = `capa-${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${ext}`;
+          const path = `avisos/${nome}`;
+          const BUCKET = 'imagens';
+
+          bar.style.width = '50%';
+
+          const res = await fetch(`${sbUrl}/storage/v1/object/${BUCKET}/${path}`, {
+            method: 'POST',
+            headers: {
+              'apikey': sbKey,
+              'Authorization': `Bearer ${authToken}`,
+              'Content-Type': file.type,
+              'x-upsert': 'true'
+            },
+            body: file
           });
-          const url = `${cfg.url}/storage/v1/object/public/imagens/${path}`;
-          document.getElementById('a-capa-url').value = url;
-          aeUpdateImgPreview();
+
+          bar.style.width = '90%';
+
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            const errMsg = err.message || err.error || '';
+            if (res.status === 400 || res.status === 403) {
+              // Mostra orientação de RLS no painel lateral
+              const avisoEl = document.getElementById('ae-upload-progress-wrap');
+              if (avisoEl) {
+                msg.style.color = 'var(--amber)';
+                msg.innerHTML = `⚠️ Sem permissão no bucket. <a href="https://supabase.com/dashboard/project/_/storage/buckets" target="_blank" style="color:var(--accent)">Configurar política →</a>`;
+              }
+              throw new Error('Sem permissão para upload. Configure a política RLS do bucket "imagens" no Supabase (Storage → Policies → authenticated → ALL → true).');
+            }
+            throw new Error(errMsg || `HTTP ${res.status}`);
+          }
+
+          const publicUrl = `${sbUrl}/storage/v1/object/public/${BUCKET}/${path}`;
           bar.style.width = '100%';
-          msg.textContent = '✅ Imagem enviada!';
-          setTimeout(() => { wrap.style.display = 'none'; }, 2000);
+          msg.textContent = '✅ Upload concluído!';
+          document.getElementById('a-capa-url').value = publicUrl;
+          aeUpdateImgPreview();
+          toast('✅ Imagem de capa anexada!', 'success');
+          setTimeout(() => { wrap.style.display = 'none'; bar.style.width = '0%'; }, 2000);
+
         } catch (e) {
-          toast('Erro no upload: ' + e.message, 'error');
-          wrap.style.display = 'none';
+          bar.style.background = 'var(--red)';
+          bar.style.width = '100%';
+          msg.style.color = 'var(--red)';
+          msg.textContent = '❌ ' + e.message;
+          setTimeout(() => { wrap.style.display = 'none'; bar.style.width = '0%'; bar.style.background = 'var(--accent)'; }, 7000);
+        } finally {
+          if (lbl) { lbl.style.pointerEvents = 'auto'; lbl.style.opacity = '1'; }
+          input.value = '';
         }
-        input.value = '';
       }
       window.aeUploadCapa = aeUploadCapa;
 
@@ -3728,33 +3774,53 @@
       async function aeUploadDocs(input) {
         const files = Array.from(input.files);
         if (!files.length) return;
-        const cfg = getSupabase();
-        const hasSb = cfg && cfg.url;
+
+        const { url: sbUrl, key: sbKey } = getSupabase();
+        const hasSb = !!(sbUrl && sbKey);
+
         for (const file of files) {
           if (hasSb) {
             try {
-              const ext = file.name.split('.').pop();
-              const path = `avisos/doc_${Date.now()}_${file.name.replace(/\s+/g, '_')}`;
-              const xhr = new XMLHttpRequest();
-              await new Promise((res, rej) => {
-                xhr.open('POST', `${cfg.url}/storage/v1/object/imagens/${path}`);
-                xhr.setRequestHeader('Authorization', 'Bearer ' + cfg.key);
-                xhr.setRequestHeader('Content-Type', file.type || 'application/octet-stream');
-                xhr.onload = () => xhr.status < 300 ? res() : rej(new Error(xhr.responseText));
-                xhr.onerror = () => rej(new Error('Falha na rede'));
-                xhr.send(file);
+              await ensureValidToken();
+              const sessionToken = localStorage.getItem('asproc_token');
+              const authToken = sessionToken || sbKey;
+
+              const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z0-9]/g, '') || 'bin';
+              const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+              const path = `avisos/doc-${Date.now()}-${safeName}`;
+              const BUCKET = 'imagens';
+
+              const res = await fetch(`${sbUrl}/storage/v1/object/${BUCKET}/${path}`, {
+                method: 'POST',
+                headers: {
+                  'apikey': sbKey,
+                  'Authorization': `Bearer ${authToken}`,
+                  'Content-Type': file.type || 'application/octet-stream',
+                  'x-upsert': 'true'
+                },
+                body: file
               });
-              const url = `${cfg.url}/storage/v1/object/public/imagens/${path}`;
-              aeAnexos.push({ nome: file.name, url, tipo: ext.toLowerCase() });
-              toast(`📎 "${file.name}" anexado!`, 'success');
+
+              if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                const errMsg = err.message || err.error || `HTTP ${res.status}`;
+                if (res.status === 400 || res.status === 403) {
+                  throw new Error('Sem permissão para upload. Configure a política RLS do bucket "imagens" no Supabase: Storage → Policies → authenticated → ALL → true.');
+                }
+                throw new Error(errMsg);
+              }
+
+              const publicUrl = `${sbUrl}/storage/v1/object/public/${BUCKET}/${path}`;
+              aeAnexos.push({ nome: file.name, url: publicUrl, tipo: ext });
+              toast(`📎 "${file.name}" enviado com sucesso!`, 'success');
+
             } catch (e) {
-              toast(`Erro ao enviar "${file.name}": ${e.message}`, 'error');
+              toast(`❌ Erro ao enviar "${file.name}": ${e.message}`, 'error');
             }
           } else {
-            // sem Supabase: apenas referencia localmente (blob URL)
-            const url = URL.createObjectURL(file);
-            aeAnexos.push({ nome: file.name, url, tipo: file.name.split('.').pop().toLowerCase() });
-            toast(`📎 "${file.name}" adicionado (sem upload — configure Supabase para persistir).`, 'info');
+            // Sem Supabase configurado: avisa usuário
+            toast('Configure o Supabase para enviar documentos.', 'error');
+            break;
           }
         }
         aeRenderAnexos();
