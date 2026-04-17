@@ -777,26 +777,30 @@
         document.querySelectorAll(".reveal").forEach(el => { new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("visible") }) }, { threshold: .1 }).observe(el) });
         function subAv() { const v = document.getElementById("av-mail").value.trim(); if (!v) return; document.getElementById("av-mail").style.display = "none"; document.getElementById("av-ok").style.display = "block" }</script>
 
+    <!-- Lightbox de imagem -->
+    <div id="av-lightbox">
+        <button id="av-lightbox-close" onclick="avLightboxFechar()">✕</button>
+        <img id="av-lightbox-img" src="" alt="">
+        <div id="av-lightbox-caption"></div>
+    </div>
+
     <script>
         /* ═══════════════════════════════════════════════════
            AVISOS DINÂMICOS — Supabase
-           Tabela esperada: avisos
-           Colunas usadas:
-             id, titulo, descricao, tipo, data_pub,
-             publicado, anexos (jsonb), doc_url, resumo
+           Tabela: avisos
+           Colunas: id, titulo, descricao, tipo, data_pub,
+                    publicado, anexos (jsonb), doc_url, resumo
         ═══════════════════════════════════════════════════ */
         (function () {
             const SUPABASE_URL = 'https://wiatqtiyiznscjyoxxww.supabase.co';
             const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpYXRxdGl5aXpuc2NqeW94eHd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1Njc0MDEsImV4cCI6MjA5MTE0MzQwMX0.xgaaZWX5kG3XowDtpR9Xd8S2S0nV-JTnv4ZwnP33PY8';
 
-            // Mapeamento: tipo (banco) → badge da página de avisos
             const BADGE_MAP = {
                 doc: { cls: 'doc', icon: '📋', label: 'Documento' },
                 urgente: { cls: 'urgente', icon: '🔴', label: 'Urgente' },
                 info: { cls: 'info', icon: 'ℹ️', label: 'Informativo' }
             };
 
-            // Formata data_pub (YYYY-MM-DD) → "Publicado em mês de ano"
             const MESES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho',
                 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
 
@@ -808,7 +812,6 @@
                 } catch { return d; }
             }
 
-            // Escapa HTML para evitar XSS
             function esc(str) {
                 if (!str) return '';
                 return String(str)
@@ -816,26 +819,74 @@
                     .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
             }
 
-            // Gera o HTML de um card de aviso
+            // Detecta se a URL é uma imagem pelo sufixo ou pelo campo tipo/mime
+            const IMG_EXT = /\.(jpe?g|png|gif|webp|svg|bmp|avif|tiff?)(\?.*)?$/i;
+            function ehImagem(doc) {
+                if (doc.tipo && /^image\//i.test(doc.tipo)) return true;
+                if (doc.mime && /^image\//i.test(doc.mime)) return true;
+                if (doc.url && IMG_EXT.test(doc.url.split('?')[0])) return true;
+                return false;
+            }
+
+            // Ícone do anexo conforme tipo
+            function iconeAnexo(doc) {
+                if (ehImagem(doc)) return '🖼️';
+                const u = (doc.url || '').toLowerCase();
+                if (u.includes('.pdf')) return '📄';
+                if (u.match(/\.(docx?|odt)/)) return '📝';
+                if (u.match(/\.(xlsx?|ods|csv)/)) return '📊';
+                if (u.match(/\.(zip|rar|7z)/)) return '🗜️';
+                return '📎';
+            }
+
+            // Gera os botões de ação por anexo
+            function gerarBotoesAnexo(doc, avisoId, idxDoc) {
+                const url = esc(doc.url || '');
+                const nome = esc(doc.nome || doc.name || 'Documento');
+                const isImg = ehImagem(doc);
+                let html = '<div class="doc-btns">';
+
+                if (isImg) {
+                    // Visualizar abre o lightbox interno
+                    html += '<button class="doc-btn doc-btn-ver"'
+                        + ' onclick="avLightboxAbrir(\'' + url + '\',\'' + nome + '\')">'
+                        + '👁 Visualizar</button>';
+                } else {
+                    // Visualizar abre em nova aba (PDF, Word, etc.)
+                    html += '<a class="doc-btn doc-btn-ver" href="' + url + '"'
+                        + ' target="_blank" rel="noopener">👁 Visualizar</a>';
+                }
+
+                // Baixar sempre presente
+                html += '<a class="doc-btn doc-btn-dl" href="' + url + '"'
+                    + ' download target="_blank" rel="noopener">⬇ Baixar</a>';
+
+                html += '</div>';
+                return html;
+            }
+
+            // Gera o HTML completo de um card de aviso
             function gerarCard(a, idx) {
                 const delay = idx > 0 ? ' style="transition-delay:' + (idx * 0.1) + 's"' : '';
                 const b = BADGE_MAP[a.tipo] || BADGE_MAP.info;
                 const data = formatarData(a.data_pub);
 
-                // Monta lista de anexos: prioriza coluna "anexos" (jsonb),
-                // cai para "doc_url" se existir
-                let docsHtml = '';
+                // Monta lista de anexos
                 let listaAnexos = [];
                 if (Array.isArray(a.anexos) && a.anexos.length) {
                     listaAnexos = a.anexos;
                 } else if (a.doc_url) {
                     listaAnexos = [{ nome: 'Documento', url: a.doc_url }];
                 }
+
+                let docsHtml = '';
                 if (listaAnexos.length) {
-                    const linhas = listaAnexos.map(function (doc) {
+                    const linhas = listaAnexos.map(function (doc, idxDoc) {
+                        const icone = iconeAnexo(doc);
+                        const nome = esc(doc.nome || doc.name || 'Documento');
                         return '<div class="doc-row">'
-                            + '<div class="doc-name"><span>📄</span> ' + esc(doc.nome || doc.name || 'Documento') + '</div>'
-                            + '<a href="' + esc(doc.url) + '" class="doc-dl" target="_blank" rel="noopener">⬇ Baixar</a>'
+                            + '<div class="doc-name"><span>' + icone + '</span> ' + nome + '</div>'
+                            + gerarBotoesAnexo(doc, a.id, idxDoc)
                             + '</div>';
                     }).join('');
                     docsHtml = '<div class="av-docs">' + linhas + '</div>';
@@ -852,7 +903,6 @@
                     + '</div>';
             }
 
-            // Mensagem de estado vazio ou erro
             function gerarEstado(icone, msg, cor) {
                 return '<div class="avcard reveal" style="text-align:center;padding:3rem 1.8rem;'
                     + (cor ? 'border-color:rgba(207,46,46,.3);' : 'opacity:.55;') + '">'
@@ -861,7 +911,6 @@
                     + '</div>';
             }
 
-            // Registra reveal nos novos cards
             function aplicarReveal() {
                 document.querySelectorAll('#avisos-container .reveal').forEach(function (el) {
                     new IntersectionObserver(function (entries) {
@@ -870,7 +919,6 @@
                         });
                     }, { threshold: .1 }).observe(el);
                 });
-                // Atualiza listeners do cursor nos novos cards
                 document.querySelectorAll('#avisos-container .avcard').forEach(function (el) {
                     el.addEventListener('mouseenter', function () {
                         var curR = document.querySelector('.cursor-ring');
@@ -883,34 +931,22 @@
                 });
             }
 
-            // Busca os avisos via REST do Supabase (sem lib externa)
             async function carregarAvisos() {
                 const container = document.getElementById('avisos-container');
                 if (!container) return;
-
                 try {
                     const res = await fetch(
                         SUPABASE_URL + '/rest/v1/avisos?select=*&publicado=eq.true&order=data_pub.desc,created_at.desc',
-                        {
-                            headers: {
-                                'apikey': SUPABASE_KEY,
-                                'Authorization': 'Bearer ' + SUPABASE_KEY
-                            }
-                        }
+                        { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY } }
                     );
-
                     if (!res.ok) throw new Error('HTTP ' + res.status);
                     const data = await res.json();
-
                     if (!Array.isArray(data) || data.length === 0) {
                         container.innerHTML = gerarEstado('📭', 'Nenhum aviso publicado no momento.', null);
-                        aplicarReveal();
-                        return;
+                    } else {
+                        container.innerHTML = data.map(gerarCard).join('');
                     }
-
-                    container.innerHTML = data.map(gerarCard).join('');
                     aplicarReveal();
-
                 } catch (err) {
                     console.error('Erro ao carregar avisos:', err);
                     container.innerHTML = gerarEstado('⚠️', 'Erro ao carregar os avisos. Tente recarregar a página.', '#e07070');
@@ -918,14 +954,39 @@
                 }
             }
 
-            // Inicia quando o DOM estiver pronto
             if (document.readyState === 'loading') {
                 document.addEventListener('DOMContentLoaded', carregarAvisos);
             } else {
                 carregarAvisos();
             }
         })();
+
+        /* ── Lightbox global ── */
+        function avLightboxAbrir(url, caption) {
+            const lb = document.getElementById('av-lightbox');
+            const img = document.getElementById('av-lightbox-img');
+            const cap = document.getElementById('av-lightbox-caption');
+            img.src = url;
+            img.alt = caption || '';
+            cap.textContent = caption || '';
+            lb.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        function avLightboxFechar() {
+            document.getElementById('av-lightbox').classList.remove('open');
+            document.getElementById('av-lightbox-img').src = '';
+            document.body.style.overflow = '';
+        }
+        // Fechar ao clicar no fundo
+        document.getElementById('av-lightbox').addEventListener('click', function (e) {
+            if (e.target === this) avLightboxFechar();
+        });
+        // Fechar com ESC
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') avLightboxFechar();
+        });
     </script>
 </body>
+
 
 </html>
