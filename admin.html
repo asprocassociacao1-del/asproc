@@ -2822,6 +2822,11 @@
             PDF, Word, Excel, PowerPoint
           </p>
 
+          <!-- Aviso SQL caso coluna "anexos" não exista -->
+          <div id="ae-sql-hint"
+            style="display:none;margin-top:.6rem;padding:.65rem .75rem;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.28);border-radius:var(--radius);font-size:.75rem;color:var(--amber);line-height:1.55;">
+          </div>
+
           <!-- URL manual de doc -->
           <div style="display:flex;align-items:center;gap:.5rem;margin:.4rem 0;">
             <div style="flex:1;height:1px;background:var(--border);"></div>
@@ -3452,7 +3457,7 @@
         table.style.display = 'table'; empty.style.display = 'none';
         tbody.innerHTML = list.map((a, idx) => `
       <tr data-search="${escSearch(a.titulo + ' ' + a.descricao)}">
-        <td class="td-title">${escHtml(a.titulo)}<div class="td-sub">${escHtml((a.descricao || '').substring(0, 70))}…</div></td>
+        <td class="td-title">${escHtml(a.titulo)}<div class="td-sub">${escHtml(stripHtml(a.descricao || '').substring(0, 80))}…</div></td>
         <td>${tipoBadge(a.tipo)}</td>
         <td style="white-space:nowrap;font-size:.8rem;">${fmtDate(a.data_pub)}</td>
         <td>${a.publicado ? '<span class="badge badge-green">Publicado</span>' : '<span class="badge badge-muted">Oculto</span>'}</td>
@@ -3504,6 +3509,8 @@
         document.getElementById('a-destaque').checked = false;
         document.getElementById('a-capa-url').value = '';
         aeUpdateImgPreview();
+        const sqlHint = document.getElementById('ae-sql-hint');
+        if (sqlHint) { sqlHint.style.display = 'none'; sqlHint.innerHTML = ''; }
       }
       window.closeAvisoEditor = closeAvisoEditor;
 
@@ -3532,53 +3539,98 @@
         const descricao = document.getElementById('ae-rte-body').innerHTML.trim();
         if (!titulo || !descricao) { toast('Preencha título e conteúdo.', 'error'); return; }
 
-        // Monta payload sem colunas que podem não existir no schema
         const base = {
           titulo,
+          descricao,
           tipo: document.getElementById('a-tipo').value,
           data_pub: document.getElementById('a-data').value || new Date().toISOString().split('T')[0],
           publicado: forcePublish === true ? true : document.getElementById('a-publicado').checked,
         };
 
-        // Tenta adicionar campos opcionais — ignora silenciosamente se a coluna não existir
-        const extras = {
+        // Monta lista de anexos para salvar
+        const listaAnexos = aeAnexos.length
+          ? aeAnexos.map(ax => ({ nome: ax.nome, url: ax.url, tipo: ax.tipo || null }))
+          : null;
+
+        // Payload completo (todas as colunas opcionais)
+        const payloadFull = {
+          ...base,
           resumo: document.getElementById('a-resumo').value.trim() || null,
-          descricao,
           capa_url: document.getElementById('a-capa-url').value.trim() || null,
-          // Salva TODOS os anexos como array jsonb na coluna "anexos"
-          // e mantém doc_url com o primeiro para retrocompatibilidade
-          anexos: aeAnexos.length
-            ? aeAnexos.map(ax => ({ nome: ax.nome, url: ax.url, tipo: ax.tipo || null }))
-            : null,
-          doc_url: aeAnexos.length ? aeAnexos[0].url : null,
           destaque: document.getElementById('a-destaque').checked,
+          anexos: listaAnexos,                           // coluna jsonb  [{nome,url,tipo}]
+          doc_url: listaAnexos ? listaAnexos[0].url : null, // retrocompat
         };
 
-        // Monta objeto final; tenta com extras primeiro, faz fallback sem eles se der erro de schema
-        const dataFull = { ...base, ...extras };
-        const dataSimple = { ...base, descricao }; // mínimo seguro
+        // Payload sem a coluna "anexos" (caso ela não exista ainda no banco)
+        const payloadSemAnexos = { ...payloadFull };
+        delete payloadSemAnexos.anexos;
 
-        const salvar = async (payload) => {
+        // Payload mínimo absoluto (só colunas obrigatórias)
+        const payloadMin = { ...base };
+
+        const exec = async (payload) => {
           if (editingId.avisos) return sbUpdate('avisos', editingId.avisos, payload);
           return sbInsert('avisos', payload);
         };
 
+        const isSchemaErr = (msg) => msg && (
+          msg.includes('column') || msg.includes('schema') ||
+          msg.includes('relation') || msg.includes('does not exist')
+        );
+
+        const successMsg = forcePublish ? 'Aviso publicado!'
+          : (editingId.avisos ? 'Aviso atualizado!' : 'Aviso salvo!');
+
+        // Tentativa 1 — payload completo (com coluna "anexos")
         try {
-          await salvar(dataFull);
-          const msg = forcePublish ? 'Aviso publicado!' : (editingId.avisos ? 'Aviso atualizado!' : 'Aviso salvo!');
-          toast('✅ ' + msg, 'success');
+          await exec(payloadFull);
+          toast('✅ ' + successMsg, 'success');
           closeAvisoEditor(); loadAvisos(); loadDashboard();
-        } catch (e) {
-          // Se erro for de coluna inexistente, tenta novamente só com campos base
-          if (e.message && (e.message.includes('column') || e.message.includes('schema'))) {
-            try {
-              await salvar(dataSimple);
-              toast('✅ Aviso salvo (algumas colunas extras não existem no banco — adicione-as se necessário).', 'info');
-              closeAvisoEditor(); loadAvisos(); loadDashboard();
-            } catch (e2) { toast('❌ Erro: ' + e2.message, 'error'); }
-          } else {
-            toast('❌ Erro: ' + e.message, 'error');
+          return;
+        } catch (e1) {
+          if (!isSchemaErr(e1.message)) {
+            toast('❌ Erro: ' + e1.message, 'error');
+            return;
           }
+        }
+
+        // Tentativa 2 — sem coluna "anexos" (coluna pode não existir no banco)
+        // Neste caso guardamos os anexos somente em doc_url (primeiro arquivo)
+        try {
+          await exec(payloadSemAnexos);
+          const aviso = listaAnexos
+            ? '⚠️ Aviso salvo, mas a coluna "anexos" não existe no banco. Execute o SQL:\n\nALTER TABLE avisos ADD COLUMN IF NOT EXISTS anexos jsonb;\n\nAssim todos os arquivos serão salvos corretamente.'
+            : '✅ ' + successMsg;
+          toast(aviso, listaAnexos ? 'info' : 'success');
+
+          // Mostra instrução SQL em destaque se houver anexos perdidos
+          if (listaAnexos) {
+            const sqlHint = document.getElementById('ae-sql-hint');
+            if (sqlHint) {
+              sqlHint.style.display = 'block';
+              sqlHint.innerHTML = `<strong>⚠️ Coluna "anexos" não encontrada no banco.</strong><br>
+Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
+<code style="display:block;margin-top:.4rem;padding:.5rem;background:rgba(0,0,0,.3);border-radius:4px;font-size:.75rem;user-select:all">ALTER TABLE avisos ADD COLUMN IF NOT EXISTS anexos jsonb;</code>`;
+            }
+          }
+
+          closeAvisoEditor(); loadAvisos(); loadDashboard();
+          return;
+        } catch (e2) {
+          if (!isSchemaErr(e2.message)) {
+            toast('❌ Erro: ' + e2.message, 'error');
+            return;
+          }
+        }
+
+        // Tentativa 3 — payload mínimo absoluto
+        try {
+          await exec(payloadMin);
+          toast('✅ Aviso salvo (modo básico). Algumas colunas opcionais não existem no banco.', 'info');
+          closeAvisoEditor(); loadAvisos(); loadDashboard();
+        } catch (e3) {
+          toast('❌ Erro ao salvar: ' + e3.message, 'error');
         }
       }
 
@@ -4117,6 +4169,11 @@
         document.getElementById(section + '-loading').style.display = 'none';
         document.getElementById(section + '-empty').style.display = 'block';
         document.getElementById(section + '-empty').innerHTML = `<div class="es-icon">⚠️</div><p>${escHtml(msg)}</p>`;
+      }
+      function stripHtml(html) {
+        const tmp = document.createElement('div');
+        tmp.innerHTML = html || '';
+        return tmp.textContent || tmp.innerText || '';
       }
       function escHtml(str) {
         if (!str) return '';
