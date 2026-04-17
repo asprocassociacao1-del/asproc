@@ -451,146 +451,41 @@
             align-items: start
         }
 
-        .avcard {
-            background: var(--cinza);
-            border-radius: 16px;
-            padding: 1.8rem;
-            margin-bottom: 1.4rem;
-            border: 1px solid rgba(123, 201, 92, .1);
-            transition: border-color .3s, box-shadow .3s;
-            position: relative;
-            overflow: hidden
-        }
 
-        .avcard::before {
-            content: "";
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: var(--verde-claro);
-            transition: width .3s
-        }
 
-        .avcard:hover {
-            border-color: rgba(123, 201, 92, .3);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, .35)
-        }
 
-        .avcard:hover::before {
-            width: 6px
-        }
 
-        .av-head {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 1rem;
-            margin-bottom: 1rem;
-            flex-wrap: wrap
-        }
 
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: .4rem;
-            padding: .28rem .78rem;
-            border-radius: 20px;
-            font-size: .63rem;
-            font-weight: 700;
-            letter-spacing: .1em;
-            text-transform: uppercase
-        }
 
-        .badge.doc {
-            background: rgba(200, 168, 75, .15);
-            color: var(--dourado);
-            border: 1px solid rgba(200, 168, 75, .3)
-        }
 
-        .badge.urgente {
-            background: rgba(207, 46, 46, .15);
-            color: #e07070;
-            border: 1px solid rgba(207, 46, 46, .3)
-        }
 
-        .badge.info {
-            background: rgba(74, 158, 63, .15);
-            color: var(--verde-neon);
-            border: 1px solid rgba(123, 201, 92, .3)
-        }
 
-        .av-date {
-            font-size: .67rem;
-            color: rgba(245, 240, 232, .4);
-            letter-spacing: .08em
-        }
 
-        .av-title {
-            font-family: "Fraunces", serif;
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: .7rem;
-            line-height: 1.3
-        }
 
-        .av-desc {
-            font-size: .88rem;
-            color: rgba(245, 240, 232, .6);
-            line-height: 1.75;
-            margin-bottom: 1.2rem
-        }
 
-        .av-docs {
-            border-top: 1px solid rgba(255, 255, 255, .07);
-            padding-top: 1.1rem;
-            display: flex;
-            flex-direction: column;
-            gap: .55rem
-        }
 
-        .doc-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: .7rem 1rem;
-            background: rgba(255, 255, 255, .04);
-            border-radius: 10px;
-            border: 1px solid rgba(123, 201, 92, .1);
-            transition: background .25s
-        }
 
-        .doc-row:hover {
-            background: rgba(123, 201, 92, .07)
-        }
 
-        .doc-name {
-            display: flex;
-            align-items: center;
-            gap: .6rem;
-            font-size: .85rem;
-            color: rgba(245, 240, 232, .75)
-        }
 
-        .doc-dl {
-            display: inline-flex;
-            align-items: center;
-            gap: .35rem;
-            padding: .32rem .85rem;
-            background: var(--verde-claro);
-            color: #fff;
-            border-radius: 20px;
-            font-size: .7rem;
-            font-weight: 700;
-            text-decoration: none;
-            transition: all .25s
-        }
 
-        .doc-dl:hover {
-            background: var(--verde-neon);
-            color: var(--escuro)
-        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         .sidebar-box {
             background: var(--cinza);
@@ -647,6 +542,522 @@
                 display: none
             }
         }
+
+        /* ══ CARDS DE AVISO ═══════════════════════════════════ */
+        .avcard {
+            background: var(--cinza);
+            border-radius: 18px;
+            padding: 1.6rem 1.8rem 1.4rem;
+            margin-bottom: 1.2rem;
+            border: 1px solid rgba(123, 201, 92, .1);
+            transition: border-color .3s, box-shadow .3s, transform .25s;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            outline: none
+        }
+
+        .avcard::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--verde-claro);
+            transition: width .3s, background .3s
+        }
+
+        .avcard:hover,
+        .avcard:focus {
+            border-color: rgba(123, 201, 92, .3);
+            box-shadow: 0 12px 36px rgba(0, 0, 0, .4);
+            transform: translateY(-2px)
+        }
+
+        .avcard:hover::before {
+            width: 6px;
+            background: var(--verde-neon)
+        }
+
+        .av-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: .8rem;
+            margin-bottom: .85rem;
+            flex-wrap: wrap
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            padding: .26rem .75rem;
+            border-radius: 20px;
+            font-size: .62rem;
+            font-weight: 700;
+            letter-spacing: .1em;
+            text-transform: uppercase
+        }
+
+        .badge.doc {
+            background: rgba(200, 168, 75, .14);
+            color: var(--dourado);
+            border: 1px solid rgba(200, 168, 75, .28)
+        }
+
+        .badge.urgente {
+            background: rgba(207, 46, 46, .14);
+            color: #e07070;
+            border: 1px solid rgba(207, 46, 46, .28)
+        }
+
+        .badge.info {
+            background: rgba(74, 158, 63, .14);
+            color: var(--verde-neon);
+            border: 1px solid rgba(123, 201, 92, .28)
+        }
+
+        .av-date {
+            font-size: .66rem;
+            color: rgba(245, 240, 232, .38);
+            letter-spacing: .08em
+        }
+
+        .av-title {
+            font-family: "Fraunces", serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            line-height: 1.3;
+            color: var(--branco);
+            margin-bottom: .55rem
+        }
+
+        /* Resumo truncado 3 linhas */
+        .av-resumo {
+            font-size: .85rem;
+            color: rgba(245, 240, 232, .58);
+            line-height: 1.72;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: .95rem
+        }
+
+        /* Chips de preview de anexos */
+        .av-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .4rem;
+            margin-bottom: .95rem
+        }
+
+        .av-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: .32rem;
+            padding: .22rem .65rem;
+            background: rgba(255, 255, 255, .05);
+            border: 1px solid rgba(123, 201, 92, .13);
+            border-radius: 8px;
+            font-size: .7rem;
+            color: rgba(245, 240, 232, .55);
+            max-width: 200px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis
+        }
+
+        .av-chip-mais {
+            font-size: .68rem;
+            color: var(--verde-neon);
+            padding: .22rem .62rem;
+            border: 1px solid rgba(123, 201, 92, .28);
+            border-radius: 8px;
+            background: rgba(123, 201, 92, .07)
+        }
+
+        /* Rodapé do card */
+        .av-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: .5rem;
+            padding-top: .85rem;
+            border-top: 1px solid rgba(255, 255, 255, .07)
+        }
+
+        .av-ler-mais {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            font-size: .78rem;
+            font-weight: 700;
+            color: var(--verde-neon);
+            text-decoration: none;
+            letter-spacing: .03em;
+            transition: gap .2s
+        }
+
+        .av-ler-mais:hover {
+            gap: .7rem
+        }
+
+        .av-ler-mais-arrow {
+            display: inline-block;
+            transition: transform .2s
+        }
+
+        .av-ler-mais:hover .av-ler-mais-arrow {
+            transform: translateX(4px)
+        }
+
+        .av-n-anexos {
+            font-size: .7rem;
+            color: rgba(245, 240, 232, .35)
+        }
+
+        /* ══ MODAL ═════════════════════════════════════════════ */
+        #av-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .78);
+            z-index: 9900;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 2rem 1rem;
+            backdrop-filter: blur(7px);
+            -webkit-backdrop-filter: blur(7px);
+            overflow-y: auto
+        }
+
+        #av-overlay.open {
+            display: flex
+        }
+
+        #av-modal {
+            position: relative;
+            background: var(--cinza);
+            border: 1px solid rgba(123, 201, 92, .2);
+            border-radius: 22px;
+            width: 100%;
+            max-width: 780px;
+            margin: auto;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, .75);
+            overflow: hidden;
+            animation: avModalIn .32s cubic-bezier(.34, 1.5, .64, 1)
+        }
+
+        @keyframes avModalIn {
+            from {
+                opacity: 0;
+                transform: translateY(32px) scale(.96)
+            }
+
+            to {
+                opacity: 1;
+                transform: none
+            }
+        }
+
+        /* Barra lateral verde */
+        #av-modal::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            background: linear-gradient(180deg, var(--verde-neon), var(--verde-claro))
+        }
+
+        /* Botão fechar */
+        #av-close {
+            position: absolute;
+            top: 1.1rem;
+            right: 1.2rem;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .08);
+            border: 1px solid rgba(255, 255, 255, .1);
+            color: rgba(245, 240, 232, .6);
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background .2s, color .2s;
+            z-index: 2
+        }
+
+        #av-close:hover {
+            background: rgba(255, 255, 255, .18);
+            color: var(--branco)
+        }
+
+        .av-m-header {
+            padding: 1.8rem 2rem 1.4rem 2.4rem;
+            border-bottom: 1px solid rgba(255, 255, 255, .07)
+        }
+
+        .av-m-meta {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            margin-bottom: .9rem;
+            flex-wrap: wrap
+        }
+
+        #av-m-date {
+            font-size: .68rem;
+            color: rgba(245, 240, 232, .38);
+            letter-spacing: .08em
+        }
+
+        #av-m-title {
+            font-family: "Fraunces", serif;
+            font-size: clamp(1.25rem, 3vw, 1.8rem);
+            font-weight: 900;
+            line-height: 1.2;
+            color: var(--branco)
+        }
+
+        /* Corpo do modal (HTML rico do editor) */
+        .av-m-body {
+            padding: 1.5rem 2rem 1.4rem 2.4rem;
+            font-size: .9rem;
+            color: rgba(245, 240, 232, .75);
+            line-height: 1.88
+        }
+
+        .av-m-body h1,
+        .av-m-body h2,
+        .av-m-body h3 {
+            font-family: "Fraunces", serif;
+            color: var(--branco);
+            margin: .9rem 0 .4rem
+        }
+
+        .av-m-body p {
+            margin-bottom: .8rem
+        }
+
+        .av-m-body a {
+            color: var(--verde-neon)
+        }
+
+        .av-m-body strong,
+        .av-m-body b {
+            color: var(--branco)
+        }
+
+        .av-m-body ul,
+        .av-m-body ol {
+            padding-left: 1.4rem;
+            margin-bottom: .8rem
+        }
+
+        .av-m-body li {
+            margin-bottom: .25rem
+        }
+
+        /* Seção de anexos no modal */
+        .av-m-anexos {
+            padding: 0 2rem 1.8rem 2.4rem
+        }
+
+        .av-m-anx-title {
+            font-size: .65rem;
+            font-weight: 700;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            color: var(--verde-neon);
+            margin-bottom: .75rem
+        }
+
+        .av-anx-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: .78rem 1rem;
+            background: rgba(255, 255, 255, .04);
+            border-radius: 12px;
+            border: 1px solid rgba(123, 201, 92, .1);
+            margin-bottom: .48rem;
+            transition: background .2s;
+            flex-wrap: wrap
+        }
+
+        .av-anx-row:hover {
+            background: rgba(123, 201, 92, .07)
+        }
+
+        .av-anx-info {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            font-size: .84rem;
+            color: rgba(245, 240, 232, .78);
+            min-width: 0
+        }
+
+        .av-anx-info .ic {
+            font-size: 1.1rem;
+            flex-shrink: 0
+        }
+
+        .av-anx-nome {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 300px
+        }
+
+        .av-anx-btns {
+            display: flex;
+            gap: .38rem;
+            flex-shrink: 0
+        }
+
+        /* Preview de imagem dentro do row */
+        .av-anx-img-wrap {
+            width: 100%;
+            margin-bottom: .5rem
+        }
+
+        .av-anx-img-wrap img {
+            width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, .2);
+            display: block
+        }
+
+        /* Botões do modal */
+        .av-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: .28rem;
+            padding: .3rem .82rem;
+            border-radius: 20px;
+            font-size: .68rem;
+            font-weight: 700;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all .2s;
+            white-space: nowrap
+        }
+
+        .av-btn-ver {
+            background: rgba(123, 201, 92, .13);
+            color: var(--verde-neon);
+            border: 1px solid rgba(123, 201, 92, .28)
+        }
+
+        .av-btn-ver:hover {
+            background: var(--verde-neon);
+            color: var(--escuro)
+        }
+
+        .av-btn-dl {
+            background: var(--verde-claro);
+            color: #fff
+        }
+
+        .av-btn-dl:hover {
+            background: var(--verde-neon);
+            color: var(--escuro)
+        }
+
+        /* ══ LIGHTBOX ══════════════════════════════════════════ */
+        #av-lb {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .93);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px)
+        }
+
+        #av-lb.open {
+            display: flex
+        }
+
+        #av-lb img {
+            max-width: 92vw;
+            max-height: 88vh;
+            border-radius: 12px;
+            box-shadow: 0 24px 64px rgba(0, 0, 0, .8);
+            object-fit: contain
+        }
+
+        #av-lb-close {
+            position: fixed;
+            top: 1.2rem;
+            right: 1.4rem;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .11);
+            border: none;
+            color: #fff;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background .2s
+        }
+
+        #av-lb-close:hover {
+            background: rgba(255, 255, 255, .24)
+        }
+
+        #av-lb-cap {
+            position: fixed;
+            bottom: 1.2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, .6);
+            color: rgba(255, 255, 255, .7);
+            font-size: .78rem;
+            padding: .38rem 1rem;
+            border-radius: 20px;
+            max-width: 80vw;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap
+        }
+
+        /* Responsivo */
+        @media(max-width: 600px) {
+
+            .av-m-header,
+            .av-m-body,
+            .av-m-anexos {
+                padding-left: 1.4rem;
+                padding-right: 1.2rem
+            }
+
+            #av-m-title {
+                font-size: 1.2rem
+            }
+
+            .av-anx-nome {
+                max-width: 140px
+            }
+        }
     </style>
 </head>
 
@@ -680,51 +1091,50 @@
         </div>
     </div>
     <div class="av-layout">
-        <div>
-            <!-- ── AVISOS DINÂMICOS ── -->
-            <div id="avisos-container">
-                <div class="avcard reveal" style="text-align:center;padding:3rem 1.8rem;opacity:.55">
-                    <div style="font-size:2rem;margin-bottom:.8rem">⏳</div>
-                    <div class="av-title" style="font-size:1rem">Carregando avisos…</div>
-                </div>
+        <div id="avisos-container">
+            <div class="avcard" style="text-align:center;padding:3rem 1.8rem;opacity:.5;cursor:default">
+                <div style="font-size:2rem;margin-bottom:.7rem">⏳</div>
+                <div class="av-title" style="font-size:1rem">Carregando avisos…</div>
             </div>
         </div>
-        <aside>
-            <div class="sidebar-box reveal">
-                <h3>📊 ASPROC em Números</h3>
-                <div class="stat-row">
-                    <div class="stat-n">872</div>
-                    <div class="stat-l">Associados ativos</div>
-                </div>
-                <div class="stat-row">
-                    <div class="stat-n">64</div>
-                    <div class="stat-l">Comunidades atendidas</div>
-                </div>
-                <div class="stat-row">
-                    <div class="stat-n">4.791</div>
-                    <div class="stat-l">Pessoas beneficiadas</div>
-                </div>
-                <div class="stat-row">
-                    <div class="stat-n">1.304</div>
-                    <div class="stat-l">Famílias atendidas</div>
-                </div>
+    </div>
+
+    <aside>
+        <div class="sidebar-box reveal">
+            <h3>📊 ASPROC em Números</h3>
+            <div class="stat-row">
+                <div class="stat-n">872</div>
+                <div class="stat-l">Associados ativos</div>
             </div>
-            <div class="sidebar-box reveal" style="transition-delay:.1s">
-                <h3>📬 Receber Avisos</h3>
-                <p style="font-size:.83rem;color:rgba(245,240,232,.55);margin-bottom:1rem;line-height:1.6">
-                    Cadastre-se para receber comunicados oficiais da ASPROC.</p>
-                <input type="email" id="av-mail" placeholder="seu@email.com"
-                    style="width:100%;padding:.65rem 1rem;background:rgba(255,255,255,.05);border:1px solid rgba(123,201,92,.2);border-radius:8px;color:var(--branco);font-family:'DM Sans',sans-serif;outline:none;margin-bottom:.7rem">
-                <button onclick="subAv()"
-                    style="width:100%;padding:.65rem;background:var(--verde-claro);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .3s"
-                    onmouseover="this.style.background='var(--verde-neon)';this.style.color='var(--escuro)'"
-                    onmouseout="this.style.background='var(--verde-claro)';this.style.color='#fff'">Cadastrar
-                    ✓</button>
-                <div id="av-ok"
-                    style="display:none;text-align:center;color:var(--verde-neon);font-weight:700;margin-top:.8rem;font-size:.85rem">
-                    Cadastrado! 🎉</div>
+            <div class="stat-row">
+                <div class="stat-n">64</div>
+                <div class="stat-l">Comunidades atendidas</div>
             </div>
-        </aside>
+            <div class="stat-row">
+                <div class="stat-n">4.791</div>
+                <div class="stat-l">Pessoas beneficiadas</div>
+            </div>
+            <div class="stat-row">
+                <div class="stat-n">1.304</div>
+                <div class="stat-l">Famílias atendidas</div>
+            </div>
+        </div>
+        <div class="sidebar-box reveal" style="transition-delay:.1s">
+            <h3>📬 Receber Avisos</h3>
+            <p style="font-size:.83rem;color:rgba(245,240,232,.55);margin-bottom:1rem;line-height:1.6">
+                Cadastre-se para receber comunicados oficiais da ASPROC.</p>
+            <input type="email" id="av-mail" placeholder="seu@email.com"
+                style="width:100%;padding:.65rem 1rem;background:rgba(255,255,255,.05);border:1px solid rgba(123,201,92,.2);border-radius:8px;color:var(--branco);font-family:'DM Sans',sans-serif;outline:none;margin-bottom:.7rem">
+            <button onclick="subAv()"
+                style="width:100%;padding:.65rem;background:var(--verde-claro);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .3s"
+                onmouseover="this.style.background='var(--verde-neon)';this.style.color='var(--escuro)'"
+                onmouseout="this.style.background='var(--verde-claro)';this.style.color='#fff'">Cadastrar
+                ✓</button>
+            <div id="av-ok"
+                style="display:none;text-align:center;color:var(--verde-neon);font-weight:700;margin-top:.8rem;font-size:.85rem">
+                Cadastrado! 🎉</div>
+        </div>
+    </aside>
     </div>
     </section>
     <footer>
@@ -767,226 +1177,317 @@
         <div class="fbot"><span>© 2024 ASPROC – Associação dos Produtores Rurais de Carauari.</span><span>Médio Juruá,
                 Amazônia 🌿</span></div>
     </footer>
-    <script>
-        const cur = document.querySelector(".cursor"), curR = document.querySelector(".cursor-ring");
-        document.addEventListener("mousemove", e => { cur.style.transform = `translate(${e.clientX - 6}px,${e.clientY - 6}px)`; curR.style.transform = `translate(${e.clientX - 18}px,${e.clientY - 18}px)` });
-        document.querySelectorAll("a,button,.avcard").forEach(el => { el.addEventListener("mouseenter", () => { curR.style.width = "52px"; curR.style.height = "52px" }); el.addEventListener("mouseleave", () => { curR.style.width = "36px"; curR.style.height = "36px" }) });
-        const nb = document.getElementById("navbar");
-        window.addEventListener("scroll", () => { nb.classList.toggle("scrolled", window.scrollY > 50); const h = document.documentElement, pb = document.getElementById("pb"); if (pb) pb.style.width = (window.scrollY / (h.scrollHeight - h.clientHeight) * 100) + "%" });
-        function toggleMenu() { document.getElementById("navLinks").classList.toggle("open") }
-        document.querySelectorAll(".reveal").forEach(el => { new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("visible") }) }, { threshold: .1 }).observe(el) });
-        function subAv() { const v = document.getElementById("av-mail").value.trim(); if (!v) return; document.getElementById("av-mail").style.display = "none"; document.getElementById("av-ok").style.display = "block" }</script>
 
-    <!-- Lightbox de imagem -->
-    <div id="av-lightbox">
-        <button id="av-lightbox-close" onclick="avLightboxFechar()">✕</button>
-        <img id="av-lightbox-img" src="" alt="">
-        <div id="av-lightbox-caption"></div>
+
+    <!-- ── MODAL ──────────────────────────────── -->
+    <div id="av-overlay">
+        <div id="av-modal" role="dialog" aria-modal="true" aria-labelledby="av-m-title">
+            <button id="av-close" aria-label="Fechar aviso">✕</button>
+            <div class="av-m-header">
+                <div class="av-m-meta">
+                    <span id="av-m-badge" class="badge"></span>
+                    <span id="av-m-date"></span>
+                </div>
+                <div id="av-m-title"></div>
+            </div>
+            <div class="av-m-body" id="av-m-body"></div>
+            <div class="av-m-anexos" id="av-m-anexos" style="display:none">
+                <div class="av-m-anx-title">📎 Anexos disponíveis</div>
+                <div id="av-m-anx-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── LIGHTBOX ────────────────────────────── -->
+    <div id="av-lb">
+        <button id="av-lb-close" onclick="avLbFechar()">✕</button>
+        <img id="av-lb-img" src="" alt="">
+        <div id="av-lb-cap"></div>
     </div>
 
     <script>
-        /* ═══════════════════════════════════════════════════
-           AVISOS DINÂMICOS — Supabase
-           Tabela: avisos
-           Colunas: id, titulo, descricao, tipo, data_pub,
-                    publicado, anexos (jsonb), doc_url, resumo
-        ═══════════════════════════════════════════════════ */
+        /* ═══════════════════════════════════════════════════════════════
+           AVISOS — Supabase REST  |  Cards compactos + Modal popup
+        ═══════════════════════════════════════════════════════════════ */
         (function () {
-            const SUPABASE_URL = 'https://wiatqtiyiznscjyoxxww.supabase.co';
-            const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpYXRxdGl5aXpuc2NqeW94eHd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1Njc0MDEsImV4cCI6MjA5MTE0MzQwMX0.xgaaZWX5kG3XowDtpR9Xd8S2S0nV-JTnv4ZwnP33PY8';
+            var SB_URL = 'https://wiatqtiyiznscjyoxxww.supabase.co';
+            var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpYXRxdGl5aXpuc2NqeW94eHd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1Njc0MDEsImV4cCI6MjA5MTE0MzQwMX0.xgaaZWX5kG3XowDtpR9Xd8S2S0nV-JTnv4ZwnP33PY8';
 
-            const BADGE_MAP = {
-                doc: { cls: 'doc', icon: '📋', label: 'Documento' },
-                urgente: { cls: 'urgente', icon: '🔴', label: 'Urgente' },
-                info: { cls: 'info', icon: 'ℹ️', label: 'Informativo' }
+            var BADGE = {
+                doc: { cls: 'doc', icn: '📋', lbl: 'Documento' },
+                urgente: { cls: 'urgente', icn: '🔴', lbl: 'Urgente' },
+                info: { cls: 'info', icn: 'ℹ️', lbl: 'Informativo' }
             };
-
-            const MESES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho',
+            var MESES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho',
                 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
 
-            function formatarData(d) {
+            function fmtData(d) {
                 if (!d) return '';
-                try {
-                    const dt = new Date(d + 'T00:00:00');
-                    return 'Publicado em ' + MESES[dt.getMonth()] + ' de ' + dt.getFullYear();
-                } catch { return d; }
+                try { var dt = new Date(d + 'T00:00:00'); return 'Publicado em ' + MESES[dt.getMonth()] + ' de ' + dt.getFullYear(); }
+                catch (e) { return d; }
             }
-
-            function esc(str) {
-                if (!str) return '';
-                return String(str)
-                    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+            function esc(s) {
+                return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
             }
-
-            // Detecta se a URL é uma imagem pelo sufixo ou pelo campo tipo/mime
-            const IMG_EXT = /\.(jpe?g|png|gif|webp|svg|bmp|avif|tiff?)(\?.*)?$/i;
-            function ehImagem(doc) {
+            var IMGEXT = /\.(jpe?g|png|gif|webp|svg|bmp|avif|tiff?)(\?.*)?$/i;
+            function isImg(doc) {
                 if (doc.tipo && /^image\//i.test(doc.tipo)) return true;
                 if (doc.mime && /^image\//i.test(doc.mime)) return true;
-                if (doc.url && IMG_EXT.test(doc.url.split('?')[0])) return true;
-                return false;
+                return !!(doc.url && IMGEXT.test(doc.url.split('?')[0]));
             }
-
-            // Ícone do anexo conforme tipo
-            function iconeAnexo(doc) {
-                if (ehImagem(doc)) return '🖼️';
-                const u = (doc.url || '').toLowerCase();
-                if (u.includes('.pdf')) return '📄';
-                if (u.match(/\.(docx?|odt)/)) return '📝';
-                if (u.match(/\.(xlsx?|ods|csv)/)) return '📊';
-                if (u.match(/\.(zip|rar|7z)/)) return '🗜️';
+            function iconeDoc(doc) {
+                if (isImg(doc)) return '🖼️';
+                var u = (doc.url || '').toLowerCase();
+                if (/\.pdf/.test(u)) return '📄';
+                if (/\.(docx?|odt)/.test(u)) return '📝';
+                if (/\.(xlsx?|ods|csv)/.test(u)) return '📊';
+                if (/\.(zip|rar|7z)/.test(u)) return '🗜️';
                 return '📎';
             }
-
-            // Gera os botões de ação por anexo
-            function gerarBotoesAnexo(doc, avisoId, idxDoc) {
-                const url = esc(doc.url || '');
-                const nome = esc(doc.nome || doc.name || 'Documento');
-                const isImg = ehImagem(doc);
-                let html = '<div class="doc-btns">';
-
-                if (isImg) {
-                    // Visualizar abre o lightbox interno
-                    html += '<button class="doc-btn doc-btn-ver"'
-                        + ' onclick="avLightboxAbrir(\'' + url + '\',\'' + nome + '\')">'
-                        + '👁 Visualizar</button>';
-                } else {
-                    // Visualizar abre em nova aba (PDF, Word, etc.)
-                    html += '<a class="doc-btn doc-btn-ver" href="' + url + '"'
-                        + ' target="_blank" rel="noopener">👁 Visualizar</a>';
-                }
-
-                // Baixar sempre presente
-                html += '<a class="doc-btn doc-btn-dl" href="' + url + '"'
-                    + ' download target="_blank" rel="noopener">⬇ Baixar</a>';
-
-                html += '</div>';
-                return html;
+            function getAnexos(a) {
+                if (Array.isArray(a.anexos) && a.anexos.length) return a.anexos;
+                if (a.doc_url) return [{ nome: 'Documento', url: a.doc_url }];
+                return [];
+            }
+            function stripHtml(html) {
+                var tmp = document.createElement('div');
+                tmp.innerHTML = html || '';
+                return tmp.textContent || tmp.innerText || '';
             }
 
-            // Gera o HTML completo de um card de aviso
-            function gerarCard(a, idx) {
-                const delay = idx > 0 ? ' style="transition-delay:' + (idx * 0.1) + 's"' : '';
-                const b = BADGE_MAP[a.tipo] || BADGE_MAP.info;
-                const data = formatarData(a.data_pub);
+            /* ── Card compacto ─────────────────────────────────────────── */
+            function buildCard(a, idx) {
+                var delay = idx > 0 ? ' style="transition-delay:' + (idx * .08) + 's"' : '';
+                var b = BADGE[a.tipo] || BADGE.info;
+                var anexos = getAnexos(a);
 
-                // Monta lista de anexos
-                let listaAnexos = [];
-                if (Array.isArray(a.anexos) && a.anexos.length) {
-                    listaAnexos = a.anexos;
-                } else if (a.doc_url) {
-                    listaAnexos = [{ nome: 'Documento', url: a.doc_url }];
-                }
+                // Resumo: campo resumo ou texto limpo (max 175 chars)
+                var txt = a.resumo || stripHtml(a.descricao || '');
+                var resumo = txt.length > 175 ? txt.substring(0, 175) + '…' : txt;
 
-                let docsHtml = '';
-                if (listaAnexos.length) {
-                    const linhas = listaAnexos.map(function (doc, idxDoc) {
-                        const icone = iconeAnexo(doc);
-                        const nome = esc(doc.nome || doc.name || 'Documento');
-                        return '<div class="doc-row">'
-                            + '<div class="doc-name"><span>' + icone + '</span> ' + nome + '</div>'
-                            + gerarBotoesAnexo(doc, a.id, idxDoc)
-                            + '</div>';
+                // Chips de preview (máx 2)
+                var chipsHtml = '';
+                if (anexos.length) {
+                    var chips = anexos.slice(0, 2).map(function (d) {
+                        return '<span class="av-chip">' + iconeDoc(d) + ' ' + esc(d.nome || d.name || 'Arquivo') + '</span>';
                     }).join('');
-                    docsHtml = '<div class="av-docs">' + linhas + '</div>';
+                    var mais = anexos.length > 2
+                        ? '<span class="av-chip-mais">+' + (anexos.length - 2) + ' mais</span>'
+                        : '';
+                    chipsHtml = '<div class="av-chips">' + chips + mais + '</div>';
                 }
 
-                return '<div class="avcard reveal"' + delay + '>'
+                var nAnexos = anexos.length
+                    ? '<span class="av-n-anexos">' + anexos.length + ' anexo' + (anexos.length > 1 ? 's' : '') + '</span>'
+                    : '';
+
+                return '<div class="avcard reveal"' + delay
+                    + ' role="button" tabindex="0"'
+                    + ' onclick="avOpen(' + a.id + ')"'
+                    + ' onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();avOpen(' + a.id + ')}">'
                     + '<div class="av-head">'
-                    + '<div><span class="badge ' + b.cls + '">' + b.icon + ' ' + b.label + '</span></div>'
-                    + '<span class="av-date">' + esc(data) + '</span>'
+                    + '<span class="badge ' + b.cls + '">' + b.icn + ' ' + b.lbl + '</span>'
+                    + '<span class="av-date">' + esc(fmtData(a.data_pub)) + '</span>'
                     + '</div>'
                     + '<div class="av-title">' + esc(a.titulo || '') + '</div>'
-                    + '<div class="av-desc">' + (a.descricao || '') + '</div>'
-                    + docsHtml
+                    + '<div class="av-resumo">' + esc(resumo) + '</div>'
+                    + chipsHtml
+                    + '<div class="av-footer">'
+                    + '<a class="av-ler-mais" href="#" onclick="event.preventDefault();event.stopPropagation();avOpen(' + a.id + ')">'
+                    + 'Ler mais <span class="av-ler-mais-arrow">→</span>'
+                    + '</a>'
+                    + nAnexos
+                    + '</div>'
                     + '</div>';
             }
 
-            function gerarEstado(icone, msg, cor) {
-                return '<div class="avcard reveal" style="text-align:center;padding:3rem 1.8rem;'
-                    + (cor ? 'border-color:rgba(207,46,46,.3);' : 'opacity:.55;') + '">'
-                    + '<div style="font-size:2rem;margin-bottom:.8rem">' + icone + '</div>'
-                    + '<div class="av-title" style="font-size:1rem' + (cor ? ';color:' + cor : '') + '">' + msg + '</div>'
-                    + '</div>';
+            function buildEstado(icn, msg, cor) {
+                return '<div class="avcard" style="text-align:center;padding:3rem 1.8rem;cursor:default;' + (cor ? 'border-color:rgba(207,46,46,.28);' : 'opacity:.5;') + '"><div style="font-size:2rem;margin-bottom:.7rem">' + icn + '</div><div class="av-title" style="font-size:1rem' + (cor ? ';color:' + cor : '') + '">' + msg + '</div></div>';
             }
 
-            function aplicarReveal() {
+            function reveal() {
                 document.querySelectorAll('#avisos-container .reveal').forEach(function (el) {
-                    new IntersectionObserver(function (entries) {
-                        entries.forEach(function (e) {
-                            if (e.isIntersecting) e.target.classList.add('visible');
-                        });
+                    new IntersectionObserver(function (es) {
+                        es.forEach(function (e) { if (e.isIntersecting) e.target.classList.add('visible'); });
                     }, { threshold: .1 }).observe(el);
                 });
-                document.querySelectorAll('#avisos-container .avcard').forEach(function (el) {
-                    el.addEventListener('mouseenter', function () {
-                        var curR = document.querySelector('.cursor-ring');
-                        if (curR) { curR.style.width = '52px'; curR.style.height = '52px'; }
-                    });
-                    el.addEventListener('mouseleave', function () {
-                        var curR = document.querySelector('.cursor-ring');
-                        if (curR) { curR.style.width = '36px'; curR.style.height = '36px'; }
-                    });
+                // cursor hover
+                var curR = document.querySelector('.cursor-ring');
+                if (curR) document.querySelectorAll('#avisos-container .avcard').forEach(function (el) {
+                    el.addEventListener('mouseenter', function () { curR.style.width = '52px'; curR.style.height = '52px'; });
+                    el.addEventListener('mouseleave', function () { curR.style.width = '36px'; curR.style.height = '36px'; });
                 });
             }
 
-            async function carregarAvisos() {
-                const container = document.getElementById('avisos-container');
-                if (!container) return;
+            window._AV_DATA = [];
+
+            async function load() {
+                var box = document.getElementById('avisos-container');
+                if (!box) return;
                 try {
-                    const res = await fetch(
-                        SUPABASE_URL + '/rest/v1/avisos?select=*&publicado=eq.true&order=data_pub.desc,created_at.desc',
-                        { headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY } }
-                    );
-                    if (!res.ok) throw new Error('HTTP ' + res.status);
-                    const data = await res.json();
-                    if (!Array.isArray(data) || data.length === 0) {
-                        container.innerHTML = gerarEstado('📭', 'Nenhum aviso publicado no momento.', null);
-                    } else {
-                        container.innerHTML = data.map(gerarCard).join('');
-                    }
-                    aplicarReveal();
+                    var res = await fetch(SB_URL + '/rest/v1/avisos?select=*&publicado=eq.true&order=data_pub.desc,created_at.desc',
+                        { headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY } });
+                    if (!res.ok) throw new Error(res.status);
+                    var data = await res.json();
+                    window._AV_DATA = Array.isArray(data) ? data : [];
+                    box.innerHTML = window._AV_DATA.length
+                        ? window._AV_DATA.map(buildCard).join('')
+                        : buildEstado('📭', 'Nenhum aviso publicado no momento.', null);
+                    reveal();
                 } catch (err) {
-                    console.error('Erro ao carregar avisos:', err);
-                    container.innerHTML = gerarEstado('⚠️', 'Erro ao carregar os avisos. Tente recarregar a página.', '#e07070');
-                    aplicarReveal();
+                    console.error(err);
+                    box.innerHTML = buildEstado('⚠️', 'Erro ao carregar os avisos. Tente recarregar.', '#e07070');
+                    reveal();
                 }
             }
 
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', carregarAvisos);
-            } else {
-                carregarAvisos();
-            }
+            document.readyState === 'loading'
+                ? document.addEventListener('DOMContentLoaded', load)
+                : load();
+
         })();
 
-        /* ── Lightbox global ── */
-        function avLightboxAbrir(url, caption) {
-            const lb = document.getElementById('av-lightbox');
-            const img = document.getElementById('av-lightbox-img');
-            const cap = document.getElementById('av-lightbox-caption');
-            img.src = url;
-            img.alt = caption || '';
-            cap.textContent = caption || '';
-            lb.classList.add('open');
+        /* ════════════════════════════════════════════════════════════
+           MODAL — funções globais
+        ════════════════════════════════════════════════════════════ */
+        var BADGE_G = {
+            doc: { cls: 'doc', icn: '📋', lbl: 'Documento' },
+            urgente: { cls: 'urgente', icn: '🔴', lbl: 'Urgente' },
+            info: { cls: 'info', icn: 'ℹ️', lbl: 'Informativo' }
+        };
+        var MESES_G = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho',
+            'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+
+        function avOpen(id) {
+            var a = (window._AV_DATA || []).find(function (x) { return x.id === id; });
+            if (!a) return;
+
+            function fD(d) { if (!d) return ''; try { var dt = new Date(d + 'T00:00:00'); return 'Publicado em ' + MESES_G[dt.getMonth()] + ' de ' + dt.getFullYear(); } catch (e) { return d; } }
+            function ec(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+            var IX = /\.(jpe?g|png|gif|webp|svg|bmp|avif|tiff?)(\?.*)?$/i;
+            function iI(doc) { return (doc.tipo && /^image\//i.test(doc.tipo)) || (doc.mime && /^image\//i.test(doc.mime)) || !!(doc.url && IX.test(doc.url.split('?')[0])); }
+            function ic(doc) { if (iI(doc)) return '🖼️'; var u = (doc.url || '').toLowerCase(); if (/\.pdf/.test(u)) return '📄'; if (/\.(docx?|odt)/.test(u)) return '📝'; if (/\.(xlsx?|ods|csv)/.test(u)) return '📊'; if (/\.(zip|rar|7z)/.test(u)) return '🗜️'; return '📎'; }
+
+            // Badge
+            var b = BADGE_G[a.tipo] || BADGE_G.info;
+            var bdg = document.getElementById('av-m-badge');
+            bdg.className = 'badge ' + b.cls;
+            bdg.textContent = b.icn + ' ' + b.lbl;
+
+            // Meta
+            document.getElementById('av-m-date').textContent = fD(a.data_pub);
+            document.getElementById('av-m-title').textContent = a.titulo || '';
+
+            // Corpo (HTML rico do editor)
+            document.getElementById('av-m-body').innerHTML = a.descricao
+                || '<p style="opacity:.45">Sem conteúdo disponível.</p>';
+
+            // Anexos
+            var anx = [];
+            if (Array.isArray(a.anexos) && a.anexos.length) anx = a.anexos;
+            else if (a.doc_url) anx = [{ nome: 'Documento', url: a.doc_url }];
+
+            var secAnx = document.getElementById('av-m-anexos');
+            var listAnx = document.getElementById('av-m-anx-list');
+
+            if (anx.length) {
+                listAnx.innerHTML = anx.map(function (doc) {
+                    var url = ec(doc.url || '');
+                    var nome = ec(doc.nome || doc.name || 'Arquivo');
+                    var imgP = iI(doc)
+                        ? '<div class="av-anx-img-wrap"><img src="' + url + '" alt="' + nome + '" loading="lazy" onerror="this.parentElement.style.display=\'none\'"></div>'
+                        : '';
+                    var btnVer = iI(doc)
+                        ? '<button class="av-btn av-btn-ver" onclick="avLbAbrir(\'' + url + '\',\'' + nome + '\')">👁 Visualizar</button>'
+                        : '<a class="av-btn av-btn-ver" href="' + url + '" target="_blank" rel="noopener">👁 Visualizar</a>';
+                    return '<div class="av-anx-row">'
+                        + imgP
+                        + '<div class="av-anx-info"><span class="ic">' + ic(doc) + '</span><span class="av-anx-nome">' + nome + '</span></div>'
+                        + '<div class="av-anx-btns">' + btnVer
+                        + '<a class="av-btn av-btn-dl" href="' + url + '" download target="_blank" rel="noopener">⬇ Baixar</a>'
+                        + '</div>'
+                        + '</div>';
+                }).join('');
+                secAnx.style.display = 'block';
+            } else {
+                secAnx.style.display = 'none';
+            }
+
+            document.getElementById('av-overlay').classList.add('open');
             document.body.style.overflow = 'hidden';
+            // Scroll ao topo do modal
+            document.getElementById('av-modal').scrollTop = 0;
         }
-        function avLightboxFechar() {
-            document.getElementById('av-lightbox').classList.remove('open');
-            document.getElementById('av-lightbox-img').src = '';
+
+        function avClose() {
+            document.getElementById('av-overlay').classList.remove('open');
             document.body.style.overflow = '';
         }
+
         // Fechar ao clicar no fundo
-        document.getElementById('av-lightbox').addEventListener('click', function (e) {
-            if (e.target === this) avLightboxFechar();
+        document.getElementById('av-overlay').addEventListener('click', function (e) {
+            if (e.target === this) avClose();
         });
-        // Fechar com ESC
+        // Botão fechar
+        document.getElementById('av-close').addEventListener('click', avClose);
+        // Clique dentro do modal não fecha
+        document.getElementById('av-modal').addEventListener('click', function (e) { e.stopPropagation(); });
+
+        // ESC fecha lightbox → depois modal
         document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') avLightboxFechar();
+            if (e.key !== 'Escape') return;
+            var lb = document.getElementById('av-lb');
+            if (lb && lb.classList.contains('open')) { avLbFechar(); return; }
+            avClose();
+        });
+
+        /* ── Lightbox ─────────────────────────────────────────── */
+        function avLbAbrir(url, cap) {
+            document.getElementById('av-lb-img').src = url;
+            document.getElementById('av-lb-img').alt = cap || '';
+            document.getElementById('av-lb-cap').textContent = cap || '';
+            document.getElementById('av-lb').classList.add('open');
+        }
+        function avLbFechar() {
+            document.getElementById('av-lb').classList.remove('open');
+            document.getElementById('av-lb-img').src = '';
+        }
+        document.getElementById('av-lb').addEventListener('click', function (e) {
+            if (e.target === this) avLbFechar();
         });
     </script>
-</body>
 
+    <!-- ── scripts originais da página ── -->
+    <script>
+        const cur = document.querySelector(".cursor"), curR = document.querySelector(".cursor-ring");
+        document.addEventListener("mousemove", e => {
+            cur.style.transform = `translate(${e.clientX - 6}px,${e.clientY - 6}px)`;
+            curR.style.transform = `translate(${e.clientX - 18}px,${e.clientY - 18}px)`;
+        });
+        document.querySelectorAll("a,button,.avcard").forEach(el => {
+            el.addEventListener("mouseenter", () => { curR.style.width = "52px"; curR.style.height = "52px" });
+            el.addEventListener("mouseleave", () => { curR.style.width = "36px"; curR.style.height = "36px" });
+        });
+        const nb = document.getElementById("navbar");
+        window.addEventListener("scroll", () => {
+            nb.classList.toggle("scrolled", window.scrollY > 50);
+            const h = document.documentElement, pb = document.getElementById("pb");
+            if (pb) pb.style.width = (window.scrollY / (h.scrollHeight - h.clientHeight) * 100) + "%";
+        });
+        function toggleMenu() { document.getElementById("navLinks").classList.toggle("open"); }
+        document.querySelectorAll(".reveal").forEach(el => {
+            new IntersectionObserver(entries => {
+                entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("visible"); });
+            }, { threshold: .1 }).observe(el);
+        });
+        function subAv() {
+            const v = document.getElementById("av-mail").value.trim();
+            if (!v) return;
+            document.getElementById("av-mail").style.display = "none";
+            document.getElementById("av-ok").style.display = "block";
+        }
+    </script>
+
+</body>
 
 </html>
