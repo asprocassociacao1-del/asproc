@@ -3545,6 +3545,11 @@
           resumo: document.getElementById('a-resumo').value.trim() || null,
           descricao,
           capa_url: document.getElementById('a-capa-url').value.trim() || null,
+          // Salva TODOS os anexos como array jsonb na coluna "anexos"
+          // e mantém doc_url com o primeiro para retrocompatibilidade
+          anexos: aeAnexos.length
+            ? aeAnexos.map(ax => ({ nome: ax.nome, url: ax.url, tipo: ax.tipo || null }))
+            : null,
           doc_url: aeAnexos.length ? aeAnexos[0].url : null,
           destaque: document.getElementById('a-destaque').checked,
         };
