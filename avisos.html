@@ -448,7 +448,10 @@
             display: grid;
             grid-template-columns: 1fr 310px;
             gap: 3rem;
-            align-items: start
+            align-items: start;
+            padding: 60px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
 
@@ -534,21 +537,22 @@
 
         @media(max-width:900px) {
             .av-layout {
-                grid-template-columns: 1fr
+                grid-template-columns: 1fr;
+                padding: 40px 4%;
             }
 
             .sidebar-box {
                 position: static;
-                display: none
+                display: block
             }
         }
 
         /* ══ CARDS DE AVISO ═══════════════════════════════════ */
         .avcard {
             background: var(--cinza);
-            border-radius: 18px;
-            padding: 1.6rem 1.8rem 1.4rem;
-            margin-bottom: 1.2rem;
+            border-radius: 14px;
+            padding: 1.2rem 1.4rem 1rem;
+            margin-bottom: .9rem;
             border: 1px solid rgba(123, 201, 92, .1);
             transition: border-color .3s, box-shadow .3s, transform .25s;
             position: relative;
@@ -1097,46 +1101,44 @@
                 <div class="av-title" style="font-size:1rem">Carregando avisos…</div>
             </div>
         </div>
-    </div>
 
-    <aside>
-        <div class="sidebar-box reveal">
-            <h3>📊 ASPROC em Números</h3>
-            <div class="stat-row">
-                <div class="stat-n">872</div>
-                <div class="stat-l">Associados ativos</div>
+        <aside>
+            <div class="sidebar-box reveal">
+                <h3>📊 ASPROC em Números</h3>
+                <div class="stat-row">
+                    <div class="stat-n">872</div>
+                    <div class="stat-l">Associados ativos</div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-n">64</div>
+                    <div class="stat-l">Comunidades atendidas</div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-n">4.791</div>
+                    <div class="stat-l">Pessoas beneficiadas</div>
+                </div>
+                <div class="stat-row">
+                    <div class="stat-n">1.304</div>
+                    <div class="stat-l">Famílias atendidas</div>
+                </div>
             </div>
-            <div class="stat-row">
-                <div class="stat-n">64</div>
-                <div class="stat-l">Comunidades atendidas</div>
+            <div class="sidebar-box reveal" style="transition-delay:.1s">
+                <h3>📬 Receber Avisos</h3>
+                <p style="font-size:.83rem;color:rgba(245,240,232,.55);margin-bottom:1rem;line-height:1.6">
+                    Cadastre-se para receber comunicados oficiais da ASPROC.</p>
+                <input type="email" id="av-mail" placeholder="seu@email.com"
+                    style="width:100%;padding:.65rem 1rem;background:rgba(255,255,255,.05);border:1px solid rgba(123,201,92,.2);border-radius:8px;color:var(--branco);font-family:'DM Sans',sans-serif;outline:none;margin-bottom:.7rem">
+                <button onclick="subAv()"
+                    style="width:100%;padding:.65rem;background:var(--verde-claro);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .3s"
+                    onmouseover="this.style.background='var(--verde-neon)';this.style.color='var(--escuro)'"
+                    onmouseout="this.style.background='var(--verde-claro)';this.style.color='#fff'">Cadastrar
+                    ✓</button>
+                <div id="av-ok"
+                    style="display:none;text-align:center;color:var(--verde-neon);font-weight:700;margin-top:.8rem;font-size:.85rem">
+                    Cadastrado! 🎉</div>
             </div>
-            <div class="stat-row">
-                <div class="stat-n">4.791</div>
-                <div class="stat-l">Pessoas beneficiadas</div>
-            </div>
-            <div class="stat-row">
-                <div class="stat-n">1.304</div>
-                <div class="stat-l">Famílias atendidas</div>
-            </div>
-        </div>
-        <div class="sidebar-box reveal" style="transition-delay:.1s">
-            <h3>📬 Receber Avisos</h3>
-            <p style="font-size:.83rem;color:rgba(245,240,232,.55);margin-bottom:1rem;line-height:1.6">
-                Cadastre-se para receber comunicados oficiais da ASPROC.</p>
-            <input type="email" id="av-mail" placeholder="seu@email.com"
-                style="width:100%;padding:.65rem 1rem;background:rgba(255,255,255,.05);border:1px solid rgba(123,201,92,.2);border-radius:8px;color:var(--branco);font-family:'DM Sans',sans-serif;outline:none;margin-bottom:.7rem">
-            <button onclick="subAv()"
-                style="width:100%;padding:.65rem;background:var(--verde-claro);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .3s"
-                onmouseover="this.style.background='var(--verde-neon)';this.style.color='var(--escuro)'"
-                onmouseout="this.style.background='var(--verde-claro)';this.style.color='#fff'">Cadastrar
-                ✓</button>
-            <div id="av-ok"
-                style="display:none;text-align:center;color:var(--verde-neon);font-weight:700;margin-top:.8rem;font-size:.85rem">
-                Cadastrado! 🎉</div>
-        </div>
-    </aside>
+        </aside>
     </div>
-    </section>
     <footer>
         <div class="fg">
             <div class="fb"><img
