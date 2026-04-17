@@ -2659,7 +2659,8 @@
     <div class="ne-topbar">
       <button class="btn btn-secondary btn-sm" onclick="closeAvisoEditor()">← Voltar</button>
       <span class="ne-topbar-title" id="ae-topbar-title">Novo Aviso</span>
-      <button class="btn btn-primary btn-sm" onclick="saveAviso()">💾 Salvar aviso</button>
+      <button class="btn btn-secondary btn-sm" onclick="saveAviso(false)">💾 Salvar rascunho</button>
+      <button class="btn btn-primary btn-sm" onclick="saveAviso(true)">🌐 Publicar</button>
     </div>
 
     <div class="ne-body">
@@ -2878,13 +2879,14 @@
       style="padding:.3rem .6rem;font-size:.68rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.2rem;">
       Formatação de Texto</div>
 
-    <div class="ae-ctx-item" onclick="aeRteExec('bold');aeHideCtx()"><b style="margin-right:.5rem;">B</b> Negrito</div>
-    <div class="ae-ctx-item" onclick="aeRteExec('italic');aeHideCtx()"><i style="margin-right:.5rem;">I</i> Itálico
-    </div>
-    <div class="ae-ctx-item" onclick="aeRteExec('underline');aeHideCtx()"><u style="margin-right:.5rem;">U</u>
-      Sublinhado</div>
-    <div class="ae-ctx-item" onclick="aeRteExec('strikeThrough');aeHideCtx()"><s style="margin-right:.5rem;">S</s>
-      Tachado</div>
+    <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="aeRteExec('bold');aeHideCtx()"><b
+        style="margin-right:.5rem;">B</b> Negrito</div>
+    <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="aeRteExec('italic');aeHideCtx()"><i
+        style="margin-right:.5rem;">I</i> Itálico</div>
+    <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="aeRteExec('underline');aeHideCtx()"><u
+        style="margin-right:.5rem;">U</u> Sublinhado</div>
+    <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="aeRteExec('strikeThrough');aeHideCtx()"><s
+        style="margin-right:.5rem;">S</s> Tachado</div>
 
     <div style="height:1px;background:var(--border);margin:.35rem 0;"></div>
     <div
@@ -2892,25 +2894,35 @@
       Fonte</div>
 
     <div style="display:flex;flex-wrap:wrap;gap:.3rem;padding:.2rem .6rem .4rem;">
-      <button class="ae-ctx-font-btn" onclick="aeRteExec('fontName','Inter,sans-serif');aeHideCtx()">Inter</button>
-      <button class="ae-ctx-font-btn" onclick="aeRteExec('fontName','Georgia,serif');aeHideCtx()">Georgia</button>
-      <button class="ae-ctx-font-btn" onclick="aeRteExec('fontName','Arial,sans-serif');aeHideCtx()">Arial</button>
-      <button class="ae-ctx-font-btn"
+      <button class="ae-ctx-font-btn" onmousedown="event.preventDefault()"
+        onclick="aeRteExec('fontName','Inter,sans-serif');aeHideCtx()">Inter</button>
+      <button class="ae-ctx-font-btn" onmousedown="event.preventDefault()"
+        onclick="aeRteExec('fontName','Georgia,serif');aeHideCtx()">Georgia</button>
+      <button class="ae-ctx-font-btn" onmousedown="event.preventDefault()"
+        onclick="aeRteExec('fontName','Arial,sans-serif');aeHideCtx()">Arial</button>
+      <button class="ae-ctx-font-btn" onmousedown="event.preventDefault()"
         onclick="aeRteExec('fontName','Courier New,monospace');aeHideCtx()">Courier</button>
-      <button class="ae-ctx-font-btn"
+      <button class="ae-ctx-font-btn" onmousedown="event.preventDefault()"
         onclick="aeRteExec('fontName','Playfair Display,serif');aeHideCtx()">Playfair</button>
     </div>
 
     <div style="padding:.2rem .6rem .4rem;display:flex;align-items:center;gap:.5rem;">
       <span style="font-size:.75rem;color:var(--text-muted);">Tamanho:</span>
       <div style="display:flex;flex-wrap:wrap;gap:.25rem;">
-        <button class="ae-ctx-size-btn" onclick="aeRteFontSize(12);aeHideCtx()">12</button>
-        <button class="ae-ctx-size-btn" onclick="aeRteFontSize(14);aeHideCtx()">14</button>
-        <button class="ae-ctx-size-btn" onclick="aeRteFontSize(16);aeHideCtx()">16</button>
-        <button class="ae-ctx-size-btn" onclick="aeRteFontSize(18);aeHideCtx()">18</button>
-        <button class="ae-ctx-size-btn" onclick="aeRteFontSize(20);aeHideCtx()">20</button>
-        <button class="ae-ctx-size-btn" onclick="aeRteFontSize(24);aeHideCtx()">24</button>
-        <button class="ae-ctx-size-btn" onclick="aeRteFontSize(32);aeHideCtx()">32</button>
+        <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
+          onclick="aeRteFontSize(12);aeHideCtx()">12</button>
+        <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
+          onclick="aeRteFontSize(14);aeHideCtx()">14</button>
+        <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
+          onclick="aeRteFontSize(16);aeHideCtx()">16</button>
+        <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
+          onclick="aeRteFontSize(18);aeHideCtx()">18</button>
+        <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
+          onclick="aeRteFontSize(20);aeHideCtx()">20</button>
+        <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
+          onclick="aeRteFontSize(24);aeHideCtx()">24</button>
+        <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
+          onclick="aeRteFontSize(32);aeHideCtx()">32</button>
       </div>
     </div>
 
@@ -2921,18 +2933,18 @@
     <div style="display:flex;align-items:center;gap:.5rem;padding:.2rem .6rem .4rem;">
       <span style="font-size:.75rem;color:var(--text-muted);">Texto:</span>
       <div style="display:flex;gap:.3rem;">
-        <div onclick="aeRteExec('foreColor','#e2e8f0');aeHideCtx()" title="Padrão"
+        <div onmousedown="event.preventDefault()" onclick="aeRteExec('foreColor','#e2e8f0');aeHideCtx()" title="Padrão"
           style="width:20px;height:20px;border-radius:4px;background:#e2e8f0;cursor:pointer;border:2px solid var(--border);">
         </div>
-        <div onclick="aeRteExec('foreColor','#3b82f6');aeHideCtx()" title="Azul"
+        <div onmousedown="event.preventDefault()" onclick="aeRteExec('foreColor','#3b82f6');aeHideCtx()" title="Azul"
           style="width:20px;height:20px;border-radius:4px;background:#3b82f6;cursor:pointer;"></div>
-        <div onclick="aeRteExec('foreColor','#10b981');aeHideCtx()" title="Verde"
+        <div onmousedown="event.preventDefault()" onclick="aeRteExec('foreColor','#10b981');aeHideCtx()" title="Verde"
           style="width:20px;height:20px;border-radius:4px;background:#10b981;cursor:pointer;"></div>
-        <div onclick="aeRteExec('foreColor','#ef4444');aeHideCtx()" title="Vermelho"
-          style="width:20px;height:20px;border-radius:4px;background:#ef4444;cursor:pointer;"></div>
-        <div onclick="aeRteExec('foreColor','#f59e0b');aeHideCtx()" title="Âmbar"
+        <div onmousedown="event.preventDefault()" onclick="aeRteExec('foreColor','#ef4444');aeHideCtx()"
+          title="Vermelho" style="width:20px;height:20px;border-radius:4px;background:#ef4444;cursor:pointer;"></div>
+        <div onmousedown="event.preventDefault()" onclick="aeRteExec('foreColor','#f59e0b');aeHideCtx()" title="Âmbar"
           style="width:20px;height:20px;border-radius:4px;background:#f59e0b;cursor:pointer;"></div>
-        <div onclick="aeRteExec('foreColor','#8b5cf6');aeHideCtx()" title="Roxo"
+        <div onmousedown="event.preventDefault()" onclick="aeRteExec('foreColor','#8b5cf6');aeHideCtx()" title="Roxo"
           style="width:20px;height:20px;border-radius:4px;background:#8b5cf6;cursor:pointer;"></div>
         <label title="Cor personalizada"
           style="width:20px;height:20px;border-radius:4px;background:conic-gradient(red,yellow,lime,aqua,blue,magenta,red);cursor:pointer;overflow:hidden;position:relative;">
@@ -2944,25 +2956,29 @@
     <div style="display:flex;align-items:center;gap:.5rem;padding:.2rem .6rem .4rem;">
       <span style="font-size:.75rem;color:var(--text-muted);">Realce:</span>
       <div style="display:flex;gap:.3rem;">
-        <div onclick="aeRteExec('hiliteColor','transparent');aeHideCtx()" title="Sem realce"
+        <div onmousedown="event.preventDefault()" onclick="aeRteExec('hiliteColor','transparent');aeHideCtx()"
+          title="Sem realce"
           style="width:20px;height:20px;border-radius:4px;background:transparent;cursor:pointer;border:2px solid var(--border);font-size:9px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);">
           ✕</div>
-        <div onclick="aeRteExec('hiliteColor','#fef08a');aeHideCtx()" title="Amarelo"
-          style="width:20px;height:20px;border-radius:4px;background:#fef08a;cursor:pointer;"></div>
-        <div onclick="aeRteExec('hiliteColor','#bbf7d0');aeHideCtx()" title="Verde"
+        <div onmousedown="event.preventDefault()" onclick="aeRteExec('hiliteColor','#fef08a');aeHideCtx()"
+          title="Amarelo" style="width:20px;height:20px;border-radius:4px;background:#fef08a;cursor:pointer;"></div>
+        <div onmousedown="event.preventDefault()" onclick="aeRteExec('hiliteColor','#bbf7d0');aeHideCtx()" title="Verde"
           style="width:20px;height:20px;border-radius:4px;background:#bbf7d0;cursor:pointer;"></div>
-        <div onclick="aeRteExec('hiliteColor','#bfdbfe');aeHideCtx()" title="Azul"
+        <div onmousedown="event.preventDefault()" onclick="aeRteExec('hiliteColor','#bfdbfe');aeHideCtx()" title="Azul"
           style="width:20px;height:20px;border-radius:4px;background:#bfdbfe;cursor:pointer;"></div>
-        <div onclick="aeRteExec('hiliteColor','#fecaca');aeHideCtx()" title="Rosa"
+        <div onmousedown="event.preventDefault()" onclick="aeRteExec('hiliteColor','#fecaca');aeHideCtx()" title="Rosa"
           style="width:20px;height:20px;border-radius:4px;background:#fecaca;cursor:pointer;"></div>
       </div>
     </div>
 
     <div style="height:1px;background:var(--border);margin:.35rem 0;"></div>
 
-    <div class="ae-ctx-item" onclick="aeRteInsertLink();aeHideCtx()">🔗 Criar link</div>
-    <div class="ae-ctx-item" onclick="aeRteExec('unlink');aeHideCtx()">🚫 Remover link</div>
-    <div class="ae-ctx-item" onclick="aeRteClearFormat();aeHideCtx()">✕A Limpar formatação</div>
+    <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="aeRteInsertLink();aeHideCtx()">🔗 Criar link
+    </div>
+    <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="aeRteExec('unlink');aeHideCtx()">🚫 Remover
+      link</div>
+    <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="aeRteClearFormat();aeHideCtx()">✕A Limpar
+      formatação</div>
   </div>
 
   <!-- ════ MODAL CANDIDATURA DETALHE ════ -->
@@ -3511,27 +3527,54 @@
         openAvisoEditor();
       }
 
-      async function saveAviso() {
+      async function saveAviso(forcePublish) {
         const titulo = document.getElementById('a-titulo').value.trim();
         const descricao = document.getElementById('ae-rte-body').innerHTML.trim();
         if (!titulo || !descricao) { toast('Preencha título e conteúdo.', 'error'); return; }
-        const data = {
+
+        // Monta payload sem colunas que podem não existir no schema
+        const base = {
           titulo,
-          resumo: document.getElementById('a-resumo').value.trim(),
-          descricao,
           tipo: document.getElementById('a-tipo').value,
           data_pub: document.getElementById('a-data').value || new Date().toISOString().split('T')[0],
+          publicado: forcePublish === true ? true : document.getElementById('a-publicado').checked,
+        };
+
+        // Tenta adicionar campos opcionais — ignora silenciosamente se a coluna não existir
+        const extras = {
+          resumo: document.getElementById('a-resumo').value.trim() || null,
+          descricao,
           capa_url: document.getElementById('a-capa-url').value.trim() || null,
           doc_url: aeAnexos.length ? aeAnexos[0].url : null,
-          anexos: aeAnexos,
-          publicado: document.getElementById('a-publicado').checked,
           destaque: document.getElementById('a-destaque').checked,
         };
+
+        // Monta objeto final; tenta com extras primeiro, faz fallback sem eles se der erro de schema
+        const dataFull = { ...base, ...extras };
+        const dataSimple = { ...base, descricao }; // mínimo seguro
+
+        const salvar = async (payload) => {
+          if (editingId.avisos) return sbUpdate('avisos', editingId.avisos, payload);
+          return sbInsert('avisos', payload);
+        };
+
         try {
-          if (editingId.avisos) { await sbUpdate('avisos', editingId.avisos, data); toast('Aviso atualizado!', 'success'); }
-          else { await sbInsert('avisos', data); toast('Aviso publicado!', 'success'); }
+          await salvar(dataFull);
+          const msg = forcePublish ? 'Aviso publicado!' : (editingId.avisos ? 'Aviso atualizado!' : 'Aviso salvo!');
+          toast('✅ ' + msg, 'success');
           closeAvisoEditor(); loadAvisos(); loadDashboard();
-        } catch (e) { toast('Erro: ' + e.message, 'error'); }
+        } catch (e) {
+          // Se erro for de coluna inexistente, tenta novamente só com campos base
+          if (e.message && (e.message.includes('column') || e.message.includes('schema'))) {
+            try {
+              await salvar(dataSimple);
+              toast('✅ Aviso salvo (algumas colunas extras não existem no banco — adicione-as se necessário).', 'info');
+              closeAvisoEditor(); loadAvisos(); loadDashboard();
+            } catch (e2) { toast('❌ Erro: ' + e2.message, 'error'); }
+          } else {
+            toast('❌ Erro: ' + e.message, 'error');
+          }
+        }
       }
 
       // RTE helpers para o editor de avisos
@@ -3551,21 +3594,38 @@
       }
 
       function aeRteExec(cmd, val) {
-        document.getElementById('ae-rte-body').focus();
+        // Restaura seleção salva (crítico para o menu de contexto funcionar)
+        aeRteRestoreSelection();
         document.execCommand(cmd, false, val || null);
         aeSync();
       }
 
       function aeRteFontSize(px) {
         aeRteRestoreSelection();
-        const span = document.createElement('span');
-        span.style.fontSize = px + 'px';
         const sel = window.getSelection();
         if (sel && sel.rangeCount && !sel.isCollapsed) {
-          const range = sel.getRangeAt(0);
-          range.surroundContents(span);
+          try {
+            const range = sel.getRangeAt(0);
+            // Extrai o conteúdo selecionado e envolve em span
+            const fragment = range.extractContents();
+            const span = document.createElement('span');
+            span.style.fontSize = px + 'px';
+            span.appendChild(fragment);
+            range.insertNode(span);
+            // Reseleciona o span inserido
+            const newRange = document.createRange();
+            newRange.selectNodeContents(span);
+            sel.removeAllRanges();
+            sel.addRange(newRange);
+          } catch (err) {
+            // Fallback via execCommand
+            document.execCommand('fontSize', false, '3');
+            document.querySelectorAll('#ae-rte-body font[size="3"]').forEach(f => {
+              f.removeAttribute('size');
+              f.style.fontSize = px + 'px';
+            });
+          }
         } else {
-          document.getElementById('ae-rte-body').focus();
           document.execCommand('fontSize', false, '3');
           document.querySelectorAll('#ae-rte-body font[size="3"]').forEach(f => {
             f.removeAttribute('size');
@@ -3631,25 +3691,31 @@
       // Context menu
       function aeContextMenu(e) {
         const sel = window.getSelection();
-        if (!sel || sel.isCollapsed) return; // só mostra se houver texto selecionado
+        if (!sel || sel.isCollapsed) return;
         e.preventDefault();
-        aeRteSaveSelection();
+        e.stopPropagation();
+        // Salva a seleção AGORA, antes de qualquer interação com o menu
+        if (sel.rangeCount) aeSavedSel = sel.getRangeAt(0).cloneRange();
         const menu = document.getElementById('ae-context-menu');
         menu.style.display = 'block';
-        const mx = Math.min(e.clientX, window.innerWidth - 240);
-        const my = Math.min(e.clientY, window.innerHeight - menu.offsetHeight - 20);
+        const mx = Math.min(e.clientX, window.innerWidth - 245);
+        const my = Math.min(e.clientY, window.innerHeight - menu.offsetHeight - 10);
         menu.style.left = mx + 'px';
         menu.style.top = my + 'px';
       }
 
       function aeHideCtx() {
         document.getElementById('ae-context-menu').style.display = 'none';
+        // NÃO limpa aeSavedSel aqui — a seleção pode ainda ser usada pelo comando
       }
       window.aeHideCtx = aeHideCtx;
 
-      document.addEventListener('click', function (e) {
+      document.addEventListener('mousedown', function (e) {
         const menu = document.getElementById('ae-context-menu');
-        if (menu && !menu.contains(e.target)) aeHideCtx();
+        // Fecha menu apenas se clicar FORA dele
+        if (menu && menu.style.display !== 'none' && !menu.contains(e.target)) {
+          aeHideCtx();
+        }
         const popup = document.getElementById('ae-rte-link-popup');
         if (popup && !popup.contains(e.target) && popup.style.display !== 'none') {
           const rte = document.getElementById('ae-rte-body');
