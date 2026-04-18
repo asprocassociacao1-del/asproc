@@ -1054,7 +1054,7 @@
             position: fixed;
             inset: 0;
             z-index: 9000;
-            background: rgba(8, 14, 8, .75);
+            background: rgba(8, 14, 8, .78);
             backdrop-filter: blur(8px);
             align-items: center;
             justify-content: center;
@@ -1063,7 +1063,7 @@
 
         .vaga-popup-overlay.open {
             display: flex;
-            animation: vpFadeIn .2s ease
+            animation: vpFadeIn .22s ease
         }
 
         @keyframes vpFadeIn {
@@ -1079,7 +1079,7 @@
         .vaga-popup {
             background: var(--cinza);
             border-radius: 22px;
-            border: 1px solid rgba(123, 201, 92, .18);
+            border: 1px solid rgba(123, 201, 92, .2);
             width: 100%;
             max-width: 600px;
             max-height: 90vh;
@@ -1102,7 +1102,6 @@
             }
         }
 
-        /* Cabeçalho com imagem */
         .vp-header {
             position: relative;
             height: 200px;
@@ -1125,7 +1124,7 @@
 
         .vp-header-info {
             position: absolute;
-            bottom: 1.2rem;
+            bottom: 1.1rem;
             left: 1.5rem;
             right: 4.5rem
         }
@@ -1158,17 +1157,18 @@
         }
 
         .vp-close:hover {
-            background: rgba(248, 113, 113, .28);
+            background: rgba(248, 113, 113, .3);
             color: #f87171
         }
 
-        /* Tabs */
+        /* Abas */
         .vp-tabs {
             display: flex;
             gap: .25rem;
-            padding: .75rem 1.5rem .5rem;
+            padding: .7rem 1.4rem .45rem;
             border-bottom: 1px solid rgba(123, 201, 92, .1);
-            flex-shrink: 0
+            flex-shrink: 0;
+            background: var(--cinza)
         }
 
         .vp-tab {
@@ -1176,7 +1176,7 @@
             border: none;
             border-radius: 8px;
             background: transparent;
-            color: rgba(245, 240, 232, .45);
+            color: rgba(245, 240, 232, .4);
             font-size: .78rem;
             font-weight: 600;
             cursor: pointer;
@@ -1185,7 +1185,7 @@
         }
 
         .vp-tab.active {
-            background: rgba(123, 201, 92, .15);
+            background: rgba(123, 201, 92, .14);
             color: var(--verde-neon)
         }
 
@@ -1195,29 +1195,27 @@
         }
 
         .vp-tab:disabled {
-            opacity: .3;
+            opacity: .28;
             cursor: not-allowed
         }
 
-        /* Corpo com scroll */
         .vp-body {
-            padding: 1.4rem 1.5rem;
+            padding: 1.35rem 1.5rem;
             overflow-y: auto;
             flex: 1
         }
 
-        /* Meta chips */
         .vp-meta {
             display: flex;
             flex-wrap: wrap;
             gap: .4rem;
-            margin-bottom: 1.2rem;
-            padding-bottom: 1rem;
+            margin-bottom: 1.15rem;
+            padding-bottom: .95rem;
             border-bottom: 1px solid rgba(123, 201, 92, .1)
         }
 
         .vp-chip {
-            padding: .25rem .65rem;
+            padding: .23rem .62rem;
             border-radius: 99px;
             font-size: .7rem;
             font-weight: 600;
@@ -1250,12 +1248,11 @@
             border-color: rgba(250, 204, 21, .3)
         }
 
-        /* Descrição */
         .vp-desc {
             font-size: .85rem;
             color: rgba(245, 240, 232, .72);
             line-height: 1.8;
-            margin-bottom: 1.2rem
+            margin-bottom: 1.15rem
         }
 
         .vp-desc h1,
@@ -1280,19 +1277,18 @@
             color: var(--creme)
         }
 
-        /* Anexos */
         .vp-anexos {
             display: flex;
             flex-direction: column;
-            gap: .5rem;
-            margin-bottom: 1.4rem
+            gap: .45rem;
+            margin-bottom: 1.3rem
         }
 
         .vp-anexo-link {
             display: flex;
             align-items: center;
-            gap: .6rem;
-            padding: .65rem 1rem;
+            gap: .55rem;
+            padding: .62rem 1rem;
             background: rgba(123, 201, 92, .06);
             border: 1px solid rgba(123, 201, 92, .16);
             border-radius: 10px;
@@ -1308,18 +1304,16 @@
             border-color: rgba(123, 201, 92, .35)
         }
 
-        .vp-anexo-link .vp-al-arrow {
+        .vp-anexo-link .al-arrow {
             margin-left: auto;
             opacity: .5;
             font-size: .7rem
         }
 
-        /* Ações */
         .vp-actions {
             display: flex;
             gap: .7rem;
-            flex-wrap: wrap;
-            margin-top: .2rem
+            flex-wrap: wrap
         }
 
         .vp-btn-cand {
@@ -1365,28 +1359,27 @@
         }
 
         /* Formulário de candidatura no popup */
-        .vp-form-field {
+        .vp-ff {
             display: flex;
             flex-direction: column;
             gap: .35rem;
-            margin-bottom: .85rem
+            margin-bottom: .82rem
         }
 
-        .vp-form-field label {
-            font-size: .68rem;
+        .vp-ff label {
+            font-size: .67rem;
             font-weight: 700;
             letter-spacing: .07em;
             text-transform: uppercase;
-            color: rgba(245, 240, 232, .45)
+            color: rgba(245, 240, 232, .42)
         }
 
-        .vp-form-field input,
-        .vp-form-field select,
-        .vp-form-field textarea {
+        .vp-ff input,
+        .vp-ff textarea {
             width: 100%;
-            padding: .6rem .88rem;
+            padding: .58rem .88rem;
             background: rgba(255, 255, 255, .05);
-            border: 1px solid rgba(123, 201, 92, .18);
+            border: 1px solid rgba(123, 201, 92, .17);
             border-radius: 10px;
             color: var(--creme);
             font-family: "DM Sans", sans-serif;
@@ -1396,30 +1389,31 @@
             box-sizing: border-box
         }
 
-        .vp-form-field input:focus,
-        .vp-form-field textarea:focus {
+        .vp-ff input:focus,
+        .vp-ff textarea:focus {
             border-color: rgba(123, 201, 92, .55);
-            box-shadow: 0 0 0 3px rgba(123, 201, 92, .09)
+            box-shadow: 0 0 0 3px rgba(123, 201, 92, .08)
         }
 
-        .vp-form-field textarea {
+        .vp-ff textarea {
             resize: vertical;
-            min-height: 72px
+            min-height: 70px
         }
 
-        .vp-form-row {
+        .vp-ff-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: .7rem
+            gap: .7rem;
+            margin-bottom: .82rem
         }
 
         @media(max-width:480px) {
-            .vp-form-row {
+            .vp-ff-row {
                 grid-template-columns: 1fr
             }
         }
 
-        .vp-dropzone {
+        .vp-dz {
             border: 1.5px dashed rgba(123, 201, 92, .28);
             border-radius: 12px;
             padding: 1.1rem;
@@ -1428,22 +1422,22 @@
             transition: border-color .2s, background .2s
         }
 
-        .vp-dropzone:hover {
+        .vp-dz:hover {
             border-color: rgba(123, 201, 92, .55);
             background: rgba(123, 201, 92, .04)
         }
 
-        .vp-dropzone.has-file {
+        .vp-dz.has-f {
             border-color: rgba(123, 201, 92, .5);
             background: rgba(123, 201, 92, .06)
         }
 
-        /* Barra de progresso */
-        .vp-progress {
-            margin: .8rem 0 .4rem
+        .vp-prog {
+            margin: .75rem 0 .35rem;
+            display: none
         }
 
-        .vp-progress-bar-wrap {
+        .vp-prog-track {
             height: 4px;
             background: rgba(123, 201, 92, .15);
             border-radius: 2px;
@@ -1451,20 +1445,20 @@
             margin-bottom: .35rem
         }
 
-        .vp-progress-bar {
+        .vp-prog-bar {
             height: 100%;
             width: 0%;
             background: var(--verde-neon);
             transition: width .35s
         }
 
-        .vp-progress-msg {
+        .vp-prog-msg {
             font-size: .7rem;
-            color: rgba(245, 240, 232, .45);
+            color: rgba(245, 240, 232, .42);
             margin: 0
         }
 
-        /* Hover overlay no card */
+        /* hover overlay no card */
         .vc-hover-overlay {
             position: absolute;
             inset: 0;
@@ -1766,76 +1760,80 @@
             document.getElementById("cf-vaga").value = v;
             document.getElementById("cf-sec").scrollIntoView({ behavior: "smooth" });
         }
-        function submitForm() {
-            const nome = document.getElementById("cf-nome").value.trim();
-            const email = document.getElementById("cf-email").value.trim();
-            const telefone = document.getElementById("cf-tel").value.trim();
-            const vaga = document.getElementById("cf-vaga").value;
-            const mensagem = document.getElementById("cf-msg").value.trim();
-            const fileInput = document.getElementById("cf-file");
-            const btn = document.querySelector(".csub");
+        /* ─── submitForm: formulário externo da página ─── */
+        /* Usa credenciais hardcoded para não depender do asproc-supabase.js */
+        var _SB = 'https://wiatqtiyiznscjyoxxww.supabase.co';
+        var _KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpYXRxdGl5aXpuc2NqeW94eHd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1Njc0MDEsImV4cCI6MjA5MTE0MzQwMX0.xgaaZWX5kG3XowDtpR9Xd8S2S0nV-JTnv4ZwnP33PY8';
+        var _HDR = { apikey: _KEY, Authorization: 'Bearer ' + _KEY };
 
-            // Validação básica
-            if (!nome) { alert("Por favor, informe seu nome completo."); return; }
-            if (!email || !email.includes("@")) { alert("Por favor, informe um e-mail válido."); return; }
-            if (!vaga) { alert("Por favor, selecione a vaga de interesse."); return; }
+        async function submitForm() {
+            var nome = (document.getElementById('cf-nome').value || '').trim();
+            var email = (document.getElementById('cf-email').value || '').trim();
+            var telefone = (document.getElementById('cf-tel').value || '').trim();
+            var vaga = (document.getElementById('cf-vaga').value || '').trim();
+            var mensagem = (document.getElementById('cf-msg').value || '').trim();
+            var fileInput = document.getElementById('cf-file');
+            var btn = document.querySelector('.csub');
+
+            if (!nome) { alert('Por favor, informe seu nome completo.'); return; }
+            if (!email || !email.includes('@')) { alert('Por favor, informe um e-mail válido.'); return; }
+            if (!vaga) { alert('Por favor, selecione a vaga de interesse.'); return; }
 
             btn.disabled = true;
-            btn.textContent = "Enviando…";
+            btn.textContent = 'Enviando…';
 
             async function doSubmit(curriculo_url) {
                 try {
-                    await sbInsert("candidaturas", {
-                        nome,
-                        email,
+                    /* NÃO enviamos o campo 'status' — deixamos o DEFAULT do banco agir */
+                    var payload = {
+                        nome: nome,
+                        email: email,
                         telefone: telefone || null,
-                        vaga,
+                        vaga: vaga,
                         mensagem: mensagem || null,
-                        curriculo_url: curriculo_url || null,
-                        status: "nova"
+                        curriculo_url: curriculo_url || null
+                    };
+                    var r = await fetch(_SB + '/rest/v1/candidaturas', {
+                        method: 'POST',
+                        headers: Object.assign({ 'Content-Type': 'application/json', Prefer: 'return=minimal' }, _HDR),
+                        body: JSON.stringify(payload)
                     });
-                    document.querySelector(".form-inner").style.display = "none";
-                    document.getElementById("cf-ok").style.display = "block";
+                    if (!r.ok) {
+                        var err = await r.json().catch(function () { return {}; });
+                        throw new Error(err.message || ('HTTP ' + r.status));
+                    }
+                    document.querySelector('.form-inner').style.display = 'none';
+                    document.getElementById('cf-ok').style.display = 'block';
                 } catch (err) {
-                    console.error("[ASPROC] Erro ao enviar candidatura:", err);
-                    alert("Erro ao enviar candidatura. Tente novamente.\n" + err.message);
+                    console.error('[ASPROC] Erro ao enviar candidatura:', err);
+                    alert('Erro ao enviar candidatura. Tente novamente.\n' + err.message);
                     btn.disabled = false;
-                    btn.textContent = "Enviar Candidatura →";
+                    btn.textContent = 'Enviar Candidatura →';
                 }
             }
 
-            // Upload de currículo (Supabase Storage) se houver arquivo
-            const file = fileInput && fileInput.files[0];
+            var file = fileInput && fileInput.files[0];
             if (file) {
                 if (file.size > 5 * 1024 * 1024) {
-                    alert("Arquivo muito grande. Máximo: 5 MB.");
+                    alert('Arquivo muito grande. Máximo: 5 MB.');
                     btn.disabled = false;
-                    btn.textContent = "Enviar Candidatura →";
+                    btn.textContent = 'Enviar Candidatura →';
                     return;
                 }
-                const ext = file.name.split(".").pop();
-                const nomeSeguro = nome.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9_\-]/g, "_");
-                const fileName = `curriculos/${Date.now()}_${nomeSeguro}.${ext}`;
-                // Supabase Storage: usar PUT com upsert para upload público
-                const uploadUrl = `${SUPABASE_URL}/storage/v1/object/candidaturas/${fileName}`;
-                fetch(uploadUrl, {
-                    method: "PUT",
-                    headers: {
-                        "apikey": SUPABASE_KEY,
-                        "Authorization": "Bearer " + SUPABASE_KEY,
-                        "Content-Type": file.type || "application/octet-stream",
-                        "x-upsert": "true"
-                    },
+                var ext = file.name.split('.').pop();
+                var ns = nome.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9_-]/g, '_');
+                var fn = 'curriculos/' + Date.now() + '_' + ns + '.' + ext;
+                fetch(_SB + '/storage/v1/object/candidaturas/' + fn, {
+                    method: 'PUT',
+                    headers: Object.assign({ 'Content-Type': file.type || 'application/octet-stream', 'x-upsert': 'true' }, _HDR),
                     body: file
-                }).then(r => {
-                    const publicUrl = r.ok
-                        ? `${SUPABASE_URL}/storage/v1/object/public/candidaturas/${fileName}`
-                        : null;
-                    if (!r.ok) console.warn("[ASPROC] Upload do currículo falhou, enviando sem arquivo.");
-                    doSubmit(publicUrl);
-                }).catch(err => {
-                    console.warn("[ASPROC] Erro no upload:", err);
-                    doSubmit(null); // envia a candidatura mesmo sem o currículo
+                }).then(function (res) {
+                    var url = res.ok ? _SB + '/storage/v1/object/public/candidaturas/' + fn : null;
+                    if (!res.ok) console.warn('[ASPROC] Upload falhou — enviando sem currículo');
+                    doSubmit(url);
+                }).catch(function (e) {
+                    console.warn('[ASPROC] Erro upload:', e);
+                    doSubmit(null);
                 });
             } else {
                 doSubmit(null);
@@ -1988,69 +1986,68 @@
 
     <!-- ════ POPUP DE DETALHES DA VAGA ════ -->
     <div class="vaga-popup-overlay" id="vaga-popup-overlay" onclick="vpClose(event)">
-        <div class="vaga-popup" id="vaga-popup">
+        <div class="vaga-popup">
 
-            <!-- CABEÇALHO COM FOTO -->
+            <!-- Cabeçalho com foto -->
             <div class="vp-header">
                 <img id="vp-img" src="" alt="">
                 <div class="vp-header-overlay"></div>
                 <div class="vp-header-info">
-                    <div style="margin-bottom:.3rem" id="vp-status-wrap"></div>
+                    <div id="vp-sbadge" style="margin-bottom:.35rem"></div>
                     <div class="vp-title" id="vp-titulo"></div>
                 </div>
                 <button class="vp-close" onclick="vpFechar()" title="Fechar (Esc)">✕</button>
             </div>
 
-            <!-- ABAS -->
+            <!-- Abas -->
             <div class="vp-tabs">
                 <button class="vp-tab active" id="vp-tab-det" onclick="vpTab('det')">📋 Detalhes</button>
                 <button class="vp-tab" id="vp-tab-cand" onclick="vpTab('cand')">✍️ Candidatar-se</button>
             </div>
 
-            <!-- PAINEL: DETALHES -->
-            <div class="vp-body" id="vp-panel-det">
+            <!-- PAINEL: Detalhes da vaga -->
+            <div class="vp-body" id="vp-pdet">
                 <div class="vp-meta" id="vp-meta"></div>
                 <div class="vp-desc" id="vp-desc"></div>
                 <div class="vp-anexos" id="vp-anexos"></div>
                 <div class="vp-actions">
-                    <button class="vp-btn-cand" id="vp-btn-cand-det" onclick="vpTab('cand')">Candidatar-se →</button>
+                    <button class="vp-btn-cand" id="vp-det-cand" onclick="vpTab('cand')">Candidatar-se →</button>
                     <button class="vp-btn-fechar" onclick="vpFechar()">Fechar</button>
                 </div>
             </div>
 
-            <!-- PAINEL: FORMULÁRIO -->
-            <div class="vp-body" id="vp-panel-cand" style="display:none">
+            <!-- PAINEL: Formulário de candidatura -->
+            <div class="vp-body" id="vp-pcand" style="display:none">
 
-                <!-- Formulário -->
-                <div id="vp-form-wrap">
-                    <p style="font-size:.82rem;color:rgba(245,240,232,.5);margin:0 0 1.1rem;line-height:1.55">
-                        Candidatura para <strong id="vp-form-vaga" style="color:var(--verde-neon)"></strong>.
-                        Preencha os dados abaixo e envie.
+                <div id="vp-fwrap">
+                    <p style="font-size:.82rem;color:rgba(245,240,232,.5);margin:0 0 1rem;line-height:1.55">
+                        Candidatura para <strong id="vp-fvaga" style="color:var(--verde-neon)"></strong>.
+                        Preencha e envie — seus dados ficam salvos no nosso sistema.
                     </p>
 
-                    <div class="vp-form-field">
+                    <div class="vp-ff">
                         <label>Nome Completo *</label>
                         <input type="text" id="vp-nome" placeholder="Seu nome completo" autocomplete="name">
                     </div>
-                    <div class="vp-form-row">
-                        <div class="vp-form-field">
+                    <div class="vp-ff-row">
+                        <div class="vp-ff">
                             <label>E-mail *</label>
                             <input type="email" id="vp-email" placeholder="seu@email.com" autocomplete="email">
                         </div>
-                        <div class="vp-form-field">
+                        <div class="vp-ff">
                             <label>Telefone / WhatsApp</label>
                             <input type="tel" id="vp-tel" placeholder="(92) 9 9999-9999" autocomplete="tel">
                         </div>
                     </div>
-                    <div class="vp-form-field">
+                    <div class="vp-ff">
                         <label>Motivação (opcional)</label>
                         <textarea id="vp-msg" rows="3" placeholder="Por que você quer trabalhar na ASPROC?"></textarea>
                     </div>
-                    <div class="vp-form-field">
+                    <div class="vp-ff">
                         <label>Currículo — PDF / DOC / DOCX (máx. 5 MB)</label>
-                        <div class="vp-dropzone" id="vp-dropzone" onclick="document.getElementById('vp-file').click()">
-                            <div style="font-size:1.6rem;margin-bottom:.3rem">📎</div>
-                            <div id="vp-file-lbl" style="font-size:.78rem;color:rgba(245,240,232,.45)">
+                        <div class="vp-dz" id="vp-dz" onclick="document.getElementById('vp-file').click()">
+                            <div style="font-size:1.5rem;margin-bottom:.3rem">📎</div>
+                            <div id="vp-flbl" style="font-size:.78rem;color:rgba(245,240,232,.42)">
                                 Clique ou arraste o arquivo aqui<br>
                                 <small style="opacity:.7">.pdf · .doc · .docx</small>
                             </div>
@@ -2059,28 +2056,27 @@
                         </div>
                     </div>
 
-                    <!-- Progresso de envio -->
-                    <div class="vp-progress" id="vp-progress" style="display:none">
-                        <div class="vp-progress-bar-wrap">
-                            <div class="vp-progress-bar" id="vp-bar"></div>
+                    <div class="vp-prog" id="vp-prog">
+                        <div class="vp-prog-track">
+                            <div class="vp-prog-bar" id="vp-pbar"></div>
                         </div>
-                        <p class="vp-progress-msg" id="vp-pmsg">Enviando…</p>
+                        <p class="vp-prog-msg" id="vp-pmsg">Enviando…</p>
                     </div>
 
                     <div class="vp-actions" style="margin-top:.9rem">
-                        <button class="vp-btn-cand" id="vp-submit" onclick="vpSubmit()">Enviar Candidatura →</button>
+                        <button class="vp-btn-cand" id="vp-sub" onclick="vpSubmit()">Enviar Candidatura →</button>
                         <button class="vp-btn-fechar" onclick="vpTab('det')">← Voltar</button>
                     </div>
                 </div>
 
-                <!-- Confirmação de sucesso -->
+                <!-- Sucesso -->
                 <div id="vp-ok" style="display:none;text-align:center;padding:2.5rem 1rem">
-                    <div style="font-size:3.2rem;margin-bottom:.8rem">✅</div>
+                    <div style="font-size:3rem;margin-bottom:.7rem">✅</div>
                     <div
-                        style="font-family:'Fraunces',serif;font-size:1.25rem;font-weight:700;margin-bottom:.5rem;color:var(--verde-neon)">
+                        style="font-family:'Fraunces',serif;font-size:1.2rem;font-weight:700;margin-bottom:.5rem;color:var(--verde-neon)">
                         Candidatura enviada!
                     </div>
-                    <p style="font-size:.84rem;color:rgba(245,240,232,.5);margin:0 0 1.4rem">
+                    <p style="font-size:.83rem;color:rgba(245,240,232,.5);margin:0 0 1.3rem">
                         Recebemos sua candidatura com sucesso.<br>Entraremos em contato em breve.
                     </p>
                     <button class="vp-btn-fechar" onclick="vpFechar()">Fechar</button>
@@ -2091,130 +2087,139 @@
     </div>
 
     <script>
-        /* ═══════════════════════════════════════════════════════
-           POPUP DE VAGAS — Detalhes + Candidatura com upload
-        ═══════════════════════════════════════════════════════ */
+        /* ══════════════════════════════════════════════════
+           POPUP DE VAGA — Detalhes + Candidatura integrada
+           Não depende de asproc-supabase.js
+        ══════════════════════════════════════════════════ */
         (function () {
             var SB = 'https://wiatqtiyiznscjyoxxww.supabase.co';
             var KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpYXRxdGl5aXpuc2NqeW94eHd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1Njc0MDEsImV4cCI6MjA5MTE0MzQwMX0.xgaaZWX5kG3XowDtpR9Xd8S2S0nV-JTnv4ZwnP33PY8';
-            var HDRS = { apikey: KEY, Authorization: 'Bearer ' + KEY };
+            var HDR = { apikey: KEY, Authorization: 'Bearer ' + KEY };
             var vagaAtual = null;
 
-            /* ── Helpers ── */
             function g(id) { return document.getElementById(id); }
-            function fmtPrazo(d) {
+
+            function fmtDate(d) {
                 if (!d) return '';
                 try {
                     var p = new Date(d + 'T00:00:00');
                     return p.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
                 } catch (e) { return d; }
             }
-            function bar(pct, msg) {
-                g('vp-progress').style.display = 'block';
-                g('vp-bar').style.width = pct + '%';
-                g('vp-pmsg').textContent = msg || '';
+
+            function setBar(pct, msg) {
+                var el = g('vp-prog');
+                if (el) el.style.display = 'block';
+                var b = g('vp-pbar'); if (b) b.style.width = pct + '%';
+                var m = g('vp-pmsg'); if (m) m.textContent = msg || '';
             }
 
             /* ── Abrir popup ── */
             function vpAbrir(vaga) {
                 vagaAtual = vaga;
 
-                // Imagem e título
                 g('vp-img').src = vaga.imagem_url || 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=900&q=80';
                 g('vp-img').alt = vaga.titulo;
                 g('vp-titulo').textContent = vaga.titulo;
 
                 // Badge de status
-                var stMap = { aberta: ['status-ab', '● Aberta'], encerrada: ['status-enc', '● Encerrada'], suspensa: ['status-sus', '● Suspensa'] };
+                var stMap = {
+                    aberta: ['status-ab', '● Aberta'],
+                    encerrada: ['status-enc', '● Encerrada'],
+                    suspensa: ['status-sus', '● Suspensa']
+                };
                 var si = stMap[vaga.status] || ['status-ab', vaga.status];
-                g('vp-status-wrap').innerHTML = '<span class="vp-chip ' + si[0] + '" style="font-size:.62rem">' + si[1] + '</span>';
+                g('vp-sbadge').innerHTML = '<span class="vp-chip ' + si[0] + '" style="font-size:.62rem">' + si[1] + '</span>';
 
                 // Meta chips
                 var chips = '';
-                if (vaga.prazo) chips += '<span class="vp-chip dourado">⏰ Prazo: ' + fmtPrazo(vaga.prazo) + '</span>';
+                if (vaga.prazo) chips += '<span class="vp-chip dourado">⏰ Prazo: ' + fmtDate(vaga.prazo) + '</span>';
                 if (vaga.local) chips += '<span class="vp-chip">📍 ' + vaga.local + '</span>';
                 if (vaga.regime) chips += '<span class="vp-chip">📑 ' + vaga.regime + '</span>';
                 if (vaga.carga_horaria) chips += '<span class="vp-chip">🕐 ' + vaga.carga_horaria + '</span>';
                 if (vaga.escolaridade) chips += '<span class="vp-chip">🎓 ' + vaga.escolaridade + '</span>';
                 g('vp-meta').innerHTML = chips;
 
-                // Descrição completa (rich text do admin)
+                // Descrição completa (rich text)
                 g('vp-desc').innerHTML = vaga.descricao
                     || '<p style="color:rgba(245,240,232,.35);font-style:italic">Sem descrição detalhada.</p>';
 
                 // Anexos / editais
                 var anx = '';
-                if (vaga.anexos && vaga.anexos.length) {
-                    (Array.isArray(vaga.anexos) ? vaga.anexos : JSON.parse(vaga.anexos || '[]')).forEach(function (a) {
-                        var ic = a.tipo === 'pdf' ? '📕' : (a.tipo === 'docx' || a.tipo === 'doc') ? '📘' : a.tipo === 'xls' || a.tipo === 'xlsx' ? '📗' : '📄';
-                        anx += '<a class="vp-anexo-link" href="' + a.url + '" target="_blank" rel="noopener">' + ic + ' ' + a.nome + '<span class="vp-al-arrow">↗</span></a>';
+                if (vaga.anexos) {
+                    var arr = Array.isArray(vaga.anexos) ? vaga.anexos : [];
+                    try { if (!arr.length && typeof vaga.anexos === 'string') arr = JSON.parse(vaga.anexos); } catch (e) { }
+                    arr.forEach(function (a) {
+                        var ic = a.tipo === 'pdf' ? '📕' : (a.tipo === 'docx' || a.tipo === 'doc') ? '📘' : a.tipo === 'xlsx' || a.tipo === 'xls' ? '📗' : '📄';
+                        anx += '<a class="vp-anexo-link" href="' + a.url + '" target="_blank" rel="noopener">' + ic + ' ' + a.nome + '<span class="al-arrow">↗</span></a>';
                     });
                 }
                 if (vaga.edital_url) {
-                    anx += '<a class="vp-anexo-link" href="' + vaga.edital_url + '" target="_blank" rel="noopener">📕 Baixar Edital<span class="vp-al-arrow">↗</span></a>';
+                    anx += '<a class="vp-anexo-link" href="' + vaga.edital_url + '" target="_blank" rel="noopener">📕 Baixar Edital<span class="al-arrow">↗</span></a>';
                 }
                 g('vp-anexos').innerHTML = anx;
 
-                // Botão e aba candidatura
-                var aberta = vaga.status === 'aberta';
-                var btnDet = g('vp-btn-cand-det');
+                // Botão na aba Detalhes + aba Candidatura
+                var aberta = (vaga.status === 'aberta');
+                var btnDet = g('vp-det-cand');
                 var tabC = g('vp-tab-cand');
                 if (aberta) {
                     btnDet.className = 'vp-btn-cand';
                     btnDet.textContent = 'Candidatar-se →';
-                    tabC.disabled = false; tabC.style.opacity = '';
+                    tabC.disabled = false;
+                    tabC.style.opacity = '';
                 } else {
                     btnDet.className = 'vp-btn-cand disabled';
                     btnDet.textContent = vaga.status === 'encerrada' ? 'Vaga Encerrada' : 'Vaga Suspensa';
-                    tabC.disabled = true; tabC.style.opacity = '.3';
+                    tabC.disabled = true;
+                    tabC.style.opacity = '.28';
                 }
 
                 // Nome da vaga no form
-                g('vp-form-vaga').textContent = '"' + vaga.titulo + '"';
+                g('vp-fvaga').textContent = '"' + vaga.titulo + '"';
 
-                // Abre na aba Detalhes e limpa form
                 vpTab('det');
-                vpResetForm();
+                vpReset();
 
                 g('vaga-popup-overlay').classList.add('open');
                 document.body.style.overflow = 'hidden';
             }
 
-            /* ── Troca de abas ── */
+            /* ── Alternar abas ── */
             function vpTab(t) {
                 g('vp-tab-det').classList.toggle('active', t === 'det');
                 g('vp-tab-cand').classList.toggle('active', t === 'cand');
-                g('vp-panel-det').style.display = t === 'det' ? '' : 'none';
-                g('vp-panel-cand').style.display = t === 'cand' ? '' : 'none';
+                g('vp-pdet').style.display = t === 'det' ? '' : 'none';
+                g('vp-pcand').style.display = t === 'cand' ? '' : 'none';
             }
 
-            /* ── Arquivo selecionado ── */
+            /* ── Arquivo escolhido ── */
             function vpOnFile(inp) {
-                var f = inp.files[0];
-                var lbl = g('vp-file-lbl');
-                var dz = g('vp-dropzone');
+                var f = inp && inp.files && inp.files[0];
+                var lbl = g('vp-flbl');
+                var dz = g('vp-dz');
                 if (f) {
-                    lbl.innerHTML = '<strong style="color:var(--verde-neon)">' + f.name + '</strong><br><small style="opacity:.6">' + (f.size / 1024 / 1024).toFixed(2) + ' MB</small>';
-                    dz.classList.add('has-file');
+                    lbl.innerHTML = '<strong style="color:var(--verde-neon)">' + f.name + '</strong><br>'
+                        + '<small style="opacity:.6">' + (f.size / 1024 / 1024).toFixed(2) + ' MB</small>';
+                    if (dz) dz.classList.add('has-f');
                 } else {
                     lbl.innerHTML = 'Clique ou arraste o arquivo aqui<br><small style="opacity:.7">.pdf · .doc · .docx</small>';
-                    dz.classList.remove('has-file');
+                    if (dz) dz.classList.remove('has-f');
                 }
             }
 
-            /* ── Reset form ── */
-            function vpResetForm() {
+            /* ── Limpar form ── */
+            function vpReset() {
                 ['vp-nome', 'vp-email', 'vp-tel', 'vp-msg'].forEach(function (id) {
                     var el = g(id); if (el) el.value = '';
                 });
                 var fi = g('vp-file'); if (fi) fi.value = '';
-                vpOnFile({ files: [] });
-                g('vp-progress').style.display = 'none';
-                g('vp-bar').style.width = '0%';
-                g('vp-form-wrap').style.display = '';
-                g('vp-ok').style.display = 'none';
-                var btn = g('vp-submit');
-                if (btn) { btn.disabled = false; btn.textContent = 'Enviar Candidatura →'; }
+                vpOnFile(null);
+                var p = g('vp-prog'); if (p) p.style.display = 'none';
+                var b = g('vp-pbar'); if (b) b.style.width = '0%';
+                var fw = g('vp-fwrap'); if (fw) fw.style.display = '';
+                var ok = g('vp-ok'); if (ok) ok.style.display = 'none';
+                var sb = g('vp-sub'); if (sb) { sb.disabled = false; sb.textContent = 'Enviar Candidatura →'; }
             }
 
             /* ── Enviar candidatura ── */
@@ -2224,7 +2229,7 @@
                 var tel = (g('vp-tel').value || '').trim();
                 var msg = (g('vp-msg').value || '').trim();
                 var fi = g('vp-file');
-                var btn = g('vp-submit');
+                var btn = g('vp-sub');
 
                 if (!nome) { alert('Por favor, informe seu nome completo.'); return; }
                 if (!email || !email.includes('@')) { alert('Por favor, informe um e-mail válido.'); return; }
@@ -2236,65 +2241,70 @@
                 var curriculo_url = null;
                 var file = fi && fi.files[0];
 
-                // ── Upload do currículo ──
+                // ── Upload currículo ──
                 if (file) {
                     if (file.size > 5 * 1024 * 1024) {
                         alert('Arquivo muito grande. Máximo 5 MB.');
                         btn.disabled = false; btn.textContent = 'Enviar Candidatura →';
                         return;
                     }
-                    bar(20, 'Enviando currículo…');
+                    setBar(20, 'Enviando currículo…');
                     var ext = file.name.split('.').pop();
                     var ns = nome.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9_-]/g, '_');
                     var fn = 'curriculos/' + Date.now() + '_' + ns + '.' + ext;
                     try {
                         var up = await fetch(SB + '/storage/v1/object/candidaturas/' + fn, {
                             method: 'PUT',
-                            headers: Object.assign({ 'Content-Type': file.type || 'application/octet-stream', 'x-upsert': 'true' }, HDRS),
+                            headers: Object.assign({
+                                'Content-Type': file.type || 'application/octet-stream',
+                                'x-upsert': 'true'
+                            }, HDR),
                             body: file
                         });
-                        if (up.ok) {
-                            curriculo_url = SB + '/storage/v1/object/public/candidaturas/' + fn;
-                            bar(60, 'Currículo enviado! Gravando candidatura…');
-                        } else {
-                            bar(55, 'Upload falhou — salvando sem currículo…');
-                        }
+                        curriculo_url = up.ok ? (SB + '/storage/v1/object/public/candidaturas/' + fn) : null;
+                        if (!up.ok) console.warn('[VP] Upload falhou — enviando sem currículo');
+                        setBar(65, 'Gravando candidatura…');
                     } catch (e) {
-                        bar(55, 'Erro no upload — salvando sem currículo…');
+                        console.warn('[VP] Erro no upload:', e);
+                        setBar(55, 'Gravando candidatura…');
                     }
                 } else {
-                    bar(40, 'Gravando candidatura…');
+                    setBar(40, 'Gravando candidatura…');
                 }
 
-                // ── Inserir no Supabase ──
+                // ── Inserir no Supabase — SEM campo status (usa DEFAULT do banco) ──
                 try {
                     var payload = {
-                        nome: nome, email: email,
+                        nome: nome,
+                        email: email,
                         telefone: tel || null,
                         vaga: vagaAtual.titulo,
                         mensagem: msg || null,
-                        curriculo_url: curriculo_url,
-                        status: 'nova'
+                        curriculo_url: curriculo_url
                     };
                     var res = await fetch(SB + '/rest/v1/candidaturas', {
                         method: 'POST',
-                        headers: Object.assign({ 'Content-Type': 'application/json', 'Prefer': 'return=minimal' }, HDRS),
+                        headers: Object.assign({
+                            'Content-Type': 'application/json',
+                            Prefer: 'return=minimal'
+                        }, HDR),
                         body: JSON.stringify(payload)
                     });
                     if (!res.ok) {
-                        var err = await res.json().catch(function () { return {}; });
-                        throw new Error(err.message || ('HTTP ' + res.status));
+                        var errJson = await res.json().catch(function () { return {}; });
+                        throw new Error(errJson.message || errJson.hint || ('HTTP ' + res.status));
                     }
-                    bar(100, '✅ Candidatura enviada com sucesso!');
+                    setBar(100, '✅ Candidatura enviada!');
                     setTimeout(function () {
-                        g('vp-form-wrap').style.display = 'none';
+                        g('vp-fwrap').style.display = 'none';
                         g('vp-ok').style.display = '';
                     }, 500);
                 } catch (e) {
-                    alert('Erro ao salvar candidatura:\n' + e.message);
+                    console.error('[VP] Erro ao salvar:', e);
+                    alert('Erro ao enviar candidatura:\n' + e.message);
                     btn.disabled = false;
                     btn.textContent = 'Enviar Candidatura →';
-                    g('vp-progress').style.display = 'none';
+                    var p = g('vp-prog'); if (p) p.style.display = 'none';
                 }
             }
 
@@ -2309,21 +2319,21 @@
             }
             document.addEventListener('keydown', function (e) { if (e.key === 'Escape') vpFechar(); });
 
-            /* ── Drag-and-drop ── */
-            var dz = g('vp-dropzone');
-            if (dz) {
+            /* ── Drag & Drop ── */
+            document.addEventListener('DOMContentLoaded', function () {
+                var dz = g('vp-dz');
+                if (!dz) return;
                 dz.addEventListener('dragover', function (e) { e.preventDefault(); dz.style.borderColor = 'rgba(123,201,92,.6)'; });
                 dz.addEventListener('dragleave', function () { dz.style.borderColor = ''; });
                 dz.addEventListener('drop', function (e) {
                     e.preventDefault(); dz.style.borderColor = '';
                     var f = e.dataTransfer.files[0];
                     if (f) {
-                        var dt = new DataTransfer(); dt.items.add(f);
-                        var fi = g('vp-file'); fi.files = dt.files;
-                        vpOnFile(fi);
+                        try { var dt = new DataTransfer(); dt.items.add(f); g('vp-file').files = dt.files; } catch (x) { }
+                        vpOnFile(g('vp-file'));
                     }
                 });
-            }
+            });
 
             /* Expor globalmente */
             window.vpAbrir = vpAbrir;
