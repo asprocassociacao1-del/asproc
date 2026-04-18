@@ -2219,19 +2219,17 @@
         <section class="section" id="sec-candidaturas">
           <div class="table-wrap" style="margin-bottom:1rem;">
             <div class="table-header" style="flex-wrap:wrap;gap:.5rem">
-              <h3>Candidaturas recebidas</h3>
-              <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-left:auto">
-                <select class="select-filter" id="cand-status-filter"
-                  onchange="loadCandidaturas(this.value, document.getElementById('cand-vaga-filter').value)">
+              <h3 id="cand-header-title">Candidaturas recebidas</h3>
+              <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-left:auto;align-items:center;">
+                <select class="select-filter" id="cand-status-filter" onchange="applyCandFilters()">
                   <option value="">Todos status</option>
                   <option value="nova">🆕 Novas</option>
                   <option value="em_analise">🔍 Em análise</option>
                   <option value="aprovada">✅ Aprovadas</option>
                   <option value="reprovada">❌ Reprovadas</option>
                 </select>
-                <input id="cand-vaga-filter" class="select-filter" type="search" placeholder="Filtrar por vaga…"
-                  style="min-width:160px"
-                  oninput="loadCandidaturas(document.getElementById('cand-status-filter').value, this.value)">
+                <input id="cand-search-filter" class="select-filter" type="search"
+                  placeholder="Buscar por nome ou vaga…" style="min-width:200px" oninput="applyCandFilters()">
                 <button class="btn btn-secondary btn-sm" onclick="loadCandidaturas()" title="Recarregar">↺</button>
               </div>
             </div>
@@ -3298,7 +3296,11 @@
       </div>
       <div class="modal-body" id="cand-detail-body" style="padding:0;overflow-y:auto;max-height:68vh"></div>
       <div class="modal-footer" style="justify-content:space-between;flex-wrap:wrap;gap:.5rem">
-        <button class="btn btn-secondary btn-sm" id="cand-em-analise-btn">🔍 Em análise</button>
+        <div style="display:flex;gap:.5rem">
+          <button class="btn btn-secondary btn-sm" id="cand-em-analise-btn">🔍 Em análise</button>
+          <button class="btn btn-danger btn-sm" id="cand-excluir-btn" style="border-color:rgba(239,68,68,.4)">🗑
+            Excluir</button>
+        </div>
         <div style="display:flex;gap:.5rem">
           <button class="btn btn-danger btn-sm" id="cand-reprovar-btn">❌ Reprovar</button>
           <button class="btn btn-success btn-sm" id="cand-aprovar-btn">✅ Aprovar</button>
@@ -3538,14 +3540,25 @@
       ══════════════════════════════════════════ */
       async function loadDashboard() {
         try {
-          const [nCount, vCount, aCount, cCount] = await Promise.all([
+          const [nCount, vCount, aCount] = await Promise.all([
             sbCount('noticias', 'publicado=eq.true'), sbCount('vagas', 'status=eq.aberta'),
-            sbCount('avisos', 'publicado=eq.true'), sbCount('candidaturas', 'status=eq.nova'),
+            sbCount('avisos', 'publicado=eq.true'),
           ]);
           ['stat-noticias', 'badge-noticias'].forEach(id => document.getElementById(id).textContent = nCount);
           ['stat-vagas', 'badge-vagas'].forEach(id => document.getElementById(id).textContent = vCount);
           ['stat-avisos', 'badge-avisos'].forEach(id => document.getElementById(id).textContent = aCount);
-          ['stat-cand', 'badge-cand'].forEach(id => document.getElementById(id).textContent = cCount);
+
+          // Conta candidaturas novas (status=nova OU sem status)
+          const cNovaCount = await sbCount('candidaturas', 'status=eq.nova');
+          const cNullCount = await sbCount('candidaturas', 'status=is.null');
+          const cCount = cNovaCount + cNullCount;
+          const statCand = document.getElementById('stat-cand');
+          const badgeCand = document.getElementById('badge-cand');
+          if (statCand) statCand.textContent = cCount;
+          if (badgeCand) {
+            badgeCand.textContent = cCount;
+            badgeCand.classList.toggle('alert', cCount > 0);
+          }
 
           const recentes = await sbSelect('noticias', 'select=titulo,created_at&order=created_at.desc&limit=5');
           const feed = document.getElementById('activity-feed');
@@ -4356,34 +4369,59 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
       ══════════════════════════════════════════ */
       let allCandidaturas = [], detailCandId = null;
 
-      async function loadCandidaturas(statusFilter = '', vagaFilter = '') {
+      async function loadCandidaturas() {
         document.getElementById('cand-loading').style.display = 'flex';
         document.getElementById('cand-list').innerHTML = '';
         document.getElementById('cand-empty').style.display = 'none';
         try {
-          let params = 'select=*&order=created_at.desc';
-          if (statusFilter) params += `&status=eq.${encodeURIComponent(statusFilter)}`;
-          allCandidaturas = await sbSelect('candidaturas', params) || [];
-          // filtro local de vaga (texto parcial)
-          let filtered = allCandidaturas;
-          if (vagaFilter && vagaFilter.trim()) {
-            const q = vagaFilter.trim().toLowerCase();
-            filtered = allCandidaturas.filter(c => (c.vaga || '').toLowerCase().includes(q));
+          allCandidaturas = await sbSelect('candidaturas', 'select=*&order=created_at.desc') || [];
+          // Atualiza badge de novas candidaturas imediatamente após carregar
+          const novasCount = allCandidaturas.filter(c => c.status === 'nova' || !c.status).length;
+          const badge = document.getElementById('badge-cand');
+          if (badge) {
+            badge.textContent = novasCount;
+            badge.classList.toggle('alert', novasCount > 0);
           }
-          // Atualiza contador
-          const h3 = document.querySelector('#sec-candidaturas h3');
-          if (h3) h3.textContent = `Candidaturas recebidas (${filtered.length})`;
-          renderCandidaturas(filtered);
+          applyCandFilters();
         } catch (e) {
           document.getElementById('cand-loading').style.display = 'none';
           document.getElementById('cand-empty').style.display = 'block';
+          document.getElementById('cand-empty').innerHTML = `<div class="es-icon">⚠️</div><p>Erro ao carregar: ${escHtml(e.message)}</p>`;
         }
+      }
+
+      function applyCandFilters() {
+        const statusFilter = (document.getElementById('cand-status-filter') || {}).value || '';
+        const searchQuery = ((document.getElementById('cand-search-filter') || {}).value || '').trim().toLowerCase();
+
+        let filtered = allCandidaturas;
+
+        if (statusFilter) {
+          filtered = filtered.filter(c => (c.status || 'nova') === statusFilter);
+        }
+        if (searchQuery) {
+          filtered = filtered.filter(c =>
+            (c.nome || '').toLowerCase().includes(searchQuery) ||
+            (c.vaga || '').toLowerCase().includes(searchQuery) ||
+            (c.email || '').toLowerCase().includes(searchQuery) ||
+            (c.telefone || '').toLowerCase().includes(searchQuery)
+          );
+        }
+
+        const h3 = document.getElementById('cand-header-title');
+        if (h3) h3.textContent = `Candidaturas recebidas (${filtered.length})`;
+        renderCandidaturas(filtered);
       }
 
       function renderCandidaturas(list) {
         document.getElementById('cand-loading').style.display = 'none';
         const container = document.getElementById('cand-list');
-        if (!list.length) { document.getElementById('cand-empty').style.display = 'block'; return; }
+        if (!list.length) {
+          document.getElementById('cand-empty').style.display = 'block';
+          document.getElementById('cand-empty').innerHTML = '<div class="es-icon">📋</div><p>Nenhuma candidatura encontrada.</p>';
+          return;
+        }
+        document.getElementById('cand-empty').style.display = 'none';
         container.innerHTML = list.map(c => {
           const ini = (c.nome || '?')[0].toUpperCase();
           const preview = c.mensagem ? escHtml(c.mensagem).substring(0, 120) + (c.mensagem.length > 120 ? '…' : '') : '';
@@ -4407,7 +4445,7 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
           </div>
         </div>
         <div class="cand-actions">
-          ${candStatusBadge(c.status)}
+          ${candStatusBadge(c.status || 'nova')}
         </div>
       </div>`;
         }).join('');
@@ -4418,18 +4456,27 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         if (!c) return;
         detailCandId = id;
 
-        // Detectar extensão do currículo para ícone
         function cvIcon(url) {
           if (!url) return '';
-          const ext = url.split('.').pop().toLowerCase();
+          const ext = (url.split('?')[0]).split('.').pop().toLowerCase();
           if (ext === 'pdf') return '📕';
           if (ext === 'doc' || ext === 'docx') return '📘';
           return '📄';
         }
 
+        // Marca como em_analise automaticamente ao abrir se for nova
+        if (!c.status || c.status === 'nova') {
+          sbUpdate('candidaturas', id, { status: 'em_analise' }).then(() => {
+            c.status = 'em_analise';
+            // Atualiza badge
+            const novasCount = allCandidaturas.filter(x => !x.status || x.status === 'nova').length;
+            const badge = document.getElementById('badge-cand');
+            if (badge) { badge.textContent = novasCount; badge.classList.toggle('alert', novasCount > 0); }
+          }).catch(() => { });
+        }
+
         document.getElementById('cand-detail-body').innerHTML = `
       <div style="display:grid;gap:0">
-
         <!-- Cabeçalho do candidato -->
         <div style="display:flex;align-items:center;gap:1rem;padding:1.25rem 1.5rem;background:var(--bg3);border-bottom:1px solid var(--border)">
           <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:700;color:#fff;flex-shrink:0">
@@ -4442,16 +4489,15 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
               ${c.telefone ? ' &nbsp;·&nbsp; <a href="tel:' + escHtml(c.telefone) + '" style="color:var(--accent)">' + escHtml(c.telefone) + '</a>' : ''}
             </div>
           </div>
-          <div style="margin-left:auto">${candStatusBadge(c.status)}</div>
+          <div style="margin-left:auto" id="cand-detail-status-badge">${candStatusBadge(c.status || 'nova')}</div>
         </div>
 
         <!-- Detalhes -->
         <div style="padding:1.25rem 1.5rem;display:grid;gap:.8rem">
-
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem">
             <div style="background:var(--bg3);border-radius:10px;padding:.8rem 1rem">
               <div style="font-size:.63rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.3rem">Vaga pretendida</div>
-              <div style="font-size:.88rem;font-weight:600;color:var(--text)">${escHtml(c.vaga)}</div>
+              <div style="font-size:.88rem;font-weight:600;color:var(--text)">${escHtml(c.vaga || 'Candidatura Espontânea')}</div>
             </div>
             <div style="background:var(--bg3);border-radius:10px;padding:.8rem 1rem">
               <div style="font-size:.63rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.3rem">Recebida em</div>
@@ -4467,36 +4513,69 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
 
           ${c.curriculo_url ? `
           <div>
-            <div style="font-size:.63rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.5rem">Currículo anexado</div>
+            <div style="font-size:.63rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.5rem">Currículo / Documento anexado</div>
             <a href="${escHtml(c.curriculo_url)}" target="_blank" rel="noopener"
                style="display:inline-flex;align-items:center;gap:.55rem;padding:.65rem 1.1rem;background:rgba(16,185,129,.09);border:1px solid rgba(16,185,129,.25);border-radius:10px;color:#34d399;font-size:.82rem;font-weight:600;text-decoration:none;transition:background .2s"
                onmouseover="this.style.background='rgba(16,185,129,.16)'" onmouseout="this.style.background='rgba(16,185,129,.09)'">
               ${cvIcon(c.curriculo_url)} Abrir / Baixar currículo &nbsp;↗
             </a>
           </div>` : `
-          <div style="font-size:.78rem;color:var(--text-muted);padding:.6rem 0">📭 Nenhum currículo anexado.</div>`}
+          <div style="padding:.5rem .8rem;background:var(--bg3);border-radius:8px;font-size:.78rem;color:var(--text-muted)">📭 Nenhum currículo/documento anexado.</div>`}
+
+          ${c.notas_admin ? `
+          <div>
+            <div style="font-size:.63rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.5rem">Notas internas</div>
+            <div style="background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:10px;padding:.9rem 1rem;font-size:.84rem;color:var(--text-dim);line-height:1.65;white-space:pre-wrap">${escHtml(c.notas_admin)}</div>
+          </div>` : ''}
 
         </div>
       </div>`;
 
-        // Atualiza estado dos botões conforme status atual
+        // Botões de ação
         const aprovBtn = document.getElementById('cand-aprovar-btn');
         const reprovBtn = document.getElementById('cand-reprovar-btn');
         const emAnBtn = document.getElementById('cand-em-analise-btn');
+        const excluirBtn = document.getElementById('cand-excluir-btn');
+
         if (aprovBtn) aprovBtn.onclick = () => updateCandStatus(id, 'aprovada');
         if (reprovBtn) reprovBtn.onclick = () => updateCandStatus(id, 'reprovada');
         if (emAnBtn) emAnBtn.onclick = () => updateCandStatus(id, 'em_analise');
+        if (excluirBtn) excluirBtn.onclick = () => deleteCandidatura(id);
+
         openModal('cand-detail');
       }
 
       async function updateCandStatus(id, status) {
         try {
           await sbUpdate('candidaturas', id, { status });
+          // Atualiza localmente sem recarregar tudo
+          const idx = allCandidaturas.findIndex(x => x.id === id);
+          if (idx !== -1) allCandidaturas[idx].status = status;
+
+          // Atualiza badge do header
+          const novasCount = allCandidaturas.filter(c => !c.status || c.status === 'nova').length;
+          const badge = document.getElementById('badge-cand');
+          if (badge) { badge.textContent = novasCount; badge.classList.toggle('alert', novasCount > 0); }
+
           const msgs = { aprovada: '✅ Candidatura aprovada!', reprovada: '❌ Candidatura reprovada.', em_analise: '🔍 Marcada como em análise.' };
           const types = { aprovada: 'success', reprovada: 'info', em_analise: 'info' };
           toast(msgs[status] || 'Status atualizado.', types[status] || 'success');
-          closeModal('cand-detail'); loadCandidaturas(); loadDashboard();
+          closeModal('cand-detail');
+          applyCandFilters();
+          loadDashboard();
         } catch (e) { toast('Erro: ' + e.message, 'error'); }
+      }
+
+      async function deleteCandidatura(id) {
+        if (!confirm('Excluir esta candidatura? Esta ação não pode ser desfeita.')) return;
+        try {
+          await sbDelete('candidaturas', id);
+          allCandidaturas = allCandidaturas.filter(c => c.id !== id);
+          toast('Candidatura excluída.', 'info');
+          closeModal('cand-detail');
+          applyCandFilters();
+          loadDashboard();
+        } catch (e) { toast('Erro ao excluir: ' + e.message, 'error'); }
       }
 
       /* ══════════════════════════════════════════
@@ -6130,6 +6209,8 @@ INSTRUÇÕES:
       window.closeAvisoEditor = closeAvisoEditor;
       window.deleteItem = deleteItem;
       window.viewCandidatura = viewCandidatura;
+      window.applyCandFilters = applyCandFilters;
+      window.deleteCandidatura = deleteCandidatura;
       window.saveConfig = saveConfig;
       window.testConnection = testConnection;
       window.saveGithubToken = saveGithubToken;
