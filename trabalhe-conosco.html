@@ -484,33 +484,34 @@
         }
 
         /* ── VAGAS ── */
+        /* ── VAGAS GRID COMPACTA ── */
         .vagas-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.8rem;
-            margin-top: 3rem
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem
         }
 
         .vcard {
             background: var(--cinza);
-            border-radius: 20px;
+            border-radius: 14px;
             overflow: hidden;
-            border: 1px solid rgba(123, 201, 92, .08);
-            transition: transform .35s, box-shadow .35s, border-color .35s;
-            display: flex;
-            flex-direction: column
+            border: 1px solid rgba(123, 201, 92, .1);
+            transition: transform .25s, box-shadow .25s, border-color .25s;
+            cursor: pointer;
+            position: relative
         }
 
         .vcard:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 24px 60px rgba(0, 0, 0, .5);
-            border-color: rgba(123, 201, 92, .25)
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, .4);
+            border-color: rgba(123, 201, 92, .3)
         }
 
         .vc-img {
             position: relative;
             overflow: hidden;
-            height: 180px
+            height: 110px
         }
 
         .vc-img img {
@@ -518,47 +519,69 @@
             height: 100%;
             object-fit: cover;
             display: block;
-            transition: transform .5s ease
+            transition: transform .4s ease
         }
 
         .vcard:hover .vc-img img {
-            transform: scale(1.05)
+            transform: scale(1.06)
         }
 
         .vc-img-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(to bottom, transparent 40%, rgba(42, 58, 42, .95) 100%)
+            background: linear-gradient(to bottom, transparent 30%, rgba(26, 36, 26, .92) 100%)
+        }
+
+        /* Status dot no canto */
+        .vc-dot {
+            position: absolute;
+            top: .7rem;
+            right: .7rem;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, .5)
+        }
+
+        .vc-dot.ab {
+            background: #7bc95c
+        }
+
+        .vc-dot.enc {
+            background: #f87171
+        }
+
+        .vc-dot.sus {
+            background: #fbbf24
         }
 
         .vc-body {
-            padding: 1.8rem;
+            padding: 1rem 1.1rem .9rem;
             display: flex;
             flex-direction: column;
-            flex: 1
+            gap: .5rem
         }
 
         .vc-header {
             display: flex;
             align-items: flex-start;
             justify-content: space-between;
-            gap: 1rem;
-            margin-bottom: 1rem
+            gap: .5rem
         }
 
         .vc-badges {
             display: flex;
             flex-direction: column;
-            gap: .4rem
+            gap: .3rem
         }
 
         .vc-status {
             display: inline-block;
-            padding: .22rem .72rem;
+            padding: .15rem .55rem;
             border-radius: 20px;
-            font-size: .62rem;
+            font-size: .58rem;
             font-weight: 700;
-            letter-spacing: .12em;
+            letter-spacing: .1em;
             text-transform: uppercase
         }
 
@@ -569,35 +592,38 @@
         }
 
         .vc-prazo {
-            font-size: .72rem;
+            font-size: .65rem;
             color: var(--dourado);
             font-weight: 600;
-            background: rgba(200, 168, 75, .12);
-            padding: .25rem .7rem;
+            background: rgba(200, 168, 75, .1);
+            padding: .18rem .55rem;
             border-radius: 20px;
             display: inline-block;
-            border: 1px solid rgba(200, 168, 75, .2)
+            border: 1px solid rgba(200, 168, 75, .18)
         }
 
         .vc-title {
             font-family: "Fraunces", serif;
-            font-size: 1.3rem;
+            font-size: 1.05rem;
             font-weight: 700;
-            margin-bottom: .6rem;
-            line-height: 1.2
+            line-height: 1.25;
+            margin: 0
         }
 
         .vc-desc {
-            font-size: .85rem;
-            color: rgba(245, 240, 232, .6);
-            line-height: 1.72;
-            margin-bottom: 1.2rem;
-            flex: 1
+            font-size: .78rem;
+            color: rgba(245, 240, 232, .55);
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden
         }
 
+        /* Chips inline na parte de baixo */
         .vc-chips {
             display: flex;
-            gap: .4rem;
+            gap: .3rem;
             flex-wrap: wrap;
             margin-bottom: 1.5rem
         }
@@ -1020,6 +1046,275 @@
             color: #fbbf24;
             border: 1px solid rgba(250, 204, 21, .3)
         }
+
+        /* ── POPUP DE DETALHES DA VAGA ── */
+        .vaga-popup-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 9000;
+            background: rgba(10, 18, 10, .7);
+            backdrop-filter: blur(6px);
+            align-items: center;
+            justify-content: center;
+            padding: 1rem
+        }
+
+        .vaga-popup-overlay.open {
+            display: flex;
+            animation: vpFadeIn .2s ease
+        }
+
+        @keyframes vpFadeIn {
+            from {
+                opacity: 0
+            }
+
+            to {
+                opacity: 1
+            }
+        }
+
+        .vaga-popup {
+            background: var(--cinza);
+            border-radius: 20px;
+            border: 1px solid rgba(123, 201, 92, .2);
+            width: 100%;
+            max-width: 540px;
+            max-height: 88vh;
+            overflow-y: auto;
+            box-shadow: 0 32px 80px rgba(0, 0, 0, .7);
+            animation: vpSlideUp .25s cubic-bezier(.34, 1.56, .64, 1)
+        }
+
+        @keyframes vpSlideUp {
+            from {
+                opacity: 0;
+                transform: scale(.93) translateY(16px)
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0)
+            }
+        }
+
+        .vp-header {
+            position: relative;
+            height: 180px;
+            overflow: hidden;
+            border-radius: 20px 20px 0 0
+        }
+
+        .vp-header img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block
+        }
+
+        .vp-header-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, .1) 30%, rgba(26, 36, 26, .97) 100%)
+        }
+
+        .vp-header-info {
+            position: absolute;
+            bottom: 1.2rem;
+            left: 1.5rem;
+            right: 4rem
+        }
+
+        .vp-title {
+            font-family: "Fraunces", serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            line-height: 1.2;
+            color: var(--creme)
+        }
+
+        .vp-close {
+            position: absolute;
+            top: .9rem;
+            right: .9rem;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, .5);
+            border: 1px solid rgba(255, 255, 255, .15);
+            color: rgba(245, 240, 232, .7);
+            font-size: .9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background .2s, color .2s
+        }
+
+        .vp-close:hover {
+            background: rgba(248, 113, 113, .25);
+            color: #f87171
+        }
+
+        .vp-body {
+            padding: 1.5rem
+        }
+
+        .vp-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .4rem;
+            margin-bottom: 1.2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(123, 201, 92, .1)
+        }
+
+        .vp-chip {
+            padding: .25rem .65rem;
+            border-radius: 99px;
+            font-size: .72rem;
+            font-weight: 600;
+            background: rgba(123, 201, 92, .08);
+            color: var(--verde-neon);
+            border: 1px solid rgba(123, 201, 92, .2)
+        }
+
+        .vp-chip.dourado {
+            background: rgba(200, 168, 75, .1);
+            color: var(--dourado);
+            border-color: rgba(200, 168, 75, .2)
+        }
+
+        .vp-chip.status-ab {
+            background: rgba(74, 158, 63, .15);
+            color: var(--verde-neon);
+            border-color: rgba(123, 201, 92, .3)
+        }
+
+        .vp-chip.status-enc {
+            background: rgba(248, 113, 113, .12);
+            color: #f87171;
+            border-color: rgba(248, 113, 113, .3)
+        }
+
+        .vp-chip.status-sus {
+            background: rgba(250, 204, 21, .12);
+            color: #fbbf24;
+            border-color: rgba(250, 204, 21, .3)
+        }
+
+        .vp-desc {
+            font-size: .85rem;
+            color: rgba(245, 240, 232, .7);
+            line-height: 1.75;
+            margin-bottom: 1.5rem
+        }
+
+        .vp-anexos {
+            display: flex;
+            flex-direction: column;
+            gap: .5rem;
+            margin-bottom: 1.5rem
+        }
+
+        .vp-anexo-link {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            padding: .6rem .9rem;
+            background: rgba(123, 201, 92, .06);
+            border: 1px solid rgba(123, 201, 92, .15);
+            border-radius: 10px;
+            color: var(--verde-neon);
+            text-decoration: none;
+            font-size: .8rem;
+            font-weight: 600;
+            transition: background .2s, border-color .2s
+        }
+
+        .vp-anexo-link:hover {
+            background: rgba(123, 201, 92, .12);
+            border-color: rgba(123, 201, 92, .3)
+        }
+
+        .vp-actions {
+            display: flex;
+            gap: .7rem;
+            flex-wrap: wrap
+        }
+
+        .vp-btn-cand {
+            flex: 1;
+            padding: .85rem 1.2rem;
+            background: linear-gradient(135deg, #7bc95c, #4a9e3f);
+            color: #0e1a0e;
+            border: none;
+            border-radius: 50px;
+            font-size: .88rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform .2s, box-shadow .2s;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block
+        }
+
+        .vp-btn-cand:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(123, 201, 92, .3)
+        }
+
+        .vp-btn-cand.disabled {
+            opacity: .4;
+            pointer-events: none;
+            cursor: default
+        }
+
+        .vp-btn-fechar {
+            padding: .85rem 1.5rem;
+            background: rgba(245, 240, 232, .06);
+            border: 1px solid rgba(245, 240, 232, .12);
+            border-radius: 50px;
+            color: rgba(245, 240, 232, .6);
+            font-size: .85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background .2s
+        }
+
+        .vp-btn-fechar:hover {
+            background: rgba(245, 240, 232, .1)
+        }
+
+        /* "Ver detalhes" hover overlay no card */
+        .vc-hover-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(10, 20, 10, .0);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: .8rem;
+            opacity: 0;
+            transition: opacity .25s
+        }
+
+        .vcard:hover .vc-hover-overlay {
+            opacity: 1;
+            background: rgba(10, 20, 10, .15)
+        }
+
+        .vc-hover-btn {
+            padding: .4rem 1rem;
+            border-radius: 99px;
+            background: rgba(123, 201, 92, .9);
+            color: #0e1a0e;
+            font-size: .75rem;
+            font-weight: 700;
+            border: none;
+            cursor: pointer
+        }
     </style>
 </head>
 
@@ -1401,7 +1696,7 @@
                 var grid = document.getElementById('vagas-grid');
                 if (!grid) return;
 
-                // Adiciona estilos de status extras
+                // Estilos extras de status
                 if (!document.getElementById('_vd_css')) {
                     var st = document.createElement('style');
                     st.id = '_vd_css';
@@ -1414,61 +1709,38 @@
                     return;
                 }
 
+                // Guarda as vagas para o popup acessar
+                window._vagasData = vagas;
+
                 var html = '';
                 for (var i = 0; i < vagas.length; i++) {
                     var v = vagas[i];
-                    var delay = i * 0.12;
-                    var prazoStr = v.prazo ? '⏰ Prazo: ' + fmt(v.prazo) : '⏰ Prazo em aberto';
                     var img = v.imagem_url || 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=600&q=80';
+                    var dotCls = v.status === 'aberta' ? 'ab' : v.status === 'encerrada' ? 'enc' : 'sus';
 
                     var chips = '';
-                    if (v.local) chips += '<span class="chip">' + v.local + '</span>';
-                    if (v.carga_horaria) chips += '<span class="chip">' + v.carga_horaria + '</span>';
-                    if (v.regime) chips += '<span class="chip">' + v.regime + '</span>';
-                    if (v.escolaridade) chips += '<span class="chip">' + v.escolaridade + '</span>';
+                    if (v.local) chips += '<span class="chip" style="font-size:.68rem">' + v.local + '</span>';
+                    if (v.regime) chips += '<span class="chip" style="font-size:.68rem">' + v.regime + '</span>';
+                    if (v.escolaridade) chips += '<span class="chip" style="font-size:.68rem">' + v.escolaridade + '</span>';
 
-                    var btnEdital = v.edital_url
-                        ? '<a href="' + v.edital_url + '" class="vbtn-dl" target="_blank" rel="noopener">⬇ Baixar Edital</a>'
-                        : '<span class="vbtn-dl" style="opacity:.35;cursor:default;pointer-events:none">Edital em breve</span>';
+                    // Resumo: usa campo resumo se existir, senão strip do descricao
+                    var resumo = v.resumo || (v.descricao ? v.descricao.replace(/<[^>]*>/g, '').substring(0, 90) + '…' : '');
 
-                    var tituloSeguro = v.titulo.replace(/'/g, '&apos;');
-                    var btnCand = v.status === 'aberta'
-                        ? '<button class="vbtn-apply" onclick="setVagaDyn(decodeURIComponent(this.dataset.vaga))" data-vaga="' + encodeURIComponent(v.titulo) + '">Candidatar-se →</button>'
-                        : '<span class="vbtn-apply" style="opacity:.35;cursor:default">Encerrada</span>';
-
-                    html += '<div class="vcard visible" style="opacity:1;transform:none;transition-delay:' + delay + 's">' +
-                        '<div class="vc-img"><img src="' + img + '" alt="' + v.titulo + '" loading="lazy"></div>' +
+                    html += '<div class="vcard visible" style="opacity:1;transform:none" data-idx="' + i + '" onclick="vpAbrir(window._vagasData[' + i + '])">' +
+                        '<div class="vc-img">' +
+                        '<img src="' + img + '" alt="' + v.titulo + '" loading="lazy">' +
+                        '<div class="vc-img-overlay"></div>' +
+                        '<div class="vc-dot ' + dotCls + '"></div>' +
+                        '<div class="vc-hover-overlay"><button class="vc-hover-btn">Ver detalhes →</button></div>' +
+                        '</div>' +
                         '<div class="vc-body">' +
-                        '<span class="vc-status ' + statusCls(v.status) + '">' + statusLbl(v.status) + '</span>' +
-                        '<div class="vc-prazo">' + prazoStr + '</div>' +
                         '<div class="vc-title">' + v.titulo + '</div>' +
-                        '<div class="vc-desc">' + (v.descricao || '') + '</div>' +
-                        '<div class="vc-chips">' + chips + '</div>' +
-                        '<div class="vc-btns">' + btnEdital + btnCand + '</div>' +
+                        (resumo ? '<div class="vc-desc">' + resumo + '</div>' : '') +
+                        (chips ? '<div class="vc-chips" style="flex-wrap:wrap;margin-top:.2rem">' + chips + '</div>' : '') +
+                        (v.prazo ? '<div class="vc-prazo" style="margin-top:.3rem;align-self:flex-start">⏰ ' + fmt(v.prazo) + '</div>' : '') +
                         '</div></div>';
                 }
                 grid.innerHTML = html;
-
-                // Re-observar os novos cards para o reveal funcionar
-                var novosCards = grid.querySelectorAll('.reveal');
-                if (novosCards.length) {
-                    var obs = new IntersectionObserver(function (entries) {
-                        entries.forEach(function (e) {
-                            if (e.isIntersecting) {
-                                e.target.classList.add('visible');
-                                obs.unobserve(e.target);
-                            }
-                        });
-                    }, { threshold: 0.05 });
-                    novosCards.forEach(function (el) {
-                        obs.observe(el);
-                        // Força visível imediatamente se já está na viewport
-                        var rect = el.getBoundingClientRect();
-                        if (rect.top < window.innerHeight) {
-                            el.classList.add('visible');
-                        }
-                    });
-                }
 
                 // Atualiza o <select> do formulário
                 var sel = document.getElementById('cf-vaga');
@@ -1536,6 +1808,109 @@
         })();
     </script>
     <!-- ===== FIM VAGAS DINÂMICAS ===== -->
+
+    <!-- ════ POPUP DE DETALHES DA VAGA ════ -->
+    <div class="vaga-popup-overlay" id="vaga-popup-overlay" onclick="vpClose(event)">
+        <div class="vaga-popup" id="vaga-popup">
+            <div class="vp-header">
+                <img id="vp-img" src="" alt="">
+                <div class="vp-header-overlay"></div>
+                <div class="vp-header-info">
+                    <div class="vp-title" id="vp-titulo"></div>
+                </div>
+                <button class="vp-close" onclick="vpFechar()">✕</button>
+            </div>
+            <div class="vp-body">
+                <div class="vp-meta" id="vp-meta"></div>
+                <div class="vp-desc" id="vp-desc"></div>
+                <div class="vp-anexos" id="vp-anexos"></div>
+                <div class="vp-actions">
+                    <button class="vp-btn-cand" id="vp-btn-cand">Candidatar-se →</button>
+                    <button class="vp-btn-fechar" onclick="vpFechar()">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ═══ POPUP DE VAGAS ═══ */
+        var vpVagaAtual = null;
+
+        function vpAbrir(vaga) {
+            vpVagaAtual = vaga;
+            var overlay = document.getElementById('vaga-popup-overlay');
+            var img = document.getElementById('vp-img');
+            var titulo = document.getElementById('vp-titulo');
+            var meta = document.getElementById('vp-meta');
+            var desc = document.getElementById('vp-desc');
+            var anexos = document.getElementById('vp-anexos');
+            var btnCand = document.getElementById('vp-btn-cand');
+
+            img.src = vaga.imagem_url || 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=800&q=80';
+            img.alt = vaga.titulo;
+            titulo.textContent = vaga.titulo;
+
+            // Meta chips
+            var stMap = { aberta: ['status-ab', 'Aberta'], encerrada: ['status-enc', 'Encerrada'], suspensa: ['status-sus', 'Suspensa'] };
+            var stInfo = stMap[vaga.status] || ['status-ab', vaga.status];
+            var chips = '<span class="vp-chip ' + stInfo[0] + '">' + stInfo[1] + '</span>';
+            if (vaga.prazo) chips += '<span class="vp-chip dourado">⏰ ' + fmt(vaga.prazo) + '</span>';
+            if (vaga.local) chips += '<span class="vp-chip">' + vaga.local + '</span>';
+            if (vaga.regime) chips += '<span class="vp-chip">' + vaga.regime + '</span>';
+            if (vaga.carga_horaria) chips += '<span class="vp-chip">' + vaga.carga_horaria + '</span>';
+            if (vaga.escolaridade) chips += '<span class="vp-chip">' + vaga.escolaridade + '</span>';
+            meta.innerHTML = chips;
+
+            // Descrição (strip HTML básico se vier rich text)
+            var rawDesc = vaga.descricao || '';
+            desc.innerHTML = rawDesc;
+
+            // Anexos
+            var anx = '';
+            if (vaga.anexos && vaga.anexos.length) {
+                vaga.anexos.forEach(function (a) {
+                    var icon = a.tipo === 'pdf' ? '📕' : a.tipo === 'docx' || a.tipo === 'doc' ? '📘' : '📄';
+                    anx += '<a class="vp-anexo-link" href="' + a.url + '" target="_blank" rel="noopener">' + icon + ' ' + a.nome + '</a>';
+                });
+            } else if (vaga.edital_url) {
+                anx = '<a class="vp-anexo-link" href="' + vaga.edital_url + '" target="_blank" rel="noopener">📕 Baixar Edital</a>';
+            }
+            anexos.innerHTML = anx;
+
+            // Botão candidatura
+            if (vaga.status === 'aberta') {
+                btnCand.className = 'vp-btn-cand';
+                btnCand.textContent = 'Candidatar-se →';
+                btnCand.onclick = function () {
+                    vpFechar();
+                    setTimeout(function () { setVagaDyn(vaga.titulo); }, 200);
+                };
+            } else {
+                btnCand.className = 'vp-btn-cand disabled';
+                btnCand.textContent = vaga.status === 'encerrada' ? 'Encerrada' : 'Suspensa';
+            }
+
+            overlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function vpFechar() {
+            document.getElementById('vaga-popup-overlay').classList.remove('open');
+            document.body.style.overflow = '';
+            vpVagaAtual = null;
+        }
+
+        function vpClose(e) {
+            if (e.target === document.getElementById('vaga-popup-overlay')) vpFechar();
+        }
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') vpFechar();
+        });
+
+        window.vpAbrir = vpAbrir;
+        window.vpFechar = vpFechar;
+    </script>
 </body>
 
 </html>
