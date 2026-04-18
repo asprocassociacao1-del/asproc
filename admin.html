@@ -1178,32 +1178,35 @@
     }
 
     /* ── CANDIDATURAS ── */
+    /* ── Cards de candidatura ── */
     .cand-card {
       background: var(--bg2);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       padding: 1rem 1.25rem;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: .9rem;
-      margin-bottom: .6rem;
-      transition: border-color var(--transition);
+      margin-bottom: .5rem;
+      transition: border-color var(--transition), background var(--transition);
+      cursor: pointer;
     }
 
     .cand-card:hover {
       border-color: var(--border-hover);
+      background: var(--bg3);
     }
 
     .cand-avatar {
-      width: 38px;
-      height: 38px;
+      width: 42px;
+      height: 42px;
       border-radius: 50%;
       background: linear-gradient(135deg, var(--accent), var(--purple));
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 700;
-      font-size: .9rem;
+      font-size: 1rem;
       color: #fff;
       flex-shrink: 0;
     }
@@ -1224,10 +1227,46 @@
       margin-top: .15rem;
     }
 
-    .cand-actions {
+    .cand-preview {
+      font-size: .73rem;
+      color: var(--text-dim);
+      margin-top: .3rem;
+      line-height: 1.45;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 480px;
+    }
+
+    .cand-footer {
       display: flex;
       align-items: center;
       gap: .5rem;
+      margin-top: .55rem;
+      flex-wrap: wrap;
+    }
+
+    .cand-tag {
+      font-size: .65rem;
+      font-weight: 600;
+      padding: .18rem .55rem;
+      border-radius: 99px;
+      border: 1px solid rgba(255, 255, 255, .1);
+      color: var(--text-muted);
+      background: var(--bg3);
+    }
+
+    .cand-tag.tem-cv {
+      border-color: rgba(16, 185, 129, .3);
+      color: #34d399;
+      background: rgba(16, 185, 129, .08);
+    }
+
+    .cand-actions {
+      display: flex;
+      align-items: flex-start;
+      gap: .5rem;
+      padding-top: .1rem;
       flex-shrink: 0;
     }
 
@@ -2179,15 +2218,22 @@
         <!-- CANDIDATURAS -->
         <section class="section" id="sec-candidaturas">
           <div class="table-wrap" style="margin-bottom:1rem;">
-            <div class="table-header">
+            <div class="table-header" style="flex-wrap:wrap;gap:.5rem">
               <h3>Candidaturas recebidas</h3>
-              <select class="select-filter" id="cand-status-filter" onchange="loadCandidaturas(this.value)">
-                <option value="">Todos status</option>
-                <option value="nova">Novas</option>
-                <option value="em_analise">Em análise</option>
-                <option value="aprovada">Aprovadas</option>
-                <option value="reprovada">Reprovadas</option>
-              </select>
+              <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-left:auto">
+                <select class="select-filter" id="cand-status-filter"
+                  onchange="loadCandidaturas(this.value, document.getElementById('cand-vaga-filter').value)">
+                  <option value="">Todos status</option>
+                  <option value="nova">🆕 Novas</option>
+                  <option value="em_analise">🔍 Em análise</option>
+                  <option value="aprovada">✅ Aprovadas</option>
+                  <option value="reprovada">❌ Reprovadas</option>
+                </select>
+                <input id="cand-vaga-filter" class="select-filter" type="search" placeholder="Filtrar por vaga…"
+                  style="min-width:160px"
+                  oninput="loadCandidaturas(document.getElementById('cand-status-filter').value, this.value)">
+                <button class="btn btn-secondary btn-sm" onclick="loadCandidaturas()" title="Recarregar">↺</button>
+              </div>
             </div>
           </div>
           <div id="cand-loading" class="loading">
@@ -3245,14 +3291,18 @@
 
   <!-- ════ MODAL CANDIDATURA DETALHE ════ -->
   <div class="modal-overlay" id="modal-cand-detail">
-    <div class="modal">
-      <div class="modal-head">
-        <h3>Detalhes da candidatura</h3><button class="modal-close" onclick="closeModal('cand-detail')">✕</button>
+    <div class="modal" style="max-width:560px;padding:0;overflow:hidden">
+      <div class="modal-head" style="padding:1rem 1.5rem">
+        <h3 style="margin:0;font-size:.95rem">Candidatura recebida</h3>
+        <button class="modal-close" onclick="closeModal('cand-detail')">✕</button>
       </div>
-      <div class="modal-body" id="cand-detail-body"></div>
-      <div class="modal-footer">
-        <button class="btn btn-danger btn-sm" id="cand-reprovar-btn">❌ Reprovar</button>
-        <button class="btn btn-success btn-sm" id="cand-aprovar-btn">✅ Aprovar</button>
+      <div class="modal-body" id="cand-detail-body" style="padding:0;overflow-y:auto;max-height:68vh"></div>
+      <div class="modal-footer" style="justify-content:space-between;flex-wrap:wrap;gap:.5rem">
+        <button class="btn btn-secondary btn-sm" id="cand-em-analise-btn">🔍 Em análise</button>
+        <div style="display:flex;gap:.5rem">
+          <button class="btn btn-danger btn-sm" id="cand-reprovar-btn">❌ Reprovar</button>
+          <button class="btn btn-success btn-sm" id="cand-aprovar-btn">✅ Aprovar</button>
+        </div>
       </div>
     </div>
   </div>
@@ -4306,59 +4356,145 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
       ══════════════════════════════════════════ */
       let allCandidaturas = [], detailCandId = null;
 
-      async function loadCandidaturas(statusFilter = '') {
+      async function loadCandidaturas(statusFilter = '', vagaFilter = '') {
         document.getElementById('cand-loading').style.display = 'flex';
         document.getElementById('cand-list').innerHTML = '';
         document.getElementById('cand-empty').style.display = 'none';
         try {
-          const params = statusFilter ? `select=*&status=eq.${statusFilter}&order=created_at.desc` : 'select=*&order=created_at.desc';
+          let params = 'select=*&order=created_at.desc';
+          if (statusFilter) params += `&status=eq.${encodeURIComponent(statusFilter)}`;
           allCandidaturas = await sbSelect('candidaturas', params) || [];
-          renderCandidaturas(allCandidaturas);
-        } catch (e) { document.getElementById('cand-loading').style.display = 'none'; document.getElementById('cand-empty').style.display = 'block'; }
+          // filtro local de vaga (texto parcial)
+          let filtered = allCandidaturas;
+          if (vagaFilter && vagaFilter.trim()) {
+            const q = vagaFilter.trim().toLowerCase();
+            filtered = allCandidaturas.filter(c => (c.vaga || '').toLowerCase().includes(q));
+          }
+          // Atualiza contador
+          const h3 = document.querySelector('#sec-candidaturas h3');
+          if (h3) h3.textContent = `Candidaturas recebidas (${filtered.length})`;
+          renderCandidaturas(filtered);
+        } catch (e) {
+          document.getElementById('cand-loading').style.display = 'none';
+          document.getElementById('cand-empty').style.display = 'block';
+        }
       }
 
       function renderCandidaturas(list) {
         document.getElementById('cand-loading').style.display = 'none';
         const container = document.getElementById('cand-list');
         if (!list.length) { document.getElementById('cand-empty').style.display = 'block'; return; }
-        container.innerHTML = list.map(c => `
-      <div class="cand-card">
-        <div class="cand-avatar">${(c.nome || '?')[0].toUpperCase()}</div>
+        container.innerHTML = list.map(c => {
+          const ini = (c.nome || '?')[0].toUpperCase();
+          const preview = c.mensagem ? escHtml(c.mensagem).substring(0, 120) + (c.mensagem.length > 120 ? '…' : '') : '';
+          const cvTag = c.curriculo_url
+            ? '<span class="cand-tag tem-cv">📎 Com currículo</span>'
+            : '<span class="cand-tag">Sem currículo</span>';
+          return `
+      <div class="cand-card" onclick="viewCandidatura('${c.id}')" title="Clique para ver detalhes">
+        <div class="cand-avatar">${ini}</div>
         <div class="cand-body">
           <div class="cand-name">${escHtml(c.nome)}</div>
-          <div class="cand-meta">${escHtml(c.email)} · Vaga: <strong>${escHtml(c.vaga)}</strong> · ${formatDate(c.created_at)}</div>
+          <div class="cand-meta">
+            <a href="mailto:${escHtml(c.email)}" onclick="event.stopPropagation()" style="color:var(--accent)">${escHtml(c.email)}</a>
+            ${c.telefone ? ' · ' + escHtml(c.telefone) : ''}
+            · <strong style="color:var(--text)">${escHtml(c.vaga)}</strong>
+          </div>
+          ${preview ? '<div class="cand-preview">' + preview + '</div>' : ''}
+          <div class="cand-footer">
+            ${cvTag}
+            <span class="cand-tag">🕐 ${formatDate(c.created_at)}</span>
+          </div>
         </div>
         <div class="cand-actions">
           ${candStatusBadge(c.status)}
-          <button class="btn btn-secondary btn-sm" onclick="viewCandidatura('${c.id}')">Ver</button>
         </div>
-      </div>`).join('');
+      </div>`;
+        }).join('');
       }
 
       function viewCandidatura(id) {
         const c = allCandidaturas.find(x => x.id === id);
         if (!c) return;
         detailCandId = id;
+
+        // Detectar extensão do currículo para ícone
+        function cvIcon(url) {
+          if (!url) return '';
+          const ext = url.split('.').pop().toLowerCase();
+          if (ext === 'pdf') return '📕';
+          if (ext === 'doc' || ext === 'docx') return '📘';
+          return '📄';
+        }
+
         document.getElementById('cand-detail-body').innerHTML = `
-      <div style="display:grid;gap:.75rem;font-size:.85rem;">
-        <div><strong>Nome:</strong> ${escHtml(c.nome)}</div>
-        <div><strong>E-mail:</strong> <a href="mailto:${escHtml(c.email)}" style="color:var(--accent)">${escHtml(c.email)}</a></div>
-        <div><strong>Telefone:</strong> ${c.telefone ? escHtml(c.telefone) : '—'}</div>
-        <div><strong>Vaga:</strong> ${escHtml(c.vaga)}</div>
-        <div><strong>Status:</strong> ${candStatusBadge(c.status)}</div>
-        <div><strong>Mensagem:</strong><div style="background:var(--bg3);border-radius:8px;padding:.75rem;margin-top:.4rem;color:var(--text-dim)">${escHtml(c.mensagem || '(sem mensagem)')}</div></div>
-        ${c.curriculo_url ? `<div><a href="${escHtml(c.curriculo_url)}" target="_blank" class="btn btn-secondary btn-sm">📄 Ver Currículo</a></div>` : ''}
-        <div style="font-size:.72rem;color:var(--text-muted)">Recebida em ${formatDate(c.created_at)}</div>
+      <div style="display:grid;gap:0">
+
+        <!-- Cabeçalho do candidato -->
+        <div style="display:flex;align-items:center;gap:1rem;padding:1.25rem 1.5rem;background:var(--bg3);border-bottom:1px solid var(--border)">
+          <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:700;color:#fff;flex-shrink:0">
+            ${(c.nome || '?')[0].toUpperCase()}
+          </div>
+          <div>
+            <div style="font-size:1.05rem;font-weight:700">${escHtml(c.nome)}</div>
+            <div style="font-size:.78rem;color:var(--text-muted);margin-top:.18rem">
+              <a href="mailto:${escHtml(c.email)}" style="color:var(--accent)">${escHtml(c.email)}</a>
+              ${c.telefone ? ' &nbsp;·&nbsp; <a href="tel:' + escHtml(c.telefone) + '" style="color:var(--accent)">' + escHtml(c.telefone) + '</a>' : ''}
+            </div>
+          </div>
+          <div style="margin-left:auto">${candStatusBadge(c.status)}</div>
+        </div>
+
+        <!-- Detalhes -->
+        <div style="padding:1.25rem 1.5rem;display:grid;gap:.8rem">
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem">
+            <div style="background:var(--bg3);border-radius:10px;padding:.8rem 1rem">
+              <div style="font-size:.63rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.3rem">Vaga pretendida</div>
+              <div style="font-size:.88rem;font-weight:600;color:var(--text)">${escHtml(c.vaga)}</div>
+            </div>
+            <div style="background:var(--bg3);border-radius:10px;padding:.8rem 1rem">
+              <div style="font-size:.63rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.3rem">Recebida em</div>
+              <div style="font-size:.88rem;font-weight:600;color:var(--text)">${formatDate(c.created_at)}</div>
+            </div>
+          </div>
+
+          ${c.mensagem ? `
+          <div>
+            <div style="font-size:.63rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.5rem">Motivação / mensagem</div>
+            <div style="background:var(--bg3);border-radius:10px;padding:.9rem 1rem;font-size:.84rem;color:var(--text-dim);line-height:1.65;white-space:pre-wrap">${escHtml(c.mensagem)}</div>
+          </div>` : ''}
+
+          ${c.curriculo_url ? `
+          <div>
+            <div style="font-size:.63rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.5rem">Currículo anexado</div>
+            <a href="${escHtml(c.curriculo_url)}" target="_blank" rel="noopener"
+               style="display:inline-flex;align-items:center;gap:.55rem;padding:.65rem 1.1rem;background:rgba(16,185,129,.09);border:1px solid rgba(16,185,129,.25);border-radius:10px;color:#34d399;font-size:.82rem;font-weight:600;text-decoration:none;transition:background .2s"
+               onmouseover="this.style.background='rgba(16,185,129,.16)'" onmouseout="this.style.background='rgba(16,185,129,.09)'">
+              ${cvIcon(c.curriculo_url)} Abrir / Baixar currículo &nbsp;↗
+            </a>
+          </div>` : `
+          <div style="font-size:.78rem;color:var(--text-muted);padding:.6rem 0">📭 Nenhum currículo anexado.</div>`}
+
+        </div>
       </div>`;
-        document.getElementById('cand-aprovar-btn').onclick = () => updateCandStatus(id, 'aprovada');
-        document.getElementById('cand-reprovar-btn').onclick = () => updateCandStatus(id, 'reprovada');
+
+        // Atualiza estado dos botões conforme status atual
+        const aprovBtn = document.getElementById('cand-aprovar-btn');
+        const reprovBtn = document.getElementById('cand-reprovar-btn');
+        const emAnBtn = document.getElementById('cand-em-analise-btn');
+        if (aprovBtn) aprovBtn.onclick = () => updateCandStatus(id, 'aprovada');
+        if (reprovBtn) reprovBtn.onclick = () => updateCandStatus(id, 'reprovada');
+        if (emAnBtn) emAnBtn.onclick = () => updateCandStatus(id, 'em_analise');
         openModal('cand-detail');
       }
 
       async function updateCandStatus(id, status) {
         try {
           await sbUpdate('candidaturas', id, { status });
-          toast(`Candidatura ${status === 'aprovada' ? 'aprovada' : 'reprovada'}!`, status === 'aprovada' ? 'success' : 'info');
+          const msgs = { aprovada: '✅ Candidatura aprovada!', reprovada: '❌ Candidatura reprovada.', em_analise: '🔍 Marcada como em análise.' };
+          const types = { aprovada: 'success', reprovada: 'info', em_analise: 'info' };
+          toast(msgs[status] || 'Status atualizado.', types[status] || 'success');
           closeModal('cand-detail'); loadCandidaturas(); loadDashboard();
         } catch (e) { toast('Erro: ' + e.message, 'error'); }
       }
@@ -4506,9 +4642,14 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         return `<span class="badge ${map[t] || 'badge-muted'}">${label[t] || t}</span>`;
       }
       function candStatusBadge(s) {
-        const map = { nova: 'badge-amber', em_analise: 'badge-blue', aprovada: 'badge-green', reprovada: 'badge-red' };
-        const label = { nova: 'Nova', em_analise: 'Em análise', aprovada: 'Aprovada', reprovada: 'Reprovada' };
-        return `<span class="badge ${map[s] || 'badge-muted'}">${label[s] || s}</span>`;
+        const map = {
+          nova: ['🆕', 'Nova', 'rgba(59,130,246,.15)', '#60a5fa', 'rgba(59,130,246,.3)'],
+          em_analise: ['🔍', 'Em análise', 'rgba(245,158,11,.15)', '#fbbf24', 'rgba(245,158,11,.3)'],
+          aprovada: ['✅', 'Aprovada', 'rgba(16,185,129,.15)', '#34d399', 'rgba(16,185,129,.3)'],
+          reprovada: ['❌', 'Reprovada', 'rgba(239,68,68,.15)', '#f87171', 'rgba(239,68,68,.3)'],
+        };
+        const [ic, lb, bg, cl, bd] = map[s] || ['❓', s, 'rgba(255,255,255,.08)', 'var(--text-muted)', 'rgba(255,255,255,.15)'];
+        return `<span style="display:inline-flex;align-items:center;gap:.3rem;padding:.22rem .65rem;border-radius:99px;font-size:.68rem;font-weight:700;background:${bg};color:${cl};border:1px solid ${bd};white-space:nowrap">${ic} ${lb}</span>`;
       }
       function copySnippet() {
         navigator.clipboard.writeText(document.getElementById('integration-snippet').textContent)
