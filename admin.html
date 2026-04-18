@@ -3288,13 +3288,13 @@
   </div>
 
   <!-- ════ MODAL CANDIDATURA DETALHE ════ -->
-  <div class="modal-overlay" id="modal-cand-detail">
-    <div class="modal" style="max-width:560px;padding:0;overflow:hidden">
+  <div class="modal-overlay" id="modal-cand-detail" style="display:none">
+    <div class="modal" style="max-width:580px;padding:0;overflow:hidden">
       <div class="modal-head" style="padding:1rem 1.5rem">
         <h3 style="margin:0;font-size:.95rem">Candidatura recebida</h3>
         <button class="modal-close" onclick="closeModal('cand-detail')">✕</button>
       </div>
-      <div class="modal-body" id="cand-detail-body" style="padding:0;overflow-y:auto;max-height:68vh"></div>
+      <div class="modal-body" id="cand-detail-body" style="padding:0;overflow-y:auto;max-height:65vh"></div>
       <div class="modal-footer" style="justify-content:space-between;flex-wrap:wrap;gap:.5rem">
         <div style="display:flex;gap:.5rem">
           <button class="btn btn-secondary btn-sm" id="cand-em-analise-btn">🔍 Em análise</button>
@@ -4367,7 +4367,26 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
       /* ══════════════════════════════════════════
          CANDIDATURAS
       ══════════════════════════════════════════ */
-      let allCandidaturas = [], detailCandId = null;
+      let allCandidaturas = [];
+
+      // ── Utilitário: abre/fecha o modal de candidatura diretamente (sem passar por openModal)
+      function abrirModalCand() {
+        const overlay = document.getElementById('modal-cand-detail');
+        if (overlay) { overlay.style.display = 'flex'; document.body.style.overflow = 'hidden'; }
+      }
+      function fecharModalCand() {
+        const overlay = document.getElementById('modal-cand-detail');
+        if (overlay) { overlay.style.display = 'none'; document.body.style.overflow = ''; }
+      }
+
+      // ── Atualiza o badge lateral de candidaturas novas
+      function atualizarBadgeCand() {
+        const novas = allCandidaturas.filter(c => !c.status || c.status === 'nova').length;
+        const badge = document.getElementById('badge-cand');
+        if (badge) { badge.textContent = novas; badge.classList.toggle('alert', novas > 0); }
+        const stat = document.getElementById('stat-cand');
+        if (stat) stat.textContent = novas;
+      }
 
       async function loadCandidaturas() {
         document.getElementById('cand-loading').style.display = 'flex';
@@ -4375,13 +4394,7 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         document.getElementById('cand-empty').style.display = 'none';
         try {
           allCandidaturas = await sbSelect('candidaturas', 'select=*&order=created_at.desc') || [];
-          // Atualiza badge de novas candidaturas imediatamente após carregar
-          const novasCount = allCandidaturas.filter(c => c.status === 'nova' || !c.status).length;
-          const badge = document.getElementById('badge-cand');
-          if (badge) {
-            badge.textContent = novasCount;
-            badge.classList.toggle('alert', novasCount > 0);
-          }
+          atualizarBadgeCand();
           applyCandFilters();
         } catch (e) {
           document.getElementById('cand-loading').style.display = 'none';
@@ -4391,14 +4404,13 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
       }
 
       function applyCandFilters() {
-        const statusFilter = (document.getElementById('cand-status-filter') || {}).value || '';
-        const searchQuery = ((document.getElementById('cand-search-filter') || {}).value || '').trim().toLowerCase();
+        const statusEl = document.getElementById('cand-status-filter');
+        const searchEl = document.getElementById('cand-search-filter');
+        const statusFilter = statusEl ? statusEl.value : '';
+        const searchQuery = searchEl ? searchEl.value.trim().toLowerCase() : '';
 
         let filtered = allCandidaturas;
-
-        if (statusFilter) {
-          filtered = filtered.filter(c => (c.status || 'nova') === statusFilter);
-        }
+        if (statusFilter) filtered = filtered.filter(c => (c.status || 'nova') === statusFilter);
         if (searchQuery) {
           filtered = filtered.filter(c =>
             (c.nome || '').toLowerCase().includes(searchQuery) ||
@@ -4407,172 +4419,198 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
             (c.telefone || '').toLowerCase().includes(searchQuery)
           );
         }
-
         const h3 = document.getElementById('cand-header-title');
         if (h3) h3.textContent = `Candidaturas recebidas (${filtered.length})`;
         renderCandidaturas(filtered);
       }
 
+      // ── Helper: borda colorida conforme status
+      function candCardBorderColor(status) {
+        if (status === 'aprovada') return '2px solid rgba(16,185,129,.5)';
+        if (status === 'reprovada') return '2px solid rgba(239,68,68,.4)';
+        if (status === 'em_analise') return '2px solid rgba(245,158,11,.35)';
+        return '1px solid var(--border)';
+      }
+
+      // ── Helper: indicador visual (bolinha) no canto do card
+      function candStatusDot(status) {
+        if (status === 'aprovada')
+          return `<span style="display:inline-flex;align-items:center;gap:.35rem;padding:.22rem .65rem;border-radius:99px;font-size:.68rem;font-weight:700;background:rgba(16,185,129,.15);color:#34d399;border:1px solid rgba(16,185,129,.3)">✅ Aprovado</span>`;
+        if (status === 'reprovada')
+          return `<span style="display:inline-flex;align-items:center;gap:.35rem;padding:.22rem .65rem;border-radius:99px;font-size:.68rem;font-weight:700;background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.3)">❌ Reprovado</span>`;
+        if (status === 'em_analise')
+          return `<span style="display:inline-flex;align-items:center;gap:.35rem;padding:.22rem .65rem;border-radius:99px;font-size:.68rem;font-weight:700;background:rgba(245,158,11,.15);color:#fbbf24;border:1px solid rgba(245,158,11,.3)">🔍 Em análise</span>`;
+        return `<span style="display:inline-flex;align-items:center;gap:.35rem;padding:.22rem .65rem;border-radius:99px;font-size:.68rem;font-weight:700;background:rgba(59,130,246,.15);color:#60a5fa;border:1px solid rgba(59,130,246,.3)">🆕 Novo</span>`;
+      }
+
       function renderCandidaturas(list) {
         document.getElementById('cand-loading').style.display = 'none';
         const container = document.getElementById('cand-list');
+        const empty = document.getElementById('cand-empty');
         if (!list.length) {
-          document.getElementById('cand-empty').style.display = 'block';
-          document.getElementById('cand-empty').innerHTML = '<div class="es-icon">📋</div><p>Nenhuma candidatura encontrada.</p>';
+          empty.style.display = 'block';
+          empty.innerHTML = '<div class="es-icon">📋</div><p>Nenhuma candidatura encontrada.</p>';
+          container.innerHTML = '';
           return;
         }
-        document.getElementById('cand-empty').style.display = 'none';
+        empty.style.display = 'none';
         container.innerHTML = list.map(c => {
           const ini = (c.nome || '?')[0].toUpperCase();
-          const preview = c.mensagem ? escHtml(c.mensagem).substring(0, 120) + (c.mensagem.length > 120 ? '…' : '') : '';
+          const preview = c.mensagem ? escHtml(c.mensagem).substring(0, 110) + (c.mensagem.length > 110 ? '…' : '') : '';
           const cvTag = c.curriculo_url
             ? '<span class="cand-tag tem-cv">📎 Com currículo</span>'
             : '<span class="cand-tag">Sem currículo</span>';
-          return `
-      <div class="cand-card" onclick="viewCandidatura('${c.id}')" title="Clique para ver detalhes">
-        <div class="cand-avatar">${ini}</div>
-        <div class="cand-body">
-          <div class="cand-name">${escHtml(c.nome)}</div>
-          <div class="cand-meta">
-            <a href="mailto:${escHtml(c.email)}" onclick="event.stopPropagation()" style="color:var(--accent)">${escHtml(c.email)}</a>
-            ${c.telefone ? ' · ' + escHtml(c.telefone) : ''}
-            · <strong style="color:var(--text)">${escHtml(c.vaga)}</strong>
-          </div>
-          ${preview ? '<div class="cand-preview">' + preview + '</div>' : ''}
-          <div class="cand-footer">
-            ${cvTag}
-            <span class="cand-tag">🕐 ${formatDate(c.created_at)}</span>
-          </div>
-        </div>
-        <div class="cand-actions">
-          ${candStatusBadge(c.status || 'nova')}
-        </div>
-      </div>`;
+          const status = c.status || 'nova';
+          return `<div class="cand-card" data-cand-id="${escHtml(String(c.id))}" style="border:${candCardBorderColor(status)};cursor:pointer" title="Clique para ver detalhes">
+            <div class="cand-avatar">${ini}</div>
+            <div class="cand-body">
+              <div class="cand-name">${escHtml(c.nome)}</div>
+              <div class="cand-meta">
+                <span style="color:var(--accent)">${escHtml(c.email)}</span>
+                ${c.telefone ? ' · ' + escHtml(c.telefone) : ''}
+                · <strong style="color:var(--text)">${escHtml(c.vaga || 'Candidatura Espontânea')}</strong>
+              </div>
+              ${preview ? '<div class="cand-preview">' + preview + '</div>' : ''}
+              <div class="cand-footer">${cvTag}<span class="cand-tag">🕐 ${formatDate(c.created_at)}</span></div>
+            </div>
+            <div class="cand-actions">${candStatusDot(status)}</div>
+          </div>`;
         }).join('');
+
+        // Event delegation — um único listener, sem onclick inline
+        container.onclick = function (e) {
+          const card = e.target.closest('[data-cand-id]');
+          if (!card) return;
+          // Não abre modal ao clicar em link de email
+          if (e.target.tagName === 'A') return;
+          viewCandidatura(card.dataset.candId);
+        };
       }
 
       function viewCandidatura(id) {
-        const c = allCandidaturas.find(x => x.id === id);
-        if (!c) return;
-        detailCandId = id;
+        const c = allCandidaturas.find(x => String(x.id) === String(id));
+        if (!c) { toast('Candidatura não encontrada.', 'error'); return; }
 
         function cvIcon(url) {
-          if (!url) return '';
-          const ext = (url.split('?')[0]).split('.').pop().toLowerCase();
+          if (!url) return '📄';
+          const ext = url.split('?')[0].split('.').pop().toLowerCase();
           if (ext === 'pdf') return '📕';
           if (ext === 'doc' || ext === 'docx') return '📘';
           return '📄';
         }
 
-        // Marca como em_analise automaticamente ao abrir se for nova
-        if (!c.status || c.status === 'nova') {
-          sbUpdate('candidaturas', id, { status: 'em_analise' }).then(() => {
-            c.status = 'em_analise';
-            // Atualiza badge
-            const novasCount = allCandidaturas.filter(x => !x.status || x.status === 'nova').length;
-            const badge = document.getElementById('badge-cand');
-            if (badge) { badge.textContent = novasCount; badge.classList.toggle('alert', novasCount > 0); }
-          }).catch(() => { });
-        }
-
+        // Preenche o corpo do modal
         document.getElementById('cand-detail-body').innerHTML = `
-      <div style="display:grid;gap:0">
-        <!-- Cabeçalho do candidato -->
-        <div style="display:flex;align-items:center;gap:1rem;padding:1.25rem 1.5rem;background:var(--bg3);border-bottom:1px solid var(--border)">
-          <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:700;color:#fff;flex-shrink:0">
-            ${(c.nome || '?')[0].toUpperCase()}
-          </div>
-          <div>
-            <div style="font-size:1.05rem;font-weight:700">${escHtml(c.nome)}</div>
-            <div style="font-size:.78rem;color:var(--text-muted);margin-top:.18rem">
-              <a href="mailto:${escHtml(c.email)}" style="color:var(--accent)">${escHtml(c.email)}</a>
-              ${c.telefone ? ' &nbsp;·&nbsp; <a href="tel:' + escHtml(c.telefone) + '" style="color:var(--accent)">' + escHtml(c.telefone) + '</a>' : ''}
+        <div style="display:grid;gap:0">
+          <!-- Cabeçalho -->
+          <div style="display:flex;align-items:center;gap:1rem;padding:1.25rem 1.5rem;background:var(--bg3);border-bottom:1px solid var(--border)">
+            <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:700;color:#fff;flex-shrink:0">
+              ${(c.nome || '?')[0].toUpperCase()}
             </div>
-          </div>
-          <div style="margin-left:auto" id="cand-detail-status-badge">${candStatusBadge(c.status || 'nova')}</div>
-        </div>
-
-        <!-- Detalhes -->
-        <div style="padding:1.25rem 1.5rem;display:grid;gap:.8rem">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem">
-            <div style="background:var(--bg3);border-radius:10px;padding:.8rem 1rem">
-              <div style="font-size:.63rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.3rem">Vaga pretendida</div>
-              <div style="font-size:.88rem;font-weight:600;color:var(--text)">${escHtml(c.vaga || 'Candidatura Espontânea')}</div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:1.05rem;font-weight:700;color:var(--text)">${escHtml(c.nome)}</div>
+              <div style="font-size:.78rem;color:var(--text-muted);margin-top:.2rem">
+                <a href="mailto:${escHtml(c.email)}" style="color:var(--accent)">${escHtml(c.email)}</a>
+                ${c.telefone ? ' &nbsp;·&nbsp; <a href="tel:' + escHtml(c.telefone) + '" style="color:var(--accent)">' + escHtml(c.telefone) + '</a>' : ''}
+              </div>
             </div>
-            <div style="background:var(--bg3);border-radius:10px;padding:.8rem 1rem">
-              <div style="font-size:.63rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.3rem">Recebida em</div>
-              <div style="font-size:.88rem;font-weight:600;color:var(--text)">${formatDate(c.created_at)}</div>
-            </div>
+            <div id="cand-popup-status">${candStatusDot(c.status || 'nova')}</div>
           </div>
 
-          ${c.mensagem ? `
-          <div>
-            <div style="font-size:.63rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.5rem">Motivação / mensagem</div>
-            <div style="background:var(--bg3);border-radius:10px;padding:.9rem 1rem;font-size:.84rem;color:var(--text-dim);line-height:1.65;white-space:pre-wrap">${escHtml(c.mensagem)}</div>
-          </div>` : ''}
+          <!-- Infos -->
+          <div style="padding:1.25rem 1.5rem;display:grid;gap:.85rem">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem">
+              <div style="background:var(--bg3);border-radius:10px;padding:.8rem 1rem">
+                <div style="font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.3rem">Vaga pretendida</div>
+                <div style="font-size:.88rem;font-weight:600;color:var(--text)">${escHtml(c.vaga || 'Candidatura Espontânea')}</div>
+              </div>
+              <div style="background:var(--bg3);border-radius:10px;padding:.8rem 1rem">
+                <div style="font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.3rem">Recebida em</div>
+                <div style="font-size:.88rem;font-weight:600;color:var(--text)">${formatDate(c.created_at)}</div>
+              </div>
+            </div>
 
-          ${c.curriculo_url ? `
-          <div>
-            <div style="font-size:.63rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.5rem">Currículo / Documento anexado</div>
-            <a href="${escHtml(c.curriculo_url)}" target="_blank" rel="noopener"
-               style="display:inline-flex;align-items:center;gap:.55rem;padding:.65rem 1.1rem;background:rgba(16,185,129,.09);border:1px solid rgba(16,185,129,.25);border-radius:10px;color:#34d399;font-size:.82rem;font-weight:600;text-decoration:none;transition:background .2s"
-               onmouseover="this.style.background='rgba(16,185,129,.16)'" onmouseout="this.style.background='rgba(16,185,129,.09)'">
-              ${cvIcon(c.curriculo_url)} Abrir / Baixar currículo &nbsp;↗
-            </a>
-          </div>` : `
-          <div style="padding:.5rem .8rem;background:var(--bg3);border-radius:8px;font-size:.78rem;color:var(--text-muted)">📭 Nenhum currículo/documento anexado.</div>`}
+            ${c.mensagem ? `
+            <div>
+              <div style="font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.45rem">Mensagem / motivação</div>
+              <div style="background:var(--bg3);border-radius:10px;padding:.9rem 1rem;font-size:.84rem;color:var(--text-dim);line-height:1.65;white-space:pre-wrap">${escHtml(c.mensagem)}</div>
+            </div>` : ''}
 
-          ${c.notas_admin ? `
-          <div>
-            <div style="font-size:.63rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.5rem">Notas internas</div>
-            <div style="background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:10px;padding:.9rem 1rem;font-size:.84rem;color:var(--text-dim);line-height:1.65;white-space:pre-wrap">${escHtml(c.notas_admin)}</div>
-          </div>` : ''}
+            <div>
+              <div style="font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.45rem">Currículo / documento</div>
+              ${c.curriculo_url ? `
+              <a href="${escHtml(c.curriculo_url)}" target="_blank" rel="noopener"
+                 style="display:inline-flex;align-items:center;gap:.55rem;padding:.65rem 1.1rem;background:rgba(16,185,129,.09);border:1px solid rgba(16,185,129,.25);border-radius:10px;color:#34d399;font-size:.82rem;font-weight:600;text-decoration:none">
+                ${cvIcon(c.curriculo_url)} Abrir / Baixar currículo &nbsp;↗
+              </a>` : `
+              <div style="padding:.55rem .8rem;background:var(--bg3);border-radius:8px;font-size:.78rem;color:var(--text-muted)">📭 Nenhum currículo anexado.</div>`}
+            </div>
 
-        </div>
-      </div>`;
+            ${c.notas_admin ? `
+            <div>
+              <div style="font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.45rem">Notas internas</div>
+              <div style="background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.2);border-radius:10px;padding:.9rem 1rem;font-size:.84rem;color:var(--text-dim);line-height:1.65;white-space:pre-wrap">${escHtml(c.notas_admin)}</div>
+            </div>` : ''}
+          </div>
+        </div>`;
 
-        // Botões de ação
+        // Botões do footer
         const aprovBtn = document.getElementById('cand-aprovar-btn');
         const reprovBtn = document.getElementById('cand-reprovar-btn');
         const emAnBtn = document.getElementById('cand-em-analise-btn');
         const excluirBtn = document.getElementById('cand-excluir-btn');
 
-        if (aprovBtn) aprovBtn.onclick = () => updateCandStatus(id, 'aprovada');
-        if (reprovBtn) reprovBtn.onclick = () => updateCandStatus(id, 'reprovada');
-        if (emAnBtn) emAnBtn.onclick = () => updateCandStatus(id, 'em_analise');
-        if (excluirBtn) excluirBtn.onclick = () => deleteCandidatura(id);
+        // Clona para remover listeners antigos
+        [aprovBtn, reprovBtn, emAnBtn, excluirBtn].forEach(btn => {
+          if (!btn) return;
+          const novo = btn.cloneNode(true);
+          btn.parentNode.replaceChild(novo, btn);
+        });
 
-        openModal('cand-detail');
+        document.getElementById('cand-aprovar-btn').addEventListener('click', () => updateCandStatus(id, 'aprovada'));
+        document.getElementById('cand-reprovar-btn').addEventListener('click', () => updateCandStatus(id, 'reprovada'));
+        document.getElementById('cand-em-analise-btn').addEventListener('click', () => updateCandStatus(id, 'em_analise'));
+        document.getElementById('cand-excluir-btn').addEventListener('click', () => deleteCandidatura(id));
+
+        // Abre o modal diretamente (sem passar por openModal genérico)
+        abrirModalCand();
       }
 
-      async function updateCandStatus(id, status) {
+      // Fecha modal ao clicar no overlay
+      document.getElementById('modal-cand-detail').addEventListener('click', function (e) {
+        if (e.target === this) fecharModalCand();
+      });
+      // Botão X já chama closeModal('cand-detail') — redirecionamos para fecharModalCand
+      const _origCloseModal = window.closeModal;
+
+      async function updateCandStatus(id, novoStatus) {
         try {
-          await sbUpdate('candidaturas', id, { status });
-          // Atualiza localmente sem recarregar tudo
-          const idx = allCandidaturas.findIndex(x => x.id === id);
-          if (idx !== -1) allCandidaturas[idx].status = status;
+          await sbUpdate('candidaturas', id, { status: novoStatus });
 
-          // Atualiza badge do header
-          const novasCount = allCandidaturas.filter(c => !c.status || c.status === 'nova').length;
-          const badge = document.getElementById('badge-cand');
-          if (badge) { badge.textContent = novasCount; badge.classList.toggle('alert', novasCount > 0); }
+          // Atualiza array local
+          const idx = allCandidaturas.findIndex(x => String(x.id) === String(id));
+          if (idx !== -1) allCandidaturas[idx].status = novoStatus;
 
-          const msgs = { aprovada: '✅ Candidatura aprovada!', reprovada: '❌ Candidatura reprovada.', em_analise: '🔍 Marcada como em análise.' };
+          atualizarBadgeCand();
+
+          const msgs = { aprovada: '✅ Candidatura aprovada!', reprovada: '❌ Candidatura reprovada.', em_analise: '🔍 Em análise.' };
           const types = { aprovada: 'success', reprovada: 'info', em_analise: 'info' };
-          toast(msgs[status] || 'Status atualizado.', types[status] || 'success');
-          closeModal('cand-detail');
-          applyCandFilters();
+          toast(msgs[novoStatus] || 'Status atualizado.', types[novoStatus] || 'success');
+
+          fecharModalCand();
+          applyCandFilters();   // re-renderiza cards com nova cor/badge
           loadDashboard();
-        } catch (e) { toast('Erro: ' + e.message, 'error'); }
+        } catch (e) { toast('Erro ao atualizar: ' + e.message, 'error'); }
       }
 
       async function deleteCandidatura(id) {
-        if (!confirm('Excluir esta candidatura? Esta ação não pode ser desfeita.')) return;
+        if (!confirm('Excluir esta candidatura permanentemente?')) return;
         try {
           await sbDelete('candidaturas', id);
-          allCandidaturas = allCandidaturas.filter(c => c.id !== id);
+          allCandidaturas = allCandidaturas.filter(c => String(c.id) !== String(id));
           toast('Candidatura excluída.', 'info');
-          closeModal('cand-detail');
+          fecharModalCand();
+          atualizarBadgeCand();
           applyCandFilters();
           loadDashboard();
         } catch (e) { toast('Erro ao excluir: ' + e.message, 'error'); }
@@ -4621,6 +4659,7 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
 
       function closeModal(name) {
         if (name === 'avisos') { closeAvisoEditor(); return; }
+        if (name === 'cand-detail') { fecharModalCand(); return; }
         document.getElementById('modal-' + name).classList.remove('open');
         editingId[name] = null;
       }
