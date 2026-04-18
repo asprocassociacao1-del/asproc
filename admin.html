@@ -2223,10 +2223,10 @@
               <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-left:auto;align-items:center;">
                 <select class="select-filter" id="cand-status-filter" onchange="applyCandFilters()">
                   <option value="">Todos status</option>
-                  <option value="nova">🆕 Novas</option>
+                  <option value="novo">🆕 Novas</option>
                   <option value="em_analise">🔍 Em análise</option>
-                  <option value="aprovada">✅ Aprovadas</option>
-                  <option value="reprovada">❌ Reprovadas</option>
+                  <option value="aprovado">✅ Aprovadas</option>
+                  <option value="reprovado">❌ Reprovadas</option>
                 </select>
                 <input id="cand-search-filter" class="select-filter" type="search"
                   placeholder="Buscar por nome ou vaga…" style="min-width:200px" oninput="applyCandFilters()">
@@ -3549,9 +3549,11 @@
           ['stat-avisos', 'badge-avisos'].forEach(id => document.getElementById(id).textContent = aCount);
 
           // Conta candidaturas novas (status=nova OU sem status)
+          // Conta status 'novo', 'nova' e null (compatível com qualquer versão do banco)
+          const cNovoCount = await sbCount('candidaturas', 'status=eq.novo');
           const cNovaCount = await sbCount('candidaturas', 'status=eq.nova');
           const cNullCount = await sbCount('candidaturas', 'status=is.null');
-          const cCount = cNovaCount + cNullCount;
+          const cCount = cNovoCount + cNovaCount + cNullCount;
           const statCand = document.getElementById('stat-cand');
           const badgeCand = document.getElementById('badge-cand');
           if (statCand) statCand.textContent = cCount;
@@ -4381,7 +4383,7 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
 
       // ── Atualiza o badge lateral de candidaturas novas
       function atualizarBadgeCand() {
-        const novas = allCandidaturas.filter(c => !c.status || c.status === 'nova').length;
+        const novas = allCandidaturas.filter(c => !c.status || c.status === 'novo' || c.status === 'nova').length;
         const badge = document.getElementById('badge-cand');
         if (badge) { badge.textContent = novas; badge.classList.toggle('alert', novas > 0); }
         const stat = document.getElementById('stat-cand');
@@ -4403,6 +4405,14 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         }
       }
 
+      // Normaliza status: o banco pode ter 'novo'/'nova', 'aprovado'/'aprovada', etc.
+      function normalizeStatus(s) {
+        if (!s || s === 'novo' || s === 'nova') return 'novo';
+        if (s === 'aprovado' || s === 'aprovada') return 'aprovado';
+        if (s === 'reprovado' || s === 'reprovada') return 'reprovado';
+        return s; // em_analise
+      }
+
       function applyCandFilters() {
         const statusEl = document.getElementById('cand-status-filter');
         const searchEl = document.getElementById('cand-search-filter');
@@ -4410,7 +4420,7 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         const searchQuery = searchEl ? searchEl.value.trim().toLowerCase() : '';
 
         let filtered = allCandidaturas;
-        if (statusFilter) filtered = filtered.filter(c => (c.status || 'nova') === statusFilter);
+        if (statusFilter) filtered = filtered.filter(c => normalizeStatus(c.status) === statusFilter);
         if (searchQuery) {
           filtered = filtered.filter(c =>
             (c.nome || '').toLowerCase().includes(searchQuery) ||
@@ -4426,17 +4436,17 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
 
       // ── Helper: borda colorida conforme status
       function candCardBorderColor(status) {
-        if (status === 'aprovada') return '2px solid rgba(16,185,129,.5)';
-        if (status === 'reprovada') return '2px solid rgba(239,68,68,.4)';
+        if (status === 'aprovada' || status === 'aprovado') return '2px solid rgba(16,185,129,.5)';
+        if (status === 'reprovada' || status === 'reprovado') return '2px solid rgba(239,68,68,.4)';
         if (status === 'em_analise') return '2px solid rgba(245,158,11,.35)';
         return '1px solid var(--border)';
       }
 
       // ── Helper: indicador visual (bolinha) no canto do card
       function candStatusDot(status) {
-        if (status === 'aprovada')
+        if (status === 'aprovada' || status === 'aprovado')
           return `<span style="display:inline-flex;align-items:center;gap:.35rem;padding:.22rem .65rem;border-radius:99px;font-size:.68rem;font-weight:700;background:rgba(16,185,129,.15);color:#34d399;border:1px solid rgba(16,185,129,.3)">✅ Aprovado</span>`;
-        if (status === 'reprovada')
+        if (status === 'reprovada' || status === 'reprovado')
           return `<span style="display:inline-flex;align-items:center;gap:.35rem;padding:.22rem .65rem;border-radius:99px;font-size:.68rem;font-weight:700;background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.3)">❌ Reprovado</span>`;
         if (status === 'em_analise')
           return `<span style="display:inline-flex;align-items:center;gap:.35rem;padding:.22rem .65rem;border-radius:99px;font-size:.68rem;font-weight:700;background:rgba(245,158,11,.15);color:#fbbf24;border:1px solid rgba(245,158,11,.3)">🔍 Em análise</span>`;
@@ -4460,7 +4470,7 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
           const cvTag = c.curriculo_url
             ? '<span class="cand-tag tem-cv">📎 Com currículo</span>'
             : '<span class="cand-tag">Sem currículo</span>';
-          const status = c.status || 'nova';
+          const status = c.status || 'novo';
           return `<div class="cand-card" data-cand-id="${escHtml(String(c.id))}" style="border:${candCardBorderColor(status)};cursor:pointer" title="Clique para ver detalhes">
             <div class="cand-avatar">${ini}</div>
             <div class="cand-body">
@@ -4485,6 +4495,19 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
           if (e.target.tagName === 'A') return;
           viewCandidatura(card.dataset.candId);
         };
+      }
+
+      function renderCvBlock(c) {
+        const url = c.curriculo_url || c.cv_url || c.arquivo_url || c.file_url;
+        if (url) {
+          const ext = url.split('?')[0].split('.').pop().toLowerCase();
+          const icon = ext === 'pdf' ? '📕' : (ext === 'doc' || ext === 'docx') ? '📘' : '📄';
+          return '<a href="' + escHtml(url) + '" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:.55rem;padding:.65rem 1.1rem;background:rgba(16,185,129,.09);border:1px solid rgba(16,185,129,.25);border-radius:10px;color:#34d399;font-size:.82rem;font-weight:600;text-decoration:none">' + icon + ' Abrir / Baixar currículo &nbsp;↗</a>';
+        }
+        // Debug: mostra quais campos vieram do banco para ajudar a identificar o nome correto
+        const camposArquivo = Object.keys(c).filter(k => k.includes('url') || k.includes('cv') || k.includes('file') || k.includes('doc') || k.includes('arquivo'));
+        const debugInfo = camposArquivo.length ? '<br><span style="font-size:.68rem;opacity:.55">Campos: ' + camposArquivo.map(k => k + '=' + (c[k] ? '✓' : '✗')).join(', ') + '</span>' : '';
+        return '<div style="padding:.55rem .8rem;background:var(--bg3);border-radius:8px;font-size:.78rem;color:var(--text-muted)">📭 Nenhum currículo anexado.' + debugInfo + '</div>';
       }
 
       function viewCandidatura(id) {
@@ -4514,7 +4537,7 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
                 ${c.telefone ? ' &nbsp;·&nbsp; <a href="tel:' + escHtml(c.telefone) + '" style="color:var(--accent)">' + escHtml(c.telefone) + '</a>' : ''}
               </div>
             </div>
-            <div id="cand-popup-status">${candStatusDot(c.status || 'nova')}</div>
+            <div id="cand-popup-status">${candStatusDot(c.status || 'novo')}</div>
           </div>
 
           <!-- Infos -->
@@ -4538,12 +4561,8 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
 
             <div>
               <div style="font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.45rem">Currículo / documento</div>
-              ${c.curriculo_url ? `
-              <a href="${escHtml(c.curriculo_url)}" target="_blank" rel="noopener"
-                 style="display:inline-flex;align-items:center;gap:.55rem;padding:.65rem 1.1rem;background:rgba(16,185,129,.09);border:1px solid rgba(16,185,129,.25);border-radius:10px;color:#34d399;font-size:.82rem;font-weight:600;text-decoration:none">
-                ${cvIcon(c.curriculo_url)} Abrir / Baixar currículo &nbsp;↗
-              </a>` : `
-              <div style="padding:.55rem .8rem;background:var(--bg3);border-radius:8px;font-size:.78rem;color:var(--text-muted)">📭 Nenhum currículo anexado.</div>`}
+              ${renderCvBlock(c)}
+            </div>
             </div>
 
             ${c.notas_admin ? `
@@ -4567,8 +4586,8 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
           btn.parentNode.replaceChild(novo, btn);
         });
 
-        document.getElementById('cand-aprovar-btn').addEventListener('click', () => updateCandStatus(id, 'aprovada'));
-        document.getElementById('cand-reprovar-btn').addEventListener('click', () => updateCandStatus(id, 'reprovada'));
+        document.getElementById('cand-aprovar-btn').addEventListener('click', () => updateCandStatus(id, 'aprovado'));
+        document.getElementById('cand-reprovar-btn').addEventListener('click', () => updateCandStatus(id, 'reprovado'));
         document.getElementById('cand-em-analise-btn').addEventListener('click', () => updateCandStatus(id, 'em_analise'));
         document.getElementById('cand-excluir-btn').addEventListener('click', () => deleteCandidatura(id));
 
@@ -4593,8 +4612,8 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
 
           atualizarBadgeCand();
 
-          const msgs = { aprovada: '✅ Candidatura aprovada!', reprovada: '❌ Candidatura reprovada.', em_analise: '🔍 Em análise.' };
-          const types = { aprovada: 'success', reprovada: 'info', em_analise: 'info' };
+          const msgs = { aprovado: '✅ Candidatura aprovada!', reprovado: '❌ Candidatura reprovada.', em_analise: '🔍 Em análise.' };
+          const types = { aprovado: 'success', reprovado: 'info', em_analise: 'info' };
           toast(msgs[novoStatus] || 'Status atualizado.', types[novoStatus] || 'success');
 
           fecharModalCand();
