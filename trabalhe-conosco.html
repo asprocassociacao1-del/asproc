@@ -1802,7 +1802,7 @@
                         var err = await r.json().catch(function () { return {}; });
                         throw new Error(err.message || ('HTTP ' + r.status));
                     }
-                    document.querySelector('.form-inner').style.display = 'none';
+                    document.getElementById('cf-inner').style.display = 'none';
                     document.getElementById('cf-ok').style.display = 'block';
                 } catch (err) {
                     console.error('[ASPROC] Erro ao enviar candidatura:', err);
