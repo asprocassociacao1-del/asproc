@@ -2599,58 +2599,315 @@
     </div>
   </div>
 
-  <!-- ════ MODAL VAGAS ════ -->
-  <div class="modal-overlay" id="modal-vagas">
-    <div class="modal">
-      <div class="modal-head">
-        <h3 id="modal-vagas-title">Nova Vaga</h3><button class="modal-close" onclick="closeModal('vagas')">✕</button>
-      </div>
-      <div class="modal-body">
-        <div class="form-grid">
-          <div class="field full form-field"><label>Título da vaga *</label><input type="text" id="v-titulo"
-              placeholder="Ex: Assistente Técnico Rural"></div>
-          <div class="field full form-field"><label>Descrição *</label><textarea id="v-descricao"
-              placeholder="Descrição detalhada da vaga…"></textarea></div>
-          <div class="field form-field"><label>Local *</label><input type="text" id="v-local" value="Carauari/AM"></div>
-          <div class="field form-field"><label>Regime *</label>
-            <select id="v-regime">
-              <option value="CLT">CLT</option>
-              <option value="PJ/Consultoria">PJ / Consultoria</option>
-              <option value="Voluntário">Voluntário</option>
-              <option value="Estágio">Estágio</option>
+  <!-- ════ EDITOR DE VAGA (fullscreen) — igual ao editor de avisos ════ -->
+  <div id="vaga-editor-overlay"
+    style="display:none;position:fixed;inset:0;background:var(--bg);z-index:998;flex-direction:column;">
+    <!-- TOPBAR -->
+    <div class="ne-topbar">
+      <button class="btn btn-secondary btn-sm" onclick="closeVagaEditor()">← Voltar</button>
+      <span class="ne-topbar-title" id="ve-topbar-title">Nova Vaga</span>
+      <button class="btn btn-secondary btn-sm" onclick="saveVaga(false)">💾 Salvar rascunho</button>
+      <button class="btn btn-primary btn-sm" onclick="saveVaga(true)">🌐 Publicar</button>
+    </div>
+
+    <div class="ne-body">
+      <!-- EDITOR PRINCIPAL -->
+      <div class="ne-editor-panel">
+        <input class="ne-title-input" id="v-titulo" type="text" placeholder="Título da vaga…">
+        <textarea class="ne-resumo-input" id="v-resumo" placeholder="Resumo breve (aparece nos cards)…"
+          rows="2"></textarea>
+
+        <!-- Rich Text Editor -->
+        <div class="rte-wrap">
+          <div class="rte-toolbar" id="ve-rte-toolbar">
+            <select class="rte-select" onmousedown="veRteSaveSelection()" onchange="veRteBlock(this.value)"
+              title="Estilo do bloco">
+              <option value="p">Parágrafo</option>
+              <option value="h2">Título 2</option>
+              <option value="h3">Título 3</option>
+              <option value="blockquote">Citação</option>
+              <option value="pre">Código</option>
             </select>
-          </div>
-          <div class="field form-field"><label>Carga horária</label>
-            <select id="v-carga">
-              <option value="Integral">Integral</option>
-              <option value="Parcial">Parcial</option>
+            <select class="rte-select" onmousedown="veRteSaveSelection()" onchange="veRteExec('fontName',this.value)"
+              title="Fonte">
+              <option value="Inter,sans-serif">Inter</option>
+              <option value="Playfair Display,serif">Playfair Display</option>
+              <option value="Georgia,serif">Georgia</option>
+              <option value="Arial,sans-serif">Arial</option>
+              <option value="Courier New,monospace">Courier</option>
             </select>
+            <input type="number" class="rte-fontsize" value="16" min="8" max="72" onmousedown="veRteSaveSelection()"
+              onkeydown="if(event.key==='Enter'){event.preventDefault();veRteFontSize(this.value);}"
+              onchange="veRteFontSize(this.value)" title="Tamanho da fonte">
+            <div class="rte-sep"></div>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="veRteExec('bold')"
+              title="Negrito"><b>B</b></button>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="veRteExec('italic')"
+              title="Itálico"><i>I</i></button>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="veRteExec('underline')"
+              title="Sublinhado"><u>U</u></button>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="veRteExec('strikeThrough')"
+              title="Tachado"><s>S</s></button>
+            <div class="rte-sep"></div>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="veRteExec('justifyLeft')"
+              title="Esquerda">⬅</button>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="veRteExec('justifyCenter')"
+              title="Centro">☰</button>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="veRteExec('justifyRight')"
+              title="Direita">➡</button>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="veRteExec('justifyFull')"
+              title="Justificar">☷</button>
+            <div class="rte-sep"></div>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="veRteExec('insertUnorderedList')"
+              title="Lista">• ≡</button>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="veRteExec('insertOrderedList')"
+              title="Lista num.">1.≡</button>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="veRteExec('indent')"
+              title="Recuo">→|</button>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="veRteExec('outdent')"
+              title="-Recuo">|←</button>
+            <div class="rte-sep"></div>
+            <div class="rte-color-btn" title="Cor do texto"
+              style="background:linear-gradient(135deg,#fff 50%,#e74c3c 50%)">
+              <input type="color" value="#e2e8f0" onchange="veRteExec('foreColor',this.value)">
+            </div>
+            <div class="rte-color-btn" title="Realce" style="background:linear-gradient(135deg,#fff 50%,#f1c40f 50%)">
+              <input type="color" value="#f1c40f" onchange="veRteExec('hiliteColor',this.value)">
+            </div>
+            <div class="rte-sep"></div>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="veRteInsertLink()"
+              title="Inserir link">🔗</button>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="veRteExec('unlink')"
+              title="Remover link">🚫🔗</button>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="veRteInsertDivider()"
+              title="Linha">—</button>
+            <div class="rte-sep"></div>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="veRteExec('undo')"
+              title="Desfazer">↩</button>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="veRteExec('redo')"
+              title="Refazer">↪</button>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="veRteClearFormat()"
+              title="Limpar formatação">✕A</button>
           </div>
-          <div class="field form-field"><label>Escolaridade</label>
-            <select id="v-escolaridade">
-              <option value="Ensino Médio">Ensino Médio</option>
-              <option value="Ensino Superior">Ensino Superior</option>
-              <option value="Pós-Graduação">Pós-Graduação</option>
-              <option value="Sem restrição">Sem restrição</option>
-            </select>
+          <div id="ve-rte-body" class="rte-body" contenteditable="true" oninput="veSync()"
+            oncontextmenu="veContextMenu(event)" style="min-height:320px;">
           </div>
-          <div class="field form-field"><label>Prazo de inscrição</label><input type="date" id="v-prazo"></div>
-          <div class="field form-field"><label>Status</label>
-            <select id="v-status">
-              <option value="aberta">Aberta</option>
-              <option value="encerrada">Encerrada</option>
-              <option value="suspensa">Suspensa</option>
-            </select>
-          </div>
-          <div class="field full form-field"><label>URL do Edital (opcional)</label><input type="url" id="v-edital"
-              placeholder="https://…"></div>
         </div>
+        <textarea id="v-descricao" style="display:none;"></textarea>
       </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary btn-sm" onclick="closeModal('vagas')">Cancelar</button>
-        <button class="btn btn-primary btn-sm" onclick="saveVaga()">💾 Salvar vaga</button>
+
+      <!-- PAINEL LATERAL -->
+      <div class="ne-preview-panel">
+
+        <!-- Metadados da vaga -->
+        <div class="ne-panel-section">
+          <div class="ne-panel-label">Dados da Vaga</div>
+          <input type="text" class="ne-panel-input" id="v-local" value="Carauari/AM" placeholder="Local">
+          <select class="ne-panel-select" id="v-regime">
+            <option value="CLT">CLT</option>
+            <option value="PJ/Consultoria">PJ / Consultoria</option>
+            <option value="Voluntário">Voluntário</option>
+            <option value="Estágio">Estágio</option>
+          </select>
+          <select class="ne-panel-select" id="v-carga">
+            <option value="Integral">Integral</option>
+            <option value="Parcial">Parcial</option>
+          </select>
+          <select class="ne-panel-select" id="v-escolaridade">
+            <option value="Ensino Médio">Ensino Médio</option>
+            <option value="Ensino Superior">Ensino Superior</option>
+            <option value="Pós-Graduação">Pós-Graduação</option>
+            <option value="Sem restrição">Sem restrição</option>
+          </select>
+          <div style="margin-top:.4rem;">
+            <div class="ne-panel-label" style="margin-bottom:.3rem;">Prazo de inscrição</div>
+            <input type="date" class="ne-panel-input" id="v-prazo" style="margin:0;">
+          </div>
+        </div>
+
+        <div class="ne-divider"></div>
+
+        <!-- Imagem de capa -->
+        <div class="ne-panel-section">
+          <div class="ne-panel-label">Imagem de capa</div>
+          <div class="ne-img-preview" id="ve-img-preview">
+            <span id="ve-img-placeholder">Sem imagem</span>
+          </div>
+          <label for="v-capa-file"
+            style="display:flex;align-items:center;justify-content:center;gap:.4rem;width:100%;padding:.55rem;margin-bottom:.4rem;background:var(--accent-soft);border:1px solid rgba(59,130,246,.25);border-radius:var(--radius);color:var(--accent);font-size:.8rem;font-weight:600;cursor:pointer;transition:background var(--transition);"
+            onmouseover="this.style.background='rgba(59,130,246,.2)'"
+            onmouseout="this.style.background='var(--accent-soft)'">
+            📁 Anexar foto de capa
+          </label>
+          <input type="file" id="v-capa-file" accept="image/jpeg,image/png,image/webp,image/gif" style="display:none;"
+            onchange="veUploadCapa(this)">
+          <div id="ve-upload-progress-wrap" style="display:none;margin-bottom:.5rem;">
+            <div style="height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;">
+              <div id="ve-upload-progress-bar"
+                style="height:100%;width:0%;background:var(--accent);transition:width .3s;"></div>
+            </div>
+            <div id="ve-upload-progress-msg" style="font-size:.72rem;color:var(--text-muted);margin-top:.3rem;">
+              Enviando…</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;">
+            <div style="flex:1;height:1px;background:var(--border);"></div>
+            <span style="font-size:.7rem;color:var(--text-muted);">ou cole a URL</span>
+            <div style="flex:1;height:1px;background:var(--border);"></div>
+          </div>
+          <input type="url" class="ne-panel-input" id="v-imagem-url" placeholder="URL da imagem…"
+            oninput="veUpdateImgPreview()">
+          <button id="ve-btn-remover-img" onclick="veRemoverCapa()"
+            style="display:none;width:100%;margin-top:.4rem;padding:.4rem;background:var(--red-soft);border:1px solid rgba(239,68,68,.2);border-radius:var(--radius);color:var(--red);font-size:.75rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">
+            🗑 Remover imagem
+          </button>
+        </div>
+
+        <div class="ne-divider"></div>
+
+        <!-- Edital / Documentos -->
+        <div class="ne-panel-section">
+          <div class="ne-panel-label">Edital e Documentos</div>
+          <div id="ve-anexos-list" style="display:flex;flex-direction:column;gap:.4rem;margin-bottom:.6rem;"></div>
+
+          <label for="v-doc-file"
+            style="display:flex;align-items:center;justify-content:center;gap:.4rem;width:100%;padding:.55rem;margin-bottom:.4rem;background:var(--green-soft);border:1px solid rgba(16,185,129,.25);border-radius:var(--radius);color:var(--green);font-size:.8rem;font-weight:600;cursor:pointer;transition:background var(--transition);"
+            onmouseover="this.style.background='rgba(16,185,129,.2)'"
+            onmouseout="this.style.background='var(--green-soft)'">
+            📎 Anexar edital / documento
+          </label>
+          <input type="file" id="v-doc-file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx" style="display:none;"
+            multiple onchange="veUploadDocs(this)">
+          <p style="font-size:.7rem;color:var(--text-muted);text-align:center;margin-top:.2rem;">PDF, Word, Excel,
+            PowerPoint</p>
+
+          <div style="display:flex;align-items:center;gap:.5rem;margin:.5rem 0 .4rem;">
+            <div style="flex:1;height:1px;background:var(--border);"></div>
+            <span style="font-size:.7rem;color:var(--text-muted);">ou cole a URL do edital</span>
+            <div style="flex:1;height:1px;background:var(--border);"></div>
+          </div>
+          <div style="display:flex;gap:.4rem;">
+            <input type="url" class="ne-panel-input" id="ve-doc-url-input" placeholder="URL do edital…"
+              style="margin:0;flex:1;">
+            <button onclick="veAddDocUrl()"
+              style="padding:.4rem .6rem;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);color:var(--text-dim);font-size:.8rem;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;">
+              + Add
+            </button>
+          </div>
+          <!-- Campo legado para compatibilidade -->
+          <input type="url" id="v-edital" style="display:none;">
+        </div>
+
+        <div class="ne-divider"></div>
+
+        <!-- Publicação -->
+        <div class="ne-panel-section">
+          <div class="ne-panel-label">Publicação</div>
+          <select class="ne-panel-select" id="v-status">
+            <option value="aberta">● Aberta</option>
+            <option value="encerrada">● Encerrada</option>
+            <option value="suspensa">● Suspensa</option>
+          </select>
+        </div>
+
       </div>
     </div>
+
+    <!-- Popup de link do editor de vagas -->
+    <div class="rte-link-popup" id="ve-rte-link-popup" style="display:none;">
+      <div style="font-size:.82rem;font-weight:600;margin-bottom:.5rem;color:var(--accent);">🔗 Inserir link</div>
+      <input type="url" id="ve-rte-link-url" placeholder="https://"
+        style="width:100%;padding:.5rem .75rem;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Inter',sans-serif;font-size:.84rem;outline:none;margin-bottom:.5rem;">
+      <input type="text" id="ve-rte-link-text" placeholder="Texto do link"
+        style="width:100%;padding:.5rem .75rem;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Inter',sans-serif;font-size:.84rem;outline:none;margin-bottom:.75rem;">
+      <div style="display:flex;gap:.5rem;">
+        <button class="btn btn-primary btn-sm" onclick="veRteConfirmLink()">Inserir</button>
+        <button class="btn btn-secondary btn-sm"
+          onclick="document.getElementById('ve-rte-link-popup').style.display='none'">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ MENU DE CONTEXTO DO EDITOR DE VAGAS ════ -->
+  <div id="ve-context-menu"
+    style="display:none;position:fixed;z-index:9999;background:var(--bg2);border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.5);padding:.4rem;min-width:220px;">
+    <div
+      style="padding:.3rem .6rem;font-size:.68rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.2rem;">
+      Formatação de Texto</div>
+    <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="veRteExec('bold');veHideCtx()"><b
+        style="margin-right:.5rem;">B</b> Negrito</div>
+    <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="veRteExec('italic');veHideCtx()"><i
+        style="margin-right:.5rem;">I</i> Itálico</div>
+    <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="veRteExec('underline');veHideCtx()"><u
+        style="margin-right:.5rem;">U</u> Sublinhado</div>
+    <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="veRteExec('strikeThrough');veHideCtx()"><s
+        style="margin-right:.5rem;">S</s> Tachado</div>
+    <div style="height:1px;background:var(--border);margin:.35rem 0;"></div>
+    <div
+      style="padding:.3rem .6rem;font-size:.68rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.2rem;">
+      Fonte</div>
+    <div style="display:flex;flex-wrap:wrap;gap:.3rem;padding:.2rem .6rem .4rem;">
+      <button class="ae-ctx-font-btn" onmousedown="event.preventDefault()"
+        onclick="veRteExec('fontName','Inter,sans-serif');veHideCtx()">Inter</button>
+      <button class="ae-ctx-font-btn" onmousedown="event.preventDefault()"
+        onclick="veRteExec('fontName','Georgia,serif');veHideCtx()">Georgia</button>
+      <button class="ae-ctx-font-btn" onmousedown="event.preventDefault()"
+        onclick="veRteExec('fontName','Arial,sans-serif');veHideCtx()">Arial</button>
+      <button class="ae-ctx-font-btn" onmousedown="event.preventDefault()"
+        onclick="veRteExec('fontName','Courier New,monospace');veHideCtx()">Courier</button>
+      <button class="ae-ctx-font-btn" onmousedown="event.preventDefault()"
+        onclick="veRteExec('fontName','Playfair Display,serif');veHideCtx()">Playfair</button>
+    </div>
+    <div style="padding:.2rem .6rem .4rem;display:flex;align-items:center;gap:.5rem;">
+      <span style="font-size:.75rem;color:var(--text-muted);">Tamanho:</span>
+      <div style="display:flex;flex-wrap:wrap;gap:.25rem;">
+        <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
+          onclick="veRteFontSize(12);veHideCtx()">12</button>
+        <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
+          onclick="veRteFontSize(14);veHideCtx()">14</button>
+        <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
+          onclick="veRteFontSize(16);veHideCtx()">16</button>
+        <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
+          onclick="veRteFontSize(18);veHideCtx()">18</button>
+        <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
+          onclick="veRteFontSize(20);veHideCtx()">20</button>
+        <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
+          onclick="veRteFontSize(24);veHideCtx()">24</button>
+        <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
+          onclick="veRteFontSize(32);veHideCtx()">32</button>
+      </div>
+    </div>
+    <div style="height:1px;background:var(--border);margin:.35rem 0;"></div>
+    <div
+      style="padding:.3rem .6rem;font-size:.68rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.2rem;">
+      Cor</div>
+    <div style="display:flex;align-items:center;gap:.5rem;padding:.2rem .6rem .4rem;">
+      <span style="font-size:.75rem;color:var(--text-muted);">Texto:</span>
+      <div style="display:flex;gap:.3rem;">
+        <div onmousedown="event.preventDefault()" onclick="veRteExec('foreColor','#e2e8f0');veHideCtx()" title="Padrão"
+          style="width:20px;height:20px;border-radius:4px;background:#e2e8f0;cursor:pointer;border:2px solid var(--border);">
+        </div>
+        <div onmousedown="event.preventDefault()" onclick="veRteExec('foreColor','#3b82f6');veHideCtx()" title="Azul"
+          style="width:20px;height:20px;border-radius:4px;background:#3b82f6;cursor:pointer;"></div>
+        <div onmousedown="event.preventDefault()" onclick="veRteExec('foreColor','#10b981');veHideCtx()" title="Verde"
+          style="width:20px;height:20px;border-radius:4px;background:#10b981;cursor:pointer;"></div>
+        <div onmousedown="event.preventDefault()" onclick="veRteExec('foreColor','#ef4444');veHideCtx()"
+          title="Vermelho" style="width:20px;height:20px;border-radius:4px;background:#ef4444;cursor:pointer;"></div>
+        <div onmousedown="event.preventDefault()" onclick="veRteExec('foreColor','#f59e0b');veHideCtx()" title="Âmbar"
+          style="width:20px;height:20px;border-radius:4px;background:#f59e0b;cursor:pointer;"></div>
+        <label title="Cor personalizada"
+          style="width:20px;height:20px;border-radius:4px;background:conic-gradient(red,yellow,lime,aqua,blue,magenta,red);cursor:pointer;overflow:hidden;position:relative;">
+          <input type="color" style="opacity:0;position:absolute;inset:0;cursor:pointer;"
+            onchange="veRteExec('foreColor',this.value);veHideCtx()">
+        </label>
+      </div>
+    </div>
+    <div style="height:1px;background:var(--border);margin:.35rem 0;"></div>
+    <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="veRteInsertLink();veHideCtx()">🔗 Criar link
+    </div>
+    <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="veRteExec('unlink');veHideCtx()">🚫 Remover
+      link</div>
+    <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="veRteClearFormat();veHideCtx()">✕A Limpar
+      formatação</div>
   </div>
 
   <!-- ════ EDITOR DE AVISO (fullscreen) ════ -->
@@ -3193,7 +3450,7 @@
         actionBtn.style.display = showBtn ? 'flex' : 'none';
         if (showBtn) {
           actionBtn.textContent = '+ Novo';
-          actionBtn.onclick = () => { if (section === 'noticias') openNewsEditorNew(); else openModal(section); };
+          actionBtn.onclick = () => { if (section === 'noticias') openNewsEditorNew(); else if (section === 'vagas') openVagaEditorNew(); else openModal(section); };
         }
         currentSection = section;
         loadSection(section);
@@ -3404,37 +3661,80 @@
         const v = allVagas.find(x => x.id === id);
         if (!v) return;
         editingId.vagas = id;
-        document.getElementById('modal-vagas-title').textContent = 'Editar Vaga';
+        document.getElementById('ve-topbar-title').textContent = 'Editar Vaga';
         document.getElementById('v-titulo').value = v.titulo || '';
+        document.getElementById('v-resumo').value = v.resumo || '';
+        document.getElementById('ve-rte-body').innerHTML = v.descricao || '';
         document.getElementById('v-descricao').value = v.descricao || '';
-        document.getElementById('v-local').value = v.local || '';
+        document.getElementById('v-local').value = v.local || 'Carauari/AM';
         document.getElementById('v-regime').value = v.regime || 'CLT';
         document.getElementById('v-carga').value = v.carga_horaria || 'Integral';
         document.getElementById('v-escolaridade').value = v.escolaridade || 'Ensino Superior';
         document.getElementById('v-prazo').value = v.prazo || '';
         document.getElementById('v-status').value = v.status || 'aberta';
         document.getElementById('v-edital').value = v.edital_url || '';
-        openModal('vagas');
+        document.getElementById('v-imagem-url').value = v.imagem_url || '';
+        veAnexos = Array.isArray(v.anexos) ? [...v.anexos] : (v.edital_url ? [{ nome: 'Edital', url: v.edital_url, tipo: 'pdf' }] : []);
+        veRenderAnexos();
+        veUpdateImgPreview();
+        openVagaEditor();
       }
 
-      async function saveVaga() {
-        const data = {
-          titulo: document.getElementById('v-titulo').value.trim(),
-          descricao: document.getElementById('v-descricao').value.trim(),
-          local: document.getElementById('v-local').value.trim(),
+      async function saveVaga(forcePublish) {
+        const titulo = document.getElementById('v-titulo').value.trim();
+        const descricao = document.getElementById('ve-rte-body').innerHTML.trim();
+        if (!titulo) { toast('Preencha o título da vaga.', 'error'); return; }
+
+        const listaAnexos = veAnexos.length
+          ? veAnexos.map(ax => ({ nome: ax.nome, url: ax.url, tipo: ax.tipo || null }))
+          : null;
+
+        // URL do edital: primeiro anexo ou campo legado
+        const editalUrl = listaAnexos ? listaAnexos[0].url : (document.getElementById('v-edital').value.trim() || null);
+
+        const payloadFull = {
+          titulo,
+          descricao,
+          resumo: document.getElementById('v-resumo').value.trim() || null,
+          local: document.getElementById('v-local').value.trim() || 'Carauari/AM',
           regime: document.getElementById('v-regime').value,
           carga_horaria: document.getElementById('v-carga').value,
-          escolaridade: document.getElementById('v-escolaridade').value.trim(),
+          escolaridade: document.getElementById('v-escolaridade').value,
           prazo: document.getElementById('v-prazo').value || null,
           status: document.getElementById('v-status').value,
-          edital_url: document.getElementById('v-edital').value.trim() || null,
+          edital_url: editalUrl,
+          imagem_url: document.getElementById('v-imagem-url').value.trim() || null,
+          anexos: listaAnexos,
         };
-        if (!data.titulo || !data.descricao) { toast('Preencha título e descrição.', 'error'); return; }
+
+        const payloadSemAnexos = { ...payloadFull }; delete payloadSemAnexos.anexos;
+        const payloadSemImagem = { ...payloadSemAnexos }; delete payloadSemImagem.imagem_url; delete payloadSemImagem.resumo;
+
+        const exec = async (payload) => {
+          if (editingId.vagas) return sbUpdate('vagas', editingId.vagas, payload);
+          return sbInsert('vagas', payload);
+        };
+
+        const isSchemaErr = (msg) => msg && (msg.includes('column') || msg.includes('schema') || msg.includes('relation') || msg.includes('does not exist'));
+        const successMsg = editingId.vagas ? 'Vaga atualizada!' : (forcePublish ? 'Vaga publicada!' : 'Vaga salva como rascunho!');
+
         try {
-          if (editingId.vagas) { await sbUpdate('vagas', editingId.vagas, data); toast('Vaga atualizada!', 'success'); }
-          else { await sbInsert('vagas', data); toast('Vaga publicada!', 'success'); }
-          closeModal('vagas'); loadVagas(); loadDashboard();
-        } catch (e) { toast('Erro: ' + e.message, 'error'); }
+          await exec(payloadFull);
+          toast('✅ ' + successMsg, 'success');
+          closeVagaEditor(); loadVagas(); loadDashboard(); return;
+        } catch (e1) { if (!isSchemaErr(e1.message)) { toast('❌ Erro: ' + e1.message, 'error'); return; } }
+
+        try {
+          await exec(payloadSemAnexos);
+          toast('✅ ' + successMsg + ' (colunas extras não encontradas — execute o SQL de migração).', 'info');
+          closeVagaEditor(); loadVagas(); loadDashboard(); return;
+        } catch (e2) { if (!isSchemaErr(e2.message)) { toast('❌ Erro: ' + e2.message, 'error'); return; } }
+
+        try {
+          await exec(payloadSemImagem);
+          toast('✅ Vaga salva (modo básico). Execute o SQL de migração para habilitar todas as funcionalidades.', 'info');
+          closeVagaEditor(); loadVagas(); loadDashboard();
+        } catch (e3) { toast('❌ Erro ao salvar: ' + e3.message, 'error'); }
       }
 
       /* ══════════════════════════════════════════
@@ -5322,6 +5622,350 @@ INSTRUÇÕES:
         }
       }
 
+      /* ══════════════════════════════════════════
+         EDITOR DE VAGAS (fullscreen) — espelho do editor de avisos
+      ══════════════════════════════════════════ */
+      let veAnexos = []; // [{nome, url, tipo}]
+      let veSavedSel = null;
+
+      function openVagaEditorNew() {
+        editingId.vagas = null;
+        document.getElementById('ve-topbar-title').textContent = 'Nova Vaga';
+        document.getElementById('v-titulo').value = '';
+        document.getElementById('v-resumo').value = '';
+        document.getElementById('ve-rte-body').innerHTML = '';
+        document.getElementById('v-descricao').value = '';
+        document.getElementById('v-local').value = 'Carauari/AM';
+        document.getElementById('v-regime').value = 'CLT';
+        document.getElementById('v-carga').value = 'Integral';
+        document.getElementById('v-escolaridade').value = 'Ensino Superior';
+        document.getElementById('v-prazo').value = '';
+        document.getElementById('v-status').value = 'aberta';
+        document.getElementById('v-edital').value = '';
+        document.getElementById('v-imagem-url').value = '';
+        veAnexos = [];
+        veRenderAnexos();
+        veUpdateImgPreview();
+        openVagaEditor();
+      }
+
+      function openVagaEditor() {
+        const el = document.getElementById('vaga-editor-overlay');
+        el.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeVagaEditor() {
+        const el = document.getElementById('vaga-editor-overlay');
+        el.style.display = 'none';
+        document.body.style.overflow = '';
+        editingId.vagas = null;
+        veAnexos = [];
+        veRenderAnexos();
+      }
+
+      // RTE helpers para o editor de vagas
+      function veRteSaveSelection() {
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount) veSavedSel = sel.getRangeAt(0).cloneRange();
+      }
+
+      function veRteRestoreSelection() {
+        const rte = document.getElementById('ve-rte-body');
+        rte.focus();
+        if (veSavedSel) {
+          const sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(veSavedSel);
+        }
+      }
+
+      function veRteExec(cmd, val) {
+        veRteRestoreSelection();
+        document.execCommand(cmd, false, val || null);
+        veSync();
+      }
+
+      function veRteFontSize(px) {
+        veRteRestoreSelection();
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount && !sel.isCollapsed) {
+          try {
+            const range = sel.getRangeAt(0);
+            const fragment = range.extractContents();
+            const span = document.createElement('span');
+            span.style.fontSize = px + 'px';
+            span.appendChild(fragment);
+            range.insertNode(span);
+            const newRange = document.createRange();
+            newRange.selectNodeContents(span);
+            sel.removeAllRanges();
+            sel.addRange(newRange);
+          } catch (err) {
+            document.execCommand('fontSize', false, '3');
+            document.querySelectorAll('#ve-rte-body font[size="3"]').forEach(f => {
+              f.removeAttribute('size');
+              f.style.fontSize = px + 'px';
+            });
+          }
+        } else {
+          document.execCommand('fontSize', false, '3');
+          document.querySelectorAll('#ve-rte-body font[size="3"]').forEach(f => {
+            f.removeAttribute('size');
+            f.style.fontSize = px + 'px';
+          });
+        }
+        veSync();
+      }
+
+      function veRteBlock(tag) {
+        document.getElementById('ve-rte-body').focus();
+        document.execCommand('formatBlock', false, tag);
+        veSync();
+      }
+
+      function veRteClearFormat() {
+        document.getElementById('ve-rte-body').focus();
+        document.execCommand('removeFormat', false, null);
+        veSync();
+      }
+
+      function veRteInsertLink() {
+        veRteSaveSelection();
+        const sel = window.getSelection();
+        const txt = sel && !sel.isCollapsed ? sel.toString() : '';
+        document.getElementById('ve-rte-link-text').value = txt;
+        document.getElementById('ve-rte-link-url').value = '';
+        const popup = document.getElementById('ve-rte-link-popup');
+        popup.style.cssText += ';display:block;top:50%;left:50%;transform:translate(-50%,-50%);';
+        document.getElementById('ve-rte-link-url').focus();
+      }
+
+      function veRteConfirmLink() {
+        const url = document.getElementById('ve-rte-link-url').value.trim();
+        const txt = document.getElementById('ve-rte-link-text').value.trim();
+        if (!url) return;
+        veRteRestoreSelection();
+        const sel = window.getSelection();
+        if (txt && sel && sel.isCollapsed) {
+          document.execCommand('insertHTML', false, `<a href="${url}" target="_blank" style="color:var(--accent)">${txt}</a>`);
+        } else {
+          document.execCommand('createLink', false, url);
+          if (sel && sel.anchorNode) {
+            const anchor = sel.anchorNode.parentElement?.closest('a') || sel.focusNode?.parentElement?.closest('a');
+            if (anchor) { anchor.target = '_blank'; anchor.style.color = 'var(--accent)'; }
+          }
+        }
+        document.getElementById('ve-rte-link-popup').style.display = 'none';
+        veSync();
+      }
+
+      function veRteInsertDivider() {
+        document.getElementById('ve-rte-body').focus();
+        document.execCommand('insertHTML', false, '<hr style="border:none;border-top:1px solid rgba(255,255,255,.12);margin:1.5rem 0;"><p><br></p>');
+        veSync();
+      }
+
+      function veSync() {
+        document.getElementById('v-descricao').value = document.getElementById('ve-rte-body').innerHTML;
+      }
+
+      // Context menu do editor de vagas
+      function veContextMenu(e) {
+        const sel = window.getSelection();
+        if (!sel || sel.isCollapsed) return;
+        e.preventDefault();
+        e.stopPropagation();
+        if (sel.rangeCount) veSavedSel = sel.getRangeAt(0).cloneRange();
+        const menu = document.getElementById('ve-context-menu');
+        menu.style.display = 'block';
+        const mx = Math.min(e.clientX, window.innerWidth - 245);
+        const my = Math.min(e.clientY, window.innerHeight - menu.offsetHeight - 10);
+        menu.style.left = mx + 'px';
+        menu.style.top = my + 'px';
+      }
+
+      function veHideCtx() {
+        document.getElementById('ve-context-menu').style.display = 'none';
+      }
+
+      document.addEventListener('mousedown', function (e) {
+        const veMenu = document.getElementById('ve-context-menu');
+        if (veMenu && veMenu.style.display !== 'none' && !veMenu.contains(e.target)) veHideCtx();
+        const vePopup = document.getElementById('ve-rte-link-popup');
+        if (vePopup && !vePopup.contains(e.target) && vePopup.style.display !== 'none') {
+          const rte = document.getElementById('ve-rte-body');
+          const tb = document.getElementById('ve-rte-toolbar');
+          if (!rte?.contains(e.target) && !tb?.contains(e.target)) vePopup.style.display = 'none';
+        }
+      }, true);
+
+      // Upload de capa da vaga
+      async function veUploadCapa(input) {
+        const file = input.files && input.files[0];
+        if (!file) return;
+        const MAX = 10 * 1024 * 1024;
+        if (file.size > MAX) { toast('Imagem muito grande. Máximo 10 MB.', 'error'); input.value = ''; return; }
+        const TIPOS = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+        if (!TIPOS.includes(file.type)) { toast('Formato inválido. Use JPG, PNG ou WebP.', 'error'); input.value = ''; return; }
+
+        const { url: sbUrl, key: sbKey } = getSupabase();
+        if (!sbUrl || !sbKey) { toast('Supabase não configurado.', 'error'); return; }
+
+        const wrap = document.getElementById('ve-upload-progress-wrap');
+        const bar = document.getElementById('ve-upload-progress-bar');
+        const msg = document.getElementById('ve-upload-progress-msg');
+        const lbl = document.querySelector('label[for="v-capa-file"]');
+        wrap.style.display = 'block'; bar.style.width = '15%'; bar.style.background = 'var(--accent)';
+        msg.style.color = 'var(--text-muted)'; msg.textContent = 'Enviando imagem…';
+        if (lbl) { lbl.style.pointerEvents = 'none'; lbl.style.opacity = '.5'; }
+
+        try {
+          await ensureValidToken();
+          const authToken = localStorage.getItem('asproc_token') || sbKey;
+          const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z]/g, '') || 'jpg';
+          const nome = `capa-vaga-${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${ext}`;
+          const path = `vagas/${nome}`;
+          const BUCKET = 'imagens';
+          bar.style.width = '50%';
+          const res = await fetch(`${sbUrl}/storage/v1/object/${BUCKET}/${path}`, {
+            method: 'POST',
+            headers: { 'apikey': sbKey, 'Authorization': `Bearer ${authToken}`, 'Content-Type': file.type, 'x-upsert': 'true' },
+            body: file
+          });
+          bar.style.width = '90%';
+          if (!res.ok) { const err = await res.json().catch(() => ({})); throw new Error(err.message || `HTTP ${res.status}`); }
+          const publicUrl = `${sbUrl}/storage/v1/object/public/${BUCKET}/${path}`;
+          bar.style.width = '100%'; msg.textContent = '✅ Upload concluído!';
+          document.getElementById('v-imagem-url').value = publicUrl;
+          veUpdateImgPreview();
+          toast('✅ Imagem de capa anexada!', 'success');
+          setTimeout(() => { wrap.style.display = 'none'; bar.style.width = '0%'; }, 2000);
+        } catch (e) {
+          bar.style.background = 'var(--red)'; bar.style.width = '100%';
+          msg.style.color = 'var(--red)'; msg.textContent = '❌ ' + e.message;
+          setTimeout(() => { wrap.style.display = 'none'; bar.style.width = '0%'; bar.style.background = 'var(--accent)'; }, 7000);
+        } finally { if (lbl) { lbl.style.pointerEvents = 'auto'; lbl.style.opacity = '1'; } input.value = ''; }
+      }
+
+      function veUpdateImgPreview() {
+        const url = document.getElementById('v-imagem-url').value.trim();
+        const preview = document.getElementById('ve-img-preview');
+        const placeholder = document.getElementById('ve-img-placeholder');
+        const remBtn = document.getElementById('ve-btn-remover-img');
+        if (url) {
+          preview.style.backgroundImage = `url('${url}')`;
+          preview.style.backgroundSize = 'cover';
+          preview.style.backgroundPosition = 'center';
+          if (placeholder) placeholder.style.display = 'none';
+          if (remBtn) remBtn.style.display = 'block';
+        } else {
+          preview.style.backgroundImage = '';
+          if (placeholder) placeholder.style.display = '';
+          if (remBtn) remBtn.style.display = 'none';
+        }
+      }
+
+      function veRemoverCapa() {
+        document.getElementById('v-imagem-url').value = '';
+        veUpdateImgPreview();
+      }
+
+      // Upload de documentos da vaga
+      async function veUploadDocs(input) {
+        const files = Array.from(input.files);
+        if (!files.length) return;
+        const { url: sbUrl, key: sbKey } = getSupabase();
+        const hasSb = !!(sbUrl && sbKey);
+
+        for (const file of files) {
+          if (hasSb) {
+            try {
+              await ensureValidToken();
+              const authToken = localStorage.getItem('asproc_token') || sbKey;
+              const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z0-9]/g, '') || 'bin';
+              const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+              const path = `vagas/doc-${Date.now()}-${safeName}`;
+              const BUCKET = 'imagens';
+              const res = await fetch(`${sbUrl}/storage/v1/object/${BUCKET}/${path}`, {
+                method: 'POST',
+                headers: { 'apikey': sbKey, 'Authorization': `Bearer ${authToken}`, 'Content-Type': file.type || 'application/octet-stream', 'x-upsert': 'true' },
+                body: file
+              });
+              if (!res.ok) { const err = await res.json().catch(() => ({})); throw new Error(err.message || `HTTP ${res.status}`); }
+              const publicUrl = `${sbUrl}/storage/v1/object/public/${BUCKET}/${path}`;
+              veAnexos.push({ nome: file.name, url: publicUrl, tipo: ext });
+              toast(`📎 "${file.name}" enviado!`, 'success');
+              // Atualiza campo legado de edital_url com o primeiro arquivo
+              if (veAnexos.length === 1) document.getElementById('v-edital').value = publicUrl;
+            } catch (e) { toast(`❌ Erro ao enviar "${file.name}": ${e.message}`, 'error'); }
+          } else { toast('Configure o Supabase para enviar documentos.', 'error'); break; }
+        }
+        veRenderAnexos(); input.value = '';
+      }
+
+      function veAddDocUrl() {
+        const input = document.getElementById('ve-doc-url-input');
+        const url = input.value.trim();
+        if (!url) return;
+        const nome = url.split('/').pop().split('?')[0] || 'Documento';
+        const ext = nome.split('.').pop().toLowerCase();
+        veAnexos.push({ nome, url, tipo: ext });
+        veRenderAnexos(); input.value = '';
+        if (veAnexos.length === 1) document.getElementById('v-edital').value = url;
+        toast('🔗 Link adicionado!', 'success');
+      }
+
+      function veDocIcon(tipo) {
+        if (['pdf'].includes(tipo)) return '📕';
+        if (['doc', 'docx'].includes(tipo)) return '📘';
+        if (['xls', 'xlsx'].includes(tipo)) return '📗';
+        if (['ppt', 'pptx'].includes(tipo)) return '📙';
+        return '📄';
+      }
+
+      function veRenderAnexos() {
+        const list = document.getElementById('ve-anexos-list');
+        if (!list) return;
+        if (!veAnexos.length) { list.innerHTML = ''; return; }
+        list.innerHTML = veAnexos.map((a, i) => `
+          <div style="display:flex;align-items:center;gap:.4rem;padding:.4rem .6rem;background:var(--bg3);border:1px solid var(--border);border-radius:6px;">
+            <span style="font-size:.95rem;">${veDocIcon(a.tipo)}</span>
+            <span style="flex:1;font-size:.75rem;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${a.nome}">${a.nome}</span>
+            <a href="${a.url}" target="_blank" style="font-size:.7rem;color:var(--accent);text-decoration:none;flex-shrink:0;">↗</a>
+            <button onclick="veRemoveAnexo(${i})" style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:.8rem;flex-shrink:0;" title="Remover">✕</button>
+          </div>`).join('');
+      }
+
+      function veRemoveAnexo(i) {
+        veAnexos.splice(i, 1);
+        veRenderAnexos();
+        // Atualiza campo legado
+        document.getElementById('v-edital').value = veAnexos.length ? veAnexos[0].url : '';
+      }
+
+      // Expõe funções do editor de vagas
+      window.openVagaEditorNew = openVagaEditorNew;
+      window.openVagaEditor = openVagaEditor;
+      window.closeVagaEditor = closeVagaEditor;
+      window.veRteSaveSelection = veRteSaveSelection;
+      window.veRteBlock = veRteBlock;
+      window.veRteExec = veRteExec;
+      window.veRteFontSize = veRteFontSize;
+      window.veRteClearFormat = veRteClearFormat;
+      window.veRteInsertLink = veRteInsertLink;
+      window.veRteConfirmLink = veRteConfirmLink;
+      window.veRteInsertDivider = veRteInsertDivider;
+      window.veHideCtx = veHideCtx;
+      window.veUploadCapa = veUploadCapa;
+      window.veUpdateImgPreview = veUpdateImgPreview;
+      window.veRemoverCapa = veRemoverCapa;
+      window.veUploadDocs = veUploadDocs;
+      window.veAddDocUrl = veAddDocUrl;
+      window.veRenderAnexos = veRenderAnexos;
+      window.veRemoveAnexo = veRemoveAnexo;
+      window.veContextMenu = veContextMenu;
+
       checkSession();
 
       // Expõe funções usadas em onclick="" para o escopo global
@@ -5337,6 +5981,8 @@ INSTRUÇÕES:
       window.saveNoticia = saveNoticia;
       window.editNoticia = editNoticia;
       window.saveVaga = saveVaga;
+      window.closeVagaEditor = closeVagaEditor;
+      window.openVagaEditorNew = openVagaEditorNew;
       window.editVaga = editVaga;
       window.saveAviso = saveAviso;
       window.editAviso = editAviso;
