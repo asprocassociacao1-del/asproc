@@ -1824,16 +1824,34 @@
                 var ns = nome.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9_-]/g, '_');
                 var fn = 'curriculos/' + Date.now() + '_' + ns + '.' + ext;
                 fetch(_SB + '/storage/v1/object/candidaturas/' + fn, {
-                    method: 'PUT',
+                    method: 'POST',
                     headers: Object.assign({ 'Content-Type': file.type || 'application/octet-stream', 'x-upsert': 'true' }, _HDR),
                     body: file
                 }).then(function (res) {
-                    var url = res.ok ? _SB + '/storage/v1/object/public/candidaturas/' + fn : null;
-                    if (!res.ok) console.warn('[ASPROC] Upload falhou — enviando sem currículo');
-                    doSubmit(url);
+                    if (res.ok) {
+                        var url = _SB + '/storage/v1/object/public/candidaturas/' + fn;
+                        doSubmit(url);
+                    } else {
+                        // fallback para PUT
+                        return fetch(_SB + '/storage/v1/object/candidaturas/' + fn, {
+                            method: 'PUT',
+                            headers: Object.assign({ 'Content-Type': file.type || 'application/octet-stream', 'x-upsert': 'true' }, _HDR),
+                            body: file
+                        }).then(function (res2) {
+                            if (res2.ok) {
+                                doSubmit(_SB + '/storage/v1/object/public/candidaturas/' + fn);
+                            } else {
+                                alert('Erro ao enviar o currículo. Verifique a conexão e tente novamente.');
+                                btn.disabled = false;
+                                btn.textContent = 'Enviar Candidatura →';
+                            }
+                        });
+                    }
                 }).catch(function (e) {
                     console.warn('[ASPROC] Erro upload:', e);
-                    doSubmit(null);
+                    alert('Erro ao enviar o currículo: ' + e.message);
+                    btn.disabled = false;
+                    btn.textContent = 'Enviar Candidatura →';
                 });
             } else {
                 doSubmit(null);
@@ -2254,19 +2272,37 @@
                     var fn = 'curriculos/' + Date.now() + '_' + ns + '.' + ext;
                     try {
                         var up = await fetch(SB + '/storage/v1/object/candidaturas/' + fn, {
-                            method: 'PUT',
+                            method: 'POST',
                             headers: Object.assign({
                                 'Content-Type': file.type || 'application/octet-stream',
                                 'x-upsert': 'true'
                             }, HDR),
                             body: file
                         });
-                        curriculo_url = up.ok ? (SB + '/storage/v1/object/public/candidaturas/' + fn) : null;
-                        if (!up.ok) console.warn('[VP] Upload falhou — enviando sem currículo');
-                        setBar(65, 'Gravando candidatura…');
+                        if (!up.ok) {
+                            // fallback para PUT
+                            up = await fetch(SB + '/storage/v1/object/candidaturas/' + fn, {
+                                method: 'PUT',
+                                headers: Object.assign({
+                                    'Content-Type': file.type || 'application/octet-stream',
+                                    'x-upsert': 'true'
+                                }, HDR),
+                                body: file
+                            });
+                        }
+                        if (up.ok) {
+                            curriculo_url = SB + '/storage/v1/object/public/candidaturas/' + fn;
+                            setBar(65, 'Gravando candidatura…');
+                        } else {
+                            var upErr = await up.json().catch(function () { return {}; });
+                            throw new Error('Falha no upload do currículo: ' + (upErr.message || 'HTTP ' + up.status));
+                        }
                     } catch (e) {
-                        console.warn('[VP] Erro no upload:', e);
-                        setBar(55, 'Gravando candidatura…');
+                        console.error('[VP] Erro no upload:', e);
+                        alert('Erro ao enviar o currículo:\n' + e.message + '\n\nVerifique se o bucket "candidaturas" existe no Supabase Storage com permissão pública de INSERT.');
+                        btn.disabled = false; btn.textContent = 'Enviar Candidatura →';
+                        var p = g('vp-prog'); if (p) p.style.display = 'none';
+                        return;
                     }
                 } else {
                     setBar(40, 'Gravando candidatura…');
