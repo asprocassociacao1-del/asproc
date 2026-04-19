@@ -2576,6 +2576,68 @@
 
         <div class="ne-divider"></div>
 
+        <!-- ── OG IMAGE (WhatsApp / redes sociais) ── -->
+        <div class="ne-panel-section">
+          <div class="ne-panel-label" style="display:flex;align-items:center;gap:.4rem;">
+            🔗 Imagem para compartilhamento
+            <span
+              title="Aparece como preview ao compartilhar no WhatsApp, Telegram, Facebook etc. Tamanho ideal: 1200×630px. Se vazio, usa a imagem de capa."
+              style="cursor:help;color:var(--text-muted);font-size:.75rem;border:1px solid var(--border);border-radius:50%;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">?</span>
+          </div>
+
+          <!-- Preview og_image -->
+          <div id="ne-og-preview"
+            style="width:100%;height:72px;border-radius:var(--radius);border:1px dashed var(--border);background:var(--bg3);display:flex;align-items:center;justify-content:center;margin-bottom:.5rem;overflow:hidden;position:relative;">
+            <span id="ne-og-placeholder"
+              style="font-size:.72rem;color:var(--text-muted);text-align:center;line-height:1.4;">Sem imagem OG<br><span
+                style="font-size:.65rem;opacity:.6;">usará imagem de capa</span></span>
+          </div>
+
+          <!-- Botão upload og_image -->
+          <label for="n-og-image-file" id="btn-upload-og"
+            style="display:flex;align-items:center;justify-content:center;gap:.4rem;width:100%;padding:.55rem;margin-bottom:.4rem;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.25);border-radius:var(--radius);color:var(--purple);font-size:.8rem;font-weight:600;cursor:pointer;transition:background var(--transition);"
+            onmouseover="this.style.background='rgba(139,92,246,.2)'"
+            onmouseout="this.style.background='rgba(139,92,246,.1)'">
+            📁 Anexar imagem OG (1200×630)
+          </label>
+          <input type="file" id="n-og-image-file" accept="image/jpeg,image/png,image/webp" style="display:none;"
+            onchange="uploadOgImagem(this)">
+
+          <!-- Progresso upload og -->
+          <div id="og-upload-progress-wrap" style="display:none;margin-bottom:.5rem;">
+            <div style="height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;">
+              <div id="og-upload-progress-bar"
+                style="height:100%;width:0%;background:var(--purple);transition:width .3s;"></div>
+            </div>
+            <div id="og-upload-progress-msg" style="font-size:.72rem;color:var(--text-muted);margin-top:.3rem;">
+              Enviando…</div>
+          </div>
+
+          <!-- Separador ou URL manual -->
+          <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;">
+            <div style="flex:1;height:1px;background:var(--border);"></div>
+            <span style="font-size:.7rem;color:var(--text-muted);">ou cole a URL</span>
+            <div style="flex:1;height:1px;background:var(--border);"></div>
+          </div>
+
+          <input type="url" class="ne-panel-input" id="n-og-image" placeholder="URL da imagem OG (1200×630)…"
+            oninput="updateOgPreview()">
+
+          <!-- Remover og_image -->
+          <button id="btn-remover-og" onclick="removerOgImagem()"
+            style="display:none;width:100%;margin-top:.4rem;padding:.4rem;background:var(--red-soft);border:1px solid rgba(239,68,68,.2);border-radius:var(--radius);color:var(--red);font-size:.75rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">
+            🗑 Remover imagem OG
+          </button>
+
+          <div
+            style="font-size:.68rem;color:var(--text-muted);margin-top:.4rem;line-height:1.5;padding:.45rem .5rem;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border);">
+            📐 Ideal: <strong style="color:var(--text-dim);">1200 × 630 px</strong> · JPG ou PNG<br>
+            📱 Aparece no WhatsApp, Telegram, Facebook ao compartilhar o link
+          </div>
+        </div>
+
+        <div class="ne-divider"></div>
+
         <div class="ne-panel-section">
           <div class="ne-panel-label">Publicação</div>
           <div class="toggle-row">
@@ -3644,7 +3706,7 @@
         if (!n) return;
         editingId.noticias = id;
         document.getElementById('ne-topbar-title').textContent = 'Editar Notícia';
-        ['n-titulo', 'n-resumo', 'n-conteudo', 'n-url', 'n-imagem'].forEach(i => document.getElementById(i).value = '');
+        ['n-titulo', 'n-resumo', 'n-conteudo', 'n-url', 'n-imagem', 'n-og-image'].forEach(i => document.getElementById(i).value = '');
         document.getElementById('n-titulo').value = n.titulo || '';
         document.getElementById('n-resumo').value = n.resumo || '';
         document.getElementById('n-conteudo').value = n.conteudo || '';
@@ -3653,12 +3715,13 @@
         document.getElementById('n-data').value = n.data_pub || '';
         document.getElementById('n-url').value = n.url_externa || '';
         document.getElementById('n-imagem').value = n.imagem_url || '';
+        document.getElementById('n-og-image').value = n.og_image || '';
         document.getElementById('n-destaque').checked = !!n.destaque;
         document.getElementById('n-publicado').checked = !!n.publicado;
         document.getElementById('n-slug').value = n.slug || slugify(n.titulo || '');
         document.getElementById('n-autor').value = n.autor || '';
         document.getElementById('n-tags').value = n.tags || '';
-        updateImgPreview(); updatePreview();
+        updateImgPreview(); updateOgPreview(); updatePreview();
         if (n.url_externa) { document.getElementById('n-url').value = n.url_externa; setDeployStatus('✅', 'Já publicada no site', n.url_externa); }
         else { const ds = document.getElementById('ne-deploy-status'); if (ds) ds.style.display = 'none'; }
         openNewsEditor();
@@ -4817,7 +4880,7 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
       function openNewsEditorNew() {
         editingId.noticias = null;
         document.getElementById('ne-topbar-title').textContent = 'Nova Notícia';
-        ['n-titulo', 'n-resumo', 'n-conteudo', 'n-url', 'n-imagem', 'n-autor', 'n-tags', 'n-slug'].forEach(id => document.getElementById(id).value = '');
+        ['n-titulo', 'n-resumo', 'n-conteudo', 'n-url', 'n-imagem', 'n-autor', 'n-tags', 'n-slug', 'n-og-image'].forEach(id => document.getElementById(id).value = '');
         document.getElementById('n-rte-body').innerHTML = '';
         document.getElementById('n-categoria').value = 'geral';
         document.getElementById('n-data').value = new Date().toISOString().split('T')[0];
@@ -4825,7 +4888,10 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         document.getElementById('n-publicado').checked = true;
         document.getElementById('ne-img-preview').innerHTML = '<span>Sem imagem</span>';
         document.getElementById('n-imagem-file').value = '';
+        document.getElementById('n-og-image-file').value = '';
         const remBtn = document.getElementById('btn-remover-img'); if (remBtn) remBtn.style.display = 'none';
+        const remOgBtn = document.getElementById('btn-remover-og'); if (remOgBtn) remOgBtn.style.display = 'none';
+        updateOgPreview();
         const ds = document.getElementById('ne-deploy-status');
         if (ds) ds.style.display = 'none';
         updatePreview();
@@ -4994,203 +5060,315 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         }
       }
 
-      function syncRteToHidden() {
-        document.getElementById('n-conteudo').value = document.getElementById('n-rte-body').innerHTML;
+      /* ── OG IMAGE: preview, remover, upload ── */
+      function updateOgPreview() {
+        const url = document.getElementById('n-og-image').value.trim();
+        const el = document.getElementById('ne-og-preview');
+        const remBtn = document.getElementById('btn-remover-og');
+        if (url) {
+          el.innerHTML = `<img src="${escHtml(url)}" onerror="this.outerHTML='<span style=\\'font-size:.72rem;color:var(--red)\\'>Imagem inválida</span>'" style="width:100%;height:100%;object-fit:cover;">`;
+          if (remBtn) remBtn.style.display = 'block';
+        } else {
+          el.innerHTML = '<span id="ne-og-placeholder" style="font-size:.72rem;color:var(--text-muted);text-align:center;line-height:1.4;">Sem imagem OG<br><span style="font-size:.65rem;opacity:.6;">usará imagem de capa</span></span>';
+          if (remBtn) remBtn.style.display = 'none';
+        }
       }
+
+      function removerOgImagem() {
+        document.getElementById('n-og-image').value = '';
+        document.getElementById('n-og-image-file').value = '';
+        updateOgPreview();
+      }
+
+      async function uploadOgImagem(input) {
+        const file = input.files && input.files[0];
+        if (!file) return;
+
+        const MAX = 10 * 1024 * 1024;
+        if (file.size > MAX) { toast('Imagem muito grande. Máximo 10 MB.', 'error'); input.value = ''; return; }
+        const TIPOS = ['image/jpeg', 'image/png', 'image/webp'];
+        if (!TIPOS.includes(file.type)) { toast('Formato inválido. Use JPG, PNG ou WebP.', 'error'); input.value = ''; return; }
+
+        const { url: sbUrl, key: sbKey } = getSupabase();
+        if (!sbUrl || !sbKey) { toast('Supabase não configurado.', 'error'); return; }
+
+        const wrap = document.getElementById('og-upload-progress-wrap');
+        const bar = document.getElementById('og-upload-progress-bar');
+        const msg = document.getElementById('og-upload-progress-msg');
+        const lbl = document.getElementById('btn-upload-og');
+        wrap.style.display = 'block';
+        bar.style.width = '15%';
+        bar.style.background = 'var(--purple)';
+        msg.style.color = 'var(--text-muted)';
+        msg.textContent = 'Enviando imagem OG…';
+        lbl.style.pointerEvents = 'none';
+        lbl.style.opacity = '.5';
+
+        try {
+          await ensureValidToken();
+          const sessionToken = localStorage.getItem('asproc_token');
+          const authToken = sessionToken || sbKey;
+
+          const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z]/g, '') || 'jpg';
+          const nome = `og-${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${ext}`;
+          const path = `og/${nome}`;
+          const BUCKET = 'imagens';
+
+          bar.style.width = '50%';
+
+          const res = await fetch(`${sbUrl}/storage/v1/object/${BUCKET}/${path}`, {
+            method: 'POST',
+            headers: {
+              'apikey': sbKey,
+              'Authorization': `Bearer ${authToken}`,
+              'Content-Type': file.type,
+              'x-upsert': 'true'
+            },
+            body: file
+          });
+
+          bar.style.width = '90%';
+
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.message || `HTTP ${res.status}`);
+          }
+
+          const publicUrl = `${sbUrl}/storage/v1/object/public/${BUCKET}/${path}`;
+          bar.style.width = '100%';
+          msg.textContent = '✅ Imagem OG enviada!';
+
+          document.getElementById('n-og-image').value = publicUrl;
+          updateOgPreview();
+          toast('✅ Imagem OG anexada com sucesso!', 'success');
+
+          setTimeout(() => { wrap.style.display = 'none'; bar.style.width = '0%'; }, 2000);
+
+        } catch (e) {
+          bar.style.background = 'var(--red)';
+          bar.style.width = '100%';
+          msg.style.color = 'var(--red)';
+          msg.textContent = '❌ ' + e.message;
+          setTimeout(() => {
+            wrap.style.display = 'none';
+            bar.style.width = '0%';
+            bar.style.background = 'var(--purple)';
+          }, 6000);
+        } finally {
+          lbl.style.pointerEvents = 'auto';
+          lbl.style.opacity = '1';
+          input.value = '';
+        }
+      }
+
+      document.getElementById('n-conteudo').value = document.getElementById('n-rte-body').innerHTML;
+    }
 
       /* ── RTE ── */
       let savedRange = null;
 
-      function rteSaveSelection() {
+    function rteSaveSelection() {
+      const sel = window.getSelection();
+      if (sel && sel.rangeCount > 0) savedRange = sel.getRangeAt(0).cloneRange();
+    }
+
+    function rteRestoreSelection() {
+      const el = document.getElementById('n-rte-body');
+      el.focus();
+      if (savedRange) {
         const sel = window.getSelection();
-        if (sel && sel.rangeCount > 0) savedRange = sel.getRangeAt(0).cloneRange();
+        sel.removeAllRanges();
+        sel.addRange(savedRange);
       }
+    }
 
-      function rteRestoreSelection() {
-        const el = document.getElementById('n-rte-body');
-        el.focus();
-        if (savedRange) {
-          const sel = window.getSelection();
-          sel.removeAllRanges();
-          sel.addRange(savedRange);
-        }
+    function rteExec(cmd, val) {
+      rteRestoreSelection();
+      document.execCommand(cmd, false, val || null);
+      syncRteToHidden();
+    }
+
+    function rteBlock(tag) {
+      rteRestoreSelection();
+      if (['h1', 'h2', 'h3', 'h4'].includes(tag)) document.execCommand('formatBlock', false, tag);
+      else if (tag === 'blockquote') document.execCommand('formatBlock', false, 'blockquote');
+      else if (tag === 'pre') document.execCommand('formatBlock', false, 'pre');
+      else document.execCommand('formatBlock', false, 'p');
+      syncRteToHidden();
+    }
+
+    function rteFontSize(px) {
+      rteRestoreSelection();
+      const sel = window.getSelection();
+      if (sel && sel.rangeCount > 0 && !sel.isCollapsed) {
+        const span = document.createElement('span');
+        span.style.fontSize = px + 'px';
+        sel.getRangeAt(0).surroundContents(span);
       }
+      syncRteToHidden();
+    }
 
-      function rteExec(cmd, val) {
-        rteRestoreSelection();
-        document.execCommand(cmd, false, val || null);
-        syncRteToHidden();
-      }
+    function rteInsertImage() {
+      const url = prompt('URL da imagem:');
+      if (!url) return;
+      rteRestoreSelection();
+      document.execCommand('insertHTML', false, `<img src="${url}" style="max-width:100%;border-radius:8px;margin:1rem 0;">`);
+      syncRteToHidden();
+    }
 
-      function rteBlock(tag) {
-        rteRestoreSelection();
-        if (['h1', 'h2', 'h3', 'h4'].includes(tag)) document.execCommand('formatBlock', false, tag);
-        else if (tag === 'blockquote') document.execCommand('formatBlock', false, 'blockquote');
-        else if (tag === 'pre') document.execCommand('formatBlock', false, 'pre');
-        else document.execCommand('formatBlock', false, 'p');
-        syncRteToHidden();
-      }
-
-      function rteFontSize(px) {
-        rteRestoreSelection();
-        const sel = window.getSelection();
-        if (sel && sel.rangeCount > 0 && !sel.isCollapsed) {
-          const span = document.createElement('span');
-          span.style.fontSize = px + 'px';
-          sel.getRangeAt(0).surroundContents(span);
-        }
-        syncRteToHidden();
-      }
-
-      function rteInsertImage() {
-        const url = prompt('URL da imagem:');
-        if (!url) return;
-        rteRestoreSelection();
-        document.execCommand('insertHTML', false, `<img src="${url}" style="max-width:100%;border-radius:8px;margin:1rem 0;">`);
-        syncRteToHidden();
-      }
-
-      function rteInsertYouTube() {
-        const input = prompt('Cole a URL ou ID do vídeo do YouTube:');
-        if (!input) return;
-        let videoId = input.trim();
-        const m = videoId.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?\s]+)/);
-        if (m) videoId = m[1];
-        if (!videoId) { toast('URL do YouTube inválida.', 'error'); return; }
-        rteRestoreSelection();
-        const embedHTML = `<div class="yt-embed-wrap" style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:10px;background:#000;margin:1.5rem 0;">
+    function rteInsertYouTube() {
+      const input = prompt('Cole a URL ou ID do vídeo do YouTube:');
+      if (!input) return;
+      let videoId = input.trim();
+      const m = videoId.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?\s]+)/);
+      if (m) videoId = m[1];
+      if (!videoId) { toast('URL do YouTube inválida.', 'error'); return; }
+      rteRestoreSelection();
+      const embedHTML = `<div class="yt-embed-wrap" style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:10px;background:#000;margin:1.5rem 0;">
       <iframe src="https://www.youtube.com/embed/${videoId}" style="position:absolute;inset:0;width:100%;height:100%;border:none;" allowfullscreen loading="lazy"></iframe>
     </div>`;
-        document.execCommand('insertHTML', false, embedHTML);
-        syncRteToHidden();
-      }
+      document.execCommand('insertHTML', false, embedHTML);
+      syncRteToHidden();
+    }
 
-      function rteInsertLink() {
-        rteSaveSelection();
+    function rteInsertLink() {
+      rteSaveSelection();
+      const sel = window.getSelection();
+      const selectedText = sel && !sel.isCollapsed ? sel.toString() : '';
+      document.getElementById('rte-link-text').value = selectedText;
+      document.getElementById('rte-link-url').value = '';
+      const popup = document.getElementById('rte-link-popup');
+      popup.style.display = 'block';
+      popup.style.left = '50%'; popup.style.top = '50%';
+      popup.style.transform = 'translate(-50%, -50%)';
+      document.getElementById('rte-link-url').focus();
+    }
+
+    function rteConfirmLink() {
+      const url = document.getElementById('rte-link-url').value.trim();
+      const text = document.getElementById('rte-link-text').value.trim();
+      if (!url) { toast('Digite a URL.', 'error'); return; }
+      rteRestoreSelection();
+      if (text) {
         const sel = window.getSelection();
-        const selectedText = sel && !sel.isCollapsed ? sel.toString() : '';
-        document.getElementById('rte-link-text').value = selectedText;
-        document.getElementById('rte-link-url').value = '';
-        const popup = document.getElementById('rte-link-popup');
-        popup.style.display = 'block';
-        popup.style.left = '50%'; popup.style.top = '50%';
-        popup.style.transform = 'translate(-50%, -50%)';
-        document.getElementById('rte-link-url').focus();
+        if (sel && sel.isCollapsed) document.execCommand('insertHTML', false, `<a href="${url}" target="_blank">${text}</a>`);
+        else document.execCommand('createLink', false, url);
+      } else {
+        document.execCommand('createLink', false, url);
+      }
+      syncRteToHidden();
+      document.getElementById('rte-link-popup').style.display = 'none';
+    }
+
+    function rteInsertTable() {
+      const rows = parseInt(prompt('Número de linhas:', '3') || '3');
+      const cols = parseInt(prompt('Número de colunas:', '3') || '3');
+      let table = '<table style="border-collapse:collapse;width:100%;margin:1rem 0;"><thead><tr>';
+      for (let c = 0; c < cols; c++) table += `<th style="border:1px solid #444;padding:.45rem .75rem;background:#1c2333;font-weight:600;">Coluna ${c + 1}</th>`;
+      table += '</tr></thead><tbody>';
+      for (let r = 0; r < rows - 1; r++) {
+        table += '<tr>';
+        for (let c = 0; c < cols; c++) table += `<td style="border:1px solid #444;padding:.45rem .75rem;">Célula</td>`;
+        table += '</tr>';
+      }
+      table += '</tbody></table>';
+      rteRestoreSelection();
+      document.execCommand('insertHTML', false, table);
+      syncRteToHidden();
+    }
+
+    function rteInsertDivider() {
+      rteRestoreSelection();
+      document.execCommand('insertHTML', false, '<hr style="border:none;border-top:1px solid rgba(255,255,255,.15);margin:2rem 0;">');
+      syncRteToHidden();
+    }
+
+    function rteClearFormat() {
+      rteRestoreSelection();
+      document.execCommand('removeFormat');
+      syncRteToHidden();
+    }
+
+    function updateRteToolbarState() {
+      const cmds = { bold: 'bold', italic: 'italic', underline: 'underline' };
+      // Minimal toolbar state update
+    }
+
+    /* ══════════════════════════════════════════
+       BUILD HTML DA NOTÍCIA
+    ══════════════════════════════════════════ */
+    function getNoticiaData() {
+      const dbData = {
+        titulo: document.getElementById('n-titulo').value.trim(),
+        resumo: document.getElementById('n-resumo').value.trim(),
+        conteudo: document.getElementById('n-conteudo').value.trim(),
+        categoria: document.getElementById('n-categoria').value,
+        data_pub: document.getElementById('n-data').value || new Date().toISOString().split('T')[0],
+        url_externa: document.getElementById('n-url').value.trim() || null,
+        imagem_url: document.getElementById('n-imagem').value.trim() || null,
+        og_image: document.getElementById('n-og-image').value.trim() || null,
+        destaque: document.getElementById('n-destaque').checked,
+        publicado: document.getElementById('n-publicado').checked,
+      };
+      return Object.assign({}, dbData, {
+        _slug: document.getElementById('n-slug').value || slugify(dbData.titulo),
+        _autor: document.getElementById('n-autor').value.trim() || null,
+        _tags: document.getElementById('n-tags').value.trim() || null,
+        _dbData: dbData,
+      });
+    }
+
+    function catLabel(cat) {
+      const m = { pirarucu: 'Pirarucu', olea: 'Oleaginosas', sanear: 'Saneamento', comercio: 'Comércio', vagas: 'Vagas', geral: 'Geral' };
+      return m[cat] || 'Geral';
+    }
+
+    function formatDateBR(d) {
+      if (!d) return '';
+      try { const dt = new Date(d + (d.includes('T') ? '' : 'T00:00:00')); return dt.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }); }
+      catch { return d; }
+    }
+
+    function buildNoticiaPageHTML(data) {
+      const catLbl = catLabel(data.categoria);
+      const dateFmt = formatDateBR(data.data_pub);
+      const autorTag = data._autor ? data._autor : '';
+      // og_image tem prioridade; fallback para imagem_url
+      const shareImg = (data.og_image || data.imagem_url || '').trim();
+      const ogImgTag = shareImg ? `<meta property="og:image" content="${shareImg}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="${shareImg}">` : '';
+      const pageUrl = data.url_externa || `https://www.asproc.com.br/noticias/${data._slug}.html`;
+      const heroStyle = data.imagem_url
+        ? `background-image:url('${data.imagem_url}');background-size:cover;background-position:center;`
+        : 'background:linear-gradient(135deg,#0f1a0f 0%,#1e3a1e 100%);';
+
+      let tagsHTML = '';
+      if (data._tags) {
+        const tagItems = data._tags.split(',').map(t => {
+          t = t.trim();
+          return `<a href="../noticias.html?tag=${encodeURIComponent(t)}" class="art-tag">${t}</a>`;
+        }).join('');
+        tagsHTML = `<div class="art-tags">🏷 ${tagItems}</div>`;
       }
 
-      function rteConfirmLink() {
-        const url = document.getElementById('rte-link-url').value.trim();
-        const text = document.getElementById('rte-link-text').value.trim();
-        if (!url) { toast('Digite a URL.', 'error'); return; }
-        rteRestoreSelection();
-        if (text) {
-          const sel = window.getSelection();
-          if (sel && sel.isCollapsed) document.execCommand('insertHTML', false, `<a href="${url}" target="_blank">${text}</a>`);
-          else document.execCommand('createLink', false, url);
-        } else {
-          document.execCommand('createLink', false, url);
-        }
-        syncRteToHidden();
-        document.getElementById('rte-link-popup').style.display = 'none';
-      }
+      const year = new Date().getFullYear();
 
-      function rteInsertTable() {
-        const rows = parseInt(prompt('Número de linhas:', '3') || '3');
-        const cols = parseInt(prompt('Número de colunas:', '3') || '3');
-        let table = '<table style="border-collapse:collapse;width:100%;margin:1rem 0;"><thead><tr>';
-        for (let c = 0; c < cols; c++) table += `<th style="border:1px solid #444;padding:.45rem .75rem;background:#1c2333;font-weight:600;">Coluna ${c + 1}</th>`;
-        table += '</tr></thead><tbody>';
-        for (let r = 0; r < rows - 1; r++) {
-          table += '<tr>';
-          for (let c = 0; c < cols; c++) table += `<td style="border:1px solid #444;padding:.45rem .75rem;">Célula</td>`;
-          table += '</tr>';
-        }
-        table += '</tbody></table>';
-        rteRestoreSelection();
-        document.execCommand('insertHTML', false, table);
-        syncRteToHidden();
-      }
-
-      function rteInsertDivider() {
-        rteRestoreSelection();
-        document.execCommand('insertHTML', false, '<hr style="border:none;border-top:1px solid rgba(255,255,255,.15);margin:2rem 0;">');
-        syncRteToHidden();
-      }
-
-      function rteClearFormat() {
-        rteRestoreSelection();
-        document.execCommand('removeFormat');
-        syncRteToHidden();
-      }
-
-      function updateRteToolbarState() {
-        const cmds = { bold: 'bold', italic: 'italic', underline: 'underline' };
-        // Minimal toolbar state update
-      }
-
-      /* ══════════════════════════════════════════
-         BUILD HTML DA NOTÍCIA
-      ══════════════════════════════════════════ */
-      function getNoticiaData() {
-        const dbData = {
-          titulo: document.getElementById('n-titulo').value.trim(),
-          resumo: document.getElementById('n-resumo').value.trim(),
-          conteudo: document.getElementById('n-conteudo').value.trim(),
-          categoria: document.getElementById('n-categoria').value,
-          data_pub: document.getElementById('n-data').value || new Date().toISOString().split('T')[0],
-          url_externa: document.getElementById('n-url').value.trim() || null,
-          imagem_url: document.getElementById('n-imagem').value.trim() || null,
-          destaque: document.getElementById('n-destaque').checked,
-          publicado: document.getElementById('n-publicado').checked,
-        };
-        return Object.assign({}, dbData, {
-          _slug: document.getElementById('n-slug').value || slugify(dbData.titulo),
-          _autor: document.getElementById('n-autor').value.trim() || null,
-          _tags: document.getElementById('n-tags').value.trim() || null,
-          _dbData: dbData,
-        });
-      }
-
-      function catLabel(cat) {
-        const m = { pirarucu: 'Pirarucu', olea: 'Oleaginosas', sanear: 'Saneamento', comercio: 'Comércio', vagas: 'Vagas', geral: 'Geral' };
-        return m[cat] || 'Geral';
-      }
-
-      function formatDateBR(d) {
-        if (!d) return '';
-        try { const dt = new Date(d + (d.includes('T') ? '' : 'T00:00:00')); return dt.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }); }
-        catch { return d; }
-      }
-
-      function buildNoticiaPageHTML(data) {
-        const catLbl = catLabel(data.categoria);
-        const dateFmt = formatDateBR(data.data_pub);
-        const autorTag = data._autor ? data._autor : '';
-        const ogImg = data.imagem_url ? `<meta property="og:image" content="${data.imagem_url}">` : '';
-        const heroStyle = data.imagem_url
-          ? `background-image:url('${data.imagem_url}');background-size:cover;background-position:center;`
-          : 'background:linear-gradient(135deg,#0f1a0f 0%,#1e3a1e 100%);';
-
-        let tagsHTML = '';
-        if (data._tags) {
-          const tagItems = data._tags.split(',').map(t => {
-            t = t.trim();
-            return `<a href="../noticias.html?tag=${encodeURIComponent(t)}" class="art-tag">${t}</a>`;
-          }).join('');
-          tagsHTML = `<div class="art-tags">🏷 ${tagItems}</div>`;
-        }
-
-        const year = new Date().getFullYear();
-
-        return `<!DOCTYPE html>
+      return `<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${data.titulo || 'Notícia'} – ASPROC</title>
-<meta name="description" content="${(data.resumo || '').replace(/"/g, '&quot;')}"> ${ogImg}
+<meta name="description" content="${(data.resumo || '').replace(/"/g, '&quot;')}">
 <meta property="og:type" content="article">
-<meta property="og:title" content="${(data.titulo || '').replace(/"/g, '&quot;')}"> <meta property="og:description" content="${(data.resumo || '').replace(/"/g, '&quot;')}">
+<meta property="og:site_name" content="ASPROC">
+<meta property="og:url" content="${pageUrl}">
+<meta property="og:title" content="${(data.titulo || '').replace(/"/g, '&quot;')}">
+<meta property="og:description" content="${(data.resumo || '').replace(/"/g, '&quot;')}">
+${ogImgTag}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -5623,589 +5801,589 @@ document.addEventListener('DOMContentLoaded', function(){
 </body>
 
 </html>`;
+    }
+
+    function previewNoticiaPage() {
+      syncRteToHidden();
+      const data = getNoticiaData();
+      const html = buildNoticiaPageHTML(data);
+      const blob = new Blob([html], { type: 'text/html' });
+      window.open(URL.createObjectURL(blob), '_blank');
+    }
+
+    function downloadNoticiaPage(dataOverride) {
+      syncRteToHidden();
+      const data = dataOverride || getNoticiaData();
+      const html = buildNoticiaPageHTML(data);
+      const slug = data._slug || slugify(data.titulo) || 'noticia';
+      const blob = new Blob([html], { type: 'text/html' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `noticia-${slug}.html`;
+      a.click();
+      if (!dataOverride) toast(`✅ Página noticia-${slug}.html baixada!`, 'success');
+    }
+
+    /* ══════════════════════════════════════════
+    GITHUB PAGES DEPLOY
+    ══════════════════════════════════════════ */
+    const GH_OWNER = 'asprocassociacao1-del', GH_REPO = 'asproc', GH_BRANCH = 'main';
+    const GH_BASE_URL = `https://www.asproc.com.br`;
+    const GH_TOKEN_KEY = 'asproc_gh_token';
+
+    function getGhToken() { return localStorage.getItem(GH_TOKEN_KEY) || ''; }
+
+    function saveGithubToken() {
+      const token = (document.getElementById('cfg-gh-token').value || '').trim();
+      if (!token) { toast('Cole o token antes de salvar.', 'error'); return; }
+      if (!token.startsWith('ghp_') && !token.startsWith('github_pat_')) {
+        toast('Token inválido. Deve começar com ghp_ ou github_pat_', 'error'); return;
       }
+      localStorage.setItem(GH_TOKEN_KEY, token);
+      toast('✅ Token GitHub salvo!', 'success');
+    }
 
-      function previewNoticiaPage() {
-        syncRteToHidden();
-        const data = getNoticiaData();
-        const html = buildNoticiaPageHTML(data);
-        const blob = new Blob([html], { type: 'text/html' });
-        window.open(URL.createObjectURL(blob), '_blank');
-      }
-
-      function downloadNoticiaPage(dataOverride) {
-        syncRteToHidden();
-        const data = dataOverride || getNoticiaData();
-        const html = buildNoticiaPageHTML(data);
-        const slug = data._slug || slugify(data.titulo) || 'noticia';
-        const blob = new Blob([html], { type: 'text/html' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = `noticia-${slug}.html`;
-        a.click();
-        if (!dataOverride) toast(`✅ Página noticia-${slug}.html baixada!`, 'success');
-      }
-
-      /* ══════════════════════════════════════════
-      GITHUB PAGES DEPLOY
-      ══════════════════════════════════════════ */
-      const GH_OWNER = 'asprocassociacao1-del', GH_REPO = 'asproc', GH_BRANCH = 'main';
-      const GH_BASE_URL = `https://www.asproc.com.br`;
-      const GH_TOKEN_KEY = 'asproc_gh_token';
-
-      function getGhToken() { return localStorage.getItem(GH_TOKEN_KEY) || ''; }
-
-      function saveGithubToken() {
-        const token = (document.getElementById('cfg-gh-token').value || '').trim();
-        if (!token) { toast('Cole o token antes de salvar.', 'error'); return; }
-        if (!token.startsWith('ghp_') && !token.startsWith('github_pat_')) {
-          toast('Token inválido. Deve começar com ghp_ ou github_pat_', 'error'); return;
+    async function ghFetch(endpoint, opts) {
+      const token = getGhToken();
+      if (!token) throw new Error('Token GitHub não configurado. Vá em Configurações.');
+      const res = await fetch('https://api.github.com' + endpoint, Object.assign({
+        headers: {
+          'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version':
+            '2022-11-28', 'Content-Type': 'application/json'
         }
-        localStorage.setItem(GH_TOKEN_KEY, token);
-        toast('✅ Token GitHub salvo!', 'success');
+      }, opts || {}));
+      if (!res.ok) { const err = await res.json().catch(() => ({})); throw new Error(err.message || 'HTTP ' + res.status); }
+      if (res.status === 204) return null;
+      return res.json();
+    }
+
+    async function testGithubConnection() {
+      const resEl = document.getElementById('gh-test-result');
+      resEl.style.display = 'block'; resEl.style.color = 'var(--text-muted)'; resEl.textContent = '⏳ Testando…';
+      try {
+        const repo = await ghFetch(`/repos/${GH_OWNER}/${GH_REPO}`);
+        resEl.style.color = 'var(--green)'; resEl.textContent = `✅ Conectado! Repo: ${repo.full_name} (${repo.private ?
+          'privado' : 'público'})`;
+      } catch (e) { resEl.style.color = 'var(--red)'; resEl.textContent = `❌ ${e.message}`; }
+    }
+
+    function setDeployStatus(icon, msg, link) {
+      const box = document.getElementById('ne-deploy-status');
+      const ico = document.getElementById('ne-deploy-icon');
+      const msgEl = document.getElementById('ne-deploy-msg');
+      const lnkEl = document.getElementById('ne-deploy-link');
+      const cpyEl = document.getElementById('ne-deploy-copy');
+      if (!box) return;
+      box.style.display = 'block';
+      ico.textContent = icon; msgEl.textContent = msg;
+      if (link) {
+        lnkEl.href = link; lnkEl.textContent = link; lnkEl.style.display = 'block'; cpyEl.style.display =
+          'inline-block'; cpyEl.dataset.url = link;
+      }
+      else { lnkEl.style.display = 'none'; cpyEl.style.display = 'none'; }
+    }
+
+    function copyDeployLink() {
+      const url = document.getElementById('ne-deploy-copy').dataset.url || '';
+      navigator.clipboard.writeText(url).then(() => toast('URL copiada!', 'success')).catch(() => toast('Não foi possível copiar.', 'error'));
+    }
+
+    async function publishToGithub(dataOverride) {
+      syncRteToHidden();
+      const data = dataOverride || getNoticiaData();
+      if (!data.titulo) { toast('Preencha o título antes de publicar.', 'error'); return; }
+      const token = getGhToken();
+      if (!token) {
+        toast('Configure o token do GitHub em Configurações.', 'error'); goTo('configuracoes',
+          document.querySelector('[onclick*=configuracoes]')); return;
       }
 
-      async function ghFetch(endpoint, opts) {
-        const token = getGhToken();
-        if (!token) throw new Error('Token GitHub não configurado. Vá em Configurações.');
-        const res = await fetch('https://api.github.com' + endpoint, Object.assign({
-          headers: {
-            'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version':
-              '2022-11-28', 'Content-Type': 'application/json'
-          }
-        }, opts || {}));
-        if (!res.ok) { const err = await res.json().catch(() => ({})); throw new Error(err.message || 'HTTP ' + res.status); }
-        if (res.status === 204) return null;
-        return res.json();
-      }
+      const slug = data._slug || slugify(data.titulo) || ('noticia-' + Date.now());
+      const filePath = `noticias/${slug}.html`;
+      const publicUrl = `${GH_BASE_URL}/${filePath}`;
+      const html = buildNoticiaPageHTML(data);
+      const b64 = btoa(unescape(encodeURIComponent(html)));
 
-      async function testGithubConnection() {
-        const resEl = document.getElementById('gh-test-result');
-        resEl.style.display = 'block'; resEl.style.color = 'var(--text-muted)'; resEl.textContent = '⏳ Testando…';
+      setDeployStatus('⏳', 'Verificando arquivo no repositório…', null);
+
+      try {
+        let existingSha = null;
         try {
-          const repo = await ghFetch(`/repos/${GH_OWNER}/${GH_REPO}`);
-          resEl.style.color = 'var(--green)'; resEl.textContent = `✅ Conectado! Repo: ${repo.full_name} (${repo.private ?
-            'privado' : 'público'})`;
-        } catch (e) { resEl.style.color = 'var(--red)'; resEl.textContent = `❌ ${e.message}`; }
-      }
+          const existing = await ghFetch(`/repos/${GH_OWNER}/${GH_REPO}/contents/${filePath}?ref=${GH_BRANCH}`);
+          existingSha = existing.sha;
+        } catch (e) { if (!e.message.includes('404') && !e.message.includes('Not Found')) throw e; }
 
-      function setDeployStatus(icon, msg, link) {
-        const box = document.getElementById('ne-deploy-status');
-        const ico = document.getElementById('ne-deploy-icon');
-        const msgEl = document.getElementById('ne-deploy-msg');
-        const lnkEl = document.getElementById('ne-deploy-link');
-        const cpyEl = document.getElementById('ne-deploy-copy');
-        if (!box) return;
-        box.style.display = 'block';
-        ico.textContent = icon; msgEl.textContent = msg;
-        if (link) {
-          lnkEl.href = link; lnkEl.textContent = link; lnkEl.style.display = 'block'; cpyEl.style.display =
-            'inline-block'; cpyEl.dataset.url = link;
+        setDeployStatus('⏳', existingSha ? 'Atualizando página…' : 'Publicando nova página…', null);
+
+        const body = {
+          message: (existingSha ? 'Atualiza' : 'Publica') + ' notícia: ' + data.titulo, content: b64, branch:
+            GH_BRANCH
+        };
+        if (existingSha) body.sha = existingSha;
+
+        await ghFetch(`/repos/${GH_OWNER}/${GH_REPO}/contents/${filePath}`, { method: 'PUT', body: JSON.stringify(body) });
+
+        setDeployStatus('✅', existingSha ? 'Página atualizada!' : 'Página publicada!', publicUrl);
+        document.getElementById('n-url').value = publicUrl;
+        toast(`✅ Publicado em ${publicUrl}`, 'success');
+
+        if (editingId.noticias) {
+          try { await sbUpdate('noticias', editingId.noticias, { url_externa: publicUrl }); } catch { }
         }
-        else { lnkEl.style.display = 'none'; cpyEl.style.display = 'none'; }
-      }
-
-      function copyDeployLink() {
-        const url = document.getElementById('ne-deploy-copy').dataset.url || '';
-        navigator.clipboard.writeText(url).then(() => toast('URL copiada!', 'success')).catch(() => toast('Não foi possível copiar.', 'error'));
-      }
-
-      async function publishToGithub(dataOverride) {
-        syncRteToHidden();
-        const data = dataOverride || getNoticiaData();
-        if (!data.titulo) { toast('Preencha o título antes de publicar.', 'error'); return; }
-        const token = getGhToken();
-        if (!token) {
-          toast('Configure o token do GitHub em Configurações.', 'error'); goTo('configuracoes',
-            document.querySelector('[onclick*=configuracoes]')); return;
-        }
-
-        const slug = data._slug || slugify(data.titulo) || ('noticia-' + Date.now());
-        const filePath = `noticias/${slug}.html`;
-        const publicUrl = `${GH_BASE_URL}/${filePath}`;
-        const html = buildNoticiaPageHTML(data);
-        const b64 = btoa(unescape(encodeURIComponent(html)));
-
-        setDeployStatus('⏳', 'Verificando arquivo no repositório…', null);
-
-        try {
-          let existingSha = null;
+        if (!editingId.noticias && data._dbData && data._dbData.titulo) {
           try {
-            const existing = await ghFetch(`/repos/${GH_OWNER}/${GH_REPO}/contents/${filePath}?ref=${GH_BRANCH}`);
-            existingSha = existing.sha;
-          } catch (e) { if (!e.message.includes('404') && !e.message.includes('Not Found')) throw e; }
-
-          setDeployStatus('⏳', existingSha ? 'Atualizando página…' : 'Publicando nova página…', null);
-
-          const body = {
-            message: (existingSha ? 'Atualiza' : 'Publica') + ' notícia: ' + data.titulo, content: b64, branch:
-              GH_BRANCH
-          };
-          if (existingSha) body.sha = existingSha;
-
-          await ghFetch(`/repos/${GH_OWNER}/${GH_REPO}/contents/${filePath}`, { method: 'PUT', body: JSON.stringify(body) });
-
-          setDeployStatus('✅', existingSha ? 'Página atualizada!' : 'Página publicada!', publicUrl);
-          document.getElementById('n-url').value = publicUrl;
-          toast(`✅ Publicado em ${publicUrl}`, 'success');
-
-          if (editingId.noticias) {
-            try { await sbUpdate('noticias', editingId.noticias, { url_externa: publicUrl }); } catch { }
-          }
-          if (!editingId.noticias && data._dbData && data._dbData.titulo) {
-            try {
-              const dbPayload = Object.assign({}, data._dbData, { url_externa: publicUrl });
-              const inserted = await sbInsert('noticias', dbPayload);
-              if (inserted && inserted[0]) { editingId.noticias = inserted[0].id; loadNoticias(); loadDashboard(); }
-            } catch { }
-          }
-          setTimeout(() => toast('ℹ️ GitHub Pages leva ~1 min para atualizar. A URL já está salva!', 'info'), 3000);
-          return publicUrl;
-        } catch (e) {
-          setDeployStatus('❌', 'Erro: ' + e.message, null);
-          toast('❌ Erro ao publicar: ' + e.message, 'error');
-          return null;
+            const dbPayload = Object.assign({}, data._dbData, { url_externa: publicUrl });
+            const inserted = await sbInsert('noticias', dbPayload);
+            if (inserted && inserted[0]) { editingId.noticias = inserted[0].id; loadNoticias(); loadDashboard(); }
+          } catch { }
         }
+        setTimeout(() => toast('ℹ️ GitHub Pages leva ~1 min para atualizar. A URL já está salva!', 'info'), 3000);
+        return publicUrl;
+      } catch (e) {
+        setDeployStatus('❌', 'Erro: ' + e.message, null);
+        toast('❌ Erro ao publicar: ' + e.message, 'error');
+        return null;
       }
+    }
 
 
-      /* ══════════════════════════════════════════
-      TEXTOS DO SITE – Editor i18n via Supabase
-      ══════════════════════════════════════════ */
+    /* ══════════════════════════════════════════
+    TEXTOS DO SITE – Editor i18n via Supabase
+    ══════════════════════════════════════════ */
 
-      // Textos padrão (fallback / restauração) – espelha o objeto translations do index
-      const TEXTOS_DEFAULT = {
-        pt: {
-          nav_inicio: 'Início', nav_sobre: 'Sobre', nav_noticias: 'Notícias',
-          nav_avisos: 'Avisos', nav_trabalhe: 'Trabalhe Conosco', nav_loja: 'Loja Virtual',
-          slide1_tag: 'Associação desde 1994', slide1_h1: 'Raízes profundas<br>na Amazônia',
-          slide1_p: 'Defendendo os direitos das comunidades ribeirinhas do Médio Juruá há mais de 30 anos.',
-          slide1_btn: 'Nossa história',
-          slide2_tag: 'Meio Ambiente', slide2_h1: 'Sanear a Amazônia,<br>proteger a vida',
-          slide2_p: 'Levando saneamento básico às comunidades e preservando o ecossistema amazônico.',
-          slide2_btn: 'Ver projeto',
-          slide3_tag: 'Pesca Sustentável', slide3_h1: 'Manejo do Pirarucu<br>no Médio Juruá',
-          slide3_p: 'Referência nacional no manejo sustentável do maior peixe de escamas da Amazônia.',
-          slide3_btn: 'Saiba mais',
-          scroll_text: 'Role',
-          sobre_label: 'Nossa Missão', sobre_title: 'Vozes das <span>comunidades</span> ribeirinhas',
-          sobre_desc: 'A ASPROC representa e apoia os produtores agroextrativistas, pescadores e ribeirinhos do Médio Juruá, promovendo desenvolvimento sustentável, geração de renda e defesa dos territórios tradicionais da Amazônia.',
-          badge_sustentavel: 'Desenvolvimento Sustentável', badge_direitos: 'Defesa de Direitos',
-          badge_manejo: 'Manejo Sustentável', badge_comunidades: '64 Comunidades', anos_txt: 'anos',
-          pira_label: 'Projeto Principal', pira_title: 'Manejo do <span style="color:#7fd4f5">Pirarucu</span>',
-          pira_desc: 'O maior peixe de escamas do mundo gerenciado pelas próprias comunidades.',
-          pira_stat1: 'Peixe manejado/ano', pira_stat2: 'Lagos monitorados', pira_stat3: 'Início do projeto',
-          pira_btn: 'Conhecer o projeto →',
-          acoes_label: 'O Que Fazemos', acoes_title: 'Nossas <span>Ações</span>',
-          acoes_desc: 'Trabalhamos em frentes complementares para fortalecer as comunidades ribeirinhas do Médio Juruá.',
-          card1_tag: 'Economia', card1_title: 'Comércio Ribeirinho',
-          card1_desc: 'Fortalecemos a cadeia produtiva local conectando produtores ao mercado.',
-          card2_tag: 'Saneamento', card2_title: 'Projeto Sanear Amazônia',
-          card2_desc: 'Levando água tratada e saneamento às comunidades ribeirinhas.',
-          card3_tag: 'Biodiversidade', card3_title: 'Manejo do Pirarucu',
-          card3_desc: 'Referência nacional em gestão comunitária de recursos pesqueiros.',
-          card4_tag: 'Política', card4_title: 'Acesso a Políticas Públicas',
-          card4_desc: 'Garantindo programas Federais e Estaduais para os agroextrativistas.',
-          saiba_mais: 'Saiba mais →',
-          numeros_label: 'Nosso Impacto', numeros_title: 'Nossos <span>Números</span>',
-          numeros_title_short: 'Números',
-          numeros_desc: 'Nossos números comprovam a importância da ASPROC na vida dos trabalhadores.',
-          num1_label: 'Associados', num2_label: 'Comunidades ribeirinhas',
-          num3_label: 'Pessoas beneficiadas', num4_label: 'Famílias beneficiadas',
-          vagas_label: 'Trabalhe Conosco', vagas_title: 'Vagas em <span>Aberto</span>',
-          vagas_desc: 'A ASPROC está com processos seletivos abertos. Clique na imagem para ver os detalhes.',
-          noticias_label: 'Fique por Dentro', noticias_title: 'Últimas <span>Notícias</span>',
-          ver_todas: 'Ver todas as notícias →',
-          noticia1_title: 'III Encontro da Cadeia Produtiva de Oleaginosas do Médio Juruá',
-          noticia2_title: 'Resultados do Sistema Agroflorestal Biodiverso nas Comunidades',
-          noticia3_title: 'Fortalecimento do Comércio Ribeirinho no Médio Juruá',
-          loja_label: 'Produtos da Amazônia', loja_title: 'Produtos direto da <span style="color:var(--dourado)">floresta</span>',
-          loja_desc: 'Adquira produtos agroextrativistas sustentáveis das comunidades ribeirinhas.',
-          loja_btn: '🛒 Visitar a Loja',
-          video_label: 'Quem Somos', video_title: 'Assista ao nosso <span>documentário</span>',
-          video_desc: 'Conheça a realidade das comunidades do Médio Juruá e o trabalho transformador da ASPROC.',
-          footer_desc: 'Associação dos Produtores Rurais de Carauari. Defendendo os direitos das comunidades tradicionais do Médio Juruá desde 1994.',
-          footer_nav: 'Navegação', footer_acoes: 'Nossas Ações', footer_projetos: 'Projetos', footer_contato: 'Contato',
-          footer_copy: '© 2025 ASPROC – Associação dos Produtores Rurais de Carauari. Todos os direitos reservados.',
-          popup_candidatar: 'Candidatar-se', popup_fechar: 'Fechar'
-        },
-        en: {
-          nav_inicio: 'Home', nav_sobre: 'About', nav_noticias: 'News',
-          nav_avisos: 'Notices', nav_trabalhe: 'Work With Us', nav_loja: 'Online Store',
-          slide1_tag: 'Association since 1994', slide1_h1: 'Deep roots<br>in the Amazon',
-          slide1_p: 'Defending the rights of riverside communities in the Middle Juruá for over 30 years.',
-          slide1_btn: 'Our story',
-          slide2_tag: 'Environment', slide2_h1: 'Sanitate the Amazon,<br>protect life',
-          slide2_p: 'Bringing basic sanitation to communities and preserving the Amazonian ecosystem.',
-          slide2_btn: 'See project',
-          slide3_tag: 'Sustainable Fishing', slide3_h1: 'Pirarucu Management<br>in the Middle Juruá',
-          slide3_p: "National reference in sustainable management of the Amazon's largest scaled fish.", slide3_btn: 'Learn more',
-          scroll_text: 'Scroll',
-          sobre_label: 'Our Mission', sobre_title: 'Voices of the <span>riverside</span> communities',
-          sobre_desc: "ASPROC represents and supports agroextractivist producers, fishermen and riverside communities of the Middle Juruá, promoting sustainable development and defending traditional Amazonian territories.",
-          badge_sustentavel: 'Sustainable Development', badge_direitos: 'Rights Defense',
-          badge_manejo: 'Sustainable Management', badge_comunidades: '64 Communities', anos_txt: 'years',
-          pira_label: 'Main Project', pira_title: 'Pirarucu <span style="color:#7fd4f5">Management</span>',
-          pira_desc: "The world's largest scaled fish managed by the communities themselves.", pira_stat1: 'Fish managed/year', pira_stat2: 'Monitored lakes', pira_stat3: 'Project start',
-          pira_btn: 'Learn about the project →',
-          acoes_label: 'What We Do', acoes_title: 'Our <span>Actions</span>',
-          acoes_desc: 'We work on complementary fronts to strengthen riverside communities.',
-          card1_tag: 'Economy', card1_title: 'Riverside Trade',
-          card1_desc: 'We strengthen the local production chain connecting producers to markets.',
-          card2_tag: 'Sanitation', card2_title: 'Sanitate Amazon Project',
-          card2_desc: 'Bringing treated water and sanitation to riverside communities.',
-          card3_tag: 'Biodiversity', card3_title: 'Pirarucu Management',
-          card3_desc: 'National reference in community-based fishery resource management.',
-          card4_tag: 'Policy', card4_title: 'Access to Public Policies',
-          card4_desc: 'Ensuring Federal and State programs for agroextractivists.',
-          saiba_mais: 'Learn more →',
-          numeros_label: 'Our Impact', numeros_title: 'Our <span>Numbers</span>',
-          numeros_title_short: 'Numbers',
-          numeros_desc: "Our numbers prove ASPROC's importance in the lives of agroextractivist workers.", num1_label: 'Members', num2_label: 'Riverside communities',
-          num3_label: 'People benefited', num4_label: 'Families benefited',
-          vagas_label: 'Work With Us', vagas_title: 'Open <span>Positions</span>',
-          vagas_desc: 'ASPROC has open selection processes. Click on the image for details.',
-          noticias_label: 'Stay Updated', noticias_title: 'Latest <span>News</span>',
-          ver_todas: 'See all news →',
-          noticia1_title: '3rd Meeting of the Oilseed Production Chain of the Middle Juruá',
-          noticia2_title: 'Results of the Biodiverse Agroforestry System in Communities',
-          noticia3_title: 'Strengthening Riverside Trade in the Middle Juruá',
-          loja_label: 'Amazon Products', loja_title: 'Products straight from the <span style="color:var(--dourado)" > forest</span> ',
-          loja_desc: 'Buy sustainable agroextractivist products from riverside communities.',
-          loja_btn: '🛒 Visit the Store',
-          video_label: 'Who We Are', video_title: 'Watch our <span>documentary</span>',
-          video_desc: "Get to know the reality of Middle Juruá communities and ASPROC's transformative work.", footer_desc: 'Association of Rural Producers of Carauari. Defending the rights of traditional communities of the Middle Juruá since 1994.', footer_nav: 'Navigation', footer_acoes: 'Our Actions', footer_projetos: 'Projects', footer_contato: 'Contact',
-          footer_copy: '© 2025 ASPROC – Association of Rural Producers of Carauari. All rights reserved.',
-          popup_candidatar: 'Apply Now', popup_fechar: 'Close'
-        },
-        es: {
-          nav_inicio: 'Inicio', nav_sobre: 'Sobre', nav_noticias: 'Noticias',
-          nav_avisos: 'Avisos', nav_trabalhe: 'Trabaja Con Nosotros', nav_loja: 'Tienda Virtual',
-          slide1_tag: 'Asociación desde 1994', slide1_h1: 'Raíces profundas<br>en la Amazonia',
-          slide1_p: 'Defendiendo los derechos de las comunidades ribereñas del Medio Juruá por más de 30 años.',
-          slide1_btn: 'Conoce nuestra historia',
-          slide2_tag: 'Medio Ambiente', slide2_h1: 'Sanear la Amazonia,<br>proteger la vida',
-          slide2_p: 'Llevando saneamiento básico a las comunidades y preservando el ecosistema amazónico.',
-          slide2_btn: 'Ver proyecto',
-          slide3_tag: 'Pesca Sostenible', slide3_h1: 'Manejo del Paiche<br>en el Medio Juruá',
-          slide3_p: 'Referencia nacional en manejo sostenible del mayor pez de escamas de la Amazonia.',
-          slide3_btn: 'Saber más',
-          scroll_text: 'Desplazar',
-          sobre_label: 'Nuestra Misión', sobre_title: 'Voces de las <span>comunidades</span> ribereñas',
-          sobre_desc: 'ASPROC representa y apoya a productores agroextractivos, pescadores y ribereños del Medio Juruá, promoviendo el desarrollo sostenible y la defensa de los territorios tradicionales amazónicos.',
-          badge_sustentavel: 'Desarrollo Sostenible', badge_direitos: 'Defensa de Derechos',
-          badge_manejo: 'Manejo Sostenible', badge_comunidades: '64 Comunidades', anos_txt: 'años',
-          pira_label: 'Proyecto Principal', pira_title: 'Manejo del <span style="color:#7fd4f5">Paiche</span>',
-          pira_desc: 'El mayor pez de escamas del mundo gestionado por las propias comunidades.',
-          pira_stat1: 'Pez manejado/año', pira_stat2: 'Lagos monitoreados', pira_stat3: 'Inicio del proyecto',
-          pira_btn: 'Conocer el proyecto →',
-          acoes_label: 'Lo Que Hacemos', acoes_title: 'Nuestras <span>Acciones</span>',
-          acoes_desc: 'Trabajamos en frentes complementarios para fortalecer las comunidades ribereñas.',
-          card1_tag: 'Economía', card1_title: 'Comercio Ribereño',
-          card1_desc: 'Fortalecemos la cadena productiva local conectando productores al mercado.',
-          card2_tag: 'Saneamiento', card2_title: 'Proyecto Sanear Amazonia',
-          card2_desc: 'Llevando agua tratada y saneamiento a las comunidades ribereñas.',
-          card3_tag: 'Biodiversidad', card3_title: 'Manejo del Paiche',
-          card3_desc: 'Referencia nacional en gestión comunitaria de recursos pesqueros.',
-          card4_tag: 'Política', card4_title: 'Acceso a Políticas Públicas',
-          card4_desc: 'Garantizando programas Federales y Estatales para los agroextractivos.',
-          saiba_mais: 'Saber más →',
-          numeros_label: 'Nuestro Impacto', numeros_title: 'Nuestros <span>Números</span>',
-          numeros_title_short: 'Números',
-          numeros_desc: 'Nuestros números comprueban la importancia de ASPROC en la vida de los trabajadores.',
-          num1_label: 'Asociados', num2_label: 'Comunidades ribereñas',
-          num3_label: 'Personas beneficiadas', num4_label: 'Familias beneficiadas',
-          vagas_label: 'Trabaja Con Nosotros', vagas_title: 'Vacantes <span>Abiertas</span>',
-          vagas_desc: 'ASPROC tiene procesos de selección abiertos. Haz clic en la imagen para ver los detalles.',
-          noticias_label: 'Mantente Informado', noticias_title: 'Últimas <span>Noticias</span>',
-          ver_todas: 'Ver todas las noticias →',
-          noticia1_title: 'III Encuentro de la Cadena Productiva de Oleaginosas del Medio Juruá',
-          noticia2_title: 'Resultados del Sistema Agroforestal Biodiverso en las Comunidades',
-          noticia3_title: 'Fortalecimiento del Comercio Ribereño en el Medio Juruá',
-          loja_label: 'Productos de la Amazonia', loja_title: 'Productos directos del <span style = "color:var(--dourado)" > bosque</span > ',
-          loja_desc: 'Compra productos agroextractivos sostenibles de las comunidades ribereñas.',
-          loja_btn: '🛒 Visitar la Tienda',
-          video_label: 'Quiénes Somos', video_title: 'Mira nuestro <span>documental</span>',
-          video_desc: 'Conoce la realidad de las comunidades del Medio Juruá y el trabajo transformador de ASPROC.',
-          footer_desc: 'Asociación de Productores Rurales de Carauari. Defendiendo los derechos de las comunidades tradicionales del Medio Juruá desde 1994.',
-          footer_nav: 'Navegación', footer_acoes: 'Nuestras Acciones', footer_projetos: 'Proyectos', footer_contato: 'Contacto',
-          footer_copy: '© 2025 ASPROC – Asociación de Productores Rurales de Carauari. Todos los derechos reservados.',
-          popup_candidatar: 'Postularse', popup_fechar: 'Cerrar'
-        }
-      };
-
-      // Grupos de campos para organização visual no editor
-      const TEXTOS_GRUPOS = [
-        {
-          id: 'nav', label: '🗺️ Navegação', chaves: ['nav_inicio', 'nav_sobre', 'nav_noticias', 'nav_avisos', 'nav_trabalhe',
-            'nav_loja']
-        },
-        { id: 'slide1', label: '🖼️ Slide 1 – Raízes', chaves: ['slide1_tag', 'slide1_h1', 'slide1_p', 'slide1_btn'] },
-        { id: 'slide2', label: '🖼️ Slide 2 – Sanear', chaves: ['slide2_tag', 'slide2_h1', 'slide2_p', 'slide2_btn'] },
-        { id: 'slide3', label: '🖼️ Slide 3 – Pirarucu', chaves: ['slide3_tag', 'slide3_h1', 'slide3_p', 'slide3_btn'] },
-        {
-          id: 'sobre', label: '🌿 Seção Sobre', chaves: ['sobre_label', 'sobre_title', 'sobre_desc', 'badge_sustentavel',
-            'badge_direitos', 'badge_manejo', 'badge_comunidades', 'anos_txt']
-        },
-        {
-          id: 'pirarucu', label: '🐟 Seção Pirarucu', chaves: ['pira_label', 'pira_title', 'pira_desc', 'pira_stat1',
-            'pira_stat2', 'pira_stat3', 'pira_btn']
-        },
-        {
-          id: 'acoes', label: '⚡ Seção Ações', chaves: ['acoes_label', 'acoes_title', 'acoes_desc', 'card1_tag', 'card1_title',
-            'card1_desc', 'card2_tag', 'card2_title', 'card2_desc', 'card3_tag', 'card3_title', 'card3_desc', 'card4_tag',
-            'card4_title', 'card4_desc', 'saiba_mais']
-        },
-        {
-          id: 'numeros', label: '📊 Seção Números', chaves: ['numeros_label', 'numeros_title', 'numeros_title_short',
-            'numeros_desc', 'num1_label', 'num2_label', 'num3_label', 'num4_label']
-        },
-        { id: 'vagas', label: '💼 Seção Vagas', chaves: ['vagas_label', 'vagas_title', 'vagas_desc'] },
-        {
-          id: 'noticias', label: '📰 Seção Notícias', chaves: ['noticias_label', 'noticias_title', 'ver_todas',
-            'noticia1_title', 'noticia2_title', 'noticia3_title']
-        },
-        { id: 'loja', label: '🛒 Seção Loja', chaves: ['loja_label', 'loja_title', 'loja_desc', 'loja_btn'] },
-        { id: 'video', label: '🎬 Seção Vídeo', chaves: ['video_label', 'video_title', 'video_desc'] },
-        {
-          id: 'footer', label: '📄 Rodapé', chaves: ['footer_desc', 'footer_nav', 'footer_acoes', 'footer_projetos',
-            'footer_contato', 'footer_copy']
-        },
-        { id: 'popup', label: '🪟 Pop-ups', chaves: ['popup_candidatar', 'popup_fechar', 'scroll_text'] },
-      ];
-
-      // Rótulos amigáveis para cada chave
-      const TEXTOS_LABELS = {
-        nav_inicio: 'Menu: Início', nav_sobre: 'Menu: Sobre', nav_noticias: 'Menu: Notícias',
-        nav_avisos: 'Menu: Avisos', nav_trabalhe: 'Menu: Trabalhe Conosco', nav_loja: 'Menu: Loja',
-        slide1_tag: 'Tag do slide', slide1_h1: 'Título principal (HTML ok)', slide1_p: 'Parágrafo', slide1_btn: 'Botão',
-        slide2_tag: 'Tag do slide', slide2_h1: 'Título principal (HTML ok)', slide2_p: 'Parágrafo', slide2_btn: 'Botão',
-        slide3_tag: 'Tag do slide', slide3_h1: 'Título principal (HTML ok)', slide3_p: 'Parágrafo', slide3_btn: 'Botão',
-        scroll_text: 'Texto "Role" / Scroll',
-        sobre_label: 'Label da seção', sobre_title: 'Título (HTML ok)', sobre_desc: 'Descrição longa',
-        badge_sustentavel: 'Badge: Sustentável', badge_direitos: 'Badge: Direitos', badge_manejo: 'Badge: Manejo',
-        badge_comunidades: 'Badge: Comunidades', anos_txt: 'Texto "anos"',
-        pira_label: 'Label da seção', pira_title: 'Título (HTML ok)', pira_desc: 'Descrição',
-        pira_stat1: 'Estatística 1', pira_stat2: 'Estatística 2', pira_stat3: 'Estatística 3', pira_btn: 'Botão',
-        acoes_label: 'Label da seção', acoes_title: 'Título (HTML ok)', acoes_desc: 'Descrição',
-        card1_tag: 'Card 1: Tag', card1_title: 'Card 1: Título', card1_desc: 'Card 1: Descrição',
-        card2_tag: 'Card 2: Tag', card2_title: 'Card 2: Título', card2_desc: 'Card 2: Descrição',
-        card3_tag: 'Card 3: Tag', card3_title: 'Card 3: Título', card3_desc: 'Card 3: Descrição',
-        card4_tag: 'Card 4: Tag', card4_title: 'Card 4: Título', card4_desc: 'Card 4: Descrição',
-        saiba_mais: 'Texto "Saiba mais"',
-        numeros_label: 'Label da seção', numeros_title: 'Título (HTML ok)', numeros_title_short: 'Título curto', numeros_desc:
-          'Descrição',
-        num1_label: 'Número 1: label', num2_label: 'Número 2: label', num3_label: 'Número 3: label', num4_label: 'Número 4: label',
-        vagas_label: 'Label da seção', vagas_title: 'Título (HTML ok)', vagas_desc: 'Descrição',
-        noticias_label: 'Label da seção', noticias_title: 'Título (HTML ok)', ver_todas: 'Link "Ver todas"',
-        noticia1_title: 'Notícia 1: Título', noticia2_title: 'Notícia 2: Título', noticia3_title: 'Notícia 3: Título',
-        loja_label: 'Label da seção', loja_title: 'Título (HTML ok)', loja_desc: 'Descrição', loja_btn: 'Botão',
-        video_label: 'Label da seção', video_title: 'Título (HTML ok)', video_desc: 'Descrição',
-        footer_desc: 'Descrição do rodapé', footer_nav: 'Col: Navegação', footer_acoes: 'Col: Ações', footer_projetos: 'Col: Projetos', footer_contato: 'Col: Contato', footer_copy: 'Copyright',
-        popup_candidatar: 'Botão candidatar', popup_fechar: 'Botão fechar'
-      };
-
-      // Determina se o campo deve usar textarea (textos longos) ou input
-      const TEXTOS_TEXTAREA = new Set(['slide1_p', 'slide2_p', 'slide3_p', 'sobre_desc', 'pira_desc', 'acoes_desc',
-        'numeros_desc', 'vagas_desc', 'video_desc', 'footer_desc', 'noticia1_title', 'noticia2_title', 'noticia3_title']);
-      const TEXTOS_FULLWIDTH = new Set(['slide1_h1', 'slide2_h1', 'slide3_h1', 'sobre_title', 'sobre_desc', 'pira_title',
-        'pira_desc', 'acoes_title', 'acoes_desc', 'numeros_title', 'numeros_desc', 'vagas_title', 'vagas_desc',
-        'noticias_title', 'loja_title', 'loja_desc', 'video_title', 'video_desc', 'footer_desc', 'footer_copy']);
-
-      let textosLangAtual = 'pt';
-      let textosCarregados = {}; // {pt:{chave:valor}, en:{}, es:{}}
-
-      function switchTextosLang(lang, btn) {
-        textosLangAtual = lang;
-        document.querySelectorAll('.textos-lang-tab').forEach(b => b.classList.remove('active'));
-        if (btn) btn.classList.add('active');
-        renderTextosEditor();
+    // Textos padrão (fallback / restauração) – espelha o objeto translations do index
+    const TEXTOS_DEFAULT = {
+      pt: {
+        nav_inicio: 'Início', nav_sobre: 'Sobre', nav_noticias: 'Notícias',
+        nav_avisos: 'Avisos', nav_trabalhe: 'Trabalhe Conosco', nav_loja: 'Loja Virtual',
+        slide1_tag: 'Associação desde 1994', slide1_h1: 'Raízes profundas<br>na Amazônia',
+        slide1_p: 'Defendendo os direitos das comunidades ribeirinhas do Médio Juruá há mais de 30 anos.',
+        slide1_btn: 'Nossa história',
+        slide2_tag: 'Meio Ambiente', slide2_h1: 'Sanear a Amazônia,<br>proteger a vida',
+        slide2_p: 'Levando saneamento básico às comunidades e preservando o ecossistema amazônico.',
+        slide2_btn: 'Ver projeto',
+        slide3_tag: 'Pesca Sustentável', slide3_h1: 'Manejo do Pirarucu<br>no Médio Juruá',
+        slide3_p: 'Referência nacional no manejo sustentável do maior peixe de escamas da Amazônia.',
+        slide3_btn: 'Saiba mais',
+        scroll_text: 'Role',
+        sobre_label: 'Nossa Missão', sobre_title: 'Vozes das <span>comunidades</span> ribeirinhas',
+        sobre_desc: 'A ASPROC representa e apoia os produtores agroextrativistas, pescadores e ribeirinhos do Médio Juruá, promovendo desenvolvimento sustentável, geração de renda e defesa dos territórios tradicionais da Amazônia.',
+        badge_sustentavel: 'Desenvolvimento Sustentável', badge_direitos: 'Defesa de Direitos',
+        badge_manejo: 'Manejo Sustentável', badge_comunidades: '64 Comunidades', anos_txt: 'anos',
+        pira_label: 'Projeto Principal', pira_title: 'Manejo do <span style="color:#7fd4f5">Pirarucu</span>',
+        pira_desc: 'O maior peixe de escamas do mundo gerenciado pelas próprias comunidades.',
+        pira_stat1: 'Peixe manejado/ano', pira_stat2: 'Lagos monitorados', pira_stat3: 'Início do projeto',
+        pira_btn: 'Conhecer o projeto →',
+        acoes_label: 'O Que Fazemos', acoes_title: 'Nossas <span>Ações</span>',
+        acoes_desc: 'Trabalhamos em frentes complementares para fortalecer as comunidades ribeirinhas do Médio Juruá.',
+        card1_tag: 'Economia', card1_title: 'Comércio Ribeirinho',
+        card1_desc: 'Fortalecemos a cadeia produtiva local conectando produtores ao mercado.',
+        card2_tag: 'Saneamento', card2_title: 'Projeto Sanear Amazônia',
+        card2_desc: 'Levando água tratada e saneamento às comunidades ribeirinhas.',
+        card3_tag: 'Biodiversidade', card3_title: 'Manejo do Pirarucu',
+        card3_desc: 'Referência nacional em gestão comunitária de recursos pesqueiros.',
+        card4_tag: 'Política', card4_title: 'Acesso a Políticas Públicas',
+        card4_desc: 'Garantindo programas Federais e Estaduais para os agroextrativistas.',
+        saiba_mais: 'Saiba mais →',
+        numeros_label: 'Nosso Impacto', numeros_title: 'Nossos <span>Números</span>',
+        numeros_title_short: 'Números',
+        numeros_desc: 'Nossos números comprovam a importância da ASPROC na vida dos trabalhadores.',
+        num1_label: 'Associados', num2_label: 'Comunidades ribeirinhas',
+        num3_label: 'Pessoas beneficiadas', num4_label: 'Famílias beneficiadas',
+        vagas_label: 'Trabalhe Conosco', vagas_title: 'Vagas em <span>Aberto</span>',
+        vagas_desc: 'A ASPROC está com processos seletivos abertos. Clique na imagem para ver os detalhes.',
+        noticias_label: 'Fique por Dentro', noticias_title: 'Últimas <span>Notícias</span>',
+        ver_todas: 'Ver todas as notícias →',
+        noticia1_title: 'III Encontro da Cadeia Produtiva de Oleaginosas do Médio Juruá',
+        noticia2_title: 'Resultados do Sistema Agroflorestal Biodiverso nas Comunidades',
+        noticia3_title: 'Fortalecimento do Comércio Ribeirinho no Médio Juruá',
+        loja_label: 'Produtos da Amazônia', loja_title: 'Produtos direto da <span style="color:var(--dourado)">floresta</span>',
+        loja_desc: 'Adquira produtos agroextrativistas sustentáveis das comunidades ribeirinhas.',
+        loja_btn: '🛒 Visitar a Loja',
+        video_label: 'Quem Somos', video_title: 'Assista ao nosso <span>documentário</span>',
+        video_desc: 'Conheça a realidade das comunidades do Médio Juruá e o trabalho transformador da ASPROC.',
+        footer_desc: 'Associação dos Produtores Rurais de Carauari. Defendendo os direitos das comunidades tradicionais do Médio Juruá desde 1994.',
+        footer_nav: 'Navegação', footer_acoes: 'Nossas Ações', footer_projetos: 'Projetos', footer_contato: 'Contato',
+        footer_copy: '© 2025 ASPROC – Associação dos Produtores Rurais de Carauari. Todos os direitos reservados.',
+        popup_candidatar: 'Candidatar-se', popup_fechar: 'Fechar'
+      },
+      en: {
+        nav_inicio: 'Home', nav_sobre: 'About', nav_noticias: 'News',
+        nav_avisos: 'Notices', nav_trabalhe: 'Work With Us', nav_loja: 'Online Store',
+        slide1_tag: 'Association since 1994', slide1_h1: 'Deep roots<br>in the Amazon',
+        slide1_p: 'Defending the rights of riverside communities in the Middle Juruá for over 30 years.',
+        slide1_btn: 'Our story',
+        slide2_tag: 'Environment', slide2_h1: 'Sanitate the Amazon,<br>protect life',
+        slide2_p: 'Bringing basic sanitation to communities and preserving the Amazonian ecosystem.',
+        slide2_btn: 'See project',
+        slide3_tag: 'Sustainable Fishing', slide3_h1: 'Pirarucu Management<br>in the Middle Juruá',
+        slide3_p: "National reference in sustainable management of the Amazon's largest scaled fish.", slide3_btn: 'Learn more',
+        scroll_text: 'Scroll',
+        sobre_label: 'Our Mission', sobre_title: 'Voices of the <span>riverside</span> communities',
+        sobre_desc: "ASPROC represents and supports agroextractivist producers, fishermen and riverside communities of the Middle Juruá, promoting sustainable development and defending traditional Amazonian territories.",
+        badge_sustentavel: 'Sustainable Development', badge_direitos: 'Rights Defense',
+        badge_manejo: 'Sustainable Management', badge_comunidades: '64 Communities', anos_txt: 'years',
+        pira_label: 'Main Project', pira_title: 'Pirarucu <span style="color:#7fd4f5">Management</span>',
+        pira_desc: "The world's largest scaled fish managed by the communities themselves.", pira_stat1: 'Fish managed/year', pira_stat2: 'Monitored lakes', pira_stat3: 'Project start',
+        pira_btn: 'Learn about the project →',
+        acoes_label: 'What We Do', acoes_title: 'Our <span>Actions</span>',
+        acoes_desc: 'We work on complementary fronts to strengthen riverside communities.',
+        card1_tag: 'Economy', card1_title: 'Riverside Trade',
+        card1_desc: 'We strengthen the local production chain connecting producers to markets.',
+        card2_tag: 'Sanitation', card2_title: 'Sanitate Amazon Project',
+        card2_desc: 'Bringing treated water and sanitation to riverside communities.',
+        card3_tag: 'Biodiversity', card3_title: 'Pirarucu Management',
+        card3_desc: 'National reference in community-based fishery resource management.',
+        card4_tag: 'Policy', card4_title: 'Access to Public Policies',
+        card4_desc: 'Ensuring Federal and State programs for agroextractivists.',
+        saiba_mais: 'Learn more →',
+        numeros_label: 'Our Impact', numeros_title: 'Our <span>Numbers</span>',
+        numeros_title_short: 'Numbers',
+        numeros_desc: "Our numbers prove ASPROC's importance in the lives of agroextractivist workers.", num1_label: 'Members', num2_label: 'Riverside communities',
+        num3_label: 'People benefited', num4_label: 'Families benefited',
+        vagas_label: 'Work With Us', vagas_title: 'Open <span>Positions</span>',
+        vagas_desc: 'ASPROC has open selection processes. Click on the image for details.',
+        noticias_label: 'Stay Updated', noticias_title: 'Latest <span>News</span>',
+        ver_todas: 'See all news →',
+        noticia1_title: '3rd Meeting of the Oilseed Production Chain of the Middle Juruá',
+        noticia2_title: 'Results of the Biodiverse Agroforestry System in Communities',
+        noticia3_title: 'Strengthening Riverside Trade in the Middle Juruá',
+        loja_label: 'Amazon Products', loja_title: 'Products straight from the <span style="color:var(--dourado)" > forest</span> ',
+        loja_desc: 'Buy sustainable agroextractivist products from riverside communities.',
+        loja_btn: '🛒 Visit the Store',
+        video_label: 'Who We Are', video_title: 'Watch our <span>documentary</span>',
+        video_desc: "Get to know the reality of Middle Juruá communities and ASPROC's transformative work.", footer_desc: 'Association of Rural Producers of Carauari. Defending the rights of traditional communities of the Middle Juruá since 1994.', footer_nav: 'Navigation', footer_acoes: 'Our Actions', footer_projetos: 'Projects', footer_contato: 'Contact',
+        footer_copy: '© 2025 ASPROC – Association of Rural Producers of Carauari. All rights reserved.',
+        popup_candidatar: 'Apply Now', popup_fechar: 'Close'
+      },
+      es: {
+        nav_inicio: 'Inicio', nav_sobre: 'Sobre', nav_noticias: 'Noticias',
+        nav_avisos: 'Avisos', nav_trabalhe: 'Trabaja Con Nosotros', nav_loja: 'Tienda Virtual',
+        slide1_tag: 'Asociación desde 1994', slide1_h1: 'Raíces profundas<br>en la Amazonia',
+        slide1_p: 'Defendiendo los derechos de las comunidades ribereñas del Medio Juruá por más de 30 años.',
+        slide1_btn: 'Conoce nuestra historia',
+        slide2_tag: 'Medio Ambiente', slide2_h1: 'Sanear la Amazonia,<br>proteger la vida',
+        slide2_p: 'Llevando saneamiento básico a las comunidades y preservando el ecosistema amazónico.',
+        slide2_btn: 'Ver proyecto',
+        slide3_tag: 'Pesca Sostenible', slide3_h1: 'Manejo del Paiche<br>en el Medio Juruá',
+        slide3_p: 'Referencia nacional en manejo sostenible del mayor pez de escamas de la Amazonia.',
+        slide3_btn: 'Saber más',
+        scroll_text: 'Desplazar',
+        sobre_label: 'Nuestra Misión', sobre_title: 'Voces de las <span>comunidades</span> ribereñas',
+        sobre_desc: 'ASPROC representa y apoya a productores agroextractivos, pescadores y ribereños del Medio Juruá, promoviendo el desarrollo sostenible y la defensa de los territorios tradicionales amazónicos.',
+        badge_sustentavel: 'Desarrollo Sostenible', badge_direitos: 'Defensa de Derechos',
+        badge_manejo: 'Manejo Sostenible', badge_comunidades: '64 Comunidades', anos_txt: 'años',
+        pira_label: 'Proyecto Principal', pira_title: 'Manejo del <span style="color:#7fd4f5">Paiche</span>',
+        pira_desc: 'El mayor pez de escamas del mundo gestionado por las propias comunidades.',
+        pira_stat1: 'Pez manejado/año', pira_stat2: 'Lagos monitoreados', pira_stat3: 'Inicio del proyecto',
+        pira_btn: 'Conocer el proyecto →',
+        acoes_label: 'Lo Que Hacemos', acoes_title: 'Nuestras <span>Acciones</span>',
+        acoes_desc: 'Trabajamos en frentes complementarios para fortalecer las comunidades ribereñas.',
+        card1_tag: 'Economía', card1_title: 'Comercio Ribereño',
+        card1_desc: 'Fortalecemos la cadena productiva local conectando productores al mercado.',
+        card2_tag: 'Saneamiento', card2_title: 'Proyecto Sanear Amazonia',
+        card2_desc: 'Llevando agua tratada y saneamiento a las comunidades ribereñas.',
+        card3_tag: 'Biodiversidad', card3_title: 'Manejo del Paiche',
+        card3_desc: 'Referencia nacional en gestión comunitaria de recursos pesqueros.',
+        card4_tag: 'Política', card4_title: 'Acceso a Políticas Públicas',
+        card4_desc: 'Garantizando programas Federales y Estatales para los agroextractivos.',
+        saiba_mais: 'Saber más →',
+        numeros_label: 'Nuestro Impacto', numeros_title: 'Nuestros <span>Números</span>',
+        numeros_title_short: 'Números',
+        numeros_desc: 'Nuestros números comprueban la importancia de ASPROC en la vida de los trabajadores.',
+        num1_label: 'Asociados', num2_label: 'Comunidades ribereñas',
+        num3_label: 'Personas beneficiadas', num4_label: 'Familias beneficiadas',
+        vagas_label: 'Trabaja Con Nosotros', vagas_title: 'Vacantes <span>Abiertas</span>',
+        vagas_desc: 'ASPROC tiene procesos de selección abiertos. Haz clic en la imagen para ver los detalles.',
+        noticias_label: 'Mantente Informado', noticias_title: 'Últimas <span>Noticias</span>',
+        ver_todas: 'Ver todas las noticias →',
+        noticia1_title: 'III Encuentro de la Cadena Productiva de Oleaginosas del Medio Juruá',
+        noticia2_title: 'Resultados del Sistema Agroforestal Biodiverso en las Comunidades',
+        noticia3_title: 'Fortalecimiento del Comercio Ribereño en el Medio Juruá',
+        loja_label: 'Productos de la Amazonia', loja_title: 'Productos directos del <span style = "color:var(--dourado)" > bosque</span > ',
+        loja_desc: 'Compra productos agroextractivos sostenibles de las comunidades ribereñas.',
+        loja_btn: '🛒 Visitar la Tienda',
+        video_label: 'Quiénes Somos', video_title: 'Mira nuestro <span>documental</span>',
+        video_desc: 'Conoce la realidad de las comunidades del Medio Juruá y el trabajo transformador de ASPROC.',
+        footer_desc: 'Asociación de Productores Rurales de Carauari. Defendiendo los derechos de las comunidades tradicionales del Medio Juruá desde 1994.',
+        footer_nav: 'Navegación', footer_acoes: 'Nuestras Acciones', footer_projetos: 'Proyectos', footer_contato: 'Contacto',
+        footer_copy: '© 2025 ASPROC – Asociación de Productores Rurales de Carauari. Todos los derechos reservados.',
+        popup_candidatar: 'Postularse', popup_fechar: 'Cerrar'
       }
+    };
 
-      async function loadTextos() {
-        document.getElementById('textos-loading').style.display = 'flex';
-        document.getElementById('textos-editor').style.display = 'none';
-        textosCarregados = { pt: {}, en: {}, es: {} };
-        try {
-          const rows = await sbSelect('site_textos', 'select=lang,chave,valor');
-          (rows || []).forEach(({ lang, chave, valor }) => {
+    // Grupos de campos para organização visual no editor
+    const TEXTOS_GRUPOS = [
+      {
+        id: 'nav', label: '🗺️ Navegação', chaves: ['nav_inicio', 'nav_sobre', 'nav_noticias', 'nav_avisos', 'nav_trabalhe',
+          'nav_loja']
+      },
+      { id: 'slide1', label: '🖼️ Slide 1 – Raízes', chaves: ['slide1_tag', 'slide1_h1', 'slide1_p', 'slide1_btn'] },
+      { id: 'slide2', label: '🖼️ Slide 2 – Sanear', chaves: ['slide2_tag', 'slide2_h1', 'slide2_p', 'slide2_btn'] },
+      { id: 'slide3', label: '🖼️ Slide 3 – Pirarucu', chaves: ['slide3_tag', 'slide3_h1', 'slide3_p', 'slide3_btn'] },
+      {
+        id: 'sobre', label: '🌿 Seção Sobre', chaves: ['sobre_label', 'sobre_title', 'sobre_desc', 'badge_sustentavel',
+          'badge_direitos', 'badge_manejo', 'badge_comunidades', 'anos_txt']
+      },
+      {
+        id: 'pirarucu', label: '🐟 Seção Pirarucu', chaves: ['pira_label', 'pira_title', 'pira_desc', 'pira_stat1',
+          'pira_stat2', 'pira_stat3', 'pira_btn']
+      },
+      {
+        id: 'acoes', label: '⚡ Seção Ações', chaves: ['acoes_label', 'acoes_title', 'acoes_desc', 'card1_tag', 'card1_title',
+          'card1_desc', 'card2_tag', 'card2_title', 'card2_desc', 'card3_tag', 'card3_title', 'card3_desc', 'card4_tag',
+          'card4_title', 'card4_desc', 'saiba_mais']
+      },
+      {
+        id: 'numeros', label: '📊 Seção Números', chaves: ['numeros_label', 'numeros_title', 'numeros_title_short',
+          'numeros_desc', 'num1_label', 'num2_label', 'num3_label', 'num4_label']
+      },
+      { id: 'vagas', label: '💼 Seção Vagas', chaves: ['vagas_label', 'vagas_title', 'vagas_desc'] },
+      {
+        id: 'noticias', label: '📰 Seção Notícias', chaves: ['noticias_label', 'noticias_title', 'ver_todas',
+          'noticia1_title', 'noticia2_title', 'noticia3_title']
+      },
+      { id: 'loja', label: '🛒 Seção Loja', chaves: ['loja_label', 'loja_title', 'loja_desc', 'loja_btn'] },
+      { id: 'video', label: '🎬 Seção Vídeo', chaves: ['video_label', 'video_title', 'video_desc'] },
+      {
+        id: 'footer', label: '📄 Rodapé', chaves: ['footer_desc', 'footer_nav', 'footer_acoes', 'footer_projetos',
+          'footer_contato', 'footer_copy']
+      },
+      { id: 'popup', label: '🪟 Pop-ups', chaves: ['popup_candidatar', 'popup_fechar', 'scroll_text'] },
+    ];
+
+    // Rótulos amigáveis para cada chave
+    const TEXTOS_LABELS = {
+      nav_inicio: 'Menu: Início', nav_sobre: 'Menu: Sobre', nav_noticias: 'Menu: Notícias',
+      nav_avisos: 'Menu: Avisos', nav_trabalhe: 'Menu: Trabalhe Conosco', nav_loja: 'Menu: Loja',
+      slide1_tag: 'Tag do slide', slide1_h1: 'Título principal (HTML ok)', slide1_p: 'Parágrafo', slide1_btn: 'Botão',
+      slide2_tag: 'Tag do slide', slide2_h1: 'Título principal (HTML ok)', slide2_p: 'Parágrafo', slide2_btn: 'Botão',
+      slide3_tag: 'Tag do slide', slide3_h1: 'Título principal (HTML ok)', slide3_p: 'Parágrafo', slide3_btn: 'Botão',
+      scroll_text: 'Texto "Role" / Scroll',
+      sobre_label: 'Label da seção', sobre_title: 'Título (HTML ok)', sobre_desc: 'Descrição longa',
+      badge_sustentavel: 'Badge: Sustentável', badge_direitos: 'Badge: Direitos', badge_manejo: 'Badge: Manejo',
+      badge_comunidades: 'Badge: Comunidades', anos_txt: 'Texto "anos"',
+      pira_label: 'Label da seção', pira_title: 'Título (HTML ok)', pira_desc: 'Descrição',
+      pira_stat1: 'Estatística 1', pira_stat2: 'Estatística 2', pira_stat3: 'Estatística 3', pira_btn: 'Botão',
+      acoes_label: 'Label da seção', acoes_title: 'Título (HTML ok)', acoes_desc: 'Descrição',
+      card1_tag: 'Card 1: Tag', card1_title: 'Card 1: Título', card1_desc: 'Card 1: Descrição',
+      card2_tag: 'Card 2: Tag', card2_title: 'Card 2: Título', card2_desc: 'Card 2: Descrição',
+      card3_tag: 'Card 3: Tag', card3_title: 'Card 3: Título', card3_desc: 'Card 3: Descrição',
+      card4_tag: 'Card 4: Tag', card4_title: 'Card 4: Título', card4_desc: 'Card 4: Descrição',
+      saiba_mais: 'Texto "Saiba mais"',
+      numeros_label: 'Label da seção', numeros_title: 'Título (HTML ok)', numeros_title_short: 'Título curto', numeros_desc:
+        'Descrição',
+      num1_label: 'Número 1: label', num2_label: 'Número 2: label', num3_label: 'Número 3: label', num4_label: 'Número 4: label',
+      vagas_label: 'Label da seção', vagas_title: 'Título (HTML ok)', vagas_desc: 'Descrição',
+      noticias_label: 'Label da seção', noticias_title: 'Título (HTML ok)', ver_todas: 'Link "Ver todas"',
+      noticia1_title: 'Notícia 1: Título', noticia2_title: 'Notícia 2: Título', noticia3_title: 'Notícia 3: Título',
+      loja_label: 'Label da seção', loja_title: 'Título (HTML ok)', loja_desc: 'Descrição', loja_btn: 'Botão',
+      video_label: 'Label da seção', video_title: 'Título (HTML ok)', video_desc: 'Descrição',
+      footer_desc: 'Descrição do rodapé', footer_nav: 'Col: Navegação', footer_acoes: 'Col: Ações', footer_projetos: 'Col: Projetos', footer_contato: 'Col: Contato', footer_copy: 'Copyright',
+      popup_candidatar: 'Botão candidatar', popup_fechar: 'Botão fechar'
+    };
+
+    // Determina se o campo deve usar textarea (textos longos) ou input
+    const TEXTOS_TEXTAREA = new Set(['slide1_p', 'slide2_p', 'slide3_p', 'sobre_desc', 'pira_desc', 'acoes_desc',
+      'numeros_desc', 'vagas_desc', 'video_desc', 'footer_desc', 'noticia1_title', 'noticia2_title', 'noticia3_title']);
+    const TEXTOS_FULLWIDTH = new Set(['slide1_h1', 'slide2_h1', 'slide3_h1', 'sobre_title', 'sobre_desc', 'pira_title',
+      'pira_desc', 'acoes_title', 'acoes_desc', 'numeros_title', 'numeros_desc', 'vagas_title', 'vagas_desc',
+      'noticias_title', 'loja_title', 'loja_desc', 'video_title', 'video_desc', 'footer_desc', 'footer_copy']);
+
+    let textosLangAtual = 'pt';
+    let textosCarregados = {}; // {pt:{chave:valor}, en:{}, es:{}}
+
+    function switchTextosLang(lang, btn) {
+      textosLangAtual = lang;
+      document.querySelectorAll('.textos-lang-tab').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      renderTextosEditor();
+    }
+
+    async function loadTextos() {
+      document.getElementById('textos-loading').style.display = 'flex';
+      document.getElementById('textos-editor').style.display = 'none';
+      textosCarregados = { pt: {}, en: {}, es: {} };
+      try {
+        const rows = await sbSelect('site_textos', 'select=lang,chave,valor');
+        (rows || []).forEach(({ lang, chave, valor }) => {
+          if (!textosCarregados[lang]) textosCarregados[lang] = {};
+          textosCarregados[lang][chave] = valor;
+        });
+      } catch (e) {
+        // tabela ainda não existe ou outro erro – usa defaults
+        console.warn('[textos]', e.message);
+      }
+      document.getElementById('textos-loading').style.display = 'none';
+      document.getElementById('textos-editor').style.display = 'block';
+      renderTextosEditor();
+    }
+
+    function valorAtual(lang, chave) {
+      if (textosCarregados[lang] && textosCarregados[lang][chave] !== undefined)
+        return textosCarregados[lang][chave];
+      return (TEXTOS_DEFAULT[lang] || {})[chave] || '';
+    }
+
+    function renderTextosEditor() {
+      const container = document.getElementById('textos-campos');
+      container.innerHTML = '';
+      const lang = textosLangAtual;
+
+      TEXTOS_GRUPOS.forEach(grupo => {
+        const div = document.createElement('div');
+        div.className = 'textos-grupo';
+        div.dataset.grupoId = grupo.id;
+
+        const header = document.createElement('div');
+        header.className = 'textos-grupo-header';
+        header.innerHTML = `<span>${grupo.label}</span><span class="grupo-toggle-icon">▾</span>`;
+        header.onclick = () => div.classList.toggle('collapsed');
+
+        const body = document.createElement('div');
+        body.className = 'textos-grupo-body';
+
+        grupo.chaves.forEach(chave => {
+          const campo = document.createElement('div');
+          campo.className = 'textos-campo' + (TEXTOS_FULLWIDTH.has(chave) ? ' full-width' : '');
+          campo.dataset.chave = chave;
+
+          const label = document.createElement('label');
+          label.textContent = TEXTOS_LABELS[chave] || chave;
+
+          let input;
+          if (TEXTOS_TEXTAREA.has(chave)) {
+            input = document.createElement('textarea');
+            input.rows = 3;
+          } else {
+            input = document.createElement('input');
+            input.type = 'text';
+          }
+          input.value = valorAtual(lang, chave);
+          input.dataset.chave = chave;
+          input.oninput = () => {
             if (!textosCarregados[lang]) textosCarregados[lang] = {};
-            textosCarregados[lang][chave] = valor;
-          });
-        } catch (e) {
-          // tabela ainda não existe ou outro erro – usa defaults
-          console.warn('[textos]', e.message);
-        }
-        document.getElementById('textos-loading').style.display = 'none';
-        document.getElementById('textos-editor').style.display = 'block';
-        renderTextosEditor();
-      }
+            textosCarregados[lang][chave] = input.value;
+          };
 
-      function valorAtual(lang, chave) {
-        if (textosCarregados[lang] && textosCarregados[lang][chave] !== undefined)
-          return textosCarregados[lang][chave];
-        return (TEXTOS_DEFAULT[lang] || {})[chave] || '';
-      }
-
-      function renderTextosEditor() {
-        const container = document.getElementById('textos-campos');
-        container.innerHTML = '';
-        const lang = textosLangAtual;
-
-        TEXTOS_GRUPOS.forEach(grupo => {
-          const div = document.createElement('div');
-          div.className = 'textos-grupo';
-          div.dataset.grupoId = grupo.id;
-
-          const header = document.createElement('div');
-          header.className = 'textos-grupo-header';
-          header.innerHTML = `<span>${grupo.label}</span><span class="grupo-toggle-icon">▾</span>`;
-          header.onclick = () => div.classList.toggle('collapsed');
-
-          const body = document.createElement('div');
-          body.className = 'textos-grupo-body';
-
-          grupo.chaves.forEach(chave => {
-            const campo = document.createElement('div');
-            campo.className = 'textos-campo' + (TEXTOS_FULLWIDTH.has(chave) ? ' full-width' : '');
-            campo.dataset.chave = chave;
-
-            const label = document.createElement('label');
-            label.textContent = TEXTOS_LABELS[chave] || chave;
-
-            let input;
-            if (TEXTOS_TEXTAREA.has(chave)) {
-              input = document.createElement('textarea');
-              input.rows = 3;
-            } else {
-              input = document.createElement('input');
-              input.type = 'text';
-            }
-            input.value = valorAtual(lang, chave);
-            input.dataset.chave = chave;
-            input.oninput = () => {
-              if (!textosCarregados[lang]) textosCarregados[lang] = {};
-              textosCarregados[lang][chave] = input.value;
-            };
-
-            campo.appendChild(label);
-            campo.appendChild(input);
-            body.appendChild(campo);
-          });
-
-          div.appendChild(header);
-          div.appendChild(body);
-          container.appendChild(div);
+          campo.appendChild(label);
+          campo.appendChild(input);
+          body.appendChild(campo);
         });
-      }
 
-      function filtrarCamposTextos(q) {
-        const termo = q.toLowerCase().trim();
-        document.querySelectorAll('.textos-grupo').forEach(grupo => {
-          let grupoVisivel = false;
-          grupo.querySelectorAll('.textos-campo').forEach(campo => {
-            const chave = campo.dataset.chave || '';
-            const label = (campo.querySelector('label') || {}).textContent || '';
-            const val = (campo.querySelector('input, textarea') || {}).value || '';
-            const visivel = !termo || chave.includes(termo) || label.toLowerCase().includes(termo) ||
-              val.toLowerCase().includes(termo);
-            campo.classList.toggle('hidden', !visivel);
-            if (visivel) grupoVisivel = true;
-          });
-          grupo.classList.toggle('hidden', !grupoVisivel);
+        div.appendChild(header);
+        div.appendChild(body);
+        container.appendChild(div);
+      });
+    }
+
+    function filtrarCamposTextos(q) {
+      const termo = q.toLowerCase().trim();
+      document.querySelectorAll('.textos-grupo').forEach(grupo => {
+        let grupoVisivel = false;
+        grupo.querySelectorAll('.textos-campo').forEach(campo => {
+          const chave = campo.dataset.chave || '';
+          const label = (campo.querySelector('label') || {}).textContent || '';
+          const val = (campo.querySelector('input, textarea') || {}).value || '';
+          const visivel = !termo || chave.includes(termo) || label.toLowerCase().includes(termo) ||
+            val.toLowerCase().includes(termo);
+          campo.classList.toggle('hidden', !visivel);
+          if (visivel) grupoVisivel = true;
         });
-      }
+        grupo.classList.toggle('hidden', !grupoVisivel);
+      });
+    }
 
-      function mostrarStatusTextos(msg, tipo) {
-        const el = document.getElementById('textos-status');
-        el.textContent = msg;
-        el.className = 'textos-status-' + tipo;
-        el.style.display = 'block';
-        if (tipo !== 'load') setTimeout(() => { el.style.display = 'none'; }, 4000);
-      }
+    function mostrarStatusTextos(msg, tipo) {
+      const el = document.getElementById('textos-status');
+      el.textContent = msg;
+      el.className = 'textos-status-' + tipo;
+      el.style.display = 'block';
+      if (tipo !== 'load') setTimeout(() => { el.style.display = 'none'; }, 4000);
+    }
 
-      async function salvarTextos() {
-        const btn = document.getElementById('btn-salvar-textos');
-        btn.disabled = true;
-        btn.textContent = '⏳ Salvando…';
-        mostrarStatusTextos('Salvando textos no banco de dados…', 'load');
+    async function salvarTextos() {
+      const btn = document.getElementById('btn-salvar-textos');
+      btn.disabled = true;
+      btn.textContent = '⏳ Salvando…';
+      mostrarStatusTextos('Salvando textos no banco de dados…', 'load');
 
-        try {
-          const rows = [];
-          ['pt', 'en', 'es'].forEach(lang => {
-            const dados = textosCarregados[lang] || {};
-            Object.entries(dados).forEach(([chave, valor]) => {
-              rows.push({ lang, chave, valor });
-            });
-            // garantir que todos os defaults também sejam salvos se não existirem
-            Object.entries(TEXTOS_DEFAULT[lang] || {}).forEach(([chave, defVal]) => {
-              if (dados[chave] === undefined) rows.push({ lang, chave, valor: defVal });
-            });
+      try {
+        const rows = [];
+        ['pt', 'en', 'es'].forEach(lang => {
+          const dados = textosCarregados[lang] || {};
+          Object.entries(dados).forEach(([chave, valor]) => {
+            rows.push({ lang, chave, valor });
           });
+          // garantir que todos os defaults também sejam salvos se não existirem
+          Object.entries(TEXTOS_DEFAULT[lang] || {}).forEach(([chave, defVal]) => {
+            if (dados[chave] === undefined) rows.push({ lang, chave, valor: defVal });
+          });
+        });
 
-          // Upsert em lotes de 50
-          const batchSize = 50;
-          for (let i = 0; i < rows.length; i += batchSize) {
-            const batch = rows.slice(i, i + batchSize); for (const row of batch) {
-              await sbFetch('site_textos', `lang=eq.${row.lang}&chave=eq.${encodeURIComponent(row.chave)}`, {
-                method: 'PATCH',
-                body: JSON.stringify({ valor: row.valor })
-              }).catch(async () => {
-                // se PATCH falhar (row não existe), tenta POST
-                await sbFetch('site_textos', '', { method: 'POST', body: JSON.stringify(row) }).catch(() => { });
-              });
-            }
+        // Upsert em lotes de 50
+        const batchSize = 50;
+        for (let i = 0; i < rows.length; i += batchSize) {
+          const batch = rows.slice(i, i + batchSize); for (const row of batch) {
+            await sbFetch('site_textos', `lang=eq.${row.lang}&chave=eq.${encodeURIComponent(row.chave)}`, {
+              method: 'PATCH',
+              body: JSON.stringify({ valor: row.valor })
+            }).catch(async () => {
+              // se PATCH falhar (row não existe), tenta POST
+              await sbFetch('site_textos', '', { method: 'POST', body: JSON.stringify(row) }).catch(() => { });
+            });
           }
-
-          toast('✅ Textos salvos com sucesso!', 'success');
-          mostrarStatusTextos('✅ Textos salvos! As alterações já estão ativas no site.', 'ok');
-        } catch (e) {
-          toast('❌ Erro ao salvar: ' + e.message, 'error');
-          mostrarStatusTextos('❌ Erro: ' + e.message, 'err');
-        } finally {
-          btn.disabled = false;
-          btn.textContent = '💾 Salvar tudo';
         }
-      }
 
-      function resetarTextos() {
-        if (!confirm(`Restaurar TODOS os textos do idioma "${textosLangAtual.toUpperCase()}" para os valores padrão? Isso
+        toast('✅ Textos salvos com sucesso!', 'success');
+        mostrarStatusTextos('✅ Textos salvos! As alterações já estão ativas no site.', 'ok');
+      } catch (e) {
+        toast('❌ Erro ao salvar: ' + e.message, 'error');
+        mostrarStatusTextos('❌ Erro: ' + e.message, 'err');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '💾 Salvar tudo';
+      }
+    }
+
+    function resetarTextos() {
+      if (!confirm(`Restaurar TODOS os textos do idioma "${textosLangAtual.toUpperCase()}" para os valores padrão? Isso
   sobrescreverá suas edições atuais neste idioma.`)) return;
-        textosCarregados[textosLangAtual] = Object.assign({}, TEXTOS_DEFAULT[textosLangAtual]);
-        renderTextosEditor();
-        toast(`↺ Textos (${textosLangAtual.toUpperCase()}) restaurados para os padrões. Clique em Salvar para confirmar.`,
-          'info');
+      textosCarregados[textosLangAtual] = Object.assign({}, TEXTOS_DEFAULT[textosLangAtual]);
+      renderTextosEditor();
+      toast(`↺ Textos (${textosLangAtual.toUpperCase()}) restaurados para os padrões. Clique em Salvar para confirmar.`,
+        'info');
+    }
+
+
+    /* ══════════════════════════════════════════
+    AUTO-FORMATAÇÃO COM IA
+    ══════════════════════════════════════════ */
+    async function aiAutoFormat() {
+      const titulo = document.getElementById('n-titulo').value.trim();
+      const resumo = document.getElementById('n-resumo').value.trim();
+      const conteudoRaw = document.getElementById('n-rte-body').innerText.trim() ||
+        document.getElementById('n-conteudo').value.trim();
+
+      if (!titulo && !conteudoRaw) {
+        toast('Preencha ao menos o título ou o conteúdo antes de auto-formatar.', 'error');
+        return;
       }
 
+      const btn = document.getElementById('btn-ai-format');
+      btn.disabled = true;
+      btn.textContent = '⏳ Formatando…';
 
-      /* ══════════════════════════════════════════
-      AUTO-FORMATAÇÃO COM IA
-      ══════════════════════════════════════════ */
-      async function aiAutoFormat() {
-        const titulo = document.getElementById('n-titulo').value.trim();
-        const resumo = document.getElementById('n-resumo').value.trim();
-        const conteudoRaw = document.getElementById('n-rte-body').innerText.trim() ||
-          document.getElementById('n-conteudo').value.trim();
-
-        if (!titulo && !conteudoRaw) {
-          toast('Preencha ao menos o título ou o conteúdo antes de auto-formatar.', 'error');
-          return;
-        }
-
-        const btn = document.getElementById('btn-ai-format');
-        btn.disabled = true;
-        btn.textContent = '⏳ Formatando…';
-
-        // Mostra modal de loading
-        let aiModal = document.getElementById('ai-format-modal');
-        if (!aiModal) {
-          aiModal = document.createElement('div');
-          aiModal.id = 'ai-format-modal';
-          aiModal.style.cssText = `
+      // Mostra modal de loading
+      let aiModal = document.getElementById('ai-format-modal');
+      if (!aiModal) {
+        aiModal = document.createElement('div');
+        aiModal.id = 'ai-format-modal';
+        aiModal.style.cssText = `
   position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:99999;
   display:flex;align-items:center;justify-content:center;
   `;
-          aiModal.innerHTML = `
+        aiModal.innerHTML = `
   <div style="background:var(--bg2);border:1px solid var(--border);border-radius:16px; padding:2rem 2.5rem;text-align:center;max-width:380px;width:90%;">
     <div style="font-size:2rem;margin-bottom:1rem;">✨</div>
     <h3 style="font-size:1rem;font-weight:600;margin-bottom:.5rem;color:var(--text);">Formatando com IA</h3>
@@ -6237,12 +6415,12 @@ document.addEventListener('DOMContentLoaded', function(){
     }
   </style>
   `;
-          document.body.appendChild(aiModal);
-        }
-        aiModal.style.display = 'flex';
+        document.body.appendChild(aiModal);
+      }
+      aiModal.style.display = 'flex';
 
-        try {
-          const prompt = `Você é um redator jornalístico profissional para a ASPROC (Associação dos Produtores Rurais de
+      try {
+        const prompt = `Você é um redator jornalístico profissional para a ASPROC (Associação dos Produtores Rurais de
   Carauari, Amazonas).
 
   Formate e melhore o seguinte conteúdo de notícia, produzindo HTML rico e bem estruturado para o corpo do artigo.
@@ -6265,368 +6443,368 @@ document.addEventListener('DOMContentLoaded', function(){
 
             <body>).`;
 
-          const response = await fetch('https://api.anthropic.com/v1/messages', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              model: 'claude-sonnet-4-20250514',
-              max_tokens: 1000,
-              messages: [{ role: 'user', content: prompt }]
-            })
-          });
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 1000,
+            messages: [{ role: 'user', content: prompt }]
+          })
+        });
 
-          const data = await response.json();
-          if (!response.ok) throw new Error(data.error?.message || 'Erro na API');
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error?.message || 'Erro na API');
 
-          const htmlFormatado = data.content
-            .filter(b => b.type === 'text')
-            .map(b => b.text)
-            .join('')
-            .replace(/```html?/gi, '')
-            .replace(/```/g, '')
-            .trim();
+        const htmlFormatado = data.content
+          .filter(b => b.type === 'text')
+          .map(b => b.text)
+          .join('')
+          .replace(/```html?/gi, '')
+          .replace(/```/g, '')
+          .trim();
 
-          if (htmlFormatado) {
-            document.getElementById('n-rte-body').innerHTML = htmlFormatado;
-            syncRteToHidden();
-            toast('✅ Conteúdo formatado com sucesso!', 'success');
-          } else {
-            throw new Error('A IA não retornou conteúdo.');
-          }
-        } catch (e) {
-          toast('❌ Erro ao formatar: ' + e.message, 'error');
-        } finally {
-          aiModal.style.display = 'none';
-          btn.disabled = false;
-          btn.textContent = '✨ Auto-formatar';
-        }
-      }
-
-      /* ══════════════════════════════════════════
-      EDITOR DE VAGAS (fullscreen) — espelho do editor de avisos
-      ══════════════════════════════════════════ */
-      let veAnexos = []; // [{nome, url, tipo}]
-      let veSavedSel = null;
-
-      function openVagaEditorNew() {
-        editingId.vagas = null;
-        document.getElementById('ve-topbar-title').textContent = 'Nova Vaga';
-        document.getElementById('v-titulo').value = '';
-        document.getElementById('v-resumo').value = '';
-        document.getElementById('ve-rte-body').innerHTML = '';
-        document.getElementById('v-descricao').value = '';
-        document.getElementById('v-local').value = 'Carauari/AM';
-        document.getElementById('v-regime').value = 'CLT';
-        document.getElementById('v-carga').value = 'Integral';
-        document.getElementById('v-escolaridade').value = 'Ensino Superior';
-        document.getElementById('v-prazo').value = '';
-        document.getElementById('v-status').value = 'aberta';
-        document.getElementById('v-edital').value = '';
-        document.getElementById('v-imagem-url').value = '';
-        veAnexos = [];
-        veRenderAnexos();
-        veUpdateImgPreview();
-        openVagaEditor();
-      }
-
-      function openVagaEditor() {
-        const el = document.getElementById('vaga-editor-overlay');
-        el.style.display = 'flex';
-        document.body.style.overflow = 'hidden';
-      }
-
-      function closeVagaEditor() {
-        const el = document.getElementById('vaga-editor-overlay');
-        el.style.display = 'none';
-        document.body.style.overflow = '';
-        editingId.vagas = null;
-        veAnexos = [];
-        veRenderAnexos();
-      }
-
-      // RTE helpers para o editor de vagas
-      function veRteSaveSelection() {
-        const sel = window.getSelection();
-        if (sel && sel.rangeCount) veSavedSel = sel.getRangeAt(0).cloneRange();
-      }
-
-      function veRteRestoreSelection() {
-        const rte = document.getElementById('ve-rte-body');
-        rte.focus();
-        if (veSavedSel) {
-          const sel = window.getSelection();
-          sel.removeAllRanges();
-          sel.addRange(veSavedSel);
-        }
-      }
-
-      function veRteExec(cmd, val) {
-        veRteRestoreSelection();
-        document.execCommand(cmd, false, val || null);
-        veSync();
-      }
-
-      function veRteFontSize(px) {
-        veRteRestoreSelection();
-        const sel = window.getSelection();
-        if (sel && sel.rangeCount && !sel.isCollapsed) {
-          try {
-            const range = sel.getRangeAt(0);
-            const fragment = range.extractContents();
-            const span = document.createElement('span');
-            span.style.fontSize = px + 'px';
-            span.appendChild(fragment);
-            range.insertNode(span);
-            const newRange = document.createRange();
-            newRange.selectNodeContents(span);
-            sel.removeAllRanges();
-            sel.addRange(newRange);
-          } catch (err) {
-            document.execCommand('fontSize', false, '3');
-            document.querySelectorAll('#ve-rte-body font[size="3"]').forEach(f => {
-              f.removeAttribute('size');
-              f.style.fontSize = px + 'px';
-            });
-          }
+        if (htmlFormatado) {
+          document.getElementById('n-rte-body').innerHTML = htmlFormatado;
+          syncRteToHidden();
+          toast('✅ Conteúdo formatado com sucesso!', 'success');
         } else {
+          throw new Error('A IA não retornou conteúdo.');
+        }
+      } catch (e) {
+        toast('❌ Erro ao formatar: ' + e.message, 'error');
+      } finally {
+        aiModal.style.display = 'none';
+        btn.disabled = false;
+        btn.textContent = '✨ Auto-formatar';
+      }
+    }
+
+    /* ══════════════════════════════════════════
+    EDITOR DE VAGAS (fullscreen) — espelho do editor de avisos
+    ══════════════════════════════════════════ */
+    let veAnexos = []; // [{nome, url, tipo}]
+    let veSavedSel = null;
+
+    function openVagaEditorNew() {
+      editingId.vagas = null;
+      document.getElementById('ve-topbar-title').textContent = 'Nova Vaga';
+      document.getElementById('v-titulo').value = '';
+      document.getElementById('v-resumo').value = '';
+      document.getElementById('ve-rte-body').innerHTML = '';
+      document.getElementById('v-descricao').value = '';
+      document.getElementById('v-local').value = 'Carauari/AM';
+      document.getElementById('v-regime').value = 'CLT';
+      document.getElementById('v-carga').value = 'Integral';
+      document.getElementById('v-escolaridade').value = 'Ensino Superior';
+      document.getElementById('v-prazo').value = '';
+      document.getElementById('v-status').value = 'aberta';
+      document.getElementById('v-edital').value = '';
+      document.getElementById('v-imagem-url').value = '';
+      veAnexos = [];
+      veRenderAnexos();
+      veUpdateImgPreview();
+      openVagaEditor();
+    }
+
+    function openVagaEditor() {
+      const el = document.getElementById('vaga-editor-overlay');
+      el.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeVagaEditor() {
+      const el = document.getElementById('vaga-editor-overlay');
+      el.style.display = 'none';
+      document.body.style.overflow = '';
+      editingId.vagas = null;
+      veAnexos = [];
+      veRenderAnexos();
+    }
+
+    // RTE helpers para o editor de vagas
+    function veRteSaveSelection() {
+      const sel = window.getSelection();
+      if (sel && sel.rangeCount) veSavedSel = sel.getRangeAt(0).cloneRange();
+    }
+
+    function veRteRestoreSelection() {
+      const rte = document.getElementById('ve-rte-body');
+      rte.focus();
+      if (veSavedSel) {
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(veSavedSel);
+      }
+    }
+
+    function veRteExec(cmd, val) {
+      veRteRestoreSelection();
+      document.execCommand(cmd, false, val || null);
+      veSync();
+    }
+
+    function veRteFontSize(px) {
+      veRteRestoreSelection();
+      const sel = window.getSelection();
+      if (sel && sel.rangeCount && !sel.isCollapsed) {
+        try {
+          const range = sel.getRangeAt(0);
+          const fragment = range.extractContents();
+          const span = document.createElement('span');
+          span.style.fontSize = px + 'px';
+          span.appendChild(fragment);
+          range.insertNode(span);
+          const newRange = document.createRange();
+          newRange.selectNodeContents(span);
+          sel.removeAllRanges();
+          sel.addRange(newRange);
+        } catch (err) {
           document.execCommand('fontSize', false, '3');
           document.querySelectorAll('#ve-rte-body font[size="3"]').forEach(f => {
             f.removeAttribute('size');
             f.style.fontSize = px + 'px';
           });
         }
-        veSync();
+      } else {
+        document.execCommand('fontSize', false, '3');
+        document.querySelectorAll('#ve-rte-body font[size="3"]').forEach(f => {
+          f.removeAttribute('size');
+          f.style.fontSize = px + 'px';
+        });
       }
+      veSync();
+    }
 
-      function veRteBlock(tag) {
-        document.getElementById('ve-rte-body').focus();
-        document.execCommand('formatBlock', false, tag);
-        veSync();
-      }
+    function veRteBlock(tag) {
+      document.getElementById('ve-rte-body').focus();
+      document.execCommand('formatBlock', false, tag);
+      veSync();
+    }
 
-      function veRteClearFormat() {
-        document.getElementById('ve-rte-body').focus();
-        document.execCommand('removeFormat', false, null);
-        veSync();
-      }
+    function veRteClearFormat() {
+      document.getElementById('ve-rte-body').focus();
+      document.execCommand('removeFormat', false, null);
+      veSync();
+    }
 
-      function veRteInsertLink() {
-        veRteSaveSelection();
-        const sel = window.getSelection();
-        const txt = sel && !sel.isCollapsed ? sel.toString() : '';
-        document.getElementById('ve-rte-link-text').value = txt;
-        document.getElementById('ve-rte-link-url').value = '';
-        const popup = document.getElementById('ve-rte-link-popup');
-        popup.style.cssText += ';display:block;top:50%;left:50%;transform:translate(-50%,-50%);';
-        document.getElementById('ve-rte-link-url').focus();
-      }
+    function veRteInsertLink() {
+      veRteSaveSelection();
+      const sel = window.getSelection();
+      const txt = sel && !sel.isCollapsed ? sel.toString() : '';
+      document.getElementById('ve-rte-link-text').value = txt;
+      document.getElementById('ve-rte-link-url').value = '';
+      const popup = document.getElementById('ve-rte-link-popup');
+      popup.style.cssText += ';display:block;top:50%;left:50%;transform:translate(-50%,-50%);';
+      document.getElementById('ve-rte-link-url').focus();
+    }
 
-      function veRteConfirmLink() {
-        const url = document.getElementById('ve-rte-link-url').value.trim();
-        const txt = document.getElementById('ve-rte-link-text').value.trim();
-        if (!url) return;
-        veRteRestoreSelection();
-        const sel = window.getSelection();
-        if (txt && sel && sel.isCollapsed) {
-          document.execCommand('insertHTML', false, `<a href="${url}" target="_blank"
+    function veRteConfirmLink() {
+      const url = document.getElementById('ve-rte-link-url').value.trim();
+      const txt = document.getElementById('ve-rte-link-text').value.trim();
+      if (!url) return;
+      veRteRestoreSelection();
+      const sel = window.getSelection();
+      if (txt && sel && sel.isCollapsed) {
+        document.execCommand('insertHTML', false, `<a href="${url}" target="_blank"
                 style="color:var(--accent)">${txt}</a>`);
-        } else {
-          document.execCommand('createLink', false, url);
-          if (sel && sel.anchorNode) {
-            const anchor = sel.anchorNode.parentElement?.closest('a') || sel.focusNode?.parentElement?.closest('a');
-            if (anchor) { anchor.target = '_blank'; anchor.style.color = 'var(--accent)'; }
-          }
+      } else {
+        document.execCommand('createLink', false, url);
+        if (sel && sel.anchorNode) {
+          const anchor = sel.anchorNode.parentElement?.closest('a') || sel.focusNode?.parentElement?.closest('a');
+          if (anchor) { anchor.target = '_blank'; anchor.style.color = 'var(--accent)'; }
         }
-        document.getElementById('ve-rte-link-popup').style.display = 'none';
-        veSync();
+      }
+      document.getElementById('ve-rte-link-popup').style.display = 'none';
+      veSync();
+    }
+
+    function veRteInsertDivider() {
+      document.getElementById('ve-rte-body').focus();
+      document.execCommand('insertHTML', false, '<hr style="border:none;border-top:1px solid rgba(255,255,255,.12);margin:1.5rem 0;"><p><br></p>'); veSync();
+    }
+
+    function veSync() {
+      document.getElementById('v-descricao').value = document.getElementById('ve-rte-body').innerHTML;
+    }
+
+    // Context menu do editor de vagas
+    function veContextMenu(e) {
+      const sel = window.getSelection();
+      if (!sel || sel.isCollapsed) return;
+      e.preventDefault();
+      e.stopPropagation();
+      if (sel.rangeCount) veSavedSel = sel.getRangeAt(0).cloneRange();
+      const menu = document.getElementById('ve-context-menu');
+      menu.style.display = 'block';
+      const mx = Math.min(e.clientX, window.innerWidth - 245);
+      const my = Math.min(e.clientY, window.innerHeight - menu.offsetHeight - 10);
+      menu.style.left = mx + 'px';
+      menu.style.top = my + 'px';
+    }
+
+    function veHideCtx() {
+      document.getElementById('ve-context-menu').style.display = 'none';
+    }
+
+    document.addEventListener('mousedown', function (e) {
+      const veMenu = document.getElementById('ve-context-menu');
+      if (veMenu && veMenu.style.display !== 'none' && !veMenu.contains(e.target)) veHideCtx();
+      const vePopup = document.getElementById('ve-rte-link-popup');
+      if (vePopup && !vePopup.contains(e.target) && vePopup.style.display !== 'none') {
+        const rte = document.getElementById('ve-rte-body');
+        const tb = document.getElementById('ve-rte-toolbar');
+        if (!rte?.contains(e.target) && !tb?.contains(e.target)) vePopup.style.display = 'none';
+      }
+    }, true);
+
+    // Upload de capa da vaga
+    async function veUploadCapa(input) {
+      const file = input.files && input.files[0];
+      if (!file) return;
+      const MAX = 10 * 1024 * 1024;
+      if (file.size > MAX) { toast('Imagem muito grande. Máximo 10 MB.', 'error'); input.value = ''; return; }
+      const TIPOS = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+      if (!TIPOS.includes(file.type)) {
+        toast('Formato inválido. Use JPG, PNG ou WebP.', 'error'); input.value =
+          ''; return;
       }
 
-      function veRteInsertDivider() {
-        document.getElementById('ve-rte-body').focus();
-        document.execCommand('insertHTML', false, '<hr style="border:none;border-top:1px solid rgba(255,255,255,.12);margin:1.5rem 0;"><p><br></p>'); veSync();
-      }
+      const { url: sbUrl, key: sbKey } = getSupabase();
+      if (!sbUrl || !sbKey) { toast('Supabase não configurado.', 'error'); return; }
 
-      function veSync() {
-        document.getElementById('v-descricao').value = document.getElementById('ve-rte-body').innerHTML;
-      }
+      const wrap = document.getElementById('ve-upload-progress-wrap');
+      const bar = document.getElementById('ve-upload-progress-bar');
+      const msg = document.getElementById('ve-upload-progress-msg');
+      const lbl = document.querySelector('label[for="v-capa-file"]');
+      wrap.style.display = 'block'; bar.style.width = '15%'; bar.style.background = 'var(--accent)';
+      msg.style.color = 'var(--text-muted)'; msg.textContent = 'Enviando imagem…';
+      if (lbl) { lbl.style.pointerEvents = 'none'; lbl.style.opacity = '.5'; }
 
-      // Context menu do editor de vagas
-      function veContextMenu(e) {
-        const sel = window.getSelection();
-        if (!sel || sel.isCollapsed) return;
-        e.preventDefault();
-        e.stopPropagation();
-        if (sel.rangeCount) veSavedSel = sel.getRangeAt(0).cloneRange();
-        const menu = document.getElementById('ve-context-menu');
-        menu.style.display = 'block';
-        const mx = Math.min(e.clientX, window.innerWidth - 245);
-        const my = Math.min(e.clientY, window.innerHeight - menu.offsetHeight - 10);
-        menu.style.left = mx + 'px';
-        menu.style.top = my + 'px';
-      }
-
-      function veHideCtx() {
-        document.getElementById('ve-context-menu').style.display = 'none';
-      }
-
-      document.addEventListener('mousedown', function (e) {
-        const veMenu = document.getElementById('ve-context-menu');
-        if (veMenu && veMenu.style.display !== 'none' && !veMenu.contains(e.target)) veHideCtx();
-        const vePopup = document.getElementById('ve-rte-link-popup');
-        if (vePopup && !vePopup.contains(e.target) && vePopup.style.display !== 'none') {
-          const rte = document.getElementById('ve-rte-body');
-          const tb = document.getElementById('ve-rte-toolbar');
-          if (!rte?.contains(e.target) && !tb?.contains(e.target)) vePopup.style.display = 'none';
-        }
-      }, true);
-
-      // Upload de capa da vaga
-      async function veUploadCapa(input) {
-        const file = input.files && input.files[0];
-        if (!file) return;
-        const MAX = 10 * 1024 * 1024;
-        if (file.size > MAX) { toast('Imagem muito grande. Máximo 10 MB.', 'error'); input.value = ''; return; }
-        const TIPOS = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-        if (!TIPOS.includes(file.type)) {
-          toast('Formato inválido. Use JPG, PNG ou WebP.', 'error'); input.value =
-            ''; return;
-        }
-
-        const { url: sbUrl, key: sbKey } = getSupabase();
-        if (!sbUrl || !sbKey) { toast('Supabase não configurado.', 'error'); return; }
-
-        const wrap = document.getElementById('ve-upload-progress-wrap');
-        const bar = document.getElementById('ve-upload-progress-bar');
-        const msg = document.getElementById('ve-upload-progress-msg');
-        const lbl = document.querySelector('label[for="v-capa-file"]');
-        wrap.style.display = 'block'; bar.style.width = '15%'; bar.style.background = 'var(--accent)';
-        msg.style.color = 'var(--text-muted)'; msg.textContent = 'Enviando imagem…';
-        if (lbl) { lbl.style.pointerEvents = 'none'; lbl.style.opacity = '.5'; }
-
-        try {
-          await ensureValidToken();
-          const authToken = localStorage.getItem('asproc_token') || sbKey;
-          const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z]/g, '') || 'jpg';
-          const nome = `capa-vaga-${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${ext}`;
-          const path = `vagas/${nome}`;
-          const BUCKET = 'imagens';
-          bar.style.width = '50%';
-          const res = await fetch(`${sbUrl}/storage/v1/object/${BUCKET}/${path}`, {
-            method: 'POST',
-            headers: {
-              'apikey': sbKey, 'Authorization': `Bearer ${authToken}`, 'Content-Type': file.type, 'x-upsert':
-                'true'
-            },
-            body: file
-          });
-          bar.style.width = '90%';
-          if (!res.ok) {
-            const err = await res.json().catch(() => ({})); throw new Error(err.message || `HTTP
+      try {
+        await ensureValidToken();
+        const authToken = localStorage.getItem('asproc_token') || sbKey;
+        const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z]/g, '') || 'jpg';
+        const nome = `capa-vaga-${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${ext}`;
+        const path = `vagas/${nome}`;
+        const BUCKET = 'imagens';
+        bar.style.width = '50%';
+        const res = await fetch(`${sbUrl}/storage/v1/object/${BUCKET}/${path}`, {
+          method: 'POST',
+          headers: {
+            'apikey': sbKey, 'Authorization': `Bearer ${authToken}`, 'Content-Type': file.type, 'x-upsert':
+              'true'
+          },
+          body: file
+        });
+        bar.style.width = '90%';
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({})); throw new Error(err.message || `HTTP
               ${res.status}`);
-          }
-          const publicUrl = `${sbUrl}/storage/v1/object/public/${BUCKET}/${path}`;
-          bar.style.width = '100%'; msg.textContent = '✅ Upload concluído!';
-          document.getElementById('v-imagem-url').value = publicUrl;
-          veUpdateImgPreview();
-          toast('✅ Imagem de capa anexada!', 'success');
-          setTimeout(() => { wrap.style.display = 'none'; bar.style.width = '0%'; }, 2000);
-        } catch (e) {
-          bar.style.background = 'var(--red)'; bar.style.width = '100%';
-          msg.style.color = 'var(--red)'; msg.textContent = '❌ ' + e.message;
-          setTimeout(() => {
-            wrap.style.display = 'none'; bar.style.width = '0%'; bar.style.background =
-              'var(--accent)';
-          }, 7000);
-        } finally { if (lbl) { lbl.style.pointerEvents = 'auto'; lbl.style.opacity = '1'; } input.value = ''; }
-      }
-
-      function veUpdateImgPreview() {
-        const url = document.getElementById('v-imagem-url').value.trim();
-        const preview = document.getElementById('ve-img-preview');
-        const placeholder = document.getElementById('ve-img-placeholder');
-        const remBtn = document.getElementById('ve-btn-remover-img');
-        if (url) {
-          preview.style.backgroundImage = `url('${url}')`;
-          preview.style.backgroundSize = 'cover';
-          preview.style.backgroundPosition = 'center';
-          if (placeholder) placeholder.style.display = 'none';
-          if (remBtn) remBtn.style.display = 'block';
-        } else {
-          preview.style.backgroundImage = '';
-          if (placeholder) placeholder.style.display = '';
-          if (remBtn) remBtn.style.display = 'none';
         }
-      }
-
-      function veRemoverCapa() {
-        document.getElementById('v-imagem-url').value = '';
+        const publicUrl = `${sbUrl}/storage/v1/object/public/${BUCKET}/${path}`;
+        bar.style.width = '100%'; msg.textContent = '✅ Upload concluído!';
+        document.getElementById('v-imagem-url').value = publicUrl;
         veUpdateImgPreview();
+        toast('✅ Imagem de capa anexada!', 'success');
+        setTimeout(() => { wrap.style.display = 'none'; bar.style.width = '0%'; }, 2000);
+      } catch (e) {
+        bar.style.background = 'var(--red)'; bar.style.width = '100%';
+        msg.style.color = 'var(--red)'; msg.textContent = '❌ ' + e.message;
+        setTimeout(() => {
+          wrap.style.display = 'none'; bar.style.width = '0%'; bar.style.background =
+            'var(--accent)';
+        }, 7000);
+      } finally { if (lbl) { lbl.style.pointerEvents = 'auto'; lbl.style.opacity = '1'; } input.value = ''; }
+    }
+
+    function veUpdateImgPreview() {
+      const url = document.getElementById('v-imagem-url').value.trim();
+      const preview = document.getElementById('ve-img-preview');
+      const placeholder = document.getElementById('ve-img-placeholder');
+      const remBtn = document.getElementById('ve-btn-remover-img');
+      if (url) {
+        preview.style.backgroundImage = `url('${url}')`;
+        preview.style.backgroundSize = 'cover';
+        preview.style.backgroundPosition = 'center';
+        if (placeholder) placeholder.style.display = 'none';
+        if (remBtn) remBtn.style.display = 'block';
+      } else {
+        preview.style.backgroundImage = '';
+        if (placeholder) placeholder.style.display = '';
+        if (remBtn) remBtn.style.display = 'none';
       }
+    }
 
-      // Upload de documentos da vaga
-      async function veUploadDocs(input) {
-        const files = Array.from(input.files);
-        if (!files.length) return;
-        const { url: sbUrl, key: sbKey } = getSupabase();
-        const hasSb = !!(sbUrl && sbKey);
+    function veRemoverCapa() {
+      document.getElementById('v-imagem-url').value = '';
+      veUpdateImgPreview();
+    }
 
-        for (const file of files) {
-          if (hasSb) {
-            try {
-              await ensureValidToken();
-              const authToken = localStorage.getItem('asproc_token') || sbKey;
-              const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z0-9]/g, '') || 'bin';
-              const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-              const path = `vagas/doc-${Date.now()}-${safeName}`;
-              const BUCKET = 'imagens';
-              const res = await fetch(`${sbUrl}/storage/v1/object/${BUCKET}/${path}`, {
-                method: 'POST',
-                headers: {
-                  'apikey': sbKey, 'Authorization': `Bearer ${authToken}`, 'Content-Type': file.type ||
-                    'application/octet-stream', 'x-upsert': 'true'
-                },
-                body: file
-              });
-              if (!res.ok) {
-                const err = await res.json().catch(() => ({})); throw new Error(err.message || `HTTP
+    // Upload de documentos da vaga
+    async function veUploadDocs(input) {
+      const files = Array.from(input.files);
+      if (!files.length) return;
+      const { url: sbUrl, key: sbKey } = getSupabase();
+      const hasSb = !!(sbUrl && sbKey);
+
+      for (const file of files) {
+        if (hasSb) {
+          try {
+            await ensureValidToken();
+            const authToken = localStorage.getItem('asproc_token') || sbKey;
+            const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z0-9]/g, '') || 'bin';
+            const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+            const path = `vagas/doc-${Date.now()}-${safeName}`;
+            const BUCKET = 'imagens';
+            const res = await fetch(`${sbUrl}/storage/v1/object/${BUCKET}/${path}`, {
+              method: 'POST',
+              headers: {
+                'apikey': sbKey, 'Authorization': `Bearer ${authToken}`, 'Content-Type': file.type ||
+                  'application/octet-stream', 'x-upsert': 'true'
+              },
+              body: file
+            });
+            if (!res.ok) {
+              const err = await res.json().catch(() => ({})); throw new Error(err.message || `HTTP
               ${res.status}`);
-              }
-              const publicUrl = `${sbUrl}/storage/v1/object/public/${BUCKET}/${path}`;
-              veAnexos.push({ nome: file.name, url: publicUrl, tipo: ext });
-              toast(`📎 "${file.name}" enviado!`, 'success');
-              // Atualiza campo legado de edital_url com o primeiro arquivo
-              if (veAnexos.length === 1) document.getElementById('v-edital').value = publicUrl;
-            } catch (e) { toast(`❌ Erro ao enviar "${file.name}": ${e.message}`, 'error'); }
-          } else { toast('Configure o Supabase para enviar documentos.', 'error'); break; }
-        }
-        veRenderAnexos(); input.value = '';
+            }
+            const publicUrl = `${sbUrl}/storage/v1/object/public/${BUCKET}/${path}`;
+            veAnexos.push({ nome: file.name, url: publicUrl, tipo: ext });
+            toast(`📎 "${file.name}" enviado!`, 'success');
+            // Atualiza campo legado de edital_url com o primeiro arquivo
+            if (veAnexos.length === 1) document.getElementById('v-edital').value = publicUrl;
+          } catch (e) { toast(`❌ Erro ao enviar "${file.name}": ${e.message}`, 'error'); }
+        } else { toast('Configure o Supabase para enviar documentos.', 'error'); break; }
       }
+      veRenderAnexos(); input.value = '';
+    }
 
-      function veAddDocUrl() {
-        const input = document.getElementById('ve-doc-url-input');
-        const url = input.value.trim();
-        if (!url) return;
-        const nome = url.split('/').pop().split('?')[0] || 'Documento';
-        const ext = nome.split('.').pop().toLowerCase();
-        veAnexos.push({ nome, url, tipo: ext });
-        veRenderAnexos(); input.value = '';
-        if (veAnexos.length === 1) document.getElementById('v-edital').value = url;
-        toast('🔗 Link adicionado!', 'success');
-      }
+    function veAddDocUrl() {
+      const input = document.getElementById('ve-doc-url-input');
+      const url = input.value.trim();
+      if (!url) return;
+      const nome = url.split('/').pop().split('?')[0] || 'Documento';
+      const ext = nome.split('.').pop().toLowerCase();
+      veAnexos.push({ nome, url, tipo: ext });
+      veRenderAnexos(); input.value = '';
+      if (veAnexos.length === 1) document.getElementById('v-edital').value = url;
+      toast('🔗 Link adicionado!', 'success');
+    }
 
-      function veDocIcon(tipo) {
-        if (['pdf'].includes(tipo)) return '📕';
-        if (['doc', 'docx'].includes(tipo)) return '📘';
-        if (['xls', 'xlsx'].includes(tipo)) return '📗';
-        if (['ppt', 'pptx'].includes(tipo)) return '📙';
-        return '📄';
-      }
+    function veDocIcon(tipo) {
+      if (['pdf'].includes(tipo)) return '📕';
+      if (['doc', 'docx'].includes(tipo)) return '📘';
+      if (['xls', 'xlsx'].includes(tipo)) return '📗';
+      if (['ppt', 'pptx'].includes(tipo)) return '📙';
+      return '📄';
+    }
 
-      function veRenderAnexos() {
-        const list = document.getElementById('ve-anexos-list');
-        if (!list) return;
-        if (!veAnexos.length) { list.innerHTML = ''; return; }
-        list.innerHTML = veAnexos.map((a, i) => `
+    function veRenderAnexos() {
+      const list = document.getElementById('ve-anexos-list');
+      if (!list) return;
+      if (!veAnexos.length) { list.innerHTML = ''; return; }
+      list.innerHTML = veAnexos.map((a, i) => `
               <div
                 style="display:flex;align-items:center;gap:.4rem;padding:.4rem .6rem;background:var(--bg3);border:1px solid var(--border);border-radius:6px;">
                 <span style="font-size:.95rem;">${veDocIcon(a.tipo)}</span>
@@ -6639,86 +6817,86 @@ document.addEventListener('DOMContentLoaded', function(){
                   style="background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:.8rem;flex-shrink:0;"
                   title="Remover">✕</button>
               </div>`).join('');
-      }
+    }
 
-      function veRemoveAnexo(i) {
-        veAnexos.splice(i, 1);
-        veRenderAnexos();
-        // Atualiza campo legado
-        document.getElementById('v-edital').value = veAnexos.length ? veAnexos[0].url : '';
-      }
+    function veRemoveAnexo(i) {
+      veAnexos.splice(i, 1);
+      veRenderAnexos();
+      // Atualiza campo legado
+      document.getElementById('v-edital').value = veAnexos.length ? veAnexos[0].url : '';
+    }
 
-      // Expõe funções do editor de vagas
-      window.openVagaEditorNew = openVagaEditorNew;
-      window.openVagaEditor = openVagaEditor;
-      window.closeVagaEditor = closeVagaEditor;
-      window.veRteSaveSelection = veRteSaveSelection;
-      window.veRteBlock = veRteBlock;
-      window.veRteExec = veRteExec;
-      window.veRteFontSize = veRteFontSize;
-      window.veRteClearFormat = veRteClearFormat;
-      window.veRteInsertLink = veRteInsertLink;
-      window.veRteConfirmLink = veRteConfirmLink;
-      window.veRteInsertDivider = veRteInsertDivider;
-      window.veHideCtx = veHideCtx;
-      window.veUploadCapa = veUploadCapa;
-      window.veUpdateImgPreview = veUpdateImgPreview;
-      window.veRemoverCapa = veRemoverCapa;
-      window.veUploadDocs = veUploadDocs;
-      window.veAddDocUrl = veAddDocUrl;
-      window.veRenderAnexos = veRenderAnexos;
-      window.veRemoveAnexo = veRemoveAnexo;
-      window.veContextMenu = veContextMenu;
+    // Expõe funções do editor de vagas
+    window.openVagaEditorNew = openVagaEditorNew;
+    window.openVagaEditor = openVagaEditor;
+    window.closeVagaEditor = closeVagaEditor;
+    window.veRteSaveSelection = veRteSaveSelection;
+    window.veRteBlock = veRteBlock;
+    window.veRteExec = veRteExec;
+    window.veRteFontSize = veRteFontSize;
+    window.veRteClearFormat = veRteClearFormat;
+    window.veRteInsertLink = veRteInsertLink;
+    window.veRteConfirmLink = veRteConfirmLink;
+    window.veRteInsertDivider = veRteInsertDivider;
+    window.veHideCtx = veHideCtx;
+    window.veUploadCapa = veUploadCapa;
+    window.veUpdateImgPreview = veUpdateImgPreview;
+    window.veRemoverCapa = veRemoverCapa;
+    window.veUploadDocs = veUploadDocs;
+    window.veAddDocUrl = veAddDocUrl;
+    window.veRenderAnexos = veRenderAnexos;
+    window.veRemoveAnexo = veRemoveAnexo;
+    window.veContextMenu = veContextMenu;
 
-      checkSession();
+    checkSession();
 
-      // Expõe funções usadas em onclick="" para o escopo global
-      window.goTo = goTo;
-      window.doLogin = doLogin;
-      window.doLogout = doLogout;
-      window.toggleSidebar = toggleSidebar;
-      window.closeSidebar = closeSidebar;
-      window.openModal = openModal;
-      window.closeModal = closeModal;
-      window.openNewsEditorNew = openNewsEditorNew;
-      window.closeNewsEditor = closeNewsEditor;
-      window.saveNoticia = saveNoticia;
-      window.editNoticia = editNoticia;
-      window.saveVaga = saveVaga;
-      window.closeVagaEditor = closeVagaEditor;
-      window.openVagaEditorNew = openVagaEditorNew;
-      window.editVaga = editVaga;
-      window.saveAviso = saveAviso;
-      window.editAviso = editAviso;
-      window.closeAvisoEditor = closeAvisoEditor;
-      window.deleteItem = deleteItem;
-      window.viewCandidatura = viewCandidatura;
-      window.applyCandFilters = applyCandFilters;
-      window.deleteCandidatura = deleteCandidatura;
-      window.saveConfig = saveConfig;
-      window.testConnection = testConnection;
-      window.saveGithubToken = saveGithubToken;
-      window.testGithubConnection = testGithubConnection;
-      window.publishToGithub = publishToGithub;
-      window.previewNoticiaPage = previewNoticiaPage;
-      window.downloadNoticiaPage = downloadNoticiaPage;
-      window.copyDeployLink = copyDeployLink;
-      window.copySnippet = copySnippet;
-      window.rteExec = rteExec;
-      window.rteInsertLink = rteInsertLink;
-      window.rteConfirmLink = rteConfirmLink;
-      window.rteClearFormat = rteClearFormat;
-      window.rteInsertImage = rteInsertImage;
-      window.rteInsertYouTube = rteInsertYouTube;
-      window.rteInsertTable = rteInsertTable;
-      window.rteInsertDivider = rteInsertDivider;
-      window.salvarTextos = salvarTextos;
-      window.resetarTextos = resetarTextos;
-      window.switchTextosLang = switchTextosLang;
-      window.filtrarCamposTextos = filtrarCamposTextos;
-      window.aiAutoFormat = aiAutoFormat;
-      window.uploadCapaImagem = uploadCapaImagem;
-      window.removerCapaImagem = removerCapaImagem;
+    // Expõe funções usadas em onclick="" para o escopo global
+    window.goTo = goTo;
+    window.doLogin = doLogin;
+    window.doLogout = doLogout;
+    window.toggleSidebar = toggleSidebar;
+    window.closeSidebar = closeSidebar;
+    window.openModal = openModal;
+    window.closeModal = closeModal;
+    window.openNewsEditorNew = openNewsEditorNew;
+    window.closeNewsEditor = closeNewsEditor;
+    window.saveNoticia = saveNoticia;
+    window.editNoticia = editNoticia;
+    window.saveVaga = saveVaga;
+    window.closeVagaEditor = closeVagaEditor;
+    window.openVagaEditorNew = openVagaEditorNew;
+    window.editVaga = editVaga;
+    window.saveAviso = saveAviso;
+    window.editAviso = editAviso;
+    window.closeAvisoEditor = closeAvisoEditor;
+    window.deleteItem = deleteItem;
+    window.viewCandidatura = viewCandidatura;
+    window.applyCandFilters = applyCandFilters;
+    window.deleteCandidatura = deleteCandidatura;
+    window.saveConfig = saveConfig;
+    window.testConnection = testConnection;
+    window.saveGithubToken = saveGithubToken;
+    window.testGithubConnection = testGithubConnection;
+    window.publishToGithub = publishToGithub;
+    window.previewNoticiaPage = previewNoticiaPage;
+    window.downloadNoticiaPage = downloadNoticiaPage;
+    window.copyDeployLink = copyDeployLink;
+    window.copySnippet = copySnippet;
+    window.rteExec = rteExec;
+    window.rteInsertLink = rteInsertLink;
+    window.rteConfirmLink = rteConfirmLink;
+    window.rteClearFormat = rteClearFormat;
+    window.rteInsertImage = rteInsertImage;
+    window.rteInsertYouTube = rteInsertYouTube;
+    window.rteInsertTable = rteInsertTable;
+    window.rteInsertDivider = rteInsertDivider;
+    window.salvarTextos = salvarTextos;
+    window.resetarTextos = resetarTextos;
+    window.switchTextosLang = switchTextosLang;
+    window.filtrarCamposTextos = filtrarCamposTextos;
+    window.aiAutoFormat = aiAutoFormat;
+    window.uploadCapaImagem = uploadCapaImagem;
+    window.removerCapaImagem = removerCapaImagem;
 
     }); // DOMContentLoaded
   </script>
