@@ -7,6 +7,18 @@
   <title>Programas e Projetos – ASPROC</title>
   <meta name="description"
     content="Conheça os programas e projetos da ASPROC no Médio Juruá: Manejo do Pirarucu, Comércio Ribeirinho da Cidadania e Solidário, e Sanear Amazônia.">
+  <!-- Open Graph / WhatsApp / Telegram / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ASPROC">
+  <meta property="og:url" content="https://www.asproc.com.br/programas-projetos.html">
+  <meta property="og:title" content="Programas e Projetos – ASPROC">
+  <meta property="og:description"
+    content="Conheça os programas e projetos da ASPROC no Médio Juruá: Manejo do Pirarucu, Comércio Ribeirinho, Sanear Amazônia e muito mais.">
+  <meta property="og:image" content="https://www.asproc.com.br/og-programas-projetos.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://www.asproc.com.br/og-programas-projetos.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link
     href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,400&family=DM+Sans:wght@300;400;500;600&display=swap"
@@ -111,138 +123,138 @@
 
     /* ── NAVBAR ── */
     nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            padding: 0 5%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 70px;
-            background: rgba(10, 20, 10, .88);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(123, 201, 92, .12);
-            transition: all .35s
-        }
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 0 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+      background: rgba(10, 20, 10, .88);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(123, 201, 92, .12);
+      transition: all .35s
+    }
 
-        nav.scrolled {
-            background: rgba(8, 15, 8, .97);
-            height: 60px
-        }
+    nav.scrolled {
+      background: rgba(8, 15, 8, .97);
+      height: 60px
+    }
 
-        .nav-logo {
-            height: 44px;
-            object-fit: contain
-        }
+    .nav-logo {
+      height: 44px;
+      object-fit: contain
+    }
 
-        .nav-links {
-            display: flex;
-            gap: 1.8rem;
-            list-style: none
-        }
+    .nav-links {
+      display: flex;
+      gap: 1.8rem;
+      list-style: none
+    }
 
-        .nav-links a {
-            color: rgba(245, 240, 232, .7);
-            text-decoration: none;
-            font-size: .82rem;
-            font-weight: 500;
-            letter-spacing: .08em;
-            text-transform: uppercase;
-            transition: color .3s;
-            position: relative
-        }
+    .nav-links a {
+      color: rgba(245, 240, 232, .7);
+      text-decoration: none;
+      font-size: .82rem;
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      transition: color .3s;
+      position: relative
+    }
 
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--verde-neon);
-            transition: width .3s
-        }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--verde-neon);
+      transition: width .3s
+    }
 
-        .nav-links a:hover,
-        .nav-links a.ativo {
-            color: var(--verde-neon)
-        }
+    .nav-links a:hover,
+    .nav-links a.ativo {
+      color: var(--verde-neon)
+    }
 
-        .nav-links a:hover::after,
-        .nav-links a.ativo::after {
-            width: 100%
-        }
+    .nav-links a:hover::after,
+    .nav-links a.ativo::after {
+      width: 100%
+    }
 
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 1rem
-        }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem
+    }
 
-        .nav-cta {
-            background: var(--verde-claro) !important;
-            color: #fff !important;
-            padding: .45rem 1.1rem;
-            border-radius: 30px;
-            font-weight: 600 !important;
-            font-size: .82rem !important;
-            transition: background .3s, transform .2s !important
-        }
+    .nav-cta {
+      background: var(--verde-claro) !important;
+      color: #fff !important;
+      padding: .45rem 1.1rem;
+      border-radius: 30px;
+      font-weight: 600 !important;
+      font-size: .82rem !important;
+      transition: background .3s, transform .2s !important
+    }
 
-        .nav-cta:hover {
-            background: var(--verde-neon) !important;
-            transform: translateY(-2px);
-            color: var(--escuro) !important
-        }
+    .nav-cta:hover {
+      background: var(--verde-neon) !important;
+      transform: translateY(-2px);
+      color: var(--escuro) !important
+    }
 
-        .nav-cta::after {
-            display: none !important
-        }
+    .nav-cta::after {
+      display: none !important
+    }
 
-        .lang-switcher {
-            display: flex;
-            gap: 4px
-        }
+    .lang-switcher {
+      display: flex;
+      gap: 4px
+    }
 
-        .lang-btn {
-            background: none;
-            border: 1px solid rgba(123, 201, 92, .3);
-            color: rgba(245, 240, 232, .5);
-            font-size: .72rem;
-            font-weight: 600;
-            padding: 3px 7px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all .25s;
-            font-family: 'DM Sans', sans-serif
-        }
+    .lang-btn {
+      background: none;
+      border: 1px solid rgba(123, 201, 92, .3);
+      color: rgba(245, 240, 232, .5);
+      font-size: .72rem;
+      font-weight: 600;
+      padding: 3px 7px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all .25s;
+      font-family: 'DM Sans', sans-serif
+    }
 
-        .lang-btn:hover,
-        .lang-btn.active {
-            border-color: var(--verde-neon);
-            color: var(--verde-neon);
-            background: rgba(123, 201, 92, .08)
-        }
+    .lang-btn:hover,
+    .lang-btn.active {
+      border-color: var(--verde-neon);
+      color: var(--verde-neon);
+      background: rgba(123, 201, 92, .08)
+    }
 
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            gap: 5px;
-            cursor: pointer;
-            padding: 4px
-        }
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px
+    }
 
-        .hamburger span {
-            width: 26px;
-            height: 2px;
-            background: var(--branco);
-            border-radius: 2px;
-            transition: all .3s
-        }
+    .hamburger span {
+      width: 26px;
+      height: 2px;
+      background: var(--branco);
+      border-radius: 2px;
+      transition: all .3s
+    }
 
-        /* HERO */
+    /* HERO */
 
     .hero-projetos {
       min-height: 100vh;
@@ -1368,7 +1380,7 @@
       transition: all .3s
     }
 
-        .card-rios {
+    .card-rios {
       background: linear-gradient(135deg, #051520 0%, #082d20 100%);
     }
 
@@ -1465,7 +1477,7 @@
       opacity: 1;
     }
 
-        .card-polpas {
+    .card-polpas {
       background: linear-gradient(135deg, #0d1f10 0%, #1a1005 100%);
     }
 
@@ -1740,7 +1752,9 @@
   <!-- ── NAVBAR ── -->
   <!-- NAV -->
   <nav id="navbar">
-    <img src="data:image/png;base64,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" alt="ASPROC" class="nav-logo">
+    <img
+      src="data:image/png;base64,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"
+      alt="ASPROC" class="nav-logo">
     <ul class="nav-links" id="navLinks">
       <li><a href="index.html">In&#237;cio</a></li>
       <li><a href="sobre.html">Sobre</a></li>
@@ -1761,10 +1775,10 @@
   </nav>
 
   <!-- ── MOBILE DRAWER ── -->
-  
+
 
   <!-- ── MOBILE BOTTOM TAB BAR ── -->
-  
+
 
   <!-- ── HERO ── -->
   <section class="hero-projetos">
@@ -1910,16 +1924,14 @@
             Conhecer o projeto <span>→</span>
           </a>
           <div class="projeto-share-row">
-            <a href="https://wa.me/?text=🐟%20Conheça%20o%20Manejo%20do%20Pirarucu%20no%20Médio%20Juruá%20–%20ASPROC%3A%20referência%20nacional%20em%20manejo%20comunitário%20do%20maior%20peixe%20de%20escamas%20da%20Amazônia!%0A%0Ahttp%3A%2F%2Fwww.asproc.com.br%2Fprojeto-manejo-pirarucu.html"
-              target="_blank" class="btn-share-wpp">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
+            <button class="btn-share-wpp"
+              onclick="shareWhatsApp('http://www.asproc.com.br/projeto-manejo-pirarucu.html')"><svg width="14"
+                height="14" viewBox="0 0 24 24" fill="white">
                 <path
                   d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
                 <path
                   d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.121 1.532 5.853L.057 23.636a.5.5 0 0 0 .601.628l5.998-1.57A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.959 0-3.782-.574-5.32-1.562l-.38-.232-3.961 1.037 1.044-3.875-.249-.389A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
-              </svg>
-              WhatsApp
-            </a>
+              </svg> WhatsApp</button>
             <button class="btn-share-copy"
               onclick="copyProjectLink('http://www.asproc.com.br/projeto-manejo-pirarucu.html', this)">🔗 Copiar
               link</button>
@@ -2014,16 +2026,14 @@
             Conhecer o projeto <span>→</span>
           </a>
           <div class="projeto-share-row">
-            <a href="https://wa.me/?text=🛶%20Conheça%20o%20Comércio%20Ribeirinho%20da%20ASPROC%3A%20levando%20abastecimento%20e%20economia%20às%20comunidades%20do%20Médio%20Juruá!%0A%0Ahttp%3A%2F%2Fwww.asproc.com.br%2Fprojeto-comercio-ribeirinho.html"
-              target="_blank" class="btn-share-wpp">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
+            <button class="btn-share-wpp"
+              onclick="shareWhatsApp('http://www.asproc.com.br/projeto-comercio-ribeirinho.html')"><svg width="14"
+                height="14" viewBox="0 0 24 24" fill="white">
                 <path
                   d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
                 <path
                   d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.121 1.532 5.853L.057 23.636a.5.5 0 0 0 .601.628l5.998-1.57A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.959 0-3.782-.574-5.32-1.562l-.38-.232-3.961 1.037 1.044-3.875-.249-.389A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
-              </svg>
-              WhatsApp
-            </a>
+              </svg> WhatsApp</button>
             <button class="btn-share-copy"
               onclick="copyProjectLink('http://www.asproc.com.br/projeto-comercio-ribeirinho.html', this)">🔗 Copiar
               link</button>
@@ -2123,16 +2133,13 @@
             Conhecer o projeto <span>→</span>
           </a>
           <div class="projeto-share-row">
-            <a href="https://wa.me/?text=💧%20Conheça%20o%20Projeto%20Sanear%20Amazônia%20–%20ASPROC%3A%20água%20tratada%20e%20saneamento%20básico%20para%20comunidades%20ribeirinhas!%0A%0Ahttp%3A%2F%2Fwww.asproc.com.br%2Fprojeto-sanear.html"
-              target="_blank" class="btn-share-wpp">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
+            <button class="btn-share-wpp" onclick="shareWhatsApp('http://www.asproc.com.br/projeto-sanear.html')"><svg
+                width="14" height="14" viewBox="0 0 24 24" fill="white">
                 <path
                   d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
                 <path
                   d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.121 1.532 5.853L.057 23.636a.5.5 0 0 0 .601.628l5.998-1.57A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.959 0-3.782-.574-5.32-1.562l-.38-.232-3.961 1.037 1.044-3.875-.249-.389A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
-              </svg>
-              WhatsApp
-            </a>
+              </svg> WhatsApp</button>
             <button class="btn-share-copy"
               onclick="copyProjectLink('http://www.asproc.com.br/projeto-sanear.html', this)">🔗 Copiar link</button>
             <span class="share-copied-tip">✓ Copiado!</span>
@@ -2325,16 +2332,13 @@
             Visitar o site <span>→</span>
           </a>
           <div class="projeto-share-row">
-            <a href="https://wa.me/?text=🍴%20Conheça%20o%20Gosto%20da%20Amazônia%20–%20ASPROC%3A%20pirarucu%20processado%20com%20qualidade%20e%20rastreabilidade%20diretamente%20do%20Médio%20Juruá!%0A%0Ahttps%3A%2F%2Fgostodaamazonia.com.br"
-              target="_blank" class="btn-share-wpp">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
+            <button class="btn-share-wpp" onclick="shareWhatsApp('https://gostodaamazonia.com.br')"><svg width="14"
+                height="14" viewBox="0 0 24 24" fill="white">
                 <path
                   d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
                 <path
                   d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.121 1.532 5.853L.057 23.636a.5.5 0 0 0 .601.628l5.998-1.57A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.959 0-3.782-.574-5.32-1.562l-.38-.232-3.961 1.037 1.044-3.875-.249-.389A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
-              </svg>
-              WhatsApp
-            </a>
+              </svg> WhatsApp</button>
             <button class="btn-share-copy" onclick="copyProjectLink('https://gostodaamazonia.com.br', this)">🔗 Copiar
               link</button>
             <span class="share-copied-tip">✓ Copiado!</span>
@@ -2493,16 +2497,14 @@
             Ver projeto completo <span>→</span>
           </a>
           <div class="projeto-share-row">
-            <a href="https://wa.me/?text=🍊%20Conheça%20a%20Fábrica%20de%20Polpas%20de%20Frutas%20da%20ASPROC%3A%20frutos%20da%20Amazônia%20com%20mais%20valor%20agregado%20e%20acesso%20a%20novos%20mercados!%0A%0Ahttp%3A%2F%2Fwww.asproc.com.br%2Ffabrica-polpas-de-frutas.html"
-              target="_blank" class="btn-share-wpp">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
+            <button class="btn-share-wpp"
+              onclick="shareWhatsApp('http://www.asproc.com.br/fabrica-polpas-de-frutas.html')"><svg width="14"
+                height="14" viewBox="0 0 24 24" fill="white">
                 <path
                   d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
                 <path
                   d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.121 1.532 5.853L.057 23.636a.5.5 0 0 0 .601.628l5.998-1.57A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.959 0-3.782-.574-5.32-1.562l-.38-.232-3.961 1.037 1.044-3.875-.249-.389A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
-              </svg>
-              WhatsApp
-            </a>
+              </svg> WhatsApp</button>
             <button class="btn-share-copy"
               onclick="copyProjectLink('http://www.asproc.com.br/fabrica-polpas-de-frutas.html', this)">🔗 Copiar
               link</button>
@@ -2648,16 +2650,14 @@
             Ver projeto completo <span>→</span>
           </a>
           <div class="projeto-share-row">
-            <a href="https://wa.me/?text=🫐%20Conheça%20o%20projeto%20Frutos%20da%20Floresta%20–%20ASPROC%3A%20valorização%20do%20açaí%20e%20outros%20frutos%20amazônicos%20com%20sustentabilidade!%0A%0Ahttp%3A%2F%2Fwww.asproc.com.br%2Fprojeto-frutos-da-floresta.html"
-              target="_blank" class="btn-share-wpp">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
+            <button class="btn-share-wpp"
+              onclick="shareWhatsApp('http://www.asproc.com.br/projeto-frutos-da-floresta.html')"><svg width="14"
+                height="14" viewBox="0 0 24 24" fill="white">
                 <path
                   d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
                 <path
                   d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.121 1.532 5.853L.057 23.636a.5.5 0 0 0 .601.628l5.998-1.57A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.959 0-3.782-.574-5.32-1.562l-.38-.232-3.961 1.037 1.044-3.875-.249-.389A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
-              </svg>
-              WhatsApp
-            </a>
+              </svg> WhatsApp</button>
             <button class="btn-share-copy"
               onclick="copyProjectLink('http://www.asproc.com.br/projeto-frutos-da-floresta.html', this)">🔗 Copiar
               link</button>
@@ -2781,16 +2781,14 @@
             Ver projeto completo <span>→</span>
           </a>
           <div class="projeto-share-row">
-            <a href="https://wa.me/?text=🎣%20Conheça%20a%20Pesca%20Justa%20e%20Sustentável%20–%20ASPROC%3A%20pescadores%20ribeirinhos%20com%20renda%20justa%20e%20pesca%20responsável%20na%20Amazônia!%0A%0Ahttp%3A%2F%2Fwww.asproc.com.br%2Fpesca-justa-sustentavel.html"
-              target="_blank" class="btn-share-wpp">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
+            <button class="btn-share-wpp"
+              onclick="shareWhatsApp('http://www.asproc.com.br/pesca-justa-sustentavel.html')"><svg width="14"
+                height="14" viewBox="0 0 24 24" fill="white">
                 <path
                   d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
                 <path
                   d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.121 1.532 5.853L.057 23.636a.5.5 0 0 0 .601.628l5.998-1.57A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.959 0-3.782-.574-5.32-1.562l-.38-.232-3.961 1.037 1.044-3.875-.249-.389A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
-              </svg>
-              WhatsApp
-            </a>
+              </svg> WhatsApp</button>
             <button class="btn-share-copy"
               onclick="copyProjectLink('http://www.asproc.com.br/pesca-justa-sustentavel.html', this)">🔗 Copiar
               link</button>
@@ -2933,16 +2931,14 @@
             Ver projeto completo <span>→</span>
           </a>
           <div class="projeto-share-row">
-            <a href="https://wa.me/?text=🌿%20Conheça%20o%20Juruá%20Sustentável%20e%20Solidário%20–%20ASPROC%3A%20o%20maior%20projeto%20em%20escala%20da%20organização%2C%20com%20R%24%2038%2C9%20mi%20investidos%20nas%20cadeias%20socioprodutivas%20da%20Amazônia!%0A%0Ahttp%3A%2F%2Fwww.asproc.com.br%2Fprojeto-jurua-sustentavel-solidario.html"
-              target="_blank" class="btn-share-wpp">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
+            <button class="btn-share-wpp"
+              onclick="shareWhatsApp('http://www.asproc.com.br/projeto-jurua-sustentavel-solidario.html')"><svg
+                width="14" height="14" viewBox="0 0 24 24" fill="white">
                 <path
                   d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
                 <path
                   d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.121 1.532 5.853L.057 23.636a.5.5 0 0 0 .601.628l5.998-1.57A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.959 0-3.782-.574-5.32-1.562l-.38-.232-3.961 1.037 1.044-3.875-.249-.389A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
-              </svg>
-              WhatsApp
-            </a>
+              </svg> WhatsApp</button>
             <button class="btn-share-copy"
               onclick="copyProjectLink('http://www.asproc.com.br/projeto-jurua-sustentavel-solidario.html', this)">🔗
               Copiar link</button>
@@ -3057,16 +3053,13 @@
             Conhecer o projeto <span>→</span>
           </a>
           <div class="projeto-share-row">
-            <a href="https://wa.me/?text=🌊%20Conheça%20o%20Projeto%20Rios%20Vivos%20da%20ASPROC%3A%20gestão%20de%20resíduos%20e%20conscientização%20ambiental%20em%20comunidades%20ribeirinhas.%20Já%20retiramos%203.000%20kg%20de%20lixo%20dos%20rios!%0A%0Ahttp%3A%2F%2Fwww.asproc.com.br%2Frios-vivos.html"
-              target="_blank" class="btn-share-wpp">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
+            <button class="btn-share-wpp" onclick="shareWhatsApp('http://www.asproc.com.br/rios-vivos.html')"><svg
+                width="14" height="14" viewBox="0 0 24 24" fill="white">
                 <path
                   d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
                 <path
                   d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.121 1.532 5.853L.057 23.636a.5.5 0 0 0 .601.628l5.998-1.57A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.959 0-3.782-.574-5.32-1.562l-.38-.232-3.961 1.037 1.044-3.875-.249-.389A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
-              </svg>
-              WhatsApp
-            </a>
+              </svg> WhatsApp</button>
             <button class="btn-share-copy"
               onclick="copyProjectLink('http://www.asproc.com.br/rios-vivos.html', this)">🔗 Copiar link</button>
             <span class="share-copied-tip">✓ Copiado!</span>
@@ -3197,6 +3190,14 @@
   </footer>
 
   <script>
+    // Compartilhar via WhatsApp com pré-visualização OG
+    // O WhatsApp lê as meta tags og:image / og:title / og:description da URL passada.
+    // Por isso o link enviado aponta para a página do projeto (que deve ter essas tags no <head>).
+    function shareWhatsApp(url) {
+      const wppUrl = 'https://wa.me/?text=' + encodeURIComponent(url);
+      window.open(wppUrl, '_blank', 'noopener');
+    }
+
     // Compartilhar projeto: copia link e mostra feedback
     function copyProjectLink(url, btn) {
       navigator.clipboard.writeText(url).then(() => {
@@ -3317,7 +3318,7 @@
 
 
     function toggleMenu() { document.getElementById('navLinks').classList.toggle('open') }
-    function setLang(lang) { document.querySelectorAll('.lang-btn').forEach((b,i) => b.classList.toggle('active', ['pt','en','es'][i]===lang)) }
+    function setLang(lang) { document.querySelectorAll('.lang-btn').forEach((b, i) => b.classList.toggle('active', ['pt', 'en', 'es'][i] === lang)) }
     // Close on escape
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && menuOpen) closeMobMenu(); });
 
