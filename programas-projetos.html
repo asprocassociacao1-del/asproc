@@ -111,99 +111,139 @@
 
     /* ── NAVBAR ── */
     nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      padding: 0 5%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 70px;
-      background: rgba(10, 20, 10, .85);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(123, 201, 92, .12);
-      transition: all .35s;
-    }
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 0 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+            background: rgba(10, 20, 10, .88);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(123, 201, 92, .12);
+            transition: all .35s
+        }
 
-    nav.scrolled {
-      background: rgba(8, 15, 8, .97);
-      height: 60px;
-    }
+        nav.scrolled {
+            background: rgba(8, 15, 8, .97);
+            height: 60px
+        }
 
-    .nav-logo-text {
-      font-family: 'Fraunces', serif;
-      font-size: 1.4rem;
-      font-weight: 900;
-      color: var(--verde-neon);
-      text-decoration: none;
-      letter-spacing: .02em;
-    }
+        .nav-logo {
+            height: 44px;
+            object-fit: contain
+        }
 
-    .nav-logo-text span {
-      color: var(--dourado);
-    }
+        .nav-links {
+            display: flex;
+            gap: 1.8rem;
+            list-style: none
+        }
 
-    .nav-links {
-      display: flex;
-      gap: 1.8rem;
-      list-style: none;
-    }
+        .nav-links a {
+            color: rgba(245, 240, 232, .7);
+            text-decoration: none;
+            font-size: .82rem;
+            font-weight: 500;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            transition: color .3s;
+            position: relative
+        }
 
-    .nav-links a {
-      color: rgba(245, 240, 232, .7);
-      text-decoration: none;
-      font-size: .82rem;
-      font-weight: 500;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      transition: color .3s;
-      position: relative;
-    }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--verde-neon);
+            transition: width .3s
+        }
 
-    .nav-links a::after {
-      content: '';
-      position: absolute;
-      bottom: -4px;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: var(--verde-neon);
-      transition: width .3s;
-    }
+        .nav-links a:hover,
+        .nav-links a.ativo {
+            color: var(--verde-neon)
+        }
 
-    .nav-links a:hover,
-    .nav-links a.ativo {
-      color: var(--verde-neon);
-    }
+        .nav-links a:hover::after,
+        .nav-links a.ativo::after {
+            width: 100%
+        }
 
-    .nav-links a:hover::after,
-    .nav-links a.ativo::after {
-      width: 100%;
-    }
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem
+        }
 
-    .nav-cta {
-      background: var(--verde-claro);
-      color: white !important;
-      padding: .45rem 1.1rem;
-      border-radius: 30px;
-      font-weight: 600 !important;
-      font-size: .82rem !important;
-      transition: background .3s, transform .2s !important;
-    }
+        .nav-cta {
+            background: var(--verde-claro) !important;
+            color: #fff !important;
+            padding: .45rem 1.1rem;
+            border-radius: 30px;
+            font-weight: 600 !important;
+            font-size: .82rem !important;
+            transition: background .3s, transform .2s !important
+        }
 
-    .nav-cta:hover {
-      background: var(--verde-neon) !important;
-      transform: translateY(-2px);
-      color: var(--escuro) !important;
-    }
+        .nav-cta:hover {
+            background: var(--verde-neon) !important;
+            transform: translateY(-2px);
+            color: var(--escuro) !important
+        }
 
-    .nav-cta::after {
-      display: none !important;
-    }
+        .nav-cta::after {
+            display: none !important
+        }
 
-    /* ── HERO ── */
+        .lang-switcher {
+            display: flex;
+            gap: 4px
+        }
+
+        .lang-btn {
+            background: none;
+            border: 1px solid rgba(123, 201, 92, .3);
+            color: rgba(245, 240, 232, .5);
+            font-size: .72rem;
+            font-weight: 600;
+            padding: 3px 7px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all .25s;
+            font-family: 'DM Sans', sans-serif
+        }
+
+        .lang-btn:hover,
+        .lang-btn.active {
+            border-color: var(--verde-neon);
+            color: var(--verde-neon);
+            background: rgba(123, 201, 92, .08)
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 4px
+        }
+
+        .hamburger span {
+            width: 26px;
+            height: 2px;
+            background: var(--branco);
+            border-radius: 2px;
+            transition: all .3s
+        }
+
+        /* HERO */
+
     .hero-projetos {
       min-height: 100vh;
       position: relative;
@@ -1312,297 +1352,23 @@
     ══════════════════════════════════════ */
 
     /* Hamburger button — only on mobile */
-    #mob-toggle {
+    .hamburger {
       display: none;
       flex-direction: column;
-      justify-content: center;
       gap: 5px;
-      width: 40px;
-      height: 40px;
-      background: rgba(123, 201, 92, .1);
-      border: 1px solid rgba(123, 201, 92, .2);
-      border-radius: 10px;
       cursor: pointer;
-      padding: 0 10px;
-      transition: background .3s;
-      flex-shrink: 0;
+      padding: 4px
     }
 
-    #mob-toggle span {
-      display: block;
+    .hamburger span {
+      width: 26px;
       height: 2px;
-      background: var(--verde-neon);
+      background: var(--branco);
       border-radius: 2px;
-      transition: transform .35s cubic-bezier(.25, .46, .45, .94), opacity .25s, width .3s;
-      transform-origin: center;
+      transition: all .3s
     }
 
-    #mob-toggle span:nth-child(1) {
-      width: 100%;
-    }
-
-    #mob-toggle span:nth-child(2) {
-      width: 70%;
-    }
-
-    #mob-toggle span:nth-child(3) {
-      width: 85%;
-    }
-
-    #mob-toggle.open span:nth-child(1) {
-      transform: translateY(7px) rotate(45deg);
-      width: 100%;
-    }
-
-    #mob-toggle.open span:nth-child(2) {
-      opacity: 0;
-      transform: scaleX(0);
-    }
-
-    #mob-toggle.open span:nth-child(3) {
-      transform: translateY(-7px) rotate(-45deg);
-      width: 100%;
-    }
-
-    /* Full-screen overlay drawer */
-    #mob-drawer {
-      position: fixed;
-      inset: 0;
-      z-index: 999;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity .35s;
-    }
-
-    #mob-drawer.open {
-      pointer-events: all;
-      opacity: 1;
-    }
-
-    /* Backdrop blur layer */
-    #mob-backdrop {
-      position: absolute;
-      inset: 0;
-      background: rgba(5, 12, 5, .88);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-    }
-
-    /* The actual panel sliding up from bottom */
-    #mob-panel {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: linear-gradient(180deg, rgba(18, 30, 18, .97) 0%, rgba(10, 18, 10, 1) 100%);
-      border-top: 1px solid rgba(123, 201, 92, .18);
-      border-radius: 24px 24px 0 0;
-      padding: 0 0 env(safe-area-inset-bottom, 1.5rem);
-      transform: translateY(110%);
-      transition: transform .45s cubic-bezier(.25, .46, .45, .94);
-    }
-
-    #mob-drawer.open #mob-panel {
-      transform: translateY(0);
-    }
-
-    /* Drag handle */
-    .mob-handle {
-      width: 40px;
-      height: 4px;
-      background: rgba(123, 201, 92, .25);
-      border-radius: 2px;
-      margin: 1rem auto .8rem;
-    }
-
-    /* Menu header inside panel */
-    .mob-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 1.5rem 1rem;
-      border-bottom: 1px solid rgba(123, 201, 92, .08);
-    }
-
-    .mob-brand {
-      font-family: 'Fraunces', serif;
-      font-size: 1.3rem;
-      font-weight: 900;
-      color: var(--verde-neon);
-    }
-
-    .mob-brand em {
-      color: var(--dourado);
-      font-style: normal;
-    }
-
-    .mob-close {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, .06);
-      border: 1px solid rgba(255, 255, 255, .1);
-      color: rgba(245, 240, 232, .7);
-      font-size: 1.1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: background .25s, color .25s;
-    }
-
-    .mob-close:hover {
-      background: rgba(123, 201, 92, .15);
-      color: var(--verde-neon);
-    }
-
-    /* Nav links in panel */
-    .mob-nav {
-      list-style: none;
-      padding: .6rem 0;
-    }
-
-    .mob-nav li a {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: .95rem 1.5rem;
-      color: rgba(245, 240, 232, .75);
-      text-decoration: none;
-      font-size: 1rem;
-      font-weight: 500;
-      letter-spacing: .03em;
-      transition: background .2s, color .2s, padding-left .25s;
-      border-left: 2px solid transparent;
-      position: relative;
-    }
-
-    .mob-nav li a:hover,
-    .mob-nav li a.ativo {
-      color: var(--verde-neon);
-      background: rgba(123, 201, 92, .06);
-      padding-left: 2rem;
-      border-left-color: var(--verde-neon);
-    }
-
-    .mob-nav li a .mob-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: .9rem;
-      background: rgba(255, 255, 255, .05);
-      flex-shrink: 0;
-      transition: background .2s;
-    }
-
-    .mob-nav li a:hover .mob-icon,
-    .mob-nav li a.ativo .mob-icon {
-      background: rgba(123, 201, 92, .15);
-    }
-
-    .mob-nav li a .mob-arrow {
-      margin-left: auto;
-      font-size: .7rem;
-      opacity: .35;
-      transition: opacity .2s, transform .2s;
-    }
-
-    .mob-nav li a:hover .mob-arrow {
-      opacity: .8;
-      transform: translateX(3px);
-    }
-
-    /* Stagger entrance for each item */
-    .mob-nav li {
-      opacity: 0;
-      transform: translateX(-12px);
-      transition: opacity .3s, transform .3s;
-    }
-
-    #mob-drawer.open .mob-nav li:nth-child(1) {
-      opacity: 1;
-      transform: none;
-      transition-delay: .08s;
-    }
-
-    #mob-drawer.open .mob-nav li:nth-child(2) {
-      opacity: 1;
-      transform: none;
-      transition-delay: .13s;
-    }
-
-    #mob-drawer.open .mob-nav li:nth-child(3) {
-      opacity: 1;
-      transform: none;
-      transition-delay: .18s;
-    }
-
-    #mob-drawer.open .mob-nav li:nth-child(4) {
-      opacity: 1;
-      transform: none;
-      transition-delay: .23s;
-    }
-
-    #mob-drawer.open .mob-nav li:nth-child(5) {
-      opacity: 1;
-      transform: none;
-      transition-delay: .28s;
-    }
-
-    #mob-drawer.open .mob-nav li:nth-child(6) {
-      opacity: 1;
-      transform: none;
-      transition-delay: .33s;
-    }
-
-    #mob-drawer.open .mob-nav li:nth-child(7) {
-      opacity: 1;
-      transform: none;
-      transition-delay: .38s;
-    }
-
-    /* CTA button row at bottom of panel */
-    .mob-cta-row {
-      padding: 1rem 1.5rem 1.5rem;
-      border-top: 1px solid rgba(123, 201, 92, .08);
-      opacity: 0;
-      transform: translateY(8px);
-      transition: opacity .3s .45s, transform .3s .45s;
-    }
-
-    #mob-drawer.open .mob-cta-row {
-      opacity: 1;
-      transform: none;
-    }
-
-    .mob-cta-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: .6rem;
-      width: 100%;
-      background: var(--verde-claro);
-      color: white;
-      text-decoration: none;
-      padding: .9rem;
-      border-radius: 14px;
-      font-weight: 700;
-      font-size: .9rem;
-      letter-spacing: .04em;
-      transition: background .3s, transform .2s;
-    }
-
-    .mob-cta-btn:hover {
-      background: var(--verde-neon);
-      color: var(--escuro);
-      transform: scale(1.02);
-    }
-
-    /* ── RIOS VIVOS THEME ── */
-    .card-rios {
+        .card-rios {
       background: linear-gradient(135deg, #051520 0%, #082d20 100%);
     }
 
@@ -1699,93 +1465,7 @@
       opacity: 1;
     }
 
-    /* Bottom tab bar — persistent, always visible on mobile */
-    #mob-tabbar {
-      display: none;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 998;
-      background: rgba(10, 18, 10, .95);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-top: 1px solid rgba(123, 201, 92, .1);
-      padding: .5rem 0 env(safe-area-inset-bottom, .5rem);
-      flex-direction: row;
-      justify-content: space-around;
-      align-items: center;
-    }
-
-    .tab-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: .25rem;
-      padding: .2rem .8rem;
-      text-decoration: none;
-      color: rgba(245, 240, 232, .45);
-      transition: color .25s;
-      cursor: pointer;
-      background: none;
-      border: none;
-      flex: 1;
-    }
-
-    .tab-item.active,
-    .tab-item:hover {
-      color: var(--verde-neon);
-    }
-
-    .tab-icon {
-      font-size: 1.3rem;
-      line-height: 1;
-      transition: transform .25s;
-    }
-
-    .tab-item.active .tab-icon,
-    .tab-item:hover .tab-icon {
-      transform: translateY(-2px);
-    }
-
-    .tab-label {
-      font-size: .58rem;
-      font-weight: 600;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-    }
-
-    /* Active pip indicator */
-    .tab-pip {
-      width: 4px;
-      height: 4px;
-      border-radius: 50%;
-      background: var(--verde-neon);
-      opacity: 0;
-      transition: opacity .25s;
-    }
-
-    .tab-item.active .tab-pip {
-      opacity: 1;
-    }
-
-    /* Push content up on mobile so tabbar doesn't cover it */
-    @media (max-width: 900px) {
-      #mob-toggle {
-        display: flex;
-      }
-
-      #mob-tabbar {
-        display: flex;
-      }
-
-      body {
-        padding-bottom: 70px;
-      }
-    }
-
-    /* ── FÁBRICA DE POLPAS THEME ── */
-    .card-polpas {
+        .card-polpas {
       background: linear-gradient(135deg, #0d1f10 0%, #1a1005 100%);
     }
 
@@ -2058,71 +1738,33 @@
   <div id="progress-bar"></div>
 
   <!-- ── NAVBAR ── -->
+  <!-- NAV -->
   <nav id="navbar">
-    <a href="index.html" class="nav-logo-text">ASPROC<span>.</span></a>
-    <ul class="nav-links">
-      <li><a href="index.html">Início</a></li>
+    <img src="data:image/png;base64,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" alt="ASPROC" class="nav-logo">
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">In&#237;cio</a></li>
       <li><a href="sobre.html">Sobre</a></li>
-      <li><a href="#" class="ativo">Projetos</a></li>
-      <li><a href="noticias.html">Notícias</a></li>
+      <li><a href="noticias.html">Not&#237;cias</a></li>
+      <li><a href="programas-projetos.html" class="ativo">Projetos</a></li>
       <li><a href="avisos.html">Avisos</a></li>
-      <li><a href="https://loja.asproc.org.br" target="_blank" class="nav-cta">🛒 Loja</a></li>
+      <li><a href="trabalhe-conosco.html">Trabalhe Conosco</a></li>
+      <li><a href="https://loja.asproc.org.br/" class="nav-cta" target="_blank">Loja Virtual</a></li>
     </ul>
-    <!-- Mobile hamburger -->
-    <button id="mob-toggle" aria-label="Menu" onclick="toggleMobMenu()">
-      <span></span><span></span><span></span>
-    </button>
+    <div class="nav-right">
+      <div class="lang-switcher">
+        <button class="lang-btn active" onclick="setLang('pt')">PT</button>
+        <button class="lang-btn" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('es')">ES</button>
+      </div>
+      <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+    </div>
   </nav>
 
   <!-- ── MOBILE DRAWER ── -->
-  <div id="mob-drawer" role="dialog" aria-modal="true" aria-label="Menu de navegação">
-    <div id="mob-backdrop" onclick="closeMobMenu()"></div>
-    <div id="mob-panel">
-      <div class="mob-handle"></div>
-      <div class="mob-header">
-        <div class="mob-brand">ASPROC<em>.</em></div>
-        <button class="mob-close" onclick="closeMobMenu()" aria-label="Fechar menu">✕</button>
-      </div>
-      <ul class="mob-nav">
-        <li><a href="index.html"><span class="mob-icon">🏠</span>Início<span class="mob-arrow">›</span></a></li>
-        <li><a href="sobre.html"><span class="mob-icon">🌿</span>Sobre a ASPROC<span class="mob-arrow">›</span></a></li>
-        <li><a href="#" class="ativo"><span class="mob-icon">📋</span>Projetos<span class="mob-arrow">›</span></a></li>
-        <li><a href="noticias.html"><span class="mob-icon">📰</span>Notícias<span class="mob-arrow">›</span></a></li>
-        <li><a href="avisos.html"><span class="mob-icon">📢</span>Avisos<span class="mob-arrow">›</span></a></li>
-        <li><a href="trabalhe-conosco.html"><span class="mob-icon">👥</span>Trabalhe Conosco<span
-              class="mob-arrow">›</span></a></li>
-        <li><a href="https://loja.asproc.org.br" target="_blank"><span class="mob-icon">🛒</span>Loja Online<span
-              class="mob-arrow">›</span></a></li>
-      </ul>
-      <div class="mob-cta-row">
-        <a href="https://loja.asproc.org.br" target="_blank" class="mob-cta-btn">🌿 Visitar a Loja ASPROC</a>
-      </div>
-    </div>
-  </div>
+  
 
   <!-- ── MOBILE BOTTOM TAB BAR ── -->
-  <nav id="mob-tabbar" aria-label="Navegação rápida">
-    <a href="index.html" class="tab-item">
-      <span class="tab-icon">🏠</span>
-      <span class="tab-label">Início</span>
-      <span class="tab-pip"></span>
-    </a>
-    <a href="#" class="tab-item active">
-      <span class="tab-icon">📋</span>
-      <span class="tab-label">Projetos</span>
-      <span class="tab-pip"></span>
-    </a>
-    <a href="noticias.html" class="tab-item">
-      <span class="tab-icon">📰</span>
-      <span class="tab-label">Notícias</span>
-      <span class="tab-pip"></span>
-    </a>
-    <button class="tab-item" onclick="toggleMobMenu()" aria-label="Abrir menu completo">
-      <span class="tab-icon">☰</span>
-      <span class="tab-label">Menu</span>
-      <span class="tab-pip"></span>
-    </button>
-  </nav>
+  
 
   <!-- ── HERO ── -->
   <section class="hero-projetos">
@@ -3670,25 +3312,12 @@
     }
 
     // ── MOBILE MENU ──
-    const mobDrawer = document.getElementById('mob-drawer');
-    const mobToggle = document.getElementById('mob-toggle');
-    let menuOpen = false;
 
-    function toggleMobMenu() {
-      menuOpen ? closeMobMenu() : openMobMenu();
-    }
-    function openMobMenu() {
-      menuOpen = true;
-      mobDrawer.classList.add('open');
-      mobToggle.classList.add('open');
-      document.body.style.overflow = 'hidden';
-    }
-    function closeMobMenu() {
-      menuOpen = false;
-      mobDrawer.classList.remove('open');
-      mobToggle.classList.remove('open');
-      document.body.style.overflow = '';
-    }
+
+
+
+    function toggleMenu() { document.getElementById('navLinks').classList.toggle('open') }
+    function setLang(lang) { document.querySelectorAll('.lang-btn').forEach((b,i) => b.classList.toggle('active', ['pt','en','es'][i]===lang)) }
     // Close on escape
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && menuOpen) closeMobMenu(); });
 

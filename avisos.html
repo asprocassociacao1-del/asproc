@@ -92,16 +92,15 @@
             align-items: center;
             justify-content: space-between;
             height: 70px;
-            background: rgba(245, 240, 232, 0.96);
+            background: rgba(10, 20, 10, .88);
             backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(45, 106, 45, .12);
-            box-shadow: 0 2px 18px rgba(0, 0, 0, .08);
-            transition: all .3s
+            border-bottom: 1px solid rgba(123, 201, 92, .12);
+            transition: all .35s
         }
 
         nav.scrolled {
-            height: 62px;
-            box-shadow: 0 4px 28px rgba(0, 0, 0, .13)
+            background: rgba(8, 15, 8, .97);
+            height: 60px
         }
 
         .nav-logo {
@@ -111,42 +110,40 @@
 
         .nav-links {
             display: flex;
-            gap: .15rem;
-            list-style: none;
-            align-items: center
+            gap: 1.8rem;
+            list-style: none
         }
 
         .nav-links a {
-            color: #1a2a1a;
+            color: rgba(245, 240, 232, .7);
             text-decoration: none;
-            font-size: .78rem;
-            font-weight: 600;
-            letter-spacing: .07em;
+            font-size: .82rem;
+            font-weight: 500;
+            letter-spacing: .08em;
             text-transform: uppercase;
-            padding: .42rem .8rem;
-            border-radius: 7px;
-            transition: all .25s;
+            transition: color .3s;
             position: relative
         }
 
-        .nav-links a:hover {
-            color: var(--verde);
-            background: rgba(74, 158, 63, .09)
-        }
-
-        .nav-links a.ativo {
-            color: var(--verde)
-        }
-
-        .nav-links a.ativo::after {
-            content: "";
+        .nav-links a::after {
+            content: '';
             position: absolute;
-            bottom: 2px;
-            left: .8rem;
-            right: .8rem;
+            bottom: -4px;
+            left: 0;
+            width: 0;
             height: 2px;
             background: var(--verde-neon);
-            border-radius: 2px
+            transition: width .3s
+        }
+
+        .nav-links a:hover,
+        .nav-links a.ativo {
+            color: var(--verde-neon)
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.ativo::after {
+            width: 100%
         }
 
         .nav-cta {
@@ -169,6 +166,36 @@
             display: none !important
         }
 
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem
+        }
+
+        .lang-switcher {
+            display: flex;
+            gap: 4px
+        }
+
+        .lang-btn {
+            background: none;
+            border: 1px solid rgba(123, 201, 92, .3);
+            color: rgba(245, 240, 232, .5);
+            font-size: .72rem;
+            font-weight: 600;
+            padding: 3px 7px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all .25s;
+            font-family: 'DM Sans', sans-serif
+        }
+
+        .lang-btn:hover,
+        .lang-btn.active {
+            border-color: var(--verde-neon);
+            color: var(--verde-neon)
+        }
+
         .hamburger {
             display: none;
             flex-direction: column;
@@ -180,7 +207,7 @@
         .hamburger span {
             width: 26px;
             height: 2.5px;
-            background: #1a2a1a;
+            background: rgba(245, 240, 232, .85);
             border-radius: 2px;
             transition: all .3s
         }
@@ -1079,6 +1106,7 @@
             <li><a href="index.html">In&#237;cio</a></li>
             <li><a href="sobre.html">Sobre</a></li>
             <li><a href="noticias.html">Not&#237;cias</a></li>
+            <li><a href="programas-projetos.html">Projetos</a></li>
             <li><a href="avisos.html" class="ativo">Avisos</a></li>
             <li><a href="trabalhe-conosco.html">Trabalhe Conosco</a></li>
             <li><a href="https://loja.asproc.org.br/" class="nav-cta" target="_blank">Loja Virtual</a></li>
