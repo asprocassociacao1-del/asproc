@@ -1498,17 +1498,6 @@
       border-color: rgba(59, 130, 246, .25);
     }
 
-    .rte-btn u,
-    .rte-btn s {
-      font-weight: 700;
-      font-style: normal;
-      font-size: .8rem;
-      letter-spacing: .02em;
-      text-underline-offset: 3px;
-      text-decoration-thickness: 1.5px;
-      text-decoration-color: currentColor;
-    }
-
     .rte-sep {
       width: 1px;
       height: 18px;
@@ -2587,68 +2576,6 @@
 
         <div class="ne-divider"></div>
 
-        <!-- ── OG IMAGE (WhatsApp / redes sociais) ── -->
-        <div class="ne-panel-section">
-          <div class="ne-panel-label" style="display:flex;align-items:center;gap:.4rem;">
-            🔗 Imagem para compartilhamento
-            <span
-              title="Aparece como preview ao compartilhar no WhatsApp, Telegram, Facebook etc. Tamanho ideal: 1200×630px. Se vazio, usa a imagem de capa."
-              style="cursor:help;color:var(--text-muted);font-size:.75rem;border:1px solid var(--border);border-radius:50%;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">?</span>
-          </div>
-
-          <!-- Preview og_image -->
-          <div id="ne-og-preview"
-            style="width:100%;height:72px;border-radius:var(--radius);border:1px dashed var(--border);background:var(--bg3);display:flex;align-items:center;justify-content:center;margin-bottom:.5rem;overflow:hidden;position:relative;">
-            <span id="ne-og-placeholder"
-              style="font-size:.72rem;color:var(--text-muted);text-align:center;line-height:1.4;">Sem imagem OG<br><span
-                style="font-size:.65rem;opacity:.6;">usará imagem de capa</span></span>
-          </div>
-
-          <!-- Botão upload og_image -->
-          <label for="n-og-image-file" id="btn-upload-og"
-            style="display:flex;align-items:center;justify-content:center;gap:.4rem;width:100%;padding:.55rem;margin-bottom:.4rem;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.25);border-radius:var(--radius);color:var(--purple);font-size:.8rem;font-weight:600;cursor:pointer;transition:background var(--transition);"
-            onmouseover="this.style.background='rgba(139,92,246,.2)'"
-            onmouseout="this.style.background='rgba(139,92,246,.1)'">
-            📁 Anexar imagem OG (1200×630)
-          </label>
-          <input type="file" id="n-og-image-file" accept="image/jpeg,image/png,image/webp" style="display:none;"
-            onchange="uploadOgImagem(this)">
-
-          <!-- Progresso upload og -->
-          <div id="og-upload-progress-wrap" style="display:none;margin-bottom:.5rem;">
-            <div style="height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;">
-              <div id="og-upload-progress-bar"
-                style="height:100%;width:0%;background:var(--purple);transition:width .3s;"></div>
-            </div>
-            <div id="og-upload-progress-msg" style="font-size:.72rem;color:var(--text-muted);margin-top:.3rem;">
-              Enviando…</div>
-          </div>
-
-          <!-- Separador ou URL manual -->
-          <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem;">
-            <div style="flex:1;height:1px;background:var(--border);"></div>
-            <span style="font-size:.7rem;color:var(--text-muted);">ou cole a URL</span>
-            <div style="flex:1;height:1px;background:var(--border);"></div>
-          </div>
-
-          <input type="url" class="ne-panel-input" id="n-og-image" placeholder="URL da imagem OG (1200×630)…"
-            oninput="updateOgPreview()">
-
-          <!-- Remover og_image -->
-          <button id="btn-remover-og" onclick="removerOgImagem()"
-            style="display:none;width:100%;margin-top:.4rem;padding:.4rem;background:var(--red-soft);border:1px solid rgba(239,68,68,.2);border-radius:var(--radius);color:var(--red);font-size:.75rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">
-            🗑 Remover imagem OG
-          </button>
-
-          <div
-            style="font-size:.68rem;color:var(--text-muted);margin-top:.4rem;line-height:1.5;padding:.45rem .5rem;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border);">
-            📐 Ideal: <strong style="color:var(--text-dim);">1200 × 630 px</strong> · JPG ou PNG<br>
-            📱 Aparece no WhatsApp, Telegram, Facebook ao compartilhar o link
-          </div>
-        </div>
-
-        <div class="ne-divider"></div>
-
         <div class="ne-panel-section">
           <div class="ne-panel-label">Publicação</div>
           <div class="toggle-row">
@@ -3028,8 +2955,7 @@
   </div>
 
   <!-- ════ EDITOR DE AVISO (fullscreen) ════ -->
-  <div id="aviso-editor-overlay"
-    style="display:none;position:fixed;inset:0;background:var(--bg);z-index:998;flex-direction:column;">
+  <div id="aviso-editor-overlay" style="position:fixed;inset:0;background:var(--bg);z-index:998;flex-direction:column;">
     <!-- TOPBAR -->
     <div class="ne-topbar">
       <button class="btn btn-secondary btn-sm" onclick="closeAvisoEditor()">← Voltar</button>
@@ -3718,7 +3644,7 @@
         if (!n) return;
         editingId.noticias = id;
         document.getElementById('ne-topbar-title').textContent = 'Editar Notícia';
-        ['n-titulo', 'n-resumo', 'n-conteudo', 'n-url', 'n-imagem', 'n-og-image'].forEach(i => document.getElementById(i).value = '');
+        ['n-titulo', 'n-resumo', 'n-conteudo', 'n-url', 'n-imagem'].forEach(i => document.getElementById(i).value = '');
         document.getElementById('n-titulo').value = n.titulo || '';
         document.getElementById('n-resumo').value = n.resumo || '';
         document.getElementById('n-conteudo').value = n.conteudo || '';
@@ -3727,13 +3653,12 @@
         document.getElementById('n-data').value = n.data_pub || '';
         document.getElementById('n-url').value = n.url_externa || '';
         document.getElementById('n-imagem').value = n.imagem_url || '';
-        document.getElementById('n-og-image').value = n.og_image || '';
         document.getElementById('n-destaque').checked = !!n.destaque;
         document.getElementById('n-publicado').checked = !!n.publicado;
         document.getElementById('n-slug').value = n.slug || slugify(n.titulo || '');
         document.getElementById('n-autor').value = n.autor || '';
         document.getElementById('n-tags').value = n.tags || '';
-        updateImgPreview(); updateOgPreview(); updatePreview();
+        updateImgPreview(); updatePreview();
         if (n.url_externa) { document.getElementById('n-url').value = n.url_externa; setDeployStatus('✅', 'Já publicada no site', n.url_externa); }
         else { const ds = document.getElementById('ne-deploy-status'); if (ds) ds.style.display = 'none'; }
         openNewsEditor();
@@ -4892,7 +4817,7 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
       function openNewsEditorNew() {
         editingId.noticias = null;
         document.getElementById('ne-topbar-title').textContent = 'Nova Notícia';
-        ['n-titulo', 'n-resumo', 'n-conteudo', 'n-url', 'n-imagem', 'n-autor', 'n-tags', 'n-slug', 'n-og-image'].forEach(id => document.getElementById(id).value = '');
+        ['n-titulo', 'n-resumo', 'n-conteudo', 'n-url', 'n-imagem', 'n-autor', 'n-tags', 'n-slug'].forEach(id => document.getElementById(id).value = '');
         document.getElementById('n-rte-body').innerHTML = '';
         document.getElementById('n-categoria').value = 'geral';
         document.getElementById('n-data').value = new Date().toISOString().split('T')[0];
@@ -4900,10 +4825,7 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         document.getElementById('n-publicado').checked = true;
         document.getElementById('ne-img-preview').innerHTML = '<span>Sem imagem</span>';
         document.getElementById('n-imagem-file').value = '';
-        document.getElementById('n-og-image-file').value = '';
         const remBtn = document.getElementById('btn-remover-img'); if (remBtn) remBtn.style.display = 'none';
-        const remOgBtn = document.getElementById('btn-remover-og'); if (remOgBtn) remOgBtn.style.display = 'none';
-        updateOgPreview();
         const ds = document.getElementById('ne-deploy-status');
         if (ds) ds.style.display = 'none';
         updatePreview();
@@ -5072,117 +4994,12 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         }
       }
 
-      /* ── OG IMAGE: preview, remover, upload ── */
-      function updateOgPreview() {
-        const url = document.getElementById('n-og-image').value.trim();
-        const el = document.getElementById('ne-og-preview');
-        const remBtn = document.getElementById('btn-remover-og');
-        if (url) {
-          el.innerHTML = `<img src="${escHtml(url)}" onerror="this.outerHTML='<span style=\\'font-size:.72rem;color:var(--red)\\'>Imagem inválida</span>'" style="width:100%;height:100%;object-fit:cover;">`;
-          if (remBtn) remBtn.style.display = 'block';
-        } else {
-          el.innerHTML = '<span id="ne-og-placeholder" style="font-size:.72rem;color:var(--text-muted);text-align:center;line-height:1.4;">Sem imagem OG<br><span style="font-size:.65rem;opacity:.6;">usará imagem de capa</span></span>';
-          if (remBtn) remBtn.style.display = 'none';
-        }
+      function syncRteToHidden() {
+        document.getElementById('n-conteudo').value = document.getElementById('n-rte-body').innerHTML;
       }
-
-      function removerOgImagem() {
-        document.getElementById('n-og-image').value = '';
-        document.getElementById('n-og-image-file').value = '';
-        updateOgPreview();
-      }
-
-      async function uploadOgImagem(input) {
-        const file = input.files && input.files[0];
-        if (!file) return;
-
-        const MAX = 10 * 1024 * 1024;
-        if (file.size > MAX) { toast('Imagem muito grande. Máximo 10 MB.', 'error'); input.value = ''; return; }
-        const TIPOS = ['image/jpeg', 'image/png', 'image/webp'];
-        if (!TIPOS.includes(file.type)) { toast('Formato inválido. Use JPG, PNG ou WebP.', 'error'); input.value = ''; return; }
-
-        const { url: sbUrl, key: sbKey } = getSupabase();
-        if (!sbUrl || !sbKey) { toast('Supabase não configurado.', 'error'); return; }
-
-        const wrap = document.getElementById('og-upload-progress-wrap');
-        const bar = document.getElementById('og-upload-progress-bar');
-        const msg = document.getElementById('og-upload-progress-msg');
-        const lbl = document.getElementById('btn-upload-og');
-        wrap.style.display = 'block';
-        bar.style.width = '15%';
-        bar.style.background = 'var(--purple)';
-        msg.style.color = 'var(--text-muted)';
-        msg.textContent = 'Enviando imagem OG…';
-        lbl.style.pointerEvents = 'none';
-        lbl.style.opacity = '.5';
-
-        try {
-          await ensureValidToken();
-          const sessionToken = localStorage.getItem('asproc_token');
-          const authToken = sessionToken || sbKey;
-
-          const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z]/g, '') || 'jpg';
-          const nome = `og-${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${ext}`;
-          const path = `og/${nome}`;
-          const BUCKET = 'imagens';
-
-          bar.style.width = '50%';
-
-          const res = await fetch(`${sbUrl}/storage/v1/object/${BUCKET}/${path}`, {
-            method: 'POST',
-            headers: {
-              'apikey': sbKey,
-              'Authorization': `Bearer ${authToken}`,
-              'Content-Type': file.type,
-              'x-upsert': 'true'
-            },
-            body: file
-          });
-
-          bar.style.width = '90%';
-
-          if (!res.ok) {
-            const err = await res.json().catch(() => ({}));
-            throw new Error(err.message || `HTTP ${res.status}`);
-          }
-
-          const publicUrl = `${sbUrl}/storage/v1/object/public/${BUCKET}/${path}`;
-          bar.style.width = '100%';
-          msg.textContent = '✅ Imagem OG enviada!';
-
-          document.getElementById('n-og-image').value = publicUrl;
-          updateOgPreview();
-          toast('✅ Imagem OG anexada com sucesso!', 'success');
-
-          setTimeout(() => { wrap.style.display = 'none'; bar.style.width = '0%'; }, 2000);
-
-        } catch (e) {
-          bar.style.background = 'var(--red)';
-          bar.style.width = '100%';
-          msg.style.color = 'var(--red)';
-          msg.textContent = '❌ ' + e.message;
-          setTimeout(() => {
-            wrap.style.display = 'none';
-            bar.style.width = '0%';
-            bar.style.background = 'var(--purple)';
-          }, 6000);
-        } finally {
-          lbl.style.pointerEvents = 'auto';
-          lbl.style.opacity = '1';
-          input.value = '';
-        }
-      }
-
-      document.getElementById('n-conteudo').value = document.getElementById('n-rte-body').innerHTML;
 
       /* ── RTE ── */
       let savedRange = null;
-
-      function syncRteToHidden() {
-        const rte = document.getElementById('n-rte-body');
-        const hidden = document.getElementById('n-conteudo');
-        if (rte && hidden) hidden.value = rte.innerHTML;
-      }
 
       function rteSaveSelection() {
         const sel = window.getSelection();
@@ -5323,7 +5140,6 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
           data_pub: document.getElementById('n-data').value || new Date().toISOString().split('T')[0],
           url_externa: document.getElementById('n-url').value.trim() || null,
           imagem_url: document.getElementById('n-imagem').value.trim() || null,
-          og_image: document.getElementById('n-og-image').value.trim() || null,
           destaque: document.getElementById('n-destaque').checked,
           publicado: document.getElementById('n-publicado').checked,
         };
@@ -5350,14 +5166,7 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         const catLbl = catLabel(data.categoria);
         const dateFmt = formatDateBR(data.data_pub);
         const autorTag = data._autor ? data._autor : '';
-        // og_image tem prioridade; fallback para imagem_url
-        const shareImg = (data.og_image || data.imagem_url || '').trim();
-        const ogImgTag = shareImg ? `<meta property="og:image" content="${shareImg}">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="${shareImg}">` : '';
-        const pageUrl = data.url_externa || `https://www.asproc.com.br/noticias/${data._slug}.html`;
+        const ogImg = data.imagem_url ? `<meta property="og:image" content="${data.imagem_url}">` : '';
         const heroStyle = data.imagem_url
           ? `background-image:url('${data.imagem_url}');background-size:cover;background-position:center;`
           : 'background:linear-gradient(135deg,#0f1a0f 0%,#1e3a1e 100%);';
@@ -5379,13 +5188,9 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${data.titulo || 'Notícia'} – ASPROC</title>
-<meta name="description" content="${(data.resumo || '').replace(/"/g, '&quot;')}">
+<meta name="description" content="${(data.resumo || '').replace(/"/g, '&quot;')}"> ${ogImg}
 <meta property="og:type" content="article">
-<meta property="og:site_name" content="ASPROC">
-<meta property="og:url" content="${pageUrl}">
-<meta property="og:title" content="${(data.titulo || '').replace(/"/g, '&quot;')}">
-<meta property="og:description" content="${(data.resumo || '').replace(/"/g, '&quot;')}">
-${ogImgTag}
+<meta property="og:title" content="${(data.titulo || '').replace(/"/g, '&quot;')}"> <meta property="og:description" content="${(data.resumo || '').replace(/"/g, '&quot;')}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,700;0,9..144,900;1,9..144,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -6914,24 +6719,6 @@ document.addEventListener('DOMContentLoaded', function(){
       window.aiAutoFormat = aiAutoFormat;
       window.uploadCapaImagem = uploadCapaImagem;
       window.removerCapaImagem = removerCapaImagem;
-      window.removerOgImagem = removerOgImagem;
-      window.uploadOgImagem = uploadOgImagem;
-      window.updateImgPreview = updateImgPreview;
-      window.updateOgPreview = updateOgPreview;
-      window.updatePreview = updatePreview;
-      window.slugify = slugify;
-      window.rteBlock = rteBlock;
-      window.rteSaveSelection = rteSaveSelection;
-      window.rteFontSize = rteFontSize;
-      window.rteRestoreSelection = rteRestoreSelection;
-      window.syncRteToHidden = syncRteToHidden;
-      window.updateRteToolbarState = updateRteToolbarState;
-      window.filterTable = filterTable;
-      window.filterByCat = filterByCat;
-      window.filterByStatus = filterByStatus;
-      window.filterByTipo = filterByTipo;
-      window.loadCandidaturas = loadCandidaturas;
-      window.loadTextos = loadTextos;
 
     }); // DOMContentLoaded
   </script>
