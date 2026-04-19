@@ -1555,21 +1555,25 @@
             try {
                 const noticias = await fetchSupabase('noticias', 'select=titulo,imagem_url,url_externa,data_pub&publicado=eq.true&order=data_pub.desc&limit=4');
                 const list = document.getElementById('sidebar-recentes-list');
-                if (list && Array.isArray(noticias) && noticias.length) {
-                    list.innerHTML = noticias.map(n => {
-                        const href = n.url_externa ? _url(n.url_externa) : '#';
-                        const img = n.imagem_url
-                            ? `<img src="${n.imagem_url}" alt="" loading="lazy">`
-                            : '<div style="width:100%;height:100%;background:var(--verde);display:flex;align-items:center;justify-content:center;font-size:1.2rem">🌿</div>';
-                        return `
-                        <a class="sni" href="${href}" target="_blank" rel="noopener" style="text-decoration:none;cursor:pointer">
-                            <div class="sni-img">${img}</div>
-                            <div>
-                                <div class="sni-t">${_esc(n.titulo)}</div>
-                                <div class="sni-d">${_fmtData(n.data_pub)}</div>
-                            </div>
-                        </a>`;
-                    }).join('');
+                if (list) {
+                    if (Array.isArray(noticias) && noticias.length) {
+                        list.innerHTML = noticias.map(n => {
+                            const href = n.url_externa ? _url(n.url_externa) : 'noticias.html';
+                            const img = n.imagem_url
+                                ? `<img src="${n.imagem_url}" alt="" loading="lazy">`
+                                : '<div style="width:100%;height:100%;background:var(--verde);display:flex;align-items:center;justify-content:center;font-size:1.2rem">🌿</div>';
+                            return `
+                            <a class="sni" href="${href}" target="_blank" rel="noopener" style="display:flex;text-decoration:none;cursor:pointer">
+                                <div class="sni-img">${img}</div>
+                                <div>
+                                    <div class="sni-t">${_esc(n.titulo)}</div>
+                                    <div class="sni-d">${_fmtData(n.data_pub)}</div>
+                                </div>
+                            </a>`;
+                        }).join('');
+                    } else {
+                        list.innerHTML = '<div style="color:rgba(245,240,232,.4);font-size:.8rem;padding:.5rem 0">Nenhuma notícia recente.</div>';
+                    }
                 }
             } catch(e) { console.warn('[ASPROC] sidebar noticias:', e); }
             try {
