@@ -4467,7 +4467,10 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         container.innerHTML = list.map(c => {
           const ini = (c.nome || '?')[0].toUpperCase();
           const preview = c.mensagem ? escHtml(c.mensagem).substring(0, 110) + (c.mensagem.length > 110 ? '…' : '') : '';
-          const cvTag = c.curriculo_url
+          const _cvKeys = ['curriculo_url', 'cv_url', 'arquivo_url', 'file_url', 'curriculo', 'cv', 'arquivo', 'documento_url', 'doc_url', 'resume_url', 'anexo_url', 'attachment_url'];
+          const _extraKeys = Object.keys(c).filter(k => !_cvKeys.includes(k) && (k.includes('url') || k.includes('cv') || k.includes('curriculo') || k.includes('resume') || k.includes('arquivo') || k.includes('anexo') || k.includes('attach')));
+          const _hasCV = [..._cvKeys, ..._extraKeys].some(f => isValidCvUrl(c[f]));
+          const cvTag = _hasCV
             ? '<span class="cand-tag tem-cv">📎 Com currículo</span>'
             : '<span class="cand-tag">Sem currículo</span>';
           const status = c.status || 'novo';
@@ -4497,17 +4500,32 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         };
       }
 
+      function isValidCvUrl(val) {
+        if (!val || typeof val !== 'string') return false;
+        const v = val.trim();
+        if (!v || v === 'X' || v === 'null' || v === 'undefined' || v === '-') return false;
+        return v.startsWith('http://') || v.startsWith('https://') || v.startsWith('/');
+      }
+
       function renderCvBlock(c) {
-        const url = c.curriculo_url || c.cv_url || c.arquivo_url || c.file_url;
-        if (url) {
-          const ext = url.split('?')[0].split('.').pop().toLowerCase();
-          const icon = ext === 'pdf' ? '📕' : (ext === 'doc' || ext === 'docx') ? '📘' : '📄';
-          return '<a href="' + escHtml(url) + '" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:.55rem;padding:.65rem 1.1rem;background:rgba(16,185,129,.09);border:1px solid rgba(16,185,129,.25);border-radius:10px;color:#34d399;font-size:.82rem;font-weight:600;text-decoration:none">' + icon + ' Abrir / Baixar currículo &nbsp;↗</a>';
+        // Busca em todos os campos possiveis, validando o valor real (ignora "X", null, vazio)
+        const priorityFields = ['curriculo_url', 'cv_url', 'arquivo_url', 'file_url', 'curriculo', 'cv', 'arquivo', 'documento_url', 'doc_url', 'attachment_url', 'resume_url', 'anexo_url'];
+        const allKeys = Object.keys(c);
+        const extraKeys = allKeys.filter(k => !priorityFields.includes(k) && (k.includes('url') || k.includes('cv') || k.includes('file') || k.includes('doc') || k.includes('arquivo') || k.includes('curriculo') || k.includes('resume') || k.includes('anexo') || k.includes('attach')));
+        const searchOrder = [...priorityFields, ...extraKeys];
+        let foundUrl = null;
+        for (const key of searchOrder) {
+          if (isValidCvUrl(c[key])) { foundUrl = c[key].trim(); break; }
         }
-        // Debug: mostra quais campos vieram do banco para ajudar a identificar o nome correto
-        const camposArquivo = Object.keys(c).filter(k => k.includes('url') || k.includes('cv') || k.includes('file') || k.includes('doc') || k.includes('arquivo'));
-        const debugInfo = camposArquivo.length ? '<br><span style="font-size:.68rem;opacity:.55">Campos: ' + camposArquivo.map(k => k + '=' + (c[k] ? '✓' : '✗')).join(', ') + '</span>' : '';
-        return '<div style="padding:.55rem .8rem;background:var(--bg3);border-radius:8px;font-size:.78rem;color:var(--text-muted)">📭 Nenhum currículo anexado.' + debugInfo + '</div>';
+        if (foundUrl) {
+          const ext = foundUrl.split('?')[0].split('.').pop().toLowerCase();
+          const icon = ext === 'pdf' ? '📕' : (ext === 'doc' || ext === 'docx') ? '📘' : '📄';
+          return '<a href="' + escHtml(foundUrl) + '" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:.55rem;padding:.65rem 1.1rem;background:rgba(16,185,129,.09);border:1px solid rgba(16,185,129,.25);border-radius:10px;color:#34d399;font-size:.82rem;font-weight:600;text-decoration:none">' + icon + ' Abrir / Baixar curriculo &nbsp;&#x2197;</a>';
+        }
+        // Debug: mostra o valor real de cada campo para identificar onde o curriculo esta salvo
+        const debugFields = allKeys.filter(k => k.includes('url') || k.includes('cv') || k.includes('file') || k.includes('doc') || k.includes('arquivo') || k.includes('curriculo') || k.includes('resume') || k.includes('anexo') || k.includes('attach'));
+        const debugInfo = debugFields.length ? '<br><span style="font-size:.68rem;opacity:.55">Campos: ' + debugFields.map(k => { const val = c[k]; const display = val === null ? 'null' : val === undefined ? 'undef' : String(val).substring(0, 40); return k + '=' + display; }).join(', ') + '</span>' : '';
+        return '<div style="padding:.55rem .8rem;background:var(--bg3);border-radius:8px;font-size:.78rem;color:var(--text-muted)">&#x1F4ED; Nenhum curriculo anexado.' + debugInfo + '</div>';
       }
 
       function viewCandidatura(id) {
