@@ -5490,17 +5490,21 @@ function setLang(l){
 // ── LOAD RELATED NEWS ──
 async function loadRelated() {
   try {
-    const data = await sbFetch('noticias','select=titulo,categoria,data_pub,imagem_url,url_externa&publicado=eq.true&order=data_pub.desc&limit=6');
+    const data = await sbFetch('noticias','select=titulo,categoria,data_pub,imagem_url,url_externa,slug&publicado=eq.true&order=data_pub.desc&limit=7');
     const list = document.getElementById('related-list');
     if(!list) return;
-    // Filtra a notícia atual pelo título se possível
+    // Filtra a notícia atual pelo título e slug
     const currTitle = document.title.replace(' – ASPROC','').trim();
-    const filtered = data.filter(function(n){return n.titulo !== currTitle;}).slice(0,4);
+    const currSlug = window.location.pathname.split('/').pop().replace('.html','');
+    const filtered = data.filter(function(n){
+      return n.titulo !== currTitle && n.slug !== currSlug;
+    }).slice(0,4);
     if(!filtered.length){ list.innerHTML='<p style="font-size:.82rem;color:rgba(245,240,232,.35);padding:.5rem 0;">Mais conteúdo em breve.</p>'; return; }
     list.innerHTML = filtered.map(function(n){
       const icon = CAT_ICONS[n.categoria] || '📌';
       const lbl = CAT_LABEL[n.categoria] || n.categoria;
-      const url = n.url_externa || '../noticias.html';
+      // Prioridade: url_externa (GitHub Pages) > slug relativo > lista de notícias
+      const url = n.url_externa || (n.slug ? n.slug+'.html' : '../noticias.html');
       const target = n.url_externa ? '_blank' : '_self';
       const thumb = n.imagem_url
         ? '<img class="rel-thumb" src="'+n.imagem_url+'" alt="" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';">'+'<div class="rel-thumb-ph" style="display:none">'+icon+'</div>'
@@ -5522,19 +5526,46 @@ async function loadRelated() {
 // ── LOAD VAGAS ──
 async function loadVagas() {
   try {
-    const data = await sbFetch('vagas','select=titulo,cargo,data_limite,url_externa&publicado=eq.true&order=criado_em.desc&limit=3');
+    // Campos corretos: prazo (não data_limite), local, regime, status, edital_url
+    // Ordenação correta: created_at (não criado_em)
+    // Filtro: status aberto ou publicado (sem flag publicado separado em vagas)
+    const data = await sbFetch('vagas','select=titulo,local,regime,prazo,status,edital_url&order=created_at.desc&limit=4');
     const list = document.getElementById('vagas-list');
     if(!list) return;
-    if(!Array.isArray(data)||!data.length){ document.getElementById('vagas-box').style.display='none'; return; }
-    list.innerHTML = data.map(function(v){
-      const url = v.url_externa || '../trabalhe-conosco.html';
-      return '<a class="vaga-item" href="'+url+'" target="_blank">'
+    // Filtra apenas vagas ativas/abertas
+    const abertas = Array.isArray(data) ? data.filter(function(v){
+      const s = (v.status||'').toLowerCase();
+      return s === 'aberta' || s === 'ativo' || s === 'publicado' || s === '';
+    }) : [];
+    if(!abertas.length){ document.getElementById('vagas-box').style.display='none'; return; }
+    list.innerHTML = abertas.slice(0,3).map(function(v){
+      const url = v.edital_url || '../trabalhe-conosco.html';
+      const target = v.edital_url ? '_blank' : '_self';
+      const meta = [v.local, v.regime, v.prazo ? 'Até '+fmtDate(v.prazo) : ''].filter(Boolean).join(' · ');
+      return '<a class="vaga-item" href="'+url+'" target="'+target+'">'
         +'<div class="vaga-title">'+v.titulo+'</div>'
-        +'<div class="vaga-meta">'+(v.cargo||'')+(v.data_limite?' · Até '+fmtDate(v.data_limite):'')+'</div>'
+        +'<div class="vaga-meta">'+meta+'</div>'
         +'</a>';
     }).join('');
   } catch(e) {
-    document.getElementById('vagas-box').style.display='none';
+    // Tenta busca simplificada como fallback
+    try {
+      const data2 = await sbFetch('vagas','select=titulo,prazo,status&order=created_at.desc&limit=3');
+      const list = document.getElementById('vagas-list');
+      if(!list) return;
+      const abertas2 = Array.isArray(data2) ? data2.filter(function(v){
+        const s=(v.status||'').toLowerCase(); return s==='aberta'||s==='ativo'||s==='publicado'||s==='';
+      }) : [];
+      if(!abertas2.length){ document.getElementById('vagas-box').style.display='none'; return; }
+      list.innerHTML = abertas2.map(function(v){
+        return '<a class="vaga-item" href="../trabalhe-conosco.html">'
+          +'<div class="vaga-title">'+v.titulo+'</div>'
+          +'<div class="vaga-meta">'+(v.prazo?'Até '+fmtDate(v.prazo):'')+'</div>'
+          +'</a>';
+      }).join('');
+    } catch(e2){
+      document.getElementById('vagas-box').style.display='none';
+    }
   }
 }
 
