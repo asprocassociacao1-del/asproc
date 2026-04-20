@@ -6787,12 +6787,19 @@ document.addEventListener('DOMContentLoaded', function(){
             return;
           }
 
-          // Filtra apenas as que têm slug (precisam de arquivo .html no GitHub)
-          const comSlug = noticias.filter(n => n.slug && n.slug.trim());
+          // Para notícias sem slug, gera um a partir do título
+          const candidatas = noticias.filter(n => n.titulo && n.titulo.trim());
+          candidatas.forEach(n => {
+            n._slugOriginal = n.slug || null; // guarda o original (null = estava vazio)
+            if (!n.slug || !n.slug.trim()) {
+              n.slug = slugify(n.titulo);
+            }
+          });
+          const comSlug = candidatas.filter(n => n.slug && n.slug.trim());
           const total = comSlug.length;
 
           if (!total) {
-            msg.textContent = '⚠️ Nenhuma notícia com slug encontrada.';
+            msg.textContent = '⚠️ Nenhuma notícia com título encontrada.';
             btn.disabled = false;
             btn.textContent = '🔄 Republicar Todas';
             return;
@@ -6855,10 +6862,15 @@ document.addEventListener('DOMContentLoaded', function(){
               );
 
               // Atualiza url_externa no Supabase se ainda não tiver
-              if (n.id && (!n.url_externa || n.url_externa !== publicUrl)) {
-                try {
-                  await sbUpdate('noticias', n.id, { url_externa: publicUrl });
-                } catch (_) { /* não crítico */ }
+              // e salva o slug gerado automaticamente se estava vazio
+              if (n.id) {
+                const updates = {};
+                if (!n.url_externa || n.url_externa !== publicUrl) updates.url_externa = publicUrl;
+                // Se o slug foi gerado automaticamente (não existia no banco), salva
+                if (!n._slugOriginal && n.slug) updates.slug = n.slug;
+                if (Object.keys(updates).length) {
+                  try { await sbUpdate('noticias', n.id, updates); } catch (_) { /* não crítico */ }
+                }
               }
 
               ok++;
