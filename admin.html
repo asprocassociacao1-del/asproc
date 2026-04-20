@@ -2116,6 +2116,24 @@
                 <option value="geral">Geral</option>
               </select>
               <button class="btn btn-primary btn-sm" onclick="openNewsEditorNew()">+ Nova notícia</button>
+              <button class="btn btn-amber btn-sm" onclick="republishAllNoticias()" id="btn-republish-all"
+                title="Regera e republica TODAS as páginas de notícias no GitHub com o template atual">🔄 Republicar
+                Todas</button>
+            </div>
+            <!-- PROGRESS REPUBLICAÇÃO -->
+            <div id="republish-progress-wrap"
+              style="display:none;margin:1rem 0;padding:1rem;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
+                <span id="republish-progress-msg" style="font-size:.82rem;color:var(--text-dim);">Processando…</span>
+                <span id="republish-progress-count" style="font-size:.75rem;color:var(--text-muted);"></span>
+              </div>
+              <div style="background:var(--bg);border-radius:4px;height:6px;overflow:hidden;">
+                <div id="republish-progress-bar"
+                  style="height:100%;width:0%;background:var(--amber);border-radius:4px;transition:width .3s;"></div>
+              </div>
+              <div id="republish-log"
+                style="margin-top:.75rem;max-height:140px;overflow-y:auto;font-size:.75rem;color:var(--text-muted);line-height:1.6;">
+              </div>
             </div>
             <div id="noticias-loading" class="loading">
               <div class="spinner"></div>
@@ -5552,7 +5570,7 @@ async function loadRelated() {
         +'</div></a>';
     }).join('');
   } catch(e) {
-    list.innerHTML='<p style="font-size:.82rem;color:rgba(245,240,232,.5);padding:.5rem 0;">Nao foi possivel carregar.</p>';
+    list.innerHTML='<p style="font-size:.8rem;color:rgba(245,240,232,.3);">Nao foi possivel carregar.</p>';
   }
 }
 
@@ -5562,26 +5580,23 @@ async function loadVagas() {
   const box = document.getElementById('vagas-box');
   if(!list||!box) return;
   try {
+    // Busca vagas com todos os campos necessários
     let data;
     try {
       data = await sbFetch('vagas','select=titulo,local,regime,prazo,status,edital_url,slug,url_externa&order=created_at.desc&limit=6');
     } catch(_){
       data = await sbFetch('vagas','select=titulo,prazo,status,edital_url&order=created_at.desc&limit=6');
     }
-    if(!Array.isArray(data)||!data.length){
-      list.innerHTML='<p style="font-size:.82rem;color:rgba(245,240,232,.5);padding:.5rem 0;">Nenhuma vaga aberta no momento.</p>';
-      return;
-    }
+    if(!Array.isArray(data)||!data.length){ box.style.display='none'; return; }
+    // Filtra apenas vagas ativas/abertas
     const abertas = data.filter(function(v){
       const s = (v.status||'').toLowerCase();
       return s === 'aberta' || s === 'ativo' || s === 'publicado' || s === 'aberto' || s === '';
     });
-    if(!abertas.length){
-      list.innerHTML='<p style="font-size:.82rem;color:rgba(245,240,232,.5);padding:.5rem 0;">Nenhuma vaga aberta no momento.</p>';
-      return;
-    }
+    if(!abertas.length){ box.style.display='none'; return; }
     box.style.display='';
     list.innerHTML = abertas.slice(0,3).map(function(v){
+      // Prioridade: url_externa > edital_url > slug > trabalhe-conosco
       let url, target;
       if(v.url_externa){ url=v.url_externa; target='_blank'; }
       else if(v.edital_url){ url=v.edital_url; target='_blank'; }
@@ -5594,7 +5609,7 @@ async function loadVagas() {
         +'</a>';
     }).join('');
   } catch(e) {
-    list.innerHTML='<p style="font-size:.82rem;color:rgba(245,240,232,.5);padding:.5rem 0;">Nenhuma vaga aberta no momento.</p>';
+    box.style.display='none';
   }
 }
 
@@ -6705,6 +6720,191 @@ document.addEventListener('DOMContentLoaded', function(){
       window.publishToGithub = publishToGithub;
       window.previewNoticiaPage = previewNoticiaPage;
       window.downloadNoticiaPage = downloadNoticiaPage;
+      window.republishAllNoticias = republishAllNoticias;
+
+      /* ══════════════════════════════════════════
+         REPUBLICAR TODAS AS NOTÍCIAS NO GITHUB
+         Regera o HTML de cada notícia com o template
+         atual e faz PUT no repositório GitHub.
+      ══════════════════════════════════════════ */
+      async function republishAllNoticias() {
+        const token = getGhToken();
+        if (!token) {
+          toast('Configure o token do GitHub em Configurações antes de republicar.', 'error');
+          goTo('configuracoes', document.querySelector('[onclick*=configuracoes]'));
+          return;
+        }
+
+        const confirmed = confirm(
+          '🔄 Republicar TODAS as notícias?\n\n' +
+          'Isso vai reger o HTML de cada notícia com o template atual e ' +
+          'atualizar os arquivos no GitHub.\n\n' +
+          'Notícias sem slug ou sem conteúdo serão ignoradas.\n\n' +
+          'Continuar?'
+        );
+        if (!confirmed) return;
+
+        // UI setup
+        const btn = document.getElementById('btn-republish-all');
+        const wrap = document.getElementById('republish-progress-wrap');
+        const bar = document.getElementById('republish-progress-bar');
+        const msg = document.getElementById('republish-progress-msg');
+        const countEl = document.getElementById('republish-progress-count');
+        const log = document.getElementById('republish-log');
+
+        btn.disabled = true;
+        btn.textContent = '⏳ Republicando…';
+        wrap.style.display = 'block';
+        bar.style.width = '0%';
+        bar.style.background = 'var(--amber)';
+        log.innerHTML = '';
+        msg.textContent = 'Buscando notícias no Supabase…';
+        countEl.textContent = '';
+
+        const addLog = (txt, color) => {
+          const line = document.createElement('div');
+          line.style.color = color || 'var(--text-muted)';
+          line.textContent = txt;
+          log.appendChild(line);
+          log.scrollTop = log.scrollHeight;
+        };
+
+        try {
+          // 1) Busca todas as notícias com todos os campos necessários para o template
+          let noticias;
+          try {
+            noticias = await sbSelect('noticias',
+              'select=*&order=created_at.desc'
+            );
+          } catch (e) {
+            throw new Error('Falha ao buscar notícias: ' + e.message);
+          }
+
+          if (!Array.isArray(noticias) || !noticias.length) {
+            msg.textContent = '⚠️ Nenhuma notícia encontrada no banco de dados.';
+            btn.disabled = false;
+            btn.textContent = '🔄 Republicar Todas';
+            return;
+          }
+
+          // Filtra apenas as que têm slug (precisam de arquivo .html no GitHub)
+          const comSlug = noticias.filter(n => n.slug && n.slug.trim());
+          const total = comSlug.length;
+
+          if (!total) {
+            msg.textContent = '⚠️ Nenhuma notícia com slug encontrada.';
+            btn.disabled = false;
+            btn.textContent = '🔄 Republicar Todas';
+            return;
+          }
+
+          addLog(`📋 ${total} notícias com slug encontradas. Iniciando republicação…`);
+          msg.textContent = `Publicando 0 de ${total}…`;
+          bar.style.width = '2%';
+
+          let ok = 0, fail = 0;
+
+          for (let i = 0; i < total; i++) {
+            const n = comSlug[i];
+            const pct = Math.round(((i + 1) / total) * 100);
+
+            // Monta o objeto "data" no formato que buildNoticiaPageHTML espera
+            const dataForTemplate = {
+              titulo: n.titulo || '',
+              resumo: n.resumo || '',
+              conteudo: n.conteudo || '',
+              categoria: n.categoria || 'geral',
+              data_pub: n.data_pub || n.created_at || '',
+              imagem_url: n.imagem_url || '',
+              _autor: n.autor || n._autor || '',
+              _tags: n.tags || n._tags || '',
+              _slug: n.slug,
+              _dbData: n,
+            };
+
+            try {
+              const html = buildNoticiaPageHTML(dataForTemplate);
+              const slug = n.slug;
+              const filePath = `noticias/${slug}.html`;
+              const publicUrl = `${GH_BASE_URL}/${filePath}`;
+              const b64 = btoa(unescape(encodeURIComponent(html)));
+
+              // Verifica SHA existente (necessário para atualizar arquivo)
+              let existingSha = null;
+              try {
+                const existing = await ghFetch(
+                  `/repos/${GH_OWNER}/${GH_REPO}/contents/${filePath}?ref=${GH_BRANCH}`
+                );
+                existingSha = existing.sha;
+              } catch (e) {
+                if (!e.message.includes('404') && !e.message.includes('Not Found')) {
+                  throw e;
+                }
+              }
+
+              const body = {
+                message: 'Republica notícia: ' + n.titulo,
+                content: b64,
+                branch: GH_BRANCH,
+              };
+              if (existingSha) body.sha = existingSha;
+
+              await ghFetch(
+                `/repos/${GH_OWNER}/${GH_REPO}/contents/${filePath}`,
+                { method: 'PUT', body: JSON.stringify(body) }
+              );
+
+              // Atualiza url_externa no Supabase se ainda não tiver
+              if (n.id && (!n.url_externa || n.url_externa !== publicUrl)) {
+                try {
+                  await sbUpdate('noticias', n.id, { url_externa: publicUrl });
+                } catch (_) { /* não crítico */ }
+              }
+
+              ok++;
+              addLog(`✅ [${i + 1}/${total}] ${slug}`, 'var(--green)');
+            } catch (e) {
+              fail++;
+              addLog(`❌ [${i + 1}/${total}] ${n.slug} — ${e.message}`, 'var(--red)');
+            }
+
+            bar.style.width = pct + '%';
+            msg.textContent = `Publicando ${i + 1} de ${total}…`;
+            countEl.textContent = `✅ ${ok}  ❌ ${fail}`;
+
+            // Pequena pausa para não estourar rate limit da API do GitHub (60 req/min)
+            if (i < total - 1) await new Promise(r => setTimeout(r, 800));
+          }
+
+          // Finalização
+          bar.style.width = '100%';
+          bar.style.background = fail === 0 ? 'var(--green)' : 'var(--amber)';
+          msg.style.color = 'var(--text)';
+          msg.textContent = fail === 0
+            ? `🎉 Todas ${ok} notícias republicadas com sucesso!`
+            : `Concluído: ${ok} publicadas, ${fail} com erro.`;
+
+          toast(
+            fail === 0
+              ? `✅ ${ok} notícias republicadas! GitHub Pages leva ~1 min para atualizar.`
+              : `⚠️ ${ok} publicadas, ${fail} com erro. Veja o log acima.`,
+            fail === 0 ? 'success' : 'error'
+          );
+
+          loadNoticias();
+          loadDashboard();
+
+        } catch (e) {
+          bar.style.background = 'var(--red)';
+          msg.style.color = 'var(--red)';
+          msg.textContent = '❌ Erro: ' + e.message;
+          addLog('❌ Erro fatal: ' + e.message, 'var(--red)');
+          toast('❌ Erro na republicação: ' + e.message, 'error');
+        } finally {
+          btn.disabled = false;
+          btn.textContent = '🔄 Republicar Todas';
+        }
+      }
       window.copyDeployLink = copyDeployLink;
       window.copySnippet = copySnippet;
       window.rteExec = rteExec;
