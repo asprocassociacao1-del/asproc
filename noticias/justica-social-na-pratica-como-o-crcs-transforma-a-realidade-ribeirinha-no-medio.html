@@ -329,21 +329,24 @@ async function loadRelated() {
   const list = document.getElementById('related-list');
   if(!list) return;
   try {
-    let data;
-    try {
-      data = await sbFetch('noticias','select=titulo,categoria,data_pub,imagem_url,url_externa,slug&publicado=eq.true&order=data_pub.desc&limit=10');
-      if(!Array.isArray(data)||!data.length) throw new Error('vazio');
-    } catch(_){
-      data = await sbFetch('noticias','select=titulo,categoria,data_pub,imagem_url,url_externa,slug&order=data_pub.desc&limit=10');
-    }
+    // Busca sem filtro de publicado para garantir que notícias antigas (sem esse campo) apareçam
+    // Inclui url_externa e slug para montar o link corretamente
+    const data = await sbFetch('noticias','select=titulo,categoria,data_pub,imagem_url,url_externa,slug&order=data_pub.desc&limit=20');
     if(!Array.isArray(data)||!data.length){
       list.innerHTML='<p style="font-size:.82rem;color:rgba(245,240,232,.35);padding:.5rem 0;">Mais conteudo em breve.</p>';
       return;
     }
+    // Identifica a notícia atual pela URL e título para excluí-la da lista
     const currTitle = document.title.replace(/s*[–—-]s*ASPROCs*$/i,'').trim();
+    const currHref = window.location.href;
     const currSlug = window.location.pathname.split('/').pop().replace('.html','');
     const filtered = data.filter(function(n){
-      return n.titulo !== currTitle && n.slug !== currSlug;
+      // Exclui a notícia atual por título, slug ou url_externa
+      if(n.titulo && n.titulo.trim() === currTitle) return false;
+      if(n.slug && n.slug === currSlug) return false;
+      if(n.url_externa && n.url_externa === currHref) return false;
+      // Só mostra notícias que têm link válido (url_externa ou slug)
+      return !!(n.url_externa || n.slug);
     }).slice(0,4);
     if(!filtered.length){
       list.innerHTML='<p style="font-size:.82rem;color:rgba(245,240,232,.35);padding:.5rem 0;">Mais conteudo em breve.</p>';
@@ -353,9 +356,10 @@ async function loadRelated() {
       const icon = CAT_ICONS[n.categoria] || '📌';
       const lbl = CAT_LABEL[n.categoria] || n.categoria || 'Geral';
       let url, target;
-      if(n.url_externa){ url=n.url_externa; target='_blank'; }
-      else if(n.slug){ url='https://www.asproc.com.br/noticias/'+n.slug+'.html'; target='_blank'; }
-      else { url='../noticias.html'; target='_self'; }
+      // Prioridade: url_externa (link GitHub Pages já publicado) > slug > fallback
+      if(n.url_externa){ url=n.url_externa; target='_self'; }
+      else if(n.slug){ url='https://www.asproc.com.br/noticias/'+n.slug+'.html'; target='_self'; }
+      else { url='https://www.asproc.com.br/noticias.html'; target='_self'; }
       const thumb = n.imagem_url
         ? '<img class="rel-thumb" src="'+n.imagem_url+'" alt="" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">'+'<div class="rel-thumb-ph" style="display:none">'+icon+'</div>'
         : '<div class="rel-thumb-ph">'+icon+'</div>';
