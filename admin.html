@@ -5552,7 +5552,7 @@ async function loadRelated() {
         +'</div></a>';
     }).join('');
   } catch(e) {
-    list.innerHTML='<p style="font-size:.8rem;color:rgba(245,240,232,.3);">Nao foi possivel carregar.</p>';
+    list.innerHTML='<p style="font-size:.82rem;color:rgba(245,240,232,.5);padding:.5rem 0;">Nao foi possivel carregar.</p>';
   }
 }
 
@@ -5562,23 +5562,26 @@ async function loadVagas() {
   const box = document.getElementById('vagas-box');
   if(!list||!box) return;
   try {
-    // Busca vagas com todos os campos necessários
     let data;
     try {
       data = await sbFetch('vagas','select=titulo,local,regime,prazo,status,edital_url,slug,url_externa&order=created_at.desc&limit=6');
     } catch(_){
       data = await sbFetch('vagas','select=titulo,prazo,status,edital_url&order=created_at.desc&limit=6');
     }
-    if(!Array.isArray(data)||!data.length){ box.style.display='none'; return; }
-    // Filtra apenas vagas ativas/abertas
+    if(!Array.isArray(data)||!data.length){
+      list.innerHTML='<p style="font-size:.82rem;color:rgba(245,240,232,.5);padding:.5rem 0;">Nenhuma vaga aberta no momento.</p>';
+      return;
+    }
     const abertas = data.filter(function(v){
       const s = (v.status||'').toLowerCase();
       return s === 'aberta' || s === 'ativo' || s === 'publicado' || s === 'aberto' || s === '';
     });
-    if(!abertas.length){ box.style.display='none'; return; }
+    if(!abertas.length){
+      list.innerHTML='<p style="font-size:.82rem;color:rgba(245,240,232,.5);padding:.5rem 0;">Nenhuma vaga aberta no momento.</p>';
+      return;
+    }
     box.style.display='';
     list.innerHTML = abertas.slice(0,3).map(function(v){
-      // Prioridade: url_externa > edital_url > slug > trabalhe-conosco
       let url, target;
       if(v.url_externa){ url=v.url_externa; target='_blank'; }
       else if(v.edital_url){ url=v.edital_url; target='_blank'; }
@@ -5591,7 +5594,7 @@ async function loadVagas() {
         +'</a>';
     }).join('');
   } catch(e) {
-    box.style.display='none';
+    list.innerHTML='<p style="font-size:.82rem;color:rgba(245,240,232,.5);padding:.5rem 0;">Nenhuma vaga aberta no momento.</p>';
   }
 }
 
