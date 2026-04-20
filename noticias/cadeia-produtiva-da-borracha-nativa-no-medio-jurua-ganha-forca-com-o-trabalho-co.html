@@ -301,13 +301,16 @@ function fmtDate(d) {
 // ── CURSOR ──
 const dot = document.getElementById('cursor-dot');
 const ring = document.getElementById('cursor-ring');
-let rx=0,ry=0;
+let mx=0,my=0,rx=0,ry=0;
 document.addEventListener('mousemove',function(e){
-  dot.style.left=e.clientX+'px'; dot.style.top=e.clientY+'px';
-  rx+=(e.clientX-rx)*.18; ry+=(e.clientY-ry)*.18;
-  ring.style.left=rx+'px'; ring.style.top=ry+'px';
+  mx=e.clientX; my=e.clientY;
+  dot.style.left=mx+'px'; dot.style.top=my+'px';
 });
-function animRing(){rx+=(parseFloat(dot.style.left||0)-rx)*.18;ry+=(parseFloat(dot.style.top||0)-ry)*.18;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing);}
+function animRing(){
+  rx+=(mx-rx)*.18; ry+=(my-ry)*.18;
+  ring.style.left=rx+'px'; ring.style.top=ry+'px';
+  requestAnimationFrame(animRing);
+}
 animRing();
 document.querySelectorAll('a,button').forEach(function(el){
   el.addEventListener('mouseenter',function(){dot.classList.add('h');ring.classList.add('h');});
@@ -333,19 +336,36 @@ function setLang(l){
 
 // ── LOAD RELATED NEWS ──
 async function loadRelated() {
+  const list = document.getElementById('related-list');
+  if(!list) return;
   try {
-    const data = await sbFetch('noticias','select=titulo,categoria,data_pub,imagem_url,url_externa&publicado=eq.true&order=data_pub.desc&limit=6');
-    const list = document.getElementById('related-list');
-    if(!list) return;
-    // Filtra a notícia atual pelo título se possível
-    const currTitle = document.title.replace(' – ASPROC','').trim();
-    const filtered = data.filter(function(n){return n.titulo !== currTitle;}).slice(0,4);
-    if(!filtered.length){ list.innerHTML='<p style="font-size:.82rem;color:rgba(245,240,232,.35);padding:.5rem 0;">Mais conteúdo em breve.</p>'; return; }
+    let data;
+    try {
+      data = await sbFetch('noticias','select=titulo,categoria,data_pub,imagem_url,url_externa,slug&publicado=eq.true&order=data_pub.desc&limit=10');
+      if(!Array.isArray(data)||!data.length) throw new Error('vazio');
+    } catch(_){
+      data = await sbFetch('noticias','select=titulo,categoria,data_pub,imagem_url,url_externa,slug&order=data_pub.desc&limit=10');
+    }
+    if(!Array.isArray(data)||!data.length){
+      list.innerHTML='<p style="font-size:.82rem;color:rgba(245,240,232,.35);padding:.5rem 0;">Mais conteudo em breve.</p>';
+      return;
+    }
+    const currTitle = document.title.replace(/s*[–—-]s*ASPROCs*$/i,'').trim();
+    const currSlug = window.location.pathname.split('/').pop().replace('.html','');
+    const filtered = data.filter(function(n){
+      return n.titulo !== currTitle && n.slug !== currSlug;
+    }).slice(0,4);
+    if(!filtered.length){
+      list.innerHTML='<p style="font-size:.82rem;color:rgba(245,240,232,.35);padding:.5rem 0;">Mais conteudo em breve.</p>';
+      return;
+    }
     list.innerHTML = filtered.map(function(n){
       const icon = CAT_ICONS[n.categoria] || '📌';
-      const lbl = CAT_LABEL[n.categoria] || n.categoria;
-      const url = n.url_externa || '../noticias.html';
-      const target = n.url_externa ? '_blank' : '_self';
+      const lbl = CAT_LABEL[n.categoria] || n.categoria || 'Geral';
+      let url, target;
+      if(n.url_externa){ url=n.url_externa; target='_blank'; }
+      else if(n.slug){ url='https://www.asproc.com.br/noticias/'+n.slug+'.html'; target='_blank'; }
+      else { url='../noticias.html'; target='_self'; }
       const thumb = n.imagem_url
         ? '<img class="rel-thumb" src="'+n.imagem_url+'" alt="" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">'+'<div class="rel-thumb-ph" style="display:none">'+icon+'</div>'
         : '<div class="rel-thumb-ph">'+icon+'</div>';
@@ -358,27 +378,46 @@ async function loadRelated() {
         +'</div></a>';
     }).join('');
   } catch(e) {
-    const list = document.getElementById('related-list');
-    if(list) list.innerHTML='<p style="font-size:.8rem;color:rgba(245,240,232,.3);">Não foi possível carregar.</p>';
+    list.innerHTML='<p style="font-size:.8rem;color:rgba(245,240,232,.3);">Nao foi possivel carregar.</p>';
   }
 }
 
 // ── LOAD VAGAS ──
 async function loadVagas() {
+  const list = document.getElementById('vagas-list');
+  const box = document.getElementById('vagas-box');
+  if(!list||!box) return;
   try {
-    const data = await sbFetch('vagas','select=titulo,cargo,data_limite,url_externa&publicado=eq.true&order=criado_em.desc&limit=3');
-    const list = document.getElementById('vagas-list');
-    if(!list) return;
-    if(!Array.isArray(data)||!data.length){ document.getElementById('vagas-box').style.display='none'; return; }
-    list.innerHTML = data.map(function(v){
-      const url = v.url_externa || '../trabalhe-conosco.html';
-      return '<a class="vaga-item" href="'+url+'" target="_blank">'
+    // Busca vagas com todos os campos necessários
+    let data;
+    try {
+      data = await sbFetch('vagas','select=titulo,local,regime,prazo,status,edital_url,slug,url_externa&order=created_at.desc&limit=6');
+    } catch(_){
+      data = await sbFetch('vagas','select=titulo,prazo,status,edital_url&order=created_at.desc&limit=6');
+    }
+    if(!Array.isArray(data)||!data.length){ box.style.display='none'; return; }
+    // Filtra apenas vagas ativas/abertas
+    const abertas = data.filter(function(v){
+      const s = (v.status||'').toLowerCase();
+      return s === 'aberta' || s === 'ativo' || s === 'publicado' || s === 'aberto' || s === '';
+    });
+    if(!abertas.length){ box.style.display='none'; return; }
+    box.style.display='';
+    list.innerHTML = abertas.slice(0,3).map(function(v){
+      // Prioridade: url_externa > edital_url > slug > trabalhe-conosco
+      let url, target;
+      if(v.url_externa){ url=v.url_externa; target='_blank'; }
+      else if(v.edital_url){ url=v.edital_url; target='_blank'; }
+      else if(v.slug){ url='https://www.asproc.com.br/trabalhe-conosco.html#'+v.slug; target='_blank'; }
+      else { url='../trabalhe-conosco.html'; target='_self'; }
+      const meta = [v.local, v.regime, v.prazo ? 'Ate '+fmtDate(v.prazo) : ''].filter(Boolean).join(' · ');
+      return '<a class="vaga-item" href="'+url+'" target="'+target+'">'
         +'<div class="vaga-title">'+v.titulo+'</div>'
-        +'<div class="vaga-meta">'+(v.cargo||'')+(v.data_limite?' · Até '+fmtDate(v.data_limite):'')+'</div>'
+        +'<div class="vaga-meta">'+meta+'</div>'
         +'</a>';
     }).join('');
   } catch(e) {
-    document.getElementById('vagas-box').style.display='none';
+    box.style.display='none';
   }
 }
 
