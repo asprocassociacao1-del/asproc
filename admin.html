@@ -6856,10 +6856,29 @@ document.addEventListener('DOMContentLoaded', function(){
               };
               if (existingSha) body.sha = existingSha;
 
-              await ghFetch(
-                `/repos/${GH_OWNER}/${GH_REPO}/contents/${filePath}`,
-                { method: 'PUT', body: JSON.stringify(body) }
-              );
+              let putRes;
+              try {
+                putRes = await ghFetch(
+                  `/repos/${GH_OWNER}/${GH_REPO}/contents/${filePath}`,
+                  { method: 'PUT', body: JSON.stringify(body) }
+                );
+              } catch (putErr) {
+                // Se der conflito de SHA (arquivo foi modificado), busca o SHA mais recente e tenta de novo
+                if (putErr.message && (putErr.message.includes('does not match') || putErr.message.includes('409') || putErr.message.includes('422'))) {
+                  try {
+                    const fresh = await ghFetch(`/repos/${GH_OWNER}/${GH_REPO}/contents/${filePath}?ref=${GH_BRANCH}`);
+                    body.sha = fresh.sha;
+                    putRes = await ghFetch(
+                      `/repos/${GH_OWNER}/${GH_REPO}/contents/${filePath}`,
+                      { method: 'PUT', body: JSON.stringify(body) }
+                    );
+                  } catch (retryErr) {
+                    throw retryErr;
+                  }
+                } else {
+                  throw putErr;
+                }
+              }
 
               // Atualiza url_externa no Supabase se ainda não tiver
               // e salva o slug gerado automaticamente se estava vazio
