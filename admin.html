@@ -3528,6 +3528,7 @@
       }
 
       function initApp() {
+        loadGhTokenFromSupabase();
         loadConfigFields();
         loadDashboard();
         loadSection('noticias'); loadSection('vagas'); loadSection('avisos'); loadCandidaturas();
@@ -3538,7 +3539,7 @@
         document.getElementById('cfg-url').value = cfg.url || DEFAULT_SUPABASE_URL;
         document.getElementById('cfg-key').value = cfg.key || DEFAULT_SUPABASE_KEY;
         const tok = document.getElementById('cfg-gh-token');
-        if (tok) { const t = getGhToken(); if (t) tok.value = t; }
+        if (tok) { tok.value = getGhToken(); }
       }
 
       function saveConfig() {
@@ -5860,7 +5861,16 @@ document.addEventListener('DOMContentLoaded',function(){
       const GH_BASE_URL = `https://www.asproc.com.br`;
       const GH_TOKEN_KEY = 'asproc_gh_token';
 
-      function getGhToken() { return localStorage.getItem(GH_TOKEN_KEY) || ''; }
+      function getGhToken() { return sessionStorage.getItem(GH_TOKEN_KEY) || localStorage.getItem(GH_TOKEN_KEY) || ''; }
+
+      async function loadGhTokenFromSupabase() {
+        try {
+          const rows = await sbSelect('app_config', 'select=value&key=eq.gh_token&limit=1');
+          if (rows && rows.length && rows[0].value) {
+            sessionStorage.setItem(GH_TOKEN_KEY, rows[0].value);
+          }
+        } catch (_) { /* token não está no banco, usuário configura manualmente */ }
+      }
 
       function saveGithubToken() {
         const token = (document.getElementById('cfg-gh-token').value || '').trim();
