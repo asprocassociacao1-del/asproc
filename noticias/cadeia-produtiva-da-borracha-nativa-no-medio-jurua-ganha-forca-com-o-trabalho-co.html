@@ -489,6 +489,16 @@ const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZ
 const CAT_ICONS={pirarucu:'🐟',olea:'🌿',sanear:'💧',comercio:'🛒',vagas:'📋',geral:'📌'};
 const CAT_LABEL={pirarucu:'Pirarucu',olea:'Oleaginosas',sanear:'Saneamento',comercio:'Comércio',vagas:'Vagas',geral:'Geral'};
 
+const MOCK_NOTICIAS=[
+  {titulo:'Justiça Social na Prática: Como o CRCS transforma a realidade ribeirinha no Médio Juruá',categoria:'geral',data_pub:'2026-04-01',imagem_url:'',slug:'justica-social-na-pratica-como-o-crcs-transforma-a-realidade-ribeirinha-no-medio-jurua'},
+  {titulo:'Cadeia produtiva da borracha nativa no Médio Juruá ganha força com o trabalho coletivo da ASPROC no escoamento',categoria:'comercio',data_pub:'2026-04-05',imagem_url:'',slug:'cadeia-produtiva-da-borracha-nativa-no-medio-jurua-ganha-forca-com-o-trabalho-coletivo-da-asproc-no-escoamento'},
+  {titulo:'ASPROC supera desafios logísticos e realiza capacitações do Sanear Amazônia em 2025',categoria:'sanear',data_pub:'2026-04-08',imagem_url:'',slug:'asproc-supera-desafios-logisticos-e-realiza-capacitacoes-do-sanear-amazonia-em-2025'},
+  {titulo:'Viagem de Comercialização da ASPROC aos polos do Comércio Ribeirinho fortalece a sociobiodiversidade com abastecimento, acesso a mercados e fomento agroflorestal',categoria:'comercio',data_pub:'2026-04-10',imagem_url:'',slug:'viagem-de-comercializacao-da-asproc-aos-polos-do-comercio-ribeirinho'},
+  {titulo:'III Encontro da Cadeia Produtiva de Oleaginosas do Médio Juruá reúne comunidades e fortalece cooperação',categoria:'olea',data_pub:'2026-03-20',imagem_url:'',slug:'iii-encontro-da-cadeia-produtiva-de-oleaginosas-do-medio-jurua'},
+  {titulo:'Pirarucu do Médio Juruá: nova safra bate recorde de produção sustentável nas comunidades ribeirinhas',categoria:'pirarucu',data_pub:'2026-03-15',imagem_url:'',slug:'pirarucu-do-medio-jurua-nova-safra-bate-recorde-de-producao-sustentavel'}
+];
+const MOCK_VAGAS=[];
+
 async function sbGet(table,params){
   const r=await fetch(SB_URL+'/rest/v1/'+table+(params?'?'+params:''),{
     headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
@@ -583,57 +593,51 @@ async function loadRelated(){
   var list=document.getElementById('related-list');
   var listMobile=document.getElementById('related-list-mobile');
   if(!list&&!listMobile)return;
+  var data;
   try{
-    var data=await sbGet('noticias','select=titulo,categoria,data_pub,imagem_url,url_externa,slug&order=data_pub.desc&limit=20');
-    if(!Array.isArray(data)||!data.length){
-      var empty='<p style="font-size:.8rem;color:rgba(245,240,232,.25);padding:.5rem 0;">Mais conteúdo em breve.</p>';
-      if(list)list.innerHTML=empty;
-      if(listMobile)listMobile.innerHTML=empty;
-      return;
-    }
-    var filtered=data.filter(function(n){
-      if(!n.titulo)return false;
-      if(n.titulo.trim()===currTitle)return false;
-      if(n.slug&&n.slug===currSlug)return false;
-      if(n.url_externa&&n.url_externa.split('?')[0].split('#')[0]===currHref)return false;
-      return true;
-    }).slice(0,4);
-    if(!filtered.length){
-      var empty2='<p style="font-size:.8rem;color:rgba(245,240,232,.25);padding:.5rem 0;">Mais conteúdo em breve.</p>';
-      if(list)list.innerHTML=empty2;
-      if(listMobile)listMobile.innerHTML=empty2;
-      return;
-    }
-    /* ── SIDEBAR HTML ── */
-    if(list){
-      list.innerHTML=filtered.map(function(n){
-        var icon=CAT_ICONS[n.categoria]||'📌';
-        var lbl=CAT_LABEL[n.categoria]||n.categoria||'Geral';
-        var sl=n.slug||(n.titulo?n.titulo.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''):'');
-        var url=n.url_externa||(sl?'https://www.asproc.com.br/noticias/'+sl+'.html':'../noticias.html');
-        var img=n.imagem_url
-          ?'<img class="rel-img" src="'+n.imagem_url+'" alt="" loading="lazy" onerror="this.outerHTML='<div class=\"rel-ph\">'+icon+'</div>'">'
-          :'<div class="rel-ph">'+icon+'</div>';
-        return '<a class="rel-card" href="'+url+'">'+img+'<div class="rel-info"><div class="rel-cat-lbl">'+lbl+'</div><div class="rel-title">'+n.titulo+'</div><div class="rel-date">'+fmtDate(n.data_pub)+'</div></div></a>';
-      }).join('');
-    }
-    /* ── MOBILE HTML ── */
-    if(listMobile){
-      listMobile.innerHTML=filtered.map(function(n){
-        var icon=CAT_ICONS[n.categoria]||'📌';
-        var lbl=CAT_LABEL[n.categoria]||n.categoria||'Geral';
-        var sl=n.slug||(n.titulo?n.titulo.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''):'');
-        var url=n.url_externa||(sl?'https://www.asproc.com.br/noticias/'+sl+'.html':'../noticias.html');
-        var img=n.imagem_url
-          ?'<img class="rel-mobile-img" src="'+n.imagem_url+'" alt="" loading="lazy" onerror="this.outerHTML='<div class=\"rel-mobile-ph\">'+icon+'</div>'">'
-          :'<div class="rel-mobile-ph">'+icon+'</div>';
-        return '<a class="rel-mobile-card" href="'+url+'">'+img+'<div class="rel-mobile-info"><div class="rel-mobile-cat">'+lbl+'</div><div class="rel-mobile-title">'+n.titulo+'</div><div class="rel-mobile-date">'+fmtDate(n.data_pub)+'</div></div></a>';
-      }).join('');
-    }
+    data=await sbGet('noticias','select=titulo,categoria,data_pub,imagem_url,url_externa,slug&order=data_pub.desc&limit=20');
+    if(!Array.isArray(data)||!data.length)data=MOCK_NOTICIAS;
   }catch(e){
-    var err='<p style="font-size:.78rem;color:rgba(245,240,232,.2);">Não foi possível carregar.</p>';
-    if(list)list.innerHTML=err;
-    if(listMobile)listMobile.innerHTML=err;
+    data=MOCK_NOTICIAS;
+  }
+  var filtered=data.filter(function(n){
+    if(!n.titulo)return false;
+    if(n.titulo.trim()===currTitle)return false;
+    if(n.slug&&n.slug===currSlug)return false;
+    if(n.url_externa&&n.url_externa.split('?')[0].split('#')[0]===currHref)return false;
+    return true;
+  }).slice(0,4);
+  if(!filtered.length){
+    var empty='<p style="font-size:.8rem;color:rgba(245,240,232,.25);padding:.5rem 0;">Mais conteúdo em breve.</p>';
+    if(list)list.innerHTML=empty;
+    if(listMobile)listMobile.innerHTML=empty;
+    return;
+  }
+  /* ── SIDEBAR HTML ── */
+  if(list){
+    list.innerHTML=filtered.map(function(n){
+      var icon=CAT_ICONS[n.categoria]||'📌';
+      var lbl=CAT_LABEL[n.categoria]||n.categoria||'Geral';
+      var sl=n.slug||(n.titulo?n.titulo.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''):'');
+      var url=n.url_externa||(sl?'https://www.asproc.com.br/noticias/'+sl+'.html':'../noticias.html');
+      var img=n.imagem_url
+        ?'<img class="rel-img" src="'+n.imagem_url+'" alt="" loading="lazy" onerror="this.outerHTML='<div class=\"rel-ph\">'+icon+'</div>'">'
+        :'<div class="rel-ph">'+icon+'</div>';
+      return '<a class="rel-card" href="'+url+'">'+img+'<div class="rel-info"><div class="rel-cat-lbl">'+lbl+'</div><div class="rel-title">'+n.titulo+'</div><div class="rel-date">'+fmtDate(n.data_pub)+'</div></div></a>';
+    }).join('');
+  }
+  /* ── MOBILE HTML ── */
+  if(listMobile){
+    listMobile.innerHTML=filtered.map(function(n){
+      var icon=CAT_ICONS[n.categoria]||'📌';
+      var lbl=CAT_LABEL[n.categoria]||n.categoria||'Geral';
+      var sl=n.slug||(n.titulo?n.titulo.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''):'');
+      var url=n.url_externa||(sl?'https://www.asproc.com.br/noticias/'+sl+'.html':'../noticias.html');
+      var img=n.imagem_url
+        ?'<img class="rel-mobile-img" src="'+n.imagem_url+'" alt="" loading="lazy" onerror="this.outerHTML='<div class=\"rel-mobile-ph\">'+icon+'</div>'">'
+        :'<div class="rel-mobile-ph">'+icon+'</div>';
+      return '<a class="rel-mobile-card" href="'+url+'">'+img+'<div class="rel-mobile-info"><div class="rel-mobile-cat">'+lbl+'</div><div class="rel-mobile-title">'+n.titulo+'</div><div class="rel-mobile-date">'+fmtDate(n.data_pub)+'</div></div></a>';
+    }).join('');
   }
 }
 
@@ -642,28 +646,32 @@ async function loadMoreNews(){
   var section=document.getElementById('moreNewsSection');
   var grid=document.getElementById('more-news-grid');
   if(!section||!grid)return;
+  var data;
   try{
-    var data=await sbGet('noticias','select=titulo,categoria,data_pub,imagem_url,url_externa,slug,resumo&order=data_pub.desc&limit=20');
-    if(!Array.isArray(data)||!data.length)return;
-    var filtered=data.filter(function(n){
-      if(!n.titulo)return false;
-      if(n.titulo.trim()===currTitle)return false;
-      if(n.slug&&n.slug===currSlug)return false;
-      if(n.url_externa&&n.url_externa.split('?')[0].split('#')[0]===currHref)return false;
-      return true;
-    }).slice(0,6);
-    if(!filtered.length)return;
-    section.style.display='block';
-    grid.innerHTML=filtered.map(function(n){
-      var icon=CAT_ICONS[n.categoria]||'📌';
-      var lbl=CAT_LABEL[n.categoria]||n.categoria||'Geral';
-      var url=n.url_externa||(n.slug?'https://www.asproc.com.br/noticias/'+n.slug+'.html':'#');
-      var imgEl=n.imagem_url
-        ?'<img class="news-card-img" src="'+n.imagem_url+'" alt="" loading="lazy" onerror="this.outerHTML='<div class=\"news-card-ph\">'+icon+'</div>'">'
-        :'<div class="news-card-ph">'+icon+'</div>';
-      return '<a class="news-card" href="'+url+'">'+imgEl+'<div class="news-card-body"><div class="news-card-cat">'+icon+' '+lbl+'</div><div class="news-card-title">'+n.titulo+'</div><div class="news-card-meta"><span class="news-card-date">'+fmtDate(n.data_pub)+'</span><span class="news-card-arrow">→</span></div></div></a>';
-    }).join('');
-  }catch(e){}
+    data=await sbGet('noticias','select=titulo,categoria,data_pub,imagem_url,url_externa,slug,resumo&order=data_pub.desc&limit=20');
+    if(!Array.isArray(data)||!data.length)data=MOCK_NOTICIAS;
+  }catch(e){
+    data=MOCK_NOTICIAS;
+  }
+  var filtered=data.filter(function(n){
+    if(!n.titulo)return false;
+    if(n.titulo.trim()===currTitle)return false;
+    if(n.slug&&n.slug===currSlug)return false;
+    if(n.url_externa&&n.url_externa.split('?')[0].split('#')[0]===currHref)return false;
+    return true;
+  }).slice(0,6);
+  if(!filtered.length)return;
+  section.style.display='block';
+  grid.innerHTML=filtered.map(function(n){
+    var icon=CAT_ICONS[n.categoria]||'📌';
+    var lbl=CAT_LABEL[n.categoria]||n.categoria||'Geral';
+    var sl=n.slug||(n.titulo?n.titulo.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''):'');
+    var url=n.url_externa||(sl?'https://www.asproc.com.br/noticias/'+sl+'.html':'../noticias.html');
+    var imgEl=n.imagem_url
+      ?'<img class="news-card-img" src="'+n.imagem_url+'" alt="" loading="lazy" onerror="this.outerHTML='<div class=\"news-card-ph\">'+icon+'</div>'">'
+      :'<div class="news-card-ph">'+icon+'</div>';
+    return '<a class="news-card" href="'+url+'">'+imgEl+'<div class="news-card-body"><div class="news-card-cat">'+icon+' '+lbl+'</div><div class="news-card-title">'+n.titulo+'</div><div class="news-card-meta"><span class="news-card-date">'+fmtDate(n.data_pub)+'</span><span class="news-card-arrow">→</span></div></div></a>';
+  }).join('');
 }
 
 // ── LOAD VAGAS ──
