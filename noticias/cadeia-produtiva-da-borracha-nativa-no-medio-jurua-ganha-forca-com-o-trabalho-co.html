@@ -583,10 +583,50 @@ function copyLink(){
   });
 }
 
+// ── SLUGIFY (igual ao admin) ──
+function slugify(str){
+  return (str||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9s-]/g,'').trim().replace(/s+/g,'-').replace(/-+/g,'-').substring(0,80);
+}
+
 // ── IDENTIFICAÇÃO DA NOTÍCIA ATUAL ──
-var currTitle=document.title.replace(/\s*[\u2013\u2014-]\s*ASPROC\s*$/i,'').trim();
-var currSlug=window.location.pathname.split('/').pop().replace('.html','');
+// Pega o slug diretamente da URL do arquivo (fonte mais confiável)
+var currSlug=(function(){
+  var parts=window.location.pathname.split('/');
+  var fname=parts[parts.length-1].replace(/.html$/i,'');
+  return fname||'';
+})();
+var currTitle=document.title.replace(/s*[–—-]s*ASPROCs*$/i,'').trim();
 var currHref=window.location.href.split('?')[0].split('#')[0];
+
+// Verifica se uma notícia do banco é a atual (múltiplas estratégias)
+function isCurrent(n){
+  if(!n.titulo)return false;
+  // 1. Slug do banco bate com slug da URL
+  if(n.slug&&n.slug.trim()===currSlug)return true;
+  // 2. Slug gerado do título bate com slug da URL
+  if(n.titulo&&slugify(n.titulo)===currSlug)return true;
+  // 3. url_externa bate com href atual
+  if(n.url_externa){
+    var ext=n.url_externa.split('?')[0].split('#')[0].replace(//$/,'');
+    var cur=currHref.replace(//$/,'');
+    if(ext===cur)return true;
+    // 4. Nome do arquivo de url_externa bate com slug atual
+    var extSlug=ext.split('/').pop().replace(/.html$/i,'');
+    if(extSlug&&extSlug===currSlug)return true;
+  }
+  return false;
+}
+
+// Gera a URL de uma notícia de forma robusta
+function noticiaUrl(n){
+  // Preferência: url_externa (já publicada)
+  if(n.url_externa&&n.url_externa.trim()){
+    return n.url_externa.trim();
+  }
+  // Fallback: slug do banco
+  var sl=n.slug&&n.slug.trim()?n.slug.trim():slugify(n.titulo||'');
+  return sl?('https://www.asproc.com.br/noticias/'+sl+'.html'):'../noticias.html';
+}
 
 // ── LOAD RELATED (sidebar + mobile) ──
 async function loadRelated(){
@@ -595,17 +635,13 @@ async function loadRelated(){
   if(!list&&!listMobile)return;
   var data;
   try{
-    data=await sbGet('noticias','select=titulo,categoria,data_pub,imagem_url,url_externa,slug&order=data_pub.desc&limit=20');
+    data=await sbGet('noticias','select=titulo,categoria,data_pub,imagem_url,url_externa,slug&order=data_pub.desc&limit=30');
     if(!Array.isArray(data)||!data.length)data=MOCK_NOTICIAS;
   }catch(e){
     data=MOCK_NOTICIAS;
   }
   var filtered=data.filter(function(n){
-    if(!n.titulo)return false;
-    if(n.titulo.trim()===currTitle)return false;
-    if(n.slug&&n.slug===currSlug)return false;
-    if(n.url_externa&&n.url_externa.split('?')[0].split('#')[0]===currHref)return false;
-    return true;
+    return n.titulo&&!isCurrent(n);
   }).slice(0,4);
   if(!filtered.length){
     var empty='<p style="font-size:.8rem;color:rgba(245,240,232,.25);padding:.5rem 0;">Mais conteúdo em breve.</p>';
@@ -618,8 +654,7 @@ async function loadRelated(){
     list.innerHTML=filtered.map(function(n){
       var icon=CAT_ICONS[n.categoria]||'📌';
       var lbl=CAT_LABEL[n.categoria]||n.categoria||'Geral';
-      var sl=n.slug||(n.titulo?n.titulo.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''):'');
-      var url=n.url_externa||(sl?'https://www.asproc.com.br/noticias/'+sl+'.html':'../noticias.html');
+      var url=noticiaUrl(n);
       var img=n.imagem_url
         ?'<img class="rel-img" src="'+n.imagem_url+'" alt="" loading="lazy" onerror="this.outerHTML='<div class=\"rel-ph\">'+icon+'</div>'">'
         :'<div class="rel-ph">'+icon+'</div>';
@@ -631,8 +666,7 @@ async function loadRelated(){
     listMobile.innerHTML=filtered.map(function(n){
       var icon=CAT_ICONS[n.categoria]||'📌';
       var lbl=CAT_LABEL[n.categoria]||n.categoria||'Geral';
-      var sl=n.slug||(n.titulo?n.titulo.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''):'');
-      var url=n.url_externa||(sl?'https://www.asproc.com.br/noticias/'+sl+'.html':'../noticias.html');
+      var url=noticiaUrl(n);
       var img=n.imagem_url
         ?'<img class="rel-mobile-img" src="'+n.imagem_url+'" alt="" loading="lazy" onerror="this.outerHTML='<div class=\"rel-mobile-ph\">'+icon+'</div>'">'
         :'<div class="rel-mobile-ph">'+icon+'</div>';
@@ -648,25 +682,20 @@ async function loadMoreNews(){
   if(!section||!grid)return;
   var data;
   try{
-    data=await sbGet('noticias','select=titulo,categoria,data_pub,imagem_url,url_externa,slug,resumo&order=data_pub.desc&limit=20');
+    data=await sbGet('noticias','select=titulo,categoria,data_pub,imagem_url,url_externa,slug,resumo&order=data_pub.desc&limit=30');
     if(!Array.isArray(data)||!data.length)data=MOCK_NOTICIAS;
   }catch(e){
     data=MOCK_NOTICIAS;
   }
   var filtered=data.filter(function(n){
-    if(!n.titulo)return false;
-    if(n.titulo.trim()===currTitle)return false;
-    if(n.slug&&n.slug===currSlug)return false;
-    if(n.url_externa&&n.url_externa.split('?')[0].split('#')[0]===currHref)return false;
-    return true;
+    return n.titulo&&!isCurrent(n);
   }).slice(0,6);
   if(!filtered.length)return;
   section.style.display='block';
   grid.innerHTML=filtered.map(function(n){
     var icon=CAT_ICONS[n.categoria]||'📌';
     var lbl=CAT_LABEL[n.categoria]||n.categoria||'Geral';
-    var sl=n.slug||(n.titulo?n.titulo.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''):'');
-    var url=n.url_externa||(sl?'https://www.asproc.com.br/noticias/'+sl+'.html':'../noticias.html');
+    var url=noticiaUrl(n);
     var imgEl=n.imagem_url
       ?'<img class="news-card-img" src="'+n.imagem_url+'" alt="" loading="lazy" onerror="this.outerHTML='<div class=\"news-card-ph\">'+icon+'</div>'">'
       :'<div class="news-card-ph">'+icon+'</div>';
