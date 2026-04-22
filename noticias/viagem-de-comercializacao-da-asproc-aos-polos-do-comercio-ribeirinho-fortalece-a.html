@@ -218,11 +218,28 @@ footer{background:var(--superficie);border-top:1px solid var(--borda);padding:3.
 .ft-bottom a{color:rgba(123,201,92,.4);text-decoration:none;transition:color .2s;}
 .ft-bottom a:hover{color:var(--verde-neon);}
 
+/* ── LEIA TAMBÉM MOBILE ── */
+.leia-mobile{display:none;max-width:1140px;margin:0 auto;padding:0 5% 3rem;}
+.leia-mobile-header{display:flex;align-items:center;gap:.5rem;font-size:.7rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--verde-neon);margin-bottom:1.25rem;padding-bottom:.75rem;border-bottom:1px solid var(--borda);}
+.leia-mobile-header svg{flex-shrink:0;}
+.rel-mobile-list{display:flex;flex-direction:column;gap:0;}
+.rel-mobile-card{display:flex;gap:.85rem;padding:.9rem 0;border-bottom:1px solid rgba(255,255,255,.05);text-decoration:none;align-items:flex-start;transition:background .2s;}
+.rel-mobile-card:last-child{border-bottom:none;}
+.rel-mobile-card:hover{text-decoration:none;}
+.rel-mobile-img{width:80px;height:62px;border-radius:8px;object-fit:cover;flex-shrink:0;background:var(--superficie2);}
+.rel-mobile-ph{width:80px;height:62px;border-radius:8px;flex-shrink:0;background:linear-gradient(135deg,var(--superficie2),var(--superficie3));display:flex;align-items:center;justify-content:center;font-size:1.4rem;}
+.rel-mobile-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:.25rem;justify-content:center;}
+.rel-mobile-cat{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--verde-claro);}
+.rel-mobile-title{font-family:'Fraunces',serif;font-size:.92rem;font-weight:700;color:var(--branco);line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;transition:color .2s;}
+.rel-mobile-card:hover .rel-mobile-title{color:var(--verde-neon);}
+.rel-mobile-date{font-size:.68rem;color:var(--texto-muito-fraco);}
+
 /* ── RESPONSIVE ── */
 @media(max-width:1024px){
   .art-wrap{grid-template-columns:1fr;gap:2rem;}
   .art-sidebar{position:static;}
-  .sb-box-related{display:none;}/* hide sidebar related on mobile — shown in bottom section */
+  .sb-box-related{display:none;}/* oculto na sidebar em mobile — versão mobile abaixo */
+  .leia-mobile{display:block;}/* mostra bloco mobile */
   .news-grid{grid-template-columns:repeat(2,1fr);}
   .ft-inner{grid-template-columns:1fr 1fr;}
 }
@@ -425,6 +442,19 @@ footer{background:var(--superficie);border-top:1px solid var(--borda);padding:3.
   </aside>
 </div>
 
+<!-- LEIA TAMBÉM MOBILE (visível apenas em ≤1024px) -->
+<section class="leia-mobile" id="leiaMobileSection">
+  <div class="leia-mobile-header">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13"><path d="M2 4h12M2 8h8M2 12h10"/></svg>
+    📌 Leia também
+  </div>
+  <div class="rel-mobile-list" id="related-list-mobile">
+    <div class="skel"><div class="skel-img"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
+    <div class="skel"><div class="skel-img"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
+    <div class="skel"><div class="skel-img"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
+  </div>
+</section>
+
 <!-- MAIS NOTÍCIAS (grade no rodapé do artigo) -->
 <section class="more-news" id="moreNewsSection" style="display:none">
   <div class="more-news-header">
@@ -563,31 +593,63 @@ var currTitle=document.title.replace(/\s*[\u2013\u2014-]\s*ASPROC\s*$/i,'').trim
 var currSlug=window.location.pathname.split('/').pop().replace('.html','');
 var currHref=window.location.href.split('?')[0].split('#')[0];
 
-// ── LOAD RELATED (sidebar) ──
+// ── LOAD RELATED (sidebar + mobile) ──
 async function loadRelated(){
   var list=document.getElementById('related-list');
-  if(!list)return;
+  var listMobile=document.getElementById('related-list-mobile');
+  if(!list&&!listMobile)return;
   try{
     var data=await sbGet('noticias','select=titulo,categoria,data_pub,imagem_url,url_externa,slug&order=data_pub.desc&limit=20');
-    if(!Array.isArray(data)||!data.length){list.innerHTML='<p style="font-size:.8rem;color:rgba(245,240,232,.25);padding:.5rem 0;">Mais conteúdo em breve.</p>';return;}
+    if(!Array.isArray(data)||!data.length){
+      var empty='<p style="font-size:.8rem;color:rgba(245,240,232,.25);padding:.5rem 0;">Mais conteúdo em breve.</p>';
+      if(list)list.innerHTML=empty;
+      if(listMobile)listMobile.innerHTML=empty;
+      return;
+    }
     var filtered=data.filter(function(n){
       if(!n.titulo)return false;
       if(n.titulo.trim()===currTitle)return false;
       if(n.slug&&n.slug===currSlug)return false;
       if(n.url_externa&&n.url_externa.split('?')[0].split('#')[0]===currHref)return false;
-      return !!(n.url_externa||n.slug);
+      return true;
     }).slice(0,4);
-    if(!filtered.length){list.innerHTML='<p style="font-size:.8rem;color:rgba(245,240,232,.25);padding:.5rem 0;">Mais conteúdo em breve.</p>';return;}
-    list.innerHTML=filtered.map(function(n){
-      var icon=CAT_ICONS[n.categoria]||'📌';
-      var lbl=CAT_LABEL[n.categoria]||n.categoria||'Geral';
-      var url=n.url_externa||(n.slug?'https://www.asproc.com.br/noticias/'+n.slug+'.html':'#');
-      var img=n.imagem_url
-        ?'<img class="rel-img" src="'+n.imagem_url+'" alt="" loading="lazy" onerror="this.outerHTML='<div class=\"rel-ph\">'+icon+'</div>'">'
-        :'<div class="rel-ph">'+icon+'</div>';
-      return '<a class="rel-card" href="'+url+'">'+img+'<div class="rel-info"><div class="rel-cat-lbl">'+lbl+'</div><div class="rel-title">'+n.titulo+'</div><div class="rel-date">'+fmtDate(n.data_pub)+'</div></div></a>';
-    }).join('');
-  }catch(e){list.innerHTML='<p style="font-size:.78rem;color:rgba(245,240,232,.2);">Não foi possível carregar.</p>';}
+    if(!filtered.length){
+      var empty2='<p style="font-size:.8rem;color:rgba(245,240,232,.25);padding:.5rem 0;">Mais conteúdo em breve.</p>';
+      if(list)list.innerHTML=empty2;
+      if(listMobile)listMobile.innerHTML=empty2;
+      return;
+    }
+    /* ── SIDEBAR HTML ── */
+    if(list){
+      list.innerHTML=filtered.map(function(n){
+        var icon=CAT_ICONS[n.categoria]||'📌';
+        var lbl=CAT_LABEL[n.categoria]||n.categoria||'Geral';
+        var sl=n.slug||(n.titulo?n.titulo.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''):'');
+        var url=n.url_externa||(sl?'https://www.asproc.com.br/noticias/'+sl+'.html':'../noticias.html');
+        var img=n.imagem_url
+          ?'<img class="rel-img" src="'+n.imagem_url+'" alt="" loading="lazy" onerror="this.outerHTML='<div class=\"rel-ph\">'+icon+'</div>'">'
+          :'<div class="rel-ph">'+icon+'</div>';
+        return '<a class="rel-card" href="'+url+'">'+img+'<div class="rel-info"><div class="rel-cat-lbl">'+lbl+'</div><div class="rel-title">'+n.titulo+'</div><div class="rel-date">'+fmtDate(n.data_pub)+'</div></div></a>';
+      }).join('');
+    }
+    /* ── MOBILE HTML ── */
+    if(listMobile){
+      listMobile.innerHTML=filtered.map(function(n){
+        var icon=CAT_ICONS[n.categoria]||'📌';
+        var lbl=CAT_LABEL[n.categoria]||n.categoria||'Geral';
+        var sl=n.slug||(n.titulo?n.titulo.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''):'');
+        var url=n.url_externa||(sl?'https://www.asproc.com.br/noticias/'+sl+'.html':'../noticias.html');
+        var img=n.imagem_url
+          ?'<img class="rel-mobile-img" src="'+n.imagem_url+'" alt="" loading="lazy" onerror="this.outerHTML='<div class=\"rel-mobile-ph\">'+icon+'</div>'">'
+          :'<div class="rel-mobile-ph">'+icon+'</div>';
+        return '<a class="rel-mobile-card" href="'+url+'">'+img+'<div class="rel-mobile-info"><div class="rel-mobile-cat">'+lbl+'</div><div class="rel-mobile-title">'+n.titulo+'</div><div class="rel-mobile-date">'+fmtDate(n.data_pub)+'</div></div></a>';
+      }).join('');
+    }
+  }catch(e){
+    var err='<p style="font-size:.78rem;color:rgba(245,240,232,.2);">Não foi possível carregar.</p>';
+    if(list)list.innerHTML=err;
+    if(listMobile)listMobile.innerHTML=err;
+  }
 }
 
 // ── LOAD MORE NEWS (grade embaixo) ──
@@ -603,7 +665,7 @@ async function loadMoreNews(){
       if(n.titulo.trim()===currTitle)return false;
       if(n.slug&&n.slug===currSlug)return false;
       if(n.url_externa&&n.url_externa.split('?')[0].split('#')[0]===currHref)return false;
-      return !!(n.url_externa||n.slug);
+      return true;
     }).slice(0,6);
     if(!filtered.length)return;
     section.style.display='block';
