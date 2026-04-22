@@ -495,17 +495,18 @@ function fmtDate(d){
 }
 
 // ── CURSOR ──
-const dot=document.getElementById('cur-dot');
-const ring=document.getElementById('cur-ring');
-let mx=0,my=0,rx=0,ry=0;
-dot.style.left='-100px';dot.style.top='-100px';
-ring.style.left='-100px';ring.style.top='-100px';
-document.addEventListener('mousemove',function(e){
-  mx=e.clientX;my=e.clientY;
-  dot.style.left=mx+'px';dot.style.top=my+'px';
-},{passive:true});
-(function animR(){rx+=(mx-rx)*.16;ry+=(my-ry)*.16;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animR);})();
 document.addEventListener('DOMContentLoaded',function(){
+  var dot=document.getElementById('cur-dot');
+  var ring=document.getElementById('cur-ring');
+  if(!dot||!ring)return;
+  var mx=0,my=0,rx=0,ry=0;
+  dot.style.left='-100px';dot.style.top='-100px';
+  ring.style.left='-100px';ring.style.top='-100px';
+  document.addEventListener('mousemove',function(e){
+    mx=e.clientX;my=e.clientY;
+    dot.style.left=mx+'px';dot.style.top=my+'px';
+  },{passive:true});
+  (function animR(){rx+=(mx-rx)*.16;ry+=(my-ry)*.16;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animR);})();
   document.querySelectorAll('a,button').forEach(function(el){
     el.addEventListener('mouseenter',function(){dot.classList.add('h');ring.classList.add('h');});
     el.addEventListener('mouseleave',function(){dot.classList.remove('h');ring.classList.remove('h');});
