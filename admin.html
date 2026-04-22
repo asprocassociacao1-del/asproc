@@ -5541,7 +5541,7 @@ footer{background:var(--superficie);border-top:1px solid var(--borda);padding:3.
   <!-- ARTICLE -->
   <article class="art-body" id="artBody">
 
-    ${data.conteudo || ''}
+    ${(data.conteudo || '').replace(/<\/script>/gi, '<\\/script>')}
 
     <!-- SHARE BAR -->
     <div class="share-bar">
