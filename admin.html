@@ -5795,7 +5795,7 @@ async function loadRelated(){
       if(n.titulo.trim()===currTitle)return false;
       if(n.slug&&n.slug===currSlug)return false;
       if(n.url_externa&&n.url_externa.split('?')[0].split('#')[0]===currHref)return false;
-      return !!(n.url_externa||n.slug);
+      return true;
     }).slice(0,4);
     if(!filtered.length){
       var empty2='<p style="font-size:.8rem;color:rgba(245,240,232,.25);padding:.5rem 0;">Mais conteúdo em breve.</p>';
@@ -5808,7 +5808,8 @@ async function loadRelated(){
       list.innerHTML=filtered.map(function(n){
         var icon=CAT_ICONS[n.categoria]||'📌';
         var lbl=CAT_LABEL[n.categoria]||n.categoria||'Geral';
-        var url=n.url_externa||(n.slug?'https://www.asproc.com.br/noticias/'+n.slug+'.html':'#');
+        var sl=n.slug||(n.titulo?n.titulo.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''):'');
+        var url=n.url_externa||(sl?'https://www.asproc.com.br/noticias/'+sl+'.html':'../noticias.html');
         var img=n.imagem_url
           ?'<img class="rel-img" src="'+n.imagem_url+'" alt="" loading="lazy" onerror="this.outerHTML=\'<div class=\\"rel-ph\\">'+icon+'</div>\'">'
           :'<div class="rel-ph">'+icon+'</div>';
@@ -5820,7 +5821,8 @@ async function loadRelated(){
       listMobile.innerHTML=filtered.map(function(n){
         var icon=CAT_ICONS[n.categoria]||'📌';
         var lbl=CAT_LABEL[n.categoria]||n.categoria||'Geral';
-        var url=n.url_externa||(n.slug?'https://www.asproc.com.br/noticias/'+n.slug+'.html':'#');
+        var sl=n.slug||(n.titulo?n.titulo.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''):'');
+        var url=n.url_externa||(sl?'https://www.asproc.com.br/noticias/'+sl+'.html':'../noticias.html');
         var img=n.imagem_url
           ?'<img class="rel-mobile-img" src="'+n.imagem_url+'" alt="" loading="lazy" onerror="this.outerHTML=\'<div class=\\"rel-mobile-ph\\">'+icon+'</div>\'">'
           :'<div class="rel-mobile-ph">'+icon+'</div>';
@@ -5847,7 +5849,7 @@ async function loadMoreNews(){
       if(n.titulo.trim()===currTitle)return false;
       if(n.slug&&n.slug===currSlug)return false;
       if(n.url_externa&&n.url_externa.split('?')[0].split('#')[0]===currHref)return false;
-      return !!(n.url_externa||n.slug);
+      return true;
     }).slice(0,6);
     if(!filtered.length)return;
     section.style.display='block';
