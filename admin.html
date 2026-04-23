@@ -1993,6 +1993,9 @@
         </div>
 
         <div class="nav-group-label">Personalização</div>
+        <div class="nav-item" onclick="goTo('logomarca',this)">
+          <span class="nav-icon">🖼️</span> Logomarca
+        </div>
         <div class="nav-item" onclick="goTo('textos',this)">
           <span class="nav-icon">✏️</span> Textos do Site
         </div>
@@ -2332,6 +2335,57 @@
           </div>
         </section>
 
+
+        <!-- ════ LOGOMARCA ════ -->
+        <section class="section" id="sec-logomarca">
+          <div class="config-block" style="max-width:580px;">
+            <h3>🖼️ Logomarca do Site</h3>
+            <p style="font-size:.83rem;color:var(--text-muted);margin-bottom:1.5rem;line-height:1.6;">
+              Faça o upload da logomarca. Ela será aplicada automaticamente em todas as páginas do site.
+            </p>
+
+            <!-- Preview atual -->
+            <div id="logo-preview-wrap" style="margin-bottom:1.5rem;padding:1.5rem;background:var(--bg3);border-radius:var(--radius);border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;min-height:110px;">
+              <div id="logo-preview-empty" style="color:var(--text-muted);font-size:.85rem;text-align:center;">Nenhuma logomarca definida</div>
+              <img id="logo-preview-img" src="" alt="Logomarca atual" style="max-height:80px;max-width:320px;object-fit:contain;display:none;">
+            </div>
+
+            <!-- Ações -->
+            <div style="display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem;">
+              <label for="logo-file-input" class="btn btn-primary btn-sm" style="cursor:pointer;">📎 Selecionar imagem</label>
+              <input type="file" id="logo-file-input" accept="image/*" style="display:none;" onchange="logoFileSelected(this)">
+              <button class="btn btn-secondary btn-sm" id="logo-btn-delete" onclick="deleteLogo()" style="display:none;border-color:var(--red);color:var(--red);">🗑️ Excluir logomarca</button>
+            </div>
+
+            <!-- Preview do arquivo selecionado + botão de upload -->
+            <div id="logo-file-info" style="display:none;margin-top:.25rem;padding:1rem;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border);">
+              <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem;">
+                <img id="logo-file-preview" src="" alt="" style="max-height:56px;max-width:180px;object-fit:contain;border-radius:4px;background:rgba(255,255,255,.04);padding:4px;">
+                <div>
+                  <div id="logo-file-name" style="font-size:.85rem;font-weight:600;word-break:break-all;"></div>
+                  <div id="logo-file-size" style="font-size:.78rem;color:var(--text-muted);margin-top:.2rem;"></div>
+                </div>
+              </div>
+              <div style="display:flex;gap:.5rem;">
+                <button class="btn btn-success btn-sm" onclick="uploadLogo()">⬆ Enviar logomarca</button>
+                <button class="btn btn-secondary btn-sm" onclick="logoCancelSelection()">Cancelar</button>
+              </div>
+            </div>
+
+            <!-- Barra de progresso -->
+            <div id="logo-progress-wrap" style="display:none;margin-top:1rem;">
+              <div style="background:var(--bg3);border-radius:20px;overflow:hidden;height:6px;">
+                <div id="logo-progress-bar" style="width:0%;height:100%;background:var(--accent);border-radius:20px;transition:width .3s;"></div>
+              </div>
+              <div id="logo-progress-msg" style="font-size:.8rem;color:var(--text-muted);margin-top:.5rem;"></div>
+            </div>
+
+            <!-- URL atual -->
+            <div id="logo-url-info" style="display:none;margin-top:1rem;font-size:.77rem;color:var(--text-muted);word-break:break-all;padding:.65rem .8rem;background:var(--bg3);border-radius:var(--radius);">
+              URL: <span id="logo-current-url" style="color:var(--accent);"></span>
+            </div>
+          </div>
+        </section>
 
         <!-- ════ TEXTOS DO SITE ════ -->
         <section class="section" id="sec-textos">
@@ -3501,12 +3555,16 @@
         avisos: ['Avisos', 'Gerencie os comunicados oficiais'],
         candidaturas: ['Candidaturas', 'Analise as candidaturas recebidas'],
         configuracoes: ['Configurações', 'Configure a integração com o Supabase'],
+        logomarca: ['Logomarca', 'Gerencie a identidade visual do site'],
       };
 
       function goTo(section, el) {
         if (section === 'textos') {
           const camposEl = document.getElementById('textos-campos');
           if (!camposEl || !camposEl.innerHTML.trim()) setTimeout(loadTextos, 80);
+        }
+        if (section === 'logomarca') {
+          setTimeout(loadLogomarca, 80);
         }
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -6990,6 +7048,173 @@ document.addEventListener('DOMContentLoaded',function(){
       checkSession();
 
       // Expõe funções usadas em onclick="" para o escopo global
+      /* ═══════════════════════════════════════
+         LOGOMARCA
+      ═══════════════════════════════════════ */
+      async function loadLogomarca() {
+        try {
+          const data = await sbSelect('app_config', 'select=value&key=eq.logo_url');
+          const url = data && data.length > 0 ? data[0].value : null;
+          logoUpdatePreview(url);
+        } catch (e) {
+          logoUpdatePreview(null);
+        }
+      }
+
+      function logoUpdatePreview(url) {
+        const imgEl    = document.getElementById('logo-preview-img');
+        const emptyEl  = document.getElementById('logo-preview-empty');
+        const deleteBtn = document.getElementById('logo-btn-delete');
+        const infoEl   = document.getElementById('logo-url-info');
+        const urlSpan  = document.getElementById('logo-current-url');
+        if (url) {
+          imgEl.src = url;
+          imgEl.style.display = '';
+          emptyEl.style.display = 'none';
+          deleteBtn.style.display = '';
+          infoEl.style.display = '';
+          urlSpan.textContent = url;
+        } else {
+          imgEl.style.display = 'none';
+          emptyEl.style.display = '';
+          deleteBtn.style.display = 'none';
+          infoEl.style.display = 'none';
+          urlSpan.textContent = '';
+        }
+      }
+
+      function logoFileSelected(input) {
+        const file = input.files[0];
+        if (!file) return;
+        document.getElementById('logo-file-name').textContent = file.name;
+        document.getElementById('logo-file-size').textContent = (file.size / 1024).toFixed(1) + ' KB';
+        const reader = new FileReader();
+        reader.onload = e => { document.getElementById('logo-file-preview').src = e.target.result; };
+        reader.readAsDataURL(file);
+        document.getElementById('logo-file-info').style.display = '';
+      }
+
+      function logoCancelSelection() {
+        document.getElementById('logo-file-input').value = '';
+        document.getElementById('logo-file-info').style.display = 'none';
+        document.getElementById('logo-file-preview').src = '';
+      }
+
+      async function uploadLogo() {
+        const input = document.getElementById('logo-file-input');
+        const file = input.files[0];
+        if (!file) return;
+        const { url: sbUrl, key: sbKey } = getSupabase();
+        const bar  = document.getElementById('logo-progress-bar');
+        const msg  = document.getElementById('logo-progress-msg');
+        const wrap = document.getElementById('logo-progress-wrap');
+
+        wrap.style.display = '';
+        bar.style.width = '20%';
+        bar.style.background = 'var(--accent)';
+        msg.style.color = 'var(--text-muted)';
+        msg.textContent = 'Enviando imagem…';
+
+        try {
+          await ensureValidToken();
+          const authToken = localStorage.getItem('asproc_token') || sbKey;
+          const ext  = file.name.split('.').pop().toLowerCase().replace(/[^a-z]/g, '') || 'png';
+          const BUCKET = 'imagens';
+          const path = `logos/logomarca.${ext}`;
+
+          bar.style.width = '50%';
+          const res = await fetch(`${sbUrl}/storage/v1/object/${BUCKET}/${path}`, {
+            method: 'POST',
+            headers: {
+              'apikey': sbKey,
+              'Authorization': `Bearer ${authToken}`,
+              'Content-Type': file.type,
+              'x-upsert': 'true'
+            },
+            body: file
+          });
+          bar.style.width = '80%';
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.message || `HTTP ${res.status}`);
+          }
+
+          const publicUrl = `${sbUrl}/storage/v1/object/public/${BUCKET}/${path}`;
+
+          // Salva URL no banco (upsert via POST com Prefer: resolution=merge-duplicates)
+          const authToken2 = localStorage.getItem('asproc_token') || sbKey;
+          const saveRes = await fetch(`${sbUrl}/rest/v1/app_config`, {
+            method: 'POST',
+            headers: {
+              'apikey': sbKey,
+              'Authorization': `Bearer ${authToken2}`,
+              'Content-Type': 'application/json',
+              'Prefer': 'resolution=merge-duplicates'
+            },
+            body: JSON.stringify({ key: 'logo_url', value: publicUrl })
+          });
+          if (!saveRes.ok) {
+            const err = await saveRes.json().catch(() => ({}));
+            throw new Error('Erro ao salvar URL: ' + (err.message || saveRes.status));
+          }
+
+          bar.style.width = '100%';
+          msg.textContent = '✅ Logomarca atualizada!';
+          logoCancelSelection();
+          logoUpdatePreview(publicUrl);
+          // Atualiza logo no header do próprio admin
+          document.querySelectorAll('img.nav-logo').forEach(img => { img.src = publicUrl; });
+          toast('✅ Logomarca atualizada com sucesso!', 'success');
+          setTimeout(() => { wrap.style.display = 'none'; bar.style.width = '0%'; }, 3000);
+        } catch (e) {
+          bar.style.background = 'var(--red)';
+          bar.style.width = '100%';
+          msg.style.color = 'var(--red)';
+          msg.textContent = '❌ ' + e.message;
+          toast('❌ Erro: ' + e.message, 'error');
+          setTimeout(() => { wrap.style.display = 'none'; bar.style.width = '0%'; bar.style.background = 'var(--accent)'; }, 7000);
+        }
+        input.value = '';
+      }
+
+      async function deleteLogo() {
+        if (!confirm('Excluir a logomarca atual? Essa ação não pode ser desfeita.')) return;
+        const { url: sbUrl, key: sbKey } = getSupabase();
+        try {
+          await ensureValidToken();
+          const authToken = localStorage.getItem('asproc_token') || sbKey;
+
+          // Obtém URL atual para extrair o path no storage
+          const data = await sbSelect('app_config', 'select=value&key=eq.logo_url');
+          if (data && data.length > 0 && data[0].value) {
+            const logoUrl = data[0].value;
+            const match = logoUrl.match(/\/object\/public\/imagens\/(.+)$/);
+            if (match) {
+              await fetch(`${sbUrl}/storage/v1/object/imagens/${match[1]}`, {
+                method: 'DELETE',
+                headers: { 'apikey': sbKey, 'Authorization': `Bearer ${authToken}` }
+              });
+            }
+          }
+
+          // Remove registro do banco
+          await fetch(`${sbUrl}/rest/v1/app_config?key=eq.logo_url`, {
+            method: 'DELETE',
+            headers: {
+              'apikey': sbKey,
+              'Authorization': `Bearer ${authToken}`,
+              'Content-Type': 'application/json'
+            }
+          });
+
+          logoUpdatePreview(null);
+          document.querySelectorAll('img.nav-logo').forEach(img => { img.src = ''; });
+          toast('Logomarca excluída com sucesso.', 'success');
+        } catch (e) {
+          toast('❌ Erro ao excluir: ' + e.message, 'error');
+        }
+      }
+
       window.goTo = goTo;
       window.doLogin = doLogin;
       window.doLogout = doLogout;

@@ -974,6 +974,7 @@
             }
         }
     </style>
+    <script src="asproc-logo.js"></script>
 </head>
 
 <body>
@@ -1553,13 +1554,17 @@
 
         /* SIDEBAR DINÂMICO */
         async function loadSidebar() {
+            const list = document.getElementById('sidebar-recentes-list');
             try {
-                const noticias = await fetchSupabase('noticias', 'select=titulo,imagem_url,url_externa,data_pub&publicado=eq.true&order=data_pub.desc&limit=4');
-                const list = document.getElementById('sidebar-recentes-list');
+                const noticias = await fetchSupabase('noticias', 'select=titulo,imagem_url,url_externa,slug,data_pub&publicado=eq.true&order=data_pub.desc&limit=4');
                 if (list) {
                     if (Array.isArray(noticias) && noticias.length) {
                         list.innerHTML = noticias.map(n => {
-                            const href = n.url_externa ? _url(n.url_externa) : 'noticias.html';
+                            const href = n.url_externa
+                                ? _url(n.url_externa)
+                                : n.slug
+                                    ? `https://www.asproc.com.br/noticias/${n.slug}.html`
+                                    : 'noticias.html';
                             const img = n.imagem_url
                                 ? `<img src="${n.imagem_url}" alt="" loading="lazy">`
                                 : '<div style="width:100%;height:100%;background:var(--verde);display:flex;align-items:center;justify-content:center;font-size:1.2rem">🌿</div>';
@@ -1576,16 +1581,25 @@
                         list.innerHTML = '<div style="color:rgba(245,240,232,.4);font-size:.8rem;padding:.5rem 0">Nenhuma notícia recente.</div>';
                     }
                 }
-            } catch(e) { console.warn('[ASPROC] sidebar noticias:', e); }
+            } catch(e) {
+                console.warn('[ASPROC] sidebar noticias:', e);
+                if (list) list.innerHTML = '<div style="color:rgba(245,240,232,.4);font-size:.8rem;padding:.5rem 0">Não foi possível carregar.</div>';
+            }
+            const vlist = document.getElementById('sidebar-vagas-list');
             try {
-                const vagas = await fetchSupabase('vagas', 'select=id,titulo,prazo,edital_url&status=eq.aberta&order=created_at.desc&limit=3');
-                const vlist = document.getElementById('sidebar-vagas-list');
+                let vagas = await fetchSupabase('vagas', 'select=id,titulo,prazo,edital_url,url_externa,status&order=created_at.desc&limit=6');
+                if (Array.isArray(vagas)) {
+                    vagas = vagas.filter(v => {
+                        const s = (v.status || '').toLowerCase();
+                        return s === 'aberta' || s === 'aberto' || s === 'ativo' || s === '';
+                    });
+                }
                 if (vlist) {
                     if (!Array.isArray(vagas) || !vagas.length) {
                         vlist.innerHTML = '<div style="color:rgba(245,240,232,.4);font-size:.8rem;padding:.5rem 0">Nenhuma vaga aberta no momento.</div>';
                     } else {
-                        vlist.innerHTML = vagas.map(v => {
-                            const href = v.edital_url || 'trabalhe-conosco.html';
+                        vlist.innerHTML = vagas.slice(0, 3).map(v => {
+                            const href = v.url_externa || v.edital_url || 'trabalhe-conosco.html';
                             const prazo = v.prazo ? `<div style="font-size:.63rem;color:var(--dourado)">⏰ até ${_fmtData(v.prazo)}</div>` : '';
                             return `
                             <a class="sni" href="${href}" target="_blank" rel="noopener" style="text-decoration:none;cursor:pointer;align-items:flex-start;padding:.65rem 0">
@@ -1598,7 +1612,10 @@
                         }).join('');
                     }
                 }
-            } catch(e) { console.warn('[ASPROC] sidebar vagas:', e); }
+            } catch(e) {
+                console.warn('[ASPROC] sidebar vagas:', e);
+                if (vlist) vlist.innerHTML = '<div style="color:rgba(245,240,232,.4);font-size:.8rem;padding:.5rem 0">Nenhuma vaga aberta no momento.</div>';
+            }
         }
     </script>
 </body>
