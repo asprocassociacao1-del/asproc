@@ -1733,6 +1733,80 @@
                 height: 200px;
             }
         }
+        /* ====== YOUTUBE FLOATING BUTTON ====== */
+        #yt-float {
+            position: fixed;
+            bottom: 32px;
+            right: 28px;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #FF0000;
+            color: #fff;
+            text-decoration: none;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 600;
+            letter-spacing: .04em;
+            padding: 11px 18px 11px 14px;
+            border-radius: 50px;
+            box-shadow: 0 4px 24px rgba(255,0,0,0.45), 0 2px 8px rgba(0,0,0,0.35);
+            transition: transform .2s, box-shadow .2s, background .2s;
+            cursor: none;
+        }
+
+        #yt-float:hover {
+            background: #cc0000;
+            transform: translateY(-3px) scale(1.04);
+            box-shadow: 0 8px 32px rgba(255,0,0,0.55), 0 4px 16px rgba(0,0,0,0.4);
+        }
+
+        #yt-float svg {
+            flex-shrink: 0;
+            width: 26px;
+            height: 26px;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,.3));
+        }
+
+        #yt-float .yt-label {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+
+        #yt-float .yt-label span:first-child {
+            font-size: 0.65rem;
+            font-weight: 400;
+            opacity: .85;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+        }
+
+        #yt-float .yt-label span:last-child {
+            font-size: 0.88rem;
+            font-weight: 700;
+        }
+
+        #yt-float .yt-pulse {
+            position: absolute;
+            inset: 0;
+            border-radius: 50px;
+            background: #FF0000;
+            animation: yt-ping 2.4s ease-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes yt-ping {
+            0%   { transform: scale(1);   opacity: .55; }
+            70%  { transform: scale(1.18); opacity: 0; }
+            100% { transform: scale(1.18); opacity: 0; }
+        }
+
+        @media (max-width: 480px) {
+            #yt-float .yt-label span:first-child { display: none; }
+            #yt-float { padding: 11px 14px; }
+        }
     </style>
 </head>
 
@@ -2742,6 +2816,18 @@
         // Carrega textos do banco, depois aplica idioma
         loadTextosDinamicos().then(() => setLang(currentLang));
     </script>
+
+    <!-- Botão flutuante YouTube -->
+    <a id="yt-float" href="https://www.youtube.com/@asproc154" target="_blank" rel="noopener" title="Siga o canal da ASPROC no YouTube">
+        <div class="yt-pulse"></div>
+        <svg viewBox="0 0 24 24" fill="#fff" xmlns="http://www.w3.org/2000/svg">
+            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+        </svg>
+        <div class="yt-label">
+            <span>Siga nosso canal</span>
+            <span>@asproc154</span>
+        </div>
+    </a>
 </body>
 
 </html>
