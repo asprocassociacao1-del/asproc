@@ -2345,22 +2345,30 @@
             </p>
 
             <!-- Preview atual -->
-            <div id="logo-preview-wrap" style="margin-bottom:1.5rem;padding:1.5rem;background:var(--bg3);border-radius:var(--radius);border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;min-height:110px;">
-              <div id="logo-preview-empty" style="color:var(--text-muted);font-size:.85rem;text-align:center;">Nenhuma logomarca definida</div>
-              <img id="logo-preview-img" src="" alt="Logomarca atual" style="max-height:80px;max-width:320px;object-fit:contain;display:none;">
+            <div id="logo-preview-wrap"
+              style="margin-bottom:1.5rem;padding:1.5rem;background:var(--bg3);border-radius:var(--radius);border:1px dashed var(--border);display:flex;align-items:center;justify-content:center;min-height:110px;">
+              <div id="logo-preview-empty" style="color:var(--text-muted);font-size:.85rem;text-align:center;">Nenhuma
+                logomarca definida</div>
+              <img id="logo-preview-img" src="" alt="Logomarca atual"
+                style="max-height:80px;max-width:320px;object-fit:contain;display:none;">
             </div>
 
             <!-- Ações -->
             <div style="display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;margin-bottom:1rem;">
-              <label for="logo-file-input" class="btn btn-primary btn-sm" style="cursor:pointer;">📎 Selecionar imagem</label>
-              <input type="file" id="logo-file-input" accept="image/*" style="display:none;" onchange="logoFileSelected(this)">
-              <button class="btn btn-secondary btn-sm" id="logo-btn-delete" onclick="deleteLogo()" style="display:none;border-color:var(--red);color:var(--red);">🗑️ Excluir logomarca</button>
+              <label for="logo-file-input" class="btn btn-primary btn-sm" style="cursor:pointer;">📎 Selecionar
+                imagem</label>
+              <input type="file" id="logo-file-input" accept="image/*" style="display:none;"
+                onchange="logoFileSelected(this)">
+              <button class="btn btn-secondary btn-sm" id="logo-btn-delete" onclick="deleteLogo()"
+                style="display:none;border-color:var(--red);color:var(--red);">🗑️ Excluir logomarca</button>
             </div>
 
             <!-- Preview do arquivo selecionado + botão de upload -->
-            <div id="logo-file-info" style="display:none;margin-top:.25rem;padding:1rem;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border);">
+            <div id="logo-file-info"
+              style="display:none;margin-top:.25rem;padding:1rem;background:var(--bg3);border-radius:var(--radius);border:1px solid var(--border);">
               <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem;">
-                <img id="logo-file-preview" src="" alt="" style="max-height:56px;max-width:180px;object-fit:contain;border-radius:4px;background:rgba(255,255,255,.04);padding:4px;">
+                <img id="logo-file-preview" src="" alt=""
+                  style="max-height:56px;max-width:180px;object-fit:contain;border-radius:4px;background:rgba(255,255,255,.04);padding:4px;">
                 <div>
                   <div id="logo-file-name" style="font-size:.85rem;font-weight:600;word-break:break-all;"></div>
                   <div id="logo-file-size" style="font-size:.78rem;color:var(--text-muted);margin-top:.2rem;"></div>
@@ -2375,13 +2383,15 @@
             <!-- Barra de progresso -->
             <div id="logo-progress-wrap" style="display:none;margin-top:1rem;">
               <div style="background:var(--bg3);border-radius:20px;overflow:hidden;height:6px;">
-                <div id="logo-progress-bar" style="width:0%;height:100%;background:var(--accent);border-radius:20px;transition:width .3s;"></div>
+                <div id="logo-progress-bar"
+                  style="width:0%;height:100%;background:var(--accent);border-radius:20px;transition:width .3s;"></div>
               </div>
               <div id="logo-progress-msg" style="font-size:.8rem;color:var(--text-muted);margin-top:.5rem;"></div>
             </div>
 
             <!-- URL atual -->
-            <div id="logo-url-info" style="display:none;margin-top:1rem;font-size:.77rem;color:var(--text-muted);word-break:break-all;padding:.65rem .8rem;background:var(--bg3);border-radius:var(--radius);">
+            <div id="logo-url-info"
+              style="display:none;margin-top:1rem;font-size:.77rem;color:var(--text-muted);word-break:break-all;padding:.65rem .8rem;background:var(--bg3);border-radius:var(--radius);">
               URL: <span id="logo-current-url" style="color:var(--accent);"></span>
             </div>
           </div>
@@ -5686,16 +5696,35 @@ footer{background:var(--superficie);border-top:1px solid var(--borda);padding:3.
 
 <!-- LEIA TAMBÉM MOBILE (visível apenas em ≤1024px) -->
 <section class="leia-mobile" id="leiaMobileSection">
-  <div class="leia-mobile-header">
-    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13"><path d="M2 4h12M2 8h8M2 12h10"/></svg>
-    📌 Leia também
-  </div>
-  <div class="rel-mobile-list" id="related-list-mobile">
-    <div class="skel"><div class="skel-img"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
-    <div class="skel"><div class="skel-img"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
-    <div class="skel"><div class="skel-img"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
-  </div>
-</section>
+  <div id="sidebar-recentes-list">
+                            <a class="sni" href="https://www.asproc.com.br/noticias/justica-social-na-pratica-como-o-crcs-transforma-a-realidade-ribeirinha-no-medio.html" target="_blank" rel="noopener" style="display:flex;text-decoration:none;cursor:pointer">
+                                <div class="sni-img"><img src="https://wiatqtiyiznscjyoxxww.supabase.co/storage/v1/object/public/imagens/noticias/capa-1776549593019-hzw52.jpeg" alt="" loading="lazy"></div>
+                                <div>
+                                    <div class="sni-t">Justiça Social na Prática: Como o CRCS transforma a realidade ribeirinha no Médio Juruá</div>
+                                    <div class="sni-d">Abril 2026</div>
+                                </div>
+                            </a>
+                            <a class="sni" href="https://www.asproc.com.br/noticias/cadeia-produtiva-da-borracha-nativa-no-medio-jurua-ganha-forca-com-o-trabalho-co.html" target="_blank" rel="noopener" style="display:flex;text-decoration:none;cursor:pointer">
+                                <div class="sni-img"><img src="https://asproc.org.br/wp-content/uploads/2026/03/image-2.jpeg" alt="" loading="lazy"></div>
+                                <div>
+                                    <div class="sni-t">Cadeia produtiva da borracha nativa no Médio Juruá ganha força com o trabalho coletivo da ASPROC no escoamento</div>
+                                    <div class="sni-d">Abril 2026</div>
+                                </div>
+                            </a>
+                            <a class="sni" href="https://www.asproc.com.br/noticias/asproc-supera-desafios-logisticos-e-realiza-capacitacoes-do-sanear-amazonia-em-2.html" target="_blank" rel="noopener" style="display:flex;text-decoration:none;cursor:pointer">
+                                <div class="sni-img"><img src="https://asproc.org.br/wp-content/uploads/2026/01/Capacitacao-Pedreiros-Jordao_Janeiro-2026-34-1024x768.jpeg" alt="" loading="lazy"></div>
+                                <div>
+                                    <div class="sni-t">ASPROC supera desafios logísticos e realiza capacitações do Sanear Amazônia em 2025</div>
+                                    <div class="sni-d">Abril 2026</div>
+                                </div>
+                            </a>
+                            <a class="sni" href="https://www.asproc.com.br/noticias/viagem-de-comercializacao-da-asproc-aos-polos-do-comercio-ribeirinho-fortalece-a.html" target="_blank" rel="noopener" style="display:flex;text-decoration:none;cursor:pointer">
+                                <div class="sni-img"><img src="https://wiatqtiyiznscjyoxxww.supabase.co/storage/v1/object/public/imagens/noticias/capa-1776371349930-nwptn.png" alt="" loading="lazy"></div>
+                                <div>
+                                    <div class="sni-t">Viagem de Comercialização da ASPROC aos polos do Comércio Ribeirinho fortalece a sociobiodiversidade com abastecimento, acesso a mercados e fomento agroflorestal</div>
+                                    <div class="sni-d">Abril 2026</div>
+                                </div>
+                            </a></div>
 
 <!-- MAIS NOTÍCIAS (grade no rodapé do artigo) -->
 <section class="more-news" id="moreNewsSection" style="display:none">
@@ -7062,11 +7091,11 @@ document.addEventListener('DOMContentLoaded',function(){
       }
 
       function logoUpdatePreview(url) {
-        const imgEl    = document.getElementById('logo-preview-img');
-        const emptyEl  = document.getElementById('logo-preview-empty');
+        const imgEl = document.getElementById('logo-preview-img');
+        const emptyEl = document.getElementById('logo-preview-empty');
         const deleteBtn = document.getElementById('logo-btn-delete');
-        const infoEl   = document.getElementById('logo-url-info');
-        const urlSpan  = document.getElementById('logo-current-url');
+        const infoEl = document.getElementById('logo-url-info');
+        const urlSpan = document.getElementById('logo-current-url');
         if (url) {
           imgEl.src = url;
           imgEl.style.display = '';
@@ -7105,8 +7134,8 @@ document.addEventListener('DOMContentLoaded',function(){
         const file = input.files[0];
         if (!file) return;
         const { url: sbUrl, key: sbKey } = getSupabase();
-        const bar  = document.getElementById('logo-progress-bar');
-        const msg  = document.getElementById('logo-progress-msg');
+        const bar = document.getElementById('logo-progress-bar');
+        const msg = document.getElementById('logo-progress-msg');
         const wrap = document.getElementById('logo-progress-wrap');
 
         wrap.style.display = '';
@@ -7118,7 +7147,7 @@ document.addEventListener('DOMContentLoaded',function(){
         try {
           await ensureValidToken();
           const authToken = localStorage.getItem('asproc_token') || sbKey;
-          const ext  = file.name.split('.').pop().toLowerCase().replace(/[^a-z]/g, '') || 'png';
+          const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z]/g, '') || 'png';
           const BUCKET = 'imagens';
           const path = `logos/logomarca.${ext}`;
 
@@ -7219,12 +7248,12 @@ document.addEventListener('DOMContentLoaded',function(){
       window.doLogin = doLogin;
       window.doLogout = doLogout;
 
-      window.loadLogomarca      = loadLogomarca;
-      window.logoUpdatePreview  = logoUpdatePreview;
-      window.logoFileSelected   = logoFileSelected;
+      window.loadLogomarca = loadLogomarca;
+      window.logoUpdatePreview = logoUpdatePreview;
+      window.logoFileSelected = logoFileSelected;
       window.logoCancelSelection = logoCancelSelection;
-      window.uploadLogo         = uploadLogo;
-      window.deleteLogo         = deleteLogo;
+      window.uploadLogo = uploadLogo;
+      window.deleteLogo = deleteLogo;
       window.toggleSidebar = toggleSidebar;
       window.closeSidebar = closeSidebar;
       window.openModal = openModal;
