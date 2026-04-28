@@ -2456,8 +2456,7 @@
         title="Formata o conteúdo automaticamente com IA">✨ Auto-formatar</button>
       <button class="btn btn-success btn-sm" id="btn-gh-publish" onclick="publishToGithub()">🚀 Publicar no
         site</button>
-      <button class="btn btn-primary btn-sm" onclick="saveNoticia()"
-        title="Salva no banco E publica no GitHub Pages automaticamente">💾 Salvar &amp; Publicar</button>
+      <button class="btn btn-primary btn-sm" onclick="saveNoticia()">💾 Salvar</button>
     </div>
 
     <div class="ne-body">
@@ -3768,45 +3767,11 @@
         const urlExterna = document.getElementById('n-url').value.trim() || null;
         const dbPayload = Object.assign({}, data._dbData, { url_externa: urlExterna });
         if (!dbPayload.titulo || !dbPayload.resumo) { toast('Preencha título e resumo.', 'error'); return; }
-
-        // 1) Salva no Supabase
         try {
-          if (editingId.noticias) {
-            await sbUpdate('noticias', editingId.noticias, dbPayload);
-            toast('💾 Notícia salva no banco!', 'success');
-          } else {
-            const inserted = await sbInsert('noticias', dbPayload);
-            if (inserted && inserted[0]) editingId.noticias = inserted[0].id;
-            toast('💾 Notícia salva no banco!', 'success');
-          }
-          loadNoticias(); loadDashboard();
-        } catch (e) {
-          toast('Erro ao salvar: ' + e.message, 'error');
-          return;
-        }
-
-        // 2) Publica automaticamente no GitHub se o token estiver configurado
-        const token = getGhToken();
-        if (!token) {
-          toast('⚠️ Token do GitHub não configurado — notícia salva apenas no banco. Configure em Configurações para publicar no site.', 'error');
-          closeNewsEditor();
-          return;
-        }
-
-        toast('🚀 Publicando no GitHub Pages…', 'info');
-        try {
-          const publicUrl = await publishToGithub(data);
-          if (publicUrl && editingId.noticias) {
-            try { await sbUpdate('noticias', editingId.noticias, { url_externa: publicUrl }); } catch { }
-            toast('✅ Publicado! A URL ficará ativa em ~1 minuto no GitHub Pages.', 'success');
-          }
-        } catch (e) {
-          toast('⚠️ Salvo no banco, mas erro ao publicar no GitHub: ' + e.message, 'error');
-        }
-
-        closeNewsEditor();
-        loadNoticias();
-        loadDashboard();
+          if (editingId.noticias) { await sbUpdate('noticias', editingId.noticias, dbPayload); toast('Notícia atualizada!', 'success'); }
+          else { await sbInsert('noticias', dbPayload); toast('Notícia salva!', 'success'); }
+          closeNewsEditor(); loadNoticias(); loadDashboard();
+        } catch (e) { toast('Erro: ' + e.message, 'error'); }
       }
 
       /* ══════════════════════════════════════════
@@ -5339,33 +5304,61 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         const relatedRaw = (data._related || '').trim();
         if (relatedRaw) {
           const relSlugs = relatedRaw.split(/[\n,]+/).map(s => s.trim()).filter(Boolean).slice(0, 4);
-          // Monta cards estáticos — usamos apenas o slug, a URL e um placeholder de imagem
-          // pois não temos os dados completos das outras notícias no momento do build.
-          // O JS em runtime (loadRelated) VAI sobrescrever #related-list com dados reais.
-          // Para forçar o comportamento FIXADO, geramos HTML data-fixed e bloqueamos o override.
-          const fixedCardsHTML = relSlugs.map(sl => {
-            const url = `https://www.asproc.com.br/noticias/${sl}.html`;
-            return `<a class="rel-card" href="${url}" data-fixed-slug="${sl}">
-  <div class="rel-ph" id="rph-${sl}">📰</div>
-  <div class="rel-info">
-    <div class="rel-cat-lbl" id="rcat-${sl}">Notícia</div>
-    <div class="rel-title" id="rtitle-${sl}">${sl.replace(/-/g, ' ')}</div>
-    <div class="rel-date" id="rdate-${sl}">…</div>
-  </div>
-</a>`;
-          }).join('');
-          const fixedMobileCardsHTML = relSlugs.map(sl => {
-            const url = `https://www.asproc.com.br/noticias/${sl}.html`;
-            return `<a class="rel-mobile-card" href="${url}" data-fixed-slug="${sl}">
-  <div class="rel-mobile-ph" id="mph-${sl}">📰</div>
-  <div class="rel-mobile-info">
-    <div class="rel-mobile-cat" id="mcat-${sl}">Notícia</div>
-    <div class="rel-mobile-title" id="mtitle-${sl}">${sl.replace(/-/g, ' ')}</div>
-    <div class="rel-mobile-date" id="mdate-${sl}">…</div>
-  </div>
-</a>`;
-          }).join('');
-          // Guarda os slugs fixados num atributo data para o JS de runtime hidratar
+          const catIconMap2 = { pirarucu: '🐟', olea: '🌿', sanear: '💧', comercio: '🛒', vagas: '📋', geral: '📌' };
+          const catLabelMap2 = { pirarucu: 'Pirarucu', olea: 'Oleaginosas', sanear: 'Saneamento', comercio: 'Comércio', vagas: 'Vagas', geral: 'Geral' };
+
+          // Tenta encontrar dados reais da notícia no allNoticias (carregado no admin)
+          function findRelated(sl) {
+            const pool = (typeof allNoticias !== 'undefined' && Array.isArray(allNoticias)) ? allNoticias : [];
+            const sl2 = sl.toLowerCase();
+            return pool.find(n => {
+              if (n.slug && n.slug.trim().toLowerCase() === sl2) return true;
+              if (n.titulo && slugify(n.titulo) === sl2) return true;
+              if (n.url_externa) {
+                const ext = n.url_externa.split('/').pop().replace(/\.html$/i, '').toLowerCase();
+                if (ext === sl2 || ext.startsWith(sl2) || sl2.startsWith(ext)) return true;
+              }
+              return false;
+            });
+          }
+
+          function buildRelatedCardHTML(sl, side) {
+            const n = findRelated(sl);
+            const url = n ? (n.url_externa || `https://www.asproc.com.br/noticias/${sl}.html`) : `https://www.asproc.com.br/noticias/${sl}.html`;
+            const titulo = n ? n.titulo : sl.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+            const cat = n ? (n.categoria || 'geral') : 'geral';
+            const lbl = catLabelMap2[cat] || 'Geral';
+            const icon = catIconMap2[cat] || '📌';
+            const imgUrl = n ? (n.imagem_url || '') : '';
+            const dateStr = n ? formatDateBR(n.data_pub) : '';
+
+            if (side === 'sidebar') {
+              const imgHtml = imgUrl
+                ? `<img class="rel-img" src="${imgUrl}" alt="${titulo.replace(/"/g, '&quot;')}" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">`
+                + `<div class="rel-ph" style="display:none">${icon}</div>`
+                : `<div class="rel-ph">${icon}</div>`;
+              return `<a class="rel-card" href="${url}" data-fixed-slug="${sl}">`
+                + imgHtml
+                + `<div class="rel-info"><div class="rel-cat-lbl">${lbl}</div>`
+                + `<div class="rel-title">${titulo}</div>`
+                + `<div class="rel-date">${dateStr}</div></div></a>`;
+            } else {
+              const imgHtml = imgUrl
+                ? `<img class="rel-mobile-img" src="${imgUrl}" alt="${titulo.replace(/"/g, '&quot;')}" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">`
+                + `<div class="rel-mobile-ph" style="display:none">${icon}</div>`
+                : `<div class="rel-mobile-ph">${icon}</div>`;
+              return `<a class="rel-mobile-card" href="${url}" data-fixed-slug="${sl}">`
+                + imgHtml
+                + `<div class="rel-mobile-info"><div class="rel-mobile-cat">${lbl}</div>`
+                + `<div class="rel-mobile-title">${titulo}</div>`
+                + `<div class="rel-mobile-date">${dateStr}</div></div></a>`;
+            }
+          }
+
+          const fixedCardsHTML = relSlugs.map(sl => buildRelatedCardHTML(sl, 'sidebar')).join('');
+          const fixedMobileCardsHTML = relSlugs.map(sl => buildRelatedCardHTML(sl, 'mobile')).join('');
+
+          // data-fixed-slugs mantido para que o JS runtime possa atualizar imagens se necessário
           relatedSidebarContent = `<div id="related-list" data-fixed-slugs="${relSlugs.join(',')}">${fixedCardsHTML}</div>`;
           relatedMobileContent = `<div class="rel-mobile-list" id="related-list-mobile" data-fixed-slugs="${relSlugs.join(',')}">${fixedMobileCardsHTML}</div>`;
         }
@@ -6003,57 +5996,81 @@ async function loadRelated(){
     data=MOCK_NOTICIAS;
   }
 
+  // Função de match robusta: tenta slug exato, slug gerado do título, e slug extraído da url_externa
+  function matchBySlug(d,sl){
+    if(!sl)return false;
+    var sl2=sl.toLowerCase();
+    if(d.slug&&d.slug.trim().toLowerCase()===sl2)return true;
+    if(d.titulo&&slugify(d.titulo)===sl2)return true;
+    if(d.url_externa){
+      var ext=d.url_externa.split('/').pop().replace(/\.html$/i,'').toLowerCase();
+      if(ext===sl2)return true;
+      // match parcial: o slug pode estar truncado em 80 chars
+      if(ext.startsWith(sl2)||sl2.startsWith(ext))return true;
+    }
+    return false;
+  }
+
   if(fixedSlugs.length){
-    // Modo FIXADO: hidrata os cards já no DOM com dados reais do banco
-    fixedSlugs.forEach(function(sl){
-      var n=data.find(function(d){return(d.slug&&d.slug.trim()===sl)||(d.titulo&&slugify(d.titulo)===sl);});
-      if(!n)return;
+    // Modo FIXADO: reconstrói os cards com dados reais do banco
+    function buildFixedCard(sl,n,side){
       var icon=CAT_ICONS[n.categoria]||'📌';
       var lbl=CAT_LABEL[n.categoria]||n.categoria||'Geral';
       var url=noticiaUrl(n);
-
-      // Sidebar
-      var card=list&&list.querySelector('[data-fixed-slug="'+sl+'"]');
-      if(card){
-        card.href=url;
-        var ph=card.querySelector('#rph-'+sl);
-        var catEl=card.querySelector('#rcat-'+sl);
-        var titleEl=card.querySelector('#rtitle-'+sl);
-        var dateEl=card.querySelector('#rdate-'+sl);
-        if(catEl)catEl.textContent=lbl;
-        if(titleEl)titleEl.textContent=n.titulo;
-        if(dateEl)dateEl.textContent=fmtDate(n.data_pub);
-        if(ph){
-          if(n.imagem_url){
-            var img=document.createElement('img');
-            img.className='rel-img';img.src=n.imagem_url;img.alt='';img.loading='lazy';
-            img.onerror=function(){this.outerHTML='<div class="rel-ph">'+icon+'</div>';};
-            ph.parentNode.replaceChild(img,ph);
-          }else{ph.textContent=icon;}
-        }
+      var date=fmtDate(n.data_pub);
+      if(side==='sidebar'){
+        var imgHtml=n.imagem_url
+          ?'<img class="rel-img" src="'+n.imagem_url+'" alt="'+n.titulo+'" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">'
+            +'<div class="rel-ph" style="display:none">'+icon+'</div>'
+          :'<div class="rel-ph">'+icon+'</div>';
+        return '<a class="rel-card" href="'+url+'" data-fixed-slug="'+sl+'">'
+          +imgHtml
+          +'<div class="rel-info">'
+          +'<div class="rel-cat-lbl">'+lbl+'</div>'
+          +'<div class="rel-title">'+n.titulo+'</div>'
+          +'<div class="rel-date">'+date+'</div>'
+          +'</div></a>';
+      } else {
+        var mimgHtml=n.imagem_url
+          ?'<img class="rel-mobile-img" src="'+n.imagem_url+'" alt="'+n.titulo+'" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">'
+            +'<div class="rel-mobile-ph" style="display:none">'+icon+'</div>'
+          :'<div class="rel-mobile-ph">'+icon+'</div>';
+        return '<a class="rel-mobile-card" href="'+url+'" data-fixed-slug="'+sl+'">'
+          +mimgHtml
+          +'<div class="rel-mobile-info">'
+          +'<div class="rel-mobile-cat">'+lbl+'</div>'
+          +'<div class="rel-mobile-title">'+n.titulo+'</div>'
+          +'<div class="rel-mobile-date">'+date+'</div>'
+          +'</div></a>';
       }
+    }
 
-      // Mobile
-      var mcard=listMobile&&listMobile.querySelector('[data-fixed-slug="'+sl+'"]');
-      if(mcard){
-        mcard.href=url;
-        var mph=mcard.querySelector('#mph-'+sl);
-        var mcat=mcard.querySelector('#mcat-'+sl);
-        var mtitle=mcard.querySelector('#mtitle-'+sl);
-        var mdate=mcard.querySelector('#mdate-'+sl);
-        if(mcat)mcat.textContent=lbl;
-        if(mtitle)mtitle.textContent=n.titulo;
-        if(mdate)mdate.textContent=fmtDate(n.data_pub);
-        if(mph){
-          if(n.imagem_url){
-            var mi=document.createElement('img');
-            mi.className='rel-mobile-img';mi.src=n.imagem_url;mi.alt='';mi.loading='lazy';
-            mi.onerror=function(){this.outerHTML='<div class="rel-mobile-ph">'+icon+'</div>';};
-            mph.parentNode.replaceChild(mi,mph);
-          }else{mph.textContent=icon;}
-        }
+    var sidebarCards='', mobileCards='';
+    fixedSlugs.forEach(function(sl){
+      var n=data.find(function(d){return matchBySlug(d,sl);});
+      if(!n){
+        // Notícia não encontrada no banco: mostra card com slug como texto e link direto
+        var url='https://www.asproc.com.br/noticias/'+sl+'.html';
+        var titulo=sl.replace(/-/g,' ').replace(/\w/g,function(c){return c.toUpperCase();});
+        sidebarCards+='<a class="rel-card" href="'+url+'" data-fixed-slug="'+sl+'">'
+          +'<div class="rel-ph">📰</div>'
+          +'<div class="rel-info"><div class="rel-cat-lbl">Notícia</div>'
+          +'<div class="rel-title">'+titulo+'</div>'
+          +'<div class="rel-date"></div></div></a>';
+        mobileCards+='<a class="rel-mobile-card" href="'+url+'" data-fixed-slug="'+sl+'">'
+          +'<div class="rel-mobile-ph">📰</div>'
+          +'<div class="rel-mobile-info"><div class="rel-mobile-cat">Notícia</div>'
+          +'<div class="rel-mobile-title">'+titulo+'</div>'
+          +'<div class="rel-mobile-date"></div></div></a>';
+        return;
       }
+      sidebarCards+=buildFixedCard(sl,n,'sidebar');
+      mobileCards+=buildFixedCard(sl,n,'mobile');
     });
+
+    if(list)list.innerHTML=sidebarCards;
+    if(listMobile)listMobile.innerHTML=mobileCards;
+
   } else {
     // Modo DINÂMICO: exibe as 4 mais recentes exceto a atual
     var filtered=data.filter(function(n){
