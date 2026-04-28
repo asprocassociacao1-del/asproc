@@ -397,11 +397,12 @@ footer{background:var(--superficie);border-top:1px solid var(--borda);padding:3.
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13"><path d="M2 4h12M2 8h8M2 12h10"/></svg>
         Leia também
       </div>
-      <div id="related-list">
-        <div class="skel"><div class="skel-img"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
-        <div class="skel"><div class="skel-img"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
-        <div class="skel"><div class="skel-img"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
-      </div>
+      
+        <div id="related-list">
+          <div class="skel"><div class="skel-img"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
+          <div class="skel"><div class="skel-img"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
+          <div class="skel"><div class="skel-img"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
+        </div>
     </div>
 
     <!-- VAGAS -->
@@ -422,11 +423,10 @@ footer{background:var(--superficie);border-top:1px solid var(--borda);padding:3.
     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13"><path d="M2 4h12M2 8h8M2 12h10"/></svg>
     📌 Leia também
   </div>
-  <div class="rel-mobile-list" id="related-list-mobile">
-    <div class="skel"><div class="skel-img"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
-    <div class="skel"><div class="skel-img"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
-    <div class="skel"><div class="skel-img"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
-  </div>
+  
+          <div class="skel"><div class="skel-img"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
+          <div class="skel"><div class="skel-img"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
+          <div class="skel"><div class="skel-img"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
 </section>
 
 <!-- MAIS NOTÍCIAS (grade no rodapé do artigo) -->
@@ -623,45 +623,105 @@ async function loadRelated(){
   var list=document.getElementById('related-list');
   var listMobile=document.getElementById('related-list-mobile');
   if(!list&&!listMobile)return;
+
+  // Verifica se há slugs fixados pelo admin
+  var fixedSlugsRaw=(list&&list.dataset.fixedSlugs)||(listMobile&&listMobile.dataset&&listMobile.dataset.fixedSlugs)||'';
+  var fixedSlugs=fixedSlugsRaw?fixedSlugsRaw.split(',').map(function(s){return s.trim();}).filter(Boolean):[];
+
   var data;
   try{
-    data=await sbGet('noticias','select=titulo,categoria,data_pub,imagem_url,url_externa,slug&order=data_pub.desc&limit=30');
+    data=await sbGet('noticias','select=titulo,categoria,data_pub,imagem_url,url_externa,slug&order=data_pub.desc&limit=60');
     if(!Array.isArray(data)||!data.length)data=MOCK_NOTICIAS;
   }catch(e){
     data=MOCK_NOTICIAS;
   }
-  var filtered=data.filter(function(n){
-    return n.titulo&&!isCurrent(n);
-  }).slice(0,4);
-  if(!filtered.length){
-    var empty='<p style="font-size:.8rem;color:rgba(245,240,232,.25);padding:.5rem 0;">Mais conteúdo em breve.</p>';
-    if(list)list.innerHTML=empty;
-    if(listMobile)listMobile.innerHTML=empty;
-    return;
-  }
-  /* ── SIDEBAR HTML ── */
-  if(list){
-    list.innerHTML=filtered.map(function(n){
+
+  if(fixedSlugs.length){
+    // Modo FIXADO: hidrata os cards já no DOM com dados reais do banco
+    fixedSlugs.forEach(function(sl){
+      var n=data.find(function(d){return(d.slug&&d.slug.trim()===sl)||(d.titulo&&slugify(d.titulo)===sl);});
+      if(!n)return;
       var icon=CAT_ICONS[n.categoria]||'📌';
       var lbl=CAT_LABEL[n.categoria]||n.categoria||'Geral';
       var url=noticiaUrl(n);
-      var img=n.imagem_url
-        ?'<img class="rel-img" src="'+n.imagem_url+'" alt="" loading="lazy" onerror="this.outerHTML='<div class=\"rel-ph\">'+icon+'</div>'">'
-        :'<div class="rel-ph">'+icon+'</div>';
-      return '<a class="rel-card" href="'+url+'">'+img+'<div class="rel-info"><div class="rel-cat-lbl">'+lbl+'</div><div class="rel-title">'+n.titulo+'</div><div class="rel-date">'+fmtDate(n.data_pub)+'</div></div></a>';
-    }).join('');
-  }
-  /* ── MOBILE HTML ── */
-  if(listMobile){
-    listMobile.innerHTML=filtered.map(function(n){
-      var icon=CAT_ICONS[n.categoria]||'📌';
-      var lbl=CAT_LABEL[n.categoria]||n.categoria||'Geral';
-      var url=noticiaUrl(n);
-      var img=n.imagem_url
-        ?'<img class="rel-mobile-img" src="'+n.imagem_url+'" alt="" loading="lazy" onerror="this.outerHTML='<div class=\"rel-mobile-ph\">'+icon+'</div>'">'
-        :'<div class="rel-mobile-ph">'+icon+'</div>';
-      return '<a class="rel-mobile-card" href="'+url+'">'+img+'<div class="rel-mobile-info"><div class="rel-mobile-cat">'+lbl+'</div><div class="rel-mobile-title">'+n.titulo+'</div><div class="rel-mobile-date">'+fmtDate(n.data_pub)+'</div></div></a>';
-    }).join('');
+
+      // Sidebar
+      var card=list&&list.querySelector('[data-fixed-slug="'+sl+'"]');
+      if(card){
+        card.href=url;
+        var ph=card.querySelector('#rph-'+sl);
+        var catEl=card.querySelector('#rcat-'+sl);
+        var titleEl=card.querySelector('#rtitle-'+sl);
+        var dateEl=card.querySelector('#rdate-'+sl);
+        if(catEl)catEl.textContent=lbl;
+        if(titleEl)titleEl.textContent=n.titulo;
+        if(dateEl)dateEl.textContent=fmtDate(n.data_pub);
+        if(ph){
+          if(n.imagem_url){
+            var img=document.createElement('img');
+            img.className='rel-img';img.src=n.imagem_url;img.alt='';img.loading='lazy';
+            img.onerror=function(){this.outerHTML='<div class="rel-ph">'+icon+'</div>';};
+            ph.parentNode.replaceChild(img,ph);
+          }else{ph.textContent=icon;}
+        }
+      }
+
+      // Mobile
+      var mcard=listMobile&&listMobile.querySelector('[data-fixed-slug="'+sl+'"]');
+      if(mcard){
+        mcard.href=url;
+        var mph=mcard.querySelector('#mph-'+sl);
+        var mcat=mcard.querySelector('#mcat-'+sl);
+        var mtitle=mcard.querySelector('#mtitle-'+sl);
+        var mdate=mcard.querySelector('#mdate-'+sl);
+        if(mcat)mcat.textContent=lbl;
+        if(mtitle)mtitle.textContent=n.titulo;
+        if(mdate)mdate.textContent=fmtDate(n.data_pub);
+        if(mph){
+          if(n.imagem_url){
+            var mi=document.createElement('img');
+            mi.className='rel-mobile-img';mi.src=n.imagem_url;mi.alt='';mi.loading='lazy';
+            mi.onerror=function(){this.outerHTML='<div class="rel-mobile-ph">'+icon+'</div>';};
+            mph.parentNode.replaceChild(mi,mph);
+          }else{mph.textContent=icon;}
+        }
+      }
+    });
+  } else {
+    // Modo DINÂMICO: exibe as 4 mais recentes exceto a atual
+    var filtered=data.filter(function(n){
+      return n.titulo&&!isCurrent(n);
+    }).slice(0,4);
+    if(!filtered.length){
+      var empty='<p style="font-size:.8rem;color:rgba(245,240,232,.25);padding:.5rem 0;">Mais conteúdo em breve.</p>';
+      if(list)list.innerHTML=empty;
+      if(listMobile)listMobile.innerHTML=empty;
+      return;
+    }
+    /* ── SIDEBAR HTML ── */
+    if(list){
+      list.innerHTML=filtered.map(function(n){
+        var icon=CAT_ICONS[n.categoria]||'📌';
+        var lbl=CAT_LABEL[n.categoria]||n.categoria||'Geral';
+        var url=noticiaUrl(n);
+        var img=n.imagem_url
+          ?'<img class="rel-img" src="'+n.imagem_url+'" alt="" loading="lazy" onerror="this.outerHTML='<div class=\"rel-ph\">'+icon+'</div>'">'
+          :'<div class="rel-ph">'+icon+'</div>';
+        return '<a class="rel-card" href="'+url+'">'+img+'<div class="rel-info"><div class="rel-cat-lbl">'+lbl+'</div><div class="rel-title">'+n.titulo+'</div><div class="rel-date">'+fmtDate(n.data_pub)+'</div></div></a>';
+      }).join('');
+    }
+    /* ── MOBILE HTML ── */
+    if(listMobile){
+      listMobile.innerHTML=filtered.map(function(n){
+        var icon=CAT_ICONS[n.categoria]||'📌';
+        var lbl=CAT_LABEL[n.categoria]||n.categoria||'Geral';
+        var url=noticiaUrl(n);
+        var img=n.imagem_url
+          ?'<img class="rel-mobile-img" src="'+n.imagem_url+'" alt="" loading="lazy" onerror="this.outerHTML='<div class=\"rel-mobile-ph\">'+icon+'</div>'">'
+          :'<div class="rel-mobile-ph">'+icon+'</div>';
+        return '<a class="rel-mobile-card" href="'+url+'">'+img+'<div class="rel-mobile-info"><div class="rel-mobile-cat">'+lbl+'</div><div class="rel-mobile-title">'+n.titulo+'</div><div class="rel-mobile-date">'+fmtDate(n.data_pub)+'</div></div></a>';
+      }).join('');
+    }
   }
 }
 
