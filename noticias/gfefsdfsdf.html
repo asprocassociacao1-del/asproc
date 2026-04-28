@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>gfefsdfsdf – ASPROC</title>
+<meta name="description" content="sdfsdfsd">
+
+<meta property="og:type" content="article">
+<meta property="og:title" content="gfefsdfsdf">
+<meta property="og:description" content="sdfsdfsd">
+<meta property="og:url" content="https://www.asproc.com.br/noticias/gfefsdfsdf.html">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,600&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS ── */
+:root{
+  --verde:#2d6a2d;--verde-claro:#4a9e3f;--verde-neon:#7bc95c;
+  --dourado:#c8a84b;--branco:#f5f0e8;--escuro:#0b150b;
+  --superficie:#141f14;--superficie2:#1a2a1a;--superficie3:#223022;
+  --borda:rgba(123,201,92,.1);--borda2:rgba(123,201,92,.2);
+  --texto:rgba(245,240,232,.88);--texto-fraco:rgba(245,240,232,.45);
+  --texto-muito-fraco:rgba(245,240,232,.22);
+  --sombra:0 2px 32px rgba(0,0,0,.55);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;font-size:16px;}
+body{font-family:'Instrument Sans',sans-serif;background:var(--escuro);color:var(--texto);line-height:1.75;overflow-x:hidden;}
+a{color:var(--verde-neon);text-decoration:none;}
+img{max-width:100%;display:block;}
+
+/* ── CURSOR CUSTOM ── */
+@media(hover:hover){
+  body{cursor:none;}
+  #cur-dot,#cur-ring{position:fixed;pointer-events:none;border-radius:50%;z-index:99999;}
+  #cur-dot{width:8px;height:8px;background:var(--verde-neon);transform:translate(-50%,-50%);mix-blend-mode:screen;opacity:1;}
+  #cur-ring{width:36px;height:36px;border:1.5px solid var(--verde-neon);transform:translate(-50%,-50%);opacity:.45;transition:width .2s,height .2s,opacity .2s,border-color .2s;}
+  #cur-dot.h{width:5px;height:5px;}#cur-ring.h{width:52px;height:52px;opacity:.8;}
+}
+
+/* ── BARRA DE LEITURA ── */
+#read-bar{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--verde-claro),var(--verde-neon),var(--dourado));z-index:10002;transition:width .08s linear;}
+
+/* ── NAVBAR ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 5%;background:rgba(11,21,11,.82);backdrop-filter:blur(24px) saturate(1.4);border-bottom:1px solid var(--borda);transition:all .3s;}
+nav.scrolled{height:58px;background:rgba(8,14,8,.96);}
+.nav-logo{height:40px;object-fit:contain;transition:opacity .2s;}
+.nav-logo:hover{opacity:.85;}
+.nav-brand-txt{display:none;font-family:'Fraunces',serif;font-size:1.1rem;font-weight:900;color:var(--verde-neon);}
+.nav-links{display:flex;gap:2rem;list-style:none;align-items:center;}
+.nav-links a{color:var(--texto-fraco);font-size:.78rem;font-weight:600;letter-spacing:.09em;text-transform:uppercase;transition:color .25s;position:relative;padding-bottom:2px;}
+.nav-links a::after{content:'';position:absolute;bottom:0;left:0;width:0;height:1.5px;background:var(--verde-neon);transition:width .3s;}
+.nav-links a:hover,.nav-links a.ativo{color:var(--verde-neon);}
+.nav-links a:hover::after,.nav-links a.ativo::after{width:100%;}
+.nav-right{display:flex;align-items:center;gap:.75rem;}
+.nav-cta{background:var(--verde-claro)!important;color:#fff!important;padding:.38rem 1rem;border-radius:99px;font-weight:600!important;font-size:.78rem!important;letter-spacing:.04em;transition:all .25s!important;white-space:nowrap;}
+.nav-cta:hover{background:var(--verde-neon)!important;color:var(--escuro)!important;transform:translateY(-1px);box-shadow:0 4px 16px rgba(123,201,92,.35);}
+.nav-cta::after{display:none!important;}
+.lang-sw{display:flex;gap:3px;}
+.lang-btn{background:none;border:1px solid rgba(123,201,92,.25);color:var(--texto-muito-fraco);font-size:.68rem;font-weight:700;padding:2px 7px;border-radius:4px;cursor:pointer;transition:all .2s;font-family:'Instrument Sans',sans-serif;letter-spacing:.06em;}
+.lang-btn:hover,.lang-btn.active{border-color:var(--verde-neon);color:var(--verde-neon);background:rgba(123,201,92,.07);}
+.hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:4px;background:none;border:none;}
+.hamburger span{width:22px;height:1.5px;background:var(--branco);border-radius:2px;transition:all .3s;display:block;}
+
+/* ── HERO ── */
+.art-hero{position:relative;min-height:560px;display:flex;align-items:flex-end;padding:0 5% 5%;margin-top:68px;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background-size:cover;background-position:center top;transform:scale(1.06);animation:hzoom 16s ease-out forwards;}
+@keyframes hzoom{to{transform:scale(1);}}
+.hero-bg-fallback{position:absolute;inset:0;background:linear-gradient(135deg,#081408 0%,#163016 40%,#0f240f 100%);}
+.hero-grain{position:absolute;inset:0;opacity:.04;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:128px;}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(11,21,11,.98) 0%,rgba(11,21,11,.65) 45%,rgba(11,21,11,.2) 100%);}
+.hero-content{position:relative;z-index:2;max-width:860px;width:100%;}
+.breadcrumb{display:flex;align-items:center;gap:.4rem;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--texto-muito-fraco);margin-bottom:1.25rem;flex-wrap:wrap;}
+.breadcrumb a{color:var(--verde-neon);opacity:.7;transition:opacity .2s;}
+.breadcrumb a:hover{opacity:1;}
+.breadcrumb span{opacity:.4;}
+.hero-meta{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-bottom:1.1rem;}
+.cat-badge{display:inline-flex;align-items:center;gap:.3rem;background:var(--verde-claro);color:#fff;border-radius:99px;padding:.22rem .85rem;font-weight:700;font-size:.68rem;letter-spacing:.07em;text-transform:uppercase;}
+.hero-date{font-size:.78rem;color:var(--texto-fraco);display:flex;align-items:center;gap:.3rem;}
+.hero-author{font-size:.78rem;color:var(--texto-fraco);display:flex;align-items:center;gap:.3rem;}
+.hero-sep{color:var(--texto-muito-fraco);}
+.art-title{font-family:'Fraunces',serif;font-size:clamp(1.9rem,4.8vw,3.1rem);font-weight:900;line-height:1.12;margin-bottom:1.1rem;color:#fff;letter-spacing:-.01em;opacity:0;transform:translateY(30px);animation:fadeup .85s .15s ease forwards;}
+.art-lead{font-size:1.05rem;color:rgba(245,240,232,.72);line-height:1.75;max-width:700px;opacity:0;transform:translateY(18px);animation:fadeup .75s .35s ease forwards;font-style:italic;}
+@keyframes fadeup{to{opacity:1;transform:translateY(0);}}
+
+/* ── READ TIME CHIP ── */
+.read-chip{display:inline-flex;align-items:center;gap:.35rem;background:rgba(123,201,92,.1);border:1px solid var(--borda2);border-radius:99px;padding:.18rem .75rem;font-size:.72rem;color:var(--verde-neon);font-weight:600;margin-top:.9rem;opacity:0;animation:fadeup .6s .55s ease forwards;}
+
+/* ── LAYOUT ── */
+.art-wrap{max-width:1140px;margin:0 auto;padding:3.5rem 5% 2rem;display:grid;grid-template-columns:1fr 300px;gap:4rem;align-items:flex-start;}
+
+/* ── ARTICLE BODY ── */
+.art-body{font-size:1.06rem;line-height:1.88;color:var(--texto);}
+.art-body h2{font-family:'Fraunces',serif;font-size:1.6rem;font-weight:700;color:var(--branco);margin:2.25rem 0 .8rem;line-height:1.2;border-left:3px solid var(--verde-neon);padding-left:1rem;margin-left:-1rem;}
+.art-body h3{font-family:'Fraunces',serif;font-size:1.28rem;font-weight:700;color:var(--branco);margin:1.8rem 0 .6rem;line-height:1.3;}
+.art-body h4{font-family:'Fraunces',serif;font-size:1.08rem;font-weight:700;color:var(--branco);margin:1.5rem 0 .5rem;}
+.art-body p{margin:1.1rem 0;color:var(--texto);}
+.art-body img{border-radius:14px;margin:2rem 0;box-shadow:0 8px 40px rgba(0,0,0,.45);width:100%;}
+.art-body figure{margin:2rem 0;}
+.art-body figcaption{font-size:.78rem;color:var(--texto-fraco);text-align:center;margin-top:.5rem;font-style:italic;}
+.art-body blockquote{border-left:3px solid var(--verde-neon);padding:1rem 1.5rem;margin:2rem 0;background:rgba(123,201,92,.05);border-radius:0 14px 14px 0;color:rgba(245,240,232,.7);font-style:italic;font-size:1.08rem;font-family:'Fraunces',serif;}
+.art-body blockquote cite{display:block;font-size:.8rem;margin-top:.5rem;font-style:normal;color:var(--verde-neon);font-family:'Instrument Sans',sans-serif;}
+.art-body hr{border:none;border-top:1px solid rgba(255,255,255,.07);margin:2.5rem 0;}
+.art-body ul,.art-body ol{padding-left:1.7rem;margin:.9rem 0;}
+.art-body li{margin:.45rem 0;}
+.art-body a{color:var(--verde-neon);font-weight:500;border-bottom:1px solid rgba(123,201,92,.28);transition:border-color .2s,color .2s;}
+.art-body a:hover{color:#fff;border-color:var(--verde-neon);}
+.art-body strong{color:var(--branco);font-weight:600;}
+.art-body table{border-collapse:collapse;width:100%;margin:1.8rem 0;border-radius:12px;overflow:hidden;}
+.art-body table td,.art-body table th{border:1px solid rgba(255,255,255,.07);padding:.65rem 1rem;font-size:.92rem;}
+.art-body table th{background:rgba(123,201,92,.1);font-weight:700;color:var(--verde-neon);text-align:left;}
+.art-body table tr:nth-child(even) td{background:rgba(255,255,255,.02);}
+.art-body pre{background:#070f07;color:var(--verde-neon);padding:1.3rem 1.5rem;border-radius:12px;overflow-x:auto;font-size:.87rem;border:1px solid rgba(123,201,92,.12);}
+.art-body .yt-embed-wrap{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:14px;background:#000;margin:2rem 0;box-shadow:0 8px 40px rgba(0,0,0,.5);}
+.art-body .yt-embed-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none;}
+
+/* ── SHARE BAR ── */
+.share-bar{margin:2.5rem 0 0;padding:1.6rem 0 1.6rem;border-top:1px solid rgba(255,255,255,.07);border-bottom:1px solid rgba(255,255,255,.07);}
+.share-bar-label{font-size:.7rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--texto-muito-fraco);margin-bottom:.85rem;}
+.share-btns{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;}
+.s-btn{display:inline-flex;align-items:center;gap:.45rem;padding:.52rem 1.1rem;border-radius:10px;font-size:.82rem;font-weight:600;text-decoration:none;cursor:pointer;border:none;font-family:'Instrument Sans',sans-serif;transition:transform .18s,box-shadow .18s,opacity .18s;white-space:nowrap;}
+.s-btn:hover{transform:translateY(-2px);opacity:.93;text-decoration:none;}
+.s-wa{background:#25d366;color:#fff;box-shadow:0 4px 16px rgba(37,211,102,.25);}
+.s-wa:hover{box-shadow:0 6px 24px rgba(37,211,102,.4);}
+.s-fb{background:#1877f2;color:#fff;box-shadow:0 4px 16px rgba(24,119,242,.2);}
+.s-fb:hover{box-shadow:0 6px 24px rgba(24,119,242,.35);}
+.s-tw{background:#000;color:#fff;border:1px solid rgba(255,255,255,.12);}
+.s-cp{background:var(--superficie2);color:var(--verde-neon);border:1px solid var(--borda2);}
+.s-cp.copied{background:rgba(123,201,92,.15);color:var(--verde-neon);}
+.s-cp svg,.s-wa svg,.s-fb svg,.s-tw svg{width:15px;height:15px;flex-shrink:0;}
+
+/* ── TAGS ── */
+.art-tags{margin-top:1.6rem;display:flex;gap:.4rem;flex-wrap:wrap;align-items:center;}
+.tag-pill{background:rgba(123,201,92,.08);border:1px solid rgba(123,201,92,.18);color:rgba(123,201,92,.8);padding:.2rem .65rem;border-radius:6px;font-size:.74rem;font-weight:600;transition:all .2s;letter-spacing:.03em;}
+.tag-pill:hover{background:rgba(123,201,92,.18);color:var(--verde-neon);border-color:var(--verde-neon);text-decoration:none;}
+
+/* ── BACK ── */
+.art-back{margin-top:3rem;padding-top:1.75rem;border-top:1px solid rgba(255,255,255,.07);}
+.back-btn{display:inline-flex;align-items:center;gap:.55rem;background:var(--superficie2);color:var(--branco);padding:.62rem 1.35rem;border-radius:10px;font-weight:600;font-size:.85rem;transition:all .25s;border:1px solid var(--borda);text-decoration:none;}
+.back-btn:hover{background:var(--superficie3);border-color:var(--borda2);transform:translateX(-3px);color:var(--verde-neon);text-decoration:none;}
+.back-btn svg{width:16px;height:16px;flex-shrink:0;transition:transform .2s;}
+.back-btn:hover svg{transform:translateX(-2px);}
+
+/* ── SIDEBAR ── */
+.art-sidebar{position:sticky;top:82px;display:flex;flex-direction:column;gap:1.25rem;}
+
+/* ── SB BOX ── */
+.sb-box{background:var(--superficie);border:1px solid var(--borda);border-radius:18px;padding:1.4rem;overflow:hidden;}
+.sb-title{font-size:.68rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--verde-neon);margin-bottom:1.1rem;padding-bottom:.65rem;border-bottom:1px solid var(--borda);display:flex;align-items:center;gap:.4rem;}
+
+/* ── RELATED CARDS ── */
+.rel-card{display:flex;gap:.75rem;align-items:flex-start;padding:.8rem 0;border-bottom:1px solid rgba(255,255,255,.05);text-decoration:none;transition:all .2s;border-radius:6px;}
+.rel-card:last-child{border-bottom:none;padding-bottom:0;}
+.rel-card:hover .rel-title{color:var(--verde-neon);}
+.rel-card:hover{text-decoration:none;}
+.rel-img{width:68px;height:54px;border-radius:8px;object-fit:cover;flex-shrink:0;background:var(--superficie2);}
+.rel-ph{width:68px;height:54px;border-radius:8px;flex-shrink:0;background:var(--superficie2);display:flex;align-items:center;justify-content:center;font-size:1.1rem;}
+.rel-info{flex:1;min-width:0;}
+.rel-cat-lbl{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--verde-claro);margin-bottom:.2rem;}
+.rel-title{font-size:.83rem;font-weight:600;color:var(--branco);line-height:1.38;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;transition:color .2s;margin-bottom:.22rem;}
+.rel-date{font-size:.68rem;color:var(--texto-muito-fraco);}
+
+/* ── VAGAS ── */
+.vaga-item{display:block;padding:.75rem 0;border-bottom:1px solid rgba(255,255,255,.05);text-decoration:none;transition:all .2s;}
+.vaga-item:last-child{border-bottom:none;padding-bottom:0;}
+.vaga-item:hover .vaga-title{color:var(--verde-neon);}
+.vaga-title{font-size:.85rem;font-weight:600;color:var(--branco);line-height:1.35;transition:color .2s;margin-bottom:.22rem;}
+.vaga-meta{font-size:.7rem;color:var(--texto-muito-fraco);}
+
+/* ── SHARE SIDEBAR ── */
+.sb-share{display:flex;gap:.4rem;flex-wrap:wrap;}
+.sb-s-btn{display:inline-flex;align-items:center;justify-content:center;gap:.3rem;padding:.45rem .7rem;border-radius:8px;font-size:.75rem;font-weight:600;cursor:pointer;border:none;font-family:'Instrument Sans',sans-serif;transition:all .2s;text-decoration:none;flex:1;min-width:0;}
+.sb-s-btn:hover{text-decoration:none;transform:translateY(-1px);}
+.sb-wa{background:#25d366;color:#fff;}
+.sb-fb{background:#1877f2;color:#fff;}
+.sb-cp{background:var(--superficie2);color:var(--verde-neon);border:1px solid var(--borda2);}
+
+/* ── SKELETON ── */
+.skel{display:flex;gap:.75rem;padding:.8rem 0;border-bottom:1px solid rgba(255,255,255,.05);}
+.skel:last-child{border-bottom:none;}
+.skel-img{width:68px;height:54px;border-radius:8px;background:linear-gradient(90deg,var(--superficie2) 25%,rgba(123,201,92,.04) 50%,var(--superficie2) 75%);background-size:200% 100%;animation:shim 1.5s infinite;flex-shrink:0;}
+.skel-lines{flex:1;display:flex;flex-direction:column;gap:.4rem;justify-content:center;}
+.skel-line{height:9px;border-radius:4px;background:linear-gradient(90deg,var(--superficie2) 25%,rgba(123,201,92,.04) 50%,var(--superficie2) 75%);background-size:200% 100%;animation:shim 1.5s infinite;}
+.skel-line.s{width:60%;}
+@keyframes shim{to{background-position:-200% 0;}}
+
+/* ── MORE NEWS SECTION (bottom) ── */
+.more-news{max-width:1140px;margin:0 auto;padding:0 5% 5rem;}
+.more-news-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;padding-bottom:1rem;border-bottom:1px solid var(--borda);}
+.more-news-title{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:700;color:var(--branco);}
+.more-news-link{font-size:.8rem;font-weight:600;color:var(--verde-neon);display:flex;align-items:center;gap:.3rem;transition:gap .2s;}
+.more-news-link:hover{gap:.55rem;text-decoration:none;}
+.news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+.news-card{background:var(--superficie);border:1px solid var(--borda);border-radius:18px;overflow:hidden;text-decoration:none;display:flex;flex-direction:column;transition:transform .25s,border-color .25s,box-shadow .25s;}
+.news-card:hover{transform:translateY(-4px);border-color:var(--borda2);box-shadow:0 12px 40px rgba(0,0,0,.5);text-decoration:none;}
+.news-card-img{width:100%;height:168px;object-fit:cover;background:var(--superficie2);display:block;}
+.news-card-ph{width:100%;height:168px;background:linear-gradient(135deg,var(--superficie2),var(--superficie3));display:flex;align-items:center;justify-content:center;font-size:2rem;flex-shrink:0;}
+.news-card-body{padding:1.1rem 1.25rem 1.25rem;flex:1;display:flex;flex-direction:column;}
+.news-card-cat{font-size:.63rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--verde-claro);margin-bottom:.45rem;}
+.news-card-title{font-family:'Fraunces',serif;font-size:1rem;font-weight:700;color:var(--branco);line-height:1.35;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;flex:1;margin-bottom:.65rem;transition:color .2s;}
+.news-card:hover .news-card-title{color:var(--verde-neon);}
+.news-card-meta{display:flex;align-items:center;justify-content:space-between;}
+.news-card-date{font-size:.7rem;color:var(--texto-muito-fraco);}
+.news-card-arrow{font-size:.75rem;color:var(--verde-neon);opacity:0;transition:opacity .2s,transform .2s;transform:translateX(-4px);}
+.news-card:hover .news-card-arrow{opacity:1;transform:translateX(0);}
+
+/* ── FOOTER ── */
+footer{background:var(--superficie);border-top:1px solid var(--borda);padding:3.5rem 5% 2rem;margin-top:1rem;}
+.ft-inner{max-width:1140px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr;gap:3rem;}
+.ft-brand{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:900;color:var(--branco);margin-bottom:.6rem;}
+.ft-brand span{color:var(--verde-neon);}
+.ft-desc{font-size:.83rem;color:var(--texto-fraco);line-height:1.65;max-width:280px;}
+.ft-col h5{font-size:.65rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--verde-neon);margin-bottom:.9rem;}
+.ft-col a{display:block;font-size:.84rem;color:var(--texto-fraco);text-decoration:none;margin-bottom:.35rem;transition:color .2s;}
+.ft-col a:hover{color:var(--branco);}
+.ft-bottom{max-width:1140px;margin:2.5rem auto 0;padding-top:1.5rem;border-top:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center;font-size:.76rem;color:var(--texto-muito-fraco);flex-wrap:wrap;gap:.5rem;}
+.ft-bottom a{color:rgba(123,201,92,.4);text-decoration:none;transition:color .2s;}
+.ft-bottom a:hover{color:var(--verde-neon);}
+
+/* ── LEIA TAMBÉM MOBILE ── */
+.leia-mobile{display:none;max-width:1140px;margin:0 auto;padding:0 5% 3rem;}
+.leia-mobile-header{display:flex;align-items:center;gap:.5rem;font-size:.7rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--verde-neon);margin-bottom:1.25rem;padding-bottom:.75rem;border-bottom:1px solid var(--borda);}
+.leia-mobile-header svg{flex-shrink:0;}
+.rel-mobile-list{display:flex;flex-direction:column;gap:0;}
+.rel-mobile-card{display:flex;gap:.85rem;padding:.9rem 0;border-bottom:1px solid rgba(255,255,255,.05);text-decoration:none;align-items:flex-start;transition:background .2s;}
+.rel-mobile-card:last-child{border-bottom:none;}
+.rel-mobile-card:hover{text-decoration:none;}
+.rel-mobile-img{width:80px;height:62px;border-radius:8px;object-fit:cover;flex-shrink:0;background:var(--superficie2);}
+.rel-mobile-ph{width:80px;height:62px;border-radius:8px;flex-shrink:0;background:linear-gradient(135deg,var(--superficie2),var(--superficie3));display:flex;align-items:center;justify-content:center;font-size:1.4rem;}
+.rel-mobile-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:.25rem;justify-content:center;}
+.rel-mobile-cat{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--verde-claro);}
+.rel-mobile-title{font-family:'Fraunces',serif;font-size:.92rem;font-weight:700;color:var(--branco);line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;transition:color .2s;}
+.rel-mobile-card:hover .rel-mobile-title{color:var(--verde-neon);}
+.rel-mobile-date{font-size:.68rem;color:var(--texto-muito-fraco);}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1024px){
+  .art-wrap{grid-template-columns:1fr;gap:2rem;}
+  .art-sidebar{position:static;}
+  .sb-box-related{display:none;}/* oculto na sidebar em mobile — versão mobile abaixo */
+  .leia-mobile{display:block;}/* mostra bloco mobile */
+  .news-grid{grid-template-columns:repeat(2,1fr);}
+  .ft-inner{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:768px){
+  .nav-links{display:none;position:absolute;top:58px;left:0;right:0;background:rgba(8,14,8,.98);flex-direction:column;padding:1.5rem 5%;gap:1rem;border-bottom:1px solid var(--borda);}
+  .nav-links.open{display:flex;}
+  .hamburger{display:flex;}
+  .lang-sw{display:none;}
+  .art-hero{min-height:460px;}
+  .news-grid{grid-template-columns:1fr;}
+  .ft-inner{grid-template-columns:1fr;}
+  .more-news-header{flex-direction:column;align-items:flex-start;gap:.75rem;}
+}
+@media(max-width:480px){
+  .art-hero{min-height:400px;padding:0 5% 8%;}
+  .share-btns{gap:.4rem;}
+  .s-btn{padding:.45rem .8rem;font-size:.76rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cur-dot"></div>
+<div id="cur-ring"></div>
+
+<!-- BARRA DE LEITURA -->
+<div id="read-bar"></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="../index.html" style="display:flex;align-items:center;">
+    <img src="https://www.asproc.com.br/images/logo.png"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='block';"
+         alt="ASPROC" class="nav-logo">
+    <span class="nav-brand-txt" style="display:none;">🌿 ASPROC</span>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="../index.html">Início</a></li>
+    <li><a href="../sobre.html">Sobre</a></li>
+    <li><a href="../noticias.html" class="ativo">Notícias</a></li>
+    <li><a href="../avisos.html">Avisos</a></li>
+    <li><a href="../trabalhe-conosco.html">Trabalhe Conosco</a></li>
+    <li><a href="https://loja.asproc.org.br/" class="nav-cta" target="_blank">Loja Virtual</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="lang-sw">
+      <button class="lang-btn active" onclick="setLang('pt')">PT</button>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" onclick="setLang('es')">ES</button>
+    </div>
+    <button class="hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="art-hero">
+  <div class="hero-bg-fallback"></div>
+  <div class="hero-grain"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="../index.html">Início</a><span>›</span>
+      <a href="../noticias.html">Notícias</a><span>›</span>
+      <span>Geral</span>
+    </nav>
+    <div class="hero-meta">
+      <span class="cat-badge">📌 Geral</span>
+      <span class="hero-date">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13"><rect x="1" y="2" width="14" height="13" rx="2"/><path d="M1 6h14M5 1v2M11 1v2"/></svg>
+        28 de abril de 2026
+      </span>
+      
+    </div>
+    <h1 class="art-title">gfefsdfsdf</h1>
+    <p class="art-lead">sdfsdfsd</p>
+    <div class="read-chip" id="readChip">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" width="12" height="12"><circle cx="8" cy="8" r="6"/><path d="M8 4v4l2.5 2.5"/></svg>
+      <span id="readTime">…</span>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN LAYOUT -->
+<div class="art-wrap">
+
+  <!-- ARTICLE -->
+  <article class="art-body" id="artBody">
+
+    fsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsfsewfwefegsfgtgtgregrfgfgszg
+
+    <!-- SHARE BAR -->
+    <div class="share-bar">
+      <div class="share-bar-label">Compartilhar este artigo</div>
+      <div class="share-btns">
+        <a class="s-btn s-wa" href="#" onclick="shareWa();return false;" aria-label="Compartilhar no WhatsApp">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          WhatsApp
+        </a>
+        <a class="s-btn s-fb" href="#" onclick="shareFb();return false;" aria-label="Compartilhar no Facebook">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          Facebook
+        </a>
+        <a class="s-btn s-tw" href="#" onclick="shareTw();return false;" aria-label="Compartilhar no X/Twitter">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.259 5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          X / Twitter
+        </a>
+        <button class="s-btn s-cp" id="copyBtn" onclick="copyLink()" aria-label="Copiar link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          Copiar link
+        </button>
+      </div>
+    </div>
+
+    
+
+    <div class="art-back">
+      <a href="../noticias.html" class="back-btn">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M10 3L5 8l5 5"/></svg>
+        Todas as notícias
+      </a>
+    </div>
+  </article>
+
+  <!-- SIDEBAR -->
+  <aside class="art-sidebar">
+
+    <!-- COMPARTILHAR (sidebar) -->
+    <div class="sb-box">
+      <div class="sb-title">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13"><path d="M13 3a2 2 0 11-4 0 2 2 0 014 0zM7 8a2 2 0 11-4 0 2 2 0 014 0zM13 13a2 2 0 11-4 0 2 2 0 014 0zM9.5 4.5l-3 2M9.5 11.5l-3-2"/></svg>
+        Compartilhar
+      </div>
+      <div class="sb-share">
+        <a class="sb-s-btn sb-wa" href="#" onclick="shareWa();return false;">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          WhatsApp
+        </a>
+        <a class="sb-s-btn sb-fb" href="#" onclick="shareFb();return false;">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          Facebook
+        </a>
+        <button class="sb-s-btn sb-cp" id="sbCopyBtn" onclick="copyLink()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          Copiar
+        </button>
+      </div>
+    </div>
+
+    <!-- LEIA TAMBÉM -->
+    <div class="sb-box sb-box-related">
+      <div class="sb-title">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13"><path d="M2 4h12M2 8h8M2 12h10"/></svg>
+        Leia também
+      </div>
+      <div id="related-list">
+        <div class="skel"><div class="skel-img"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
+        <div class="skel"><div class="skel-img"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
+        <div class="skel"><div class="skel-img"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
+      </div>
+    </div>
+
+    <!-- VAGAS -->
+    <div class="sb-box" id="vagas-box" style="display:none">
+      <div class="sb-title">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13"><rect x="1" y="4" width="14" height="10" rx="2"/><path d="M5 4V3a2 2 0 014 0v1"/></svg>
+        Vagas abertas
+      </div>
+      <div id="vagas-list"></div>
+    </div>
+
+  </aside>
+</div>
+
+<!-- LEIA TAMBÉM MOBILE (visível apenas em ≤1024px) -->
+<section class="leia-mobile" id="leiaMobileSection">
+  <div class="leia-mobile-header">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13"><path d="M2 4h12M2 8h8M2 12h10"/></svg>
+    📌 Leia também
+  </div>
+  <div class="rel-mobile-list" id="related-list-mobile">
+    <div class="skel"><div class="skel-img"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
+    <div class="skel"><div class="skel-img"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
+    <div class="skel"><div class="skel-img"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
+  </div>
+</section>
+
+<!-- MAIS NOTÍCIAS (grade no rodapé do artigo) -->
+<section class="more-news" id="moreNewsSection" style="display:none">
+  <div class="more-news-header">
+    <h2 class="more-news-title">Mais notícias</h2>
+    <a href="../noticias.html" class="more-news-link">Ver todas
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+    </a>
+  </div>
+  <div class="news-grid" id="more-news-grid">
+    <!-- preenchido por JS -->
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="ft-inner">
+    <div>
+      <div class="ft-brand">ASPR<span>OC</span></div>
+      <p class="ft-desc">Associação dos Produtores Rurais de Carauari – fortalecendo as comunidades ribeirinhas do Médio Juruá.</p>
+    </div>
+    <div class="ft-col">
+      <h5>Navegação</h5>
+      <a href="../index.html">Início</a>
+      <a href="../sobre.html">Sobre</a>
+      <a href="../noticias.html">Notícias</a>
+      <a href="../avisos.html">Avisos</a>
+    </div>
+    <div class="ft-col">
+      <h5>Mais</h5>
+      <a href="../trabalhe-conosco.html">Trabalhe Conosco</a>
+      <a href="https://loja.asproc.org.br/" target="_blank">Loja Virtual</a>
+    </div>
+  </div>
+  <div class="ft-bottom">
+    <span>© 2026 ASPROC – Todos os direitos reservados</span>
+    <span>
+      <a href="../index.html">Site</a> ·
+      <a href="../noticias.html">Notícias</a> ·
+      <a href="../avisos.html">Avisos</a>
+    </span>
+  </div>
+</footer>
+
+<script>
+// ── CONFIG SUPABASE ──
+const SB_URL='https://wiatqtiyiznscjyoxxww.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpYXRxdGl5aXpuc2NqeW94eHd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1Njc0MDEsImV4cCI6MjA5MTE0MzQwMX0.xgaaZWX5kG3XowDtpR9Xd8S2S0nV-JTnv4ZwnP33PY8';
+const CAT_ICONS={pirarucu:'🐟',olea:'🌿',sanear:'💧',comercio:'🛒',vagas:'📋',geral:'📌'};
+const CAT_LABEL={pirarucu:'Pirarucu',olea:'Oleaginosas',sanear:'Saneamento',comercio:'Comércio',vagas:'Vagas',geral:'Geral'};
+
+const MOCK_NOTICIAS=[
+  {titulo:'Justiça Social na Prática: Como o CRCS transforma a realidade ribeirinha no Médio Juruá',categoria:'geral',data_pub:'2026-04-01',imagem_url:'',slug:'justica-social-na-pratica-como-o-crcs-transforma-a-realidade-ribeirinha-no-medio-jurua'},
+  {titulo:'Cadeia produtiva da borracha nativa no Médio Juruá ganha força com o trabalho coletivo da ASPROC no escoamento',categoria:'comercio',data_pub:'2026-04-05',imagem_url:'',slug:'cadeia-produtiva-da-borracha-nativa-no-medio-jurua-ganha-forca-com-o-trabalho-coletivo-da-asproc-no-escoamento'},
+  {titulo:'ASPROC supera desafios logísticos e realiza capacitações do Sanear Amazônia em 2025',categoria:'sanear',data_pub:'2026-04-08',imagem_url:'',slug:'asproc-supera-desafios-logisticos-e-realiza-capacitacoes-do-sanear-amazonia-em-2025'},
+  {titulo:'Viagem de Comercialização da ASPROC aos polos do Comércio Ribeirinho fortalece a sociobiodiversidade com abastecimento, acesso a mercados e fomento agroflorestal',categoria:'comercio',data_pub:'2026-04-10',imagem_url:'',slug:'viagem-de-comercializacao-da-asproc-aos-polos-do-comercio-ribeirinho'},
+  {titulo:'III Encontro da Cadeia Produtiva de Oleaginosas do Médio Juruá reúne comunidades e fortalece cooperação',categoria:'olea',data_pub:'2026-03-20',imagem_url:'',slug:'iii-encontro-da-cadeia-produtiva-de-oleaginosas-do-medio-jurua'},
+  {titulo:'Pirarucu do Médio Juruá: nova safra bate recorde de produção sustentável nas comunidades ribeirinhas',categoria:'pirarucu',data_pub:'2026-03-15',imagem_url:'',slug:'pirarucu-do-medio-jurua-nova-safra-bate-recorde-de-producao-sustentavel'}
+];
+const MOCK_VAGAS=[];
+
+async function sbGet(table,params){
+  const r=await fetch(SB_URL+'/rest/v1/'+table+(params?'?'+params:''),{
+    headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}
+  });
+  if(!r.ok)throw new Error('HTTP '+r.status);
+  return r.json();
+}
+
+function fmtDate(d){
+  if(!d)return'';
+  const m=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  try{const dt=new Date(d+'T00:00:00');return dt.getDate()+' de '+m[dt.getMonth()]+' de '+dt.getFullYear();}
+  catch{return d;}
+}
+
+// ── CURSOR ──
+document.addEventListener('DOMContentLoaded',function(){
+  var dot=document.getElementById('cur-dot');
+  var ring=document.getElementById('cur-ring');
+  if(!dot||!ring)return;
+  var mx=0,my=0,rx=0,ry=0;
+  dot.style.left='-100px';dot.style.top='-100px';
+  ring.style.left='-100px';ring.style.top='-100px';
+  document.addEventListener('mousemove',function(e){
+    mx=e.clientX;my=e.clientY;
+    dot.style.left=mx+'px';dot.style.top=my+'px';
+  },{passive:true});
+  (function animR(){rx+=(mx-rx)*.16;ry+=(my-ry)*.16;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animR);})();
+  document.querySelectorAll('a,button').forEach(function(el){
+    el.addEventListener('mouseenter',function(){dot.classList.add('h');ring.classList.add('h');});
+    el.addEventListener('mouseleave',function(){dot.classList.remove('h');ring.classList.remove('h');});
+  });
+});
+
+// ── BARRA DE LEITURA ──
+window.addEventListener('scroll',function(){
+  const h=document.documentElement;
+  const pct=h.scrollTop/(h.scrollHeight-h.clientHeight)*100||0;
+  document.getElementById('read-bar').style.width=pct+'%';
+},{passive:true});
+
+// ── NAV SCROLL ──
+window.addEventListener('scroll',function(){
+  document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>60);
+},{passive:true});
+
+// ── TEMPO DE LEITURA ──
+document.addEventListener('DOMContentLoaded',function(){
+  const body=document.getElementById('artBody');
+  if(body){
+    const words=(body.innerText||'').trim().split(/s+/).length;
+    const mins=Math.max(1,Math.round(words/200));
+    document.getElementById('readTime').textContent=mins+' min de leitura';
+  }
+});
+
+// ── LANG ──
+function setLang(l){
+  document.querySelectorAll('.lang-btn').forEach(function(b,i){b.classList.toggle('active',['pt','en','es'][i]===l);});
+}
+
+// ── COMPARTILHAR ──
+const PAGE_URL=window.location.href;
+const PAGE_TITLE=document.title;
+function shareWa(){window.open('https://api.whatsapp.com/send?text='+encodeURIComponent(PAGE_TITLE+' — '+PAGE_URL),'_blank');}
+function shareFb(){window.open('https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(PAGE_URL),'_blank');}
+function shareTw(){window.open('https://twitter.com/intent/tweet?text='+encodeURIComponent(PAGE_TITLE)+'&url='+encodeURIComponent(PAGE_URL),'_blank');}
+function copyLink(){
+  navigator.clipboard.writeText(PAGE_URL).then(function(){
+    ['copyBtn','sbCopyBtn'].forEach(function(id){
+      var b=document.getElementById(id);
+      if(!b)return;
+      var orig=b.innerHTML;
+      b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><path d="M20 6L9 17l-5-5"/></svg> Copiado!';
+      b.classList.add('copied');
+      setTimeout(function(){b.innerHTML=orig;b.classList.remove('copied');},2500);
+    });
+  }).catch(function(){
+    var ta=document.createElement('textarea');
+    ta.value=PAGE_URL;document.body.appendChild(ta);ta.select();
+    document.execCommand('copy');document.body.removeChild(ta);
+  });
+}
+
+// ── SLUGIFY (igual ao admin) ──
+function slugify(str){
+  return (str||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9s-]/g,'').trim().replace(/s+/g,'-').replace(/-+/g,'-').substring(0,80);
+}
+
+// ── IDENTIFICAÇÃO DA NOTÍCIA ATUAL ──
+// Pega o slug diretamente da URL do arquivo (fonte mais confiável)
+var currSlug=(function(){
+  var parts=window.location.pathname.split('/');
+  var fname=parts[parts.length-1].replace(/.html$/i,'');
+  return fname||'';
+})();
+var currTitle=document.title.replace(/s*[–—-]s*ASPROCs*$/i,'').trim();
+var currHref=window.location.href.split('?')[0].split('#')[0];
+
+// Verifica se uma notícia do banco é a atual (múltiplas estratégias)
+function isCurrent(n){
+  if(!n.titulo)return false;
+  // 1. Slug do banco bate com slug da URL
+  if(n.slug&&n.slug.trim()===currSlug)return true;
+  // 2. Slug gerado do título bate com slug da URL
+  if(n.titulo&&slugify(n.titulo)===currSlug)return true;
+  // 3. url_externa bate com href atual
+  if(n.url_externa){
+    var ext=n.url_externa.split('?')[0].split('#')[0].replace(//$/,'');
+    var cur=currHref.replace(//$/,'');
+    if(ext===cur)return true;
+    // 4. Nome do arquivo de url_externa bate com slug atual
+    var extSlug=ext.split('/').pop().replace(/.html$/i,'');
+    if(extSlug&&extSlug===currSlug)return true;
+  }
+  return false;
+}
+
+// Gera a URL de uma notícia de forma robusta
+function noticiaUrl(n){
+  // Preferência: url_externa (já publicada)
+  if(n.url_externa&&n.url_externa.trim()){
+    return n.url_externa.trim();
+  }
+  // Fallback: slug do banco
+  var sl=n.slug&&n.slug.trim()?n.slug.trim():slugify(n.titulo||'');
+  return sl?('https://www.asproc.com.br/noticias/'+sl+'.html'):'../noticias.html';
+}
+
+// ── LOAD RELATED (sidebar + mobile) ──
+async function loadRelated(){
+  var list=document.getElementById('related-list');
+  var listMobile=document.getElementById('related-list-mobile');
+  if(!list&&!listMobile)return;
+  var data;
+  try{
+    data=await sbGet('noticias','select=titulo,categoria,data_pub,imagem_url,url_externa,slug&order=data_pub.desc&limit=30');
+    if(!Array.isArray(data)||!data.length)data=MOCK_NOTICIAS;
+  }catch(e){
+    data=MOCK_NOTICIAS;
+  }
+  var filtered=data.filter(function(n){
+    return n.titulo&&!isCurrent(n);
+  }).slice(0,4);
+  if(!filtered.length){
+    var empty='<p style="font-size:.8rem;color:rgba(245,240,232,.25);padding:.5rem 0;">Mais conteúdo em breve.</p>';
+    if(list)list.innerHTML=empty;
+    if(listMobile)listMobile.innerHTML=empty;
+    return;
+  }
+  /* ── SIDEBAR HTML ── */
+  if(list){
+    list.innerHTML=filtered.map(function(n){
+      var icon=CAT_ICONS[n.categoria]||'📌';
+      var lbl=CAT_LABEL[n.categoria]||n.categoria||'Geral';
+      var url=noticiaUrl(n);
+      var img=n.imagem_url
+        ?'<img class="rel-img" src="'+n.imagem_url+'" alt="" loading="lazy" onerror="this.outerHTML='<div class=\"rel-ph\">'+icon+'</div>'">'
+        :'<div class="rel-ph">'+icon+'</div>';
+      return '<a class="rel-card" href="'+url+'">'+img+'<div class="rel-info"><div class="rel-cat-lbl">'+lbl+'</div><div class="rel-title">'+n.titulo+'</div><div class="rel-date">'+fmtDate(n.data_pub)+'</div></div></a>';
+    }).join('');
+  }
+  /* ── MOBILE HTML ── */
+  if(listMobile){
+    listMobile.innerHTML=filtered.map(function(n){
+      var icon=CAT_ICONS[n.categoria]||'📌';
+      var lbl=CAT_LABEL[n.categoria]||n.categoria||'Geral';
+      var url=noticiaUrl(n);
+      var img=n.imagem_url
+        ?'<img class="rel-mobile-img" src="'+n.imagem_url+'" alt="" loading="lazy" onerror="this.outerHTML='<div class=\"rel-mobile-ph\">'+icon+'</div>'">'
+        :'<div class="rel-mobile-ph">'+icon+'</div>';
+      return '<a class="rel-mobile-card" href="'+url+'">'+img+'<div class="rel-mobile-info"><div class="rel-mobile-cat">'+lbl+'</div><div class="rel-mobile-title">'+n.titulo+'</div><div class="rel-mobile-date">'+fmtDate(n.data_pub)+'</div></div></a>';
+    }).join('');
+  }
+}
+
+// ── LOAD MORE NEWS (grade embaixo) ──
+async function loadMoreNews(){
+  var section=document.getElementById('moreNewsSection');
+  var grid=document.getElementById('more-news-grid');
+  if(!section||!grid)return;
+  var data;
+  try{
+    data=await sbGet('noticias','select=titulo,categoria,data_pub,imagem_url,url_externa,slug,resumo&order=data_pub.desc&limit=30');
+    if(!Array.isArray(data)||!data.length)data=MOCK_NOTICIAS;
+  }catch(e){
+    data=MOCK_NOTICIAS;
+  }
+  var filtered=data.filter(function(n){
+    return n.titulo&&!isCurrent(n);
+  }).slice(0,6);
+  if(!filtered.length)return;
+  section.style.display='block';
+  grid.innerHTML=filtered.map(function(n){
+    var icon=CAT_ICONS[n.categoria]||'📌';
+    var lbl=CAT_LABEL[n.categoria]||n.categoria||'Geral';
+    var url=noticiaUrl(n);
+    var imgEl=n.imagem_url
+      ?'<img class="news-card-img" src="'+n.imagem_url+'" alt="" loading="lazy" onerror="this.outerHTML='<div class=\"news-card-ph\">'+icon+'</div>'">'
+      :'<div class="news-card-ph">'+icon+'</div>';
+    return '<a class="news-card" href="'+url+'">'+imgEl+'<div class="news-card-body"><div class="news-card-cat">'+icon+' '+lbl+'</div><div class="news-card-title">'+n.titulo+'</div><div class="news-card-meta"><span class="news-card-date">'+fmtDate(n.data_pub)+'</span><span class="news-card-arrow">→</span></div></div></a>';
+  }).join('');
+}
+
+// ── LOAD VAGAS ──
+async function loadVagas(){
+  var list=document.getElementById('vagas-list');
+  var box=document.getElementById('vagas-box');
+  if(!list||!box)return;
+  try{
+    var data=await sbGet('vagas','select=titulo,local,regime,prazo,status,edital_url,slug,url_externa&order=created_at.desc&limit=6');
+    if(!Array.isArray(data)||!data.length){box.style.display='none';return;}
+    var abertas=data.filter(function(v){var s=(v.status||'').toLowerCase();return s==='aberta'||s==='ativo'||s==='publicado'||s==='aberto'||s==='';});
+    if(!abertas.length){box.style.display='none';return;}
+    box.style.display='';
+    list.innerHTML=abertas.slice(0,3).map(function(v){
+      var url=v.url_externa||v.edital_url||(v.slug?'https://www.asproc.com.br/trabalhe-conosco.html#'+v.slug:'../trabalhe-conosco.html');
+      var meta=[v.local,v.regime,v.prazo?'Até '+fmtDate(v.prazo):''].filter(Boolean).join(' · ');
+      return '<a class="vaga-item" href="'+url+'" target="_blank"><div class="vaga-title">'+v.titulo+'</div><div class="vaga-meta">'+meta+'</div></a>';
+    }).join('');
+  }catch(e){box.style.display='none';}
+}
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded',function(){
+  loadRelated();
+  loadMoreNews();
+  loadVagas();
+});
+</script>
+</body>
+</html>
