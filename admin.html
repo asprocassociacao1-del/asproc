@@ -2456,7 +2456,8 @@
         title="Formata o conteúdo automaticamente com IA">✨ Auto-formatar</button>
       <button class="btn btn-success btn-sm" id="btn-gh-publish" onclick="publishToGithub()">🚀 Publicar no
         site</button>
-      <button class="btn btn-primary btn-sm" onclick="saveNoticia()">💾 Salvar</button>
+      <button class="btn btn-primary btn-sm" onclick="saveNoticia()"
+        title="Salva no banco E publica no GitHub Pages automaticamente">💾 Salvar &amp; Publicar</button>
     </div>
 
     <div class="ne-body">
@@ -3767,11 +3768,45 @@
         const urlExterna = document.getElementById('n-url').value.trim() || null;
         const dbPayload = Object.assign({}, data._dbData, { url_externa: urlExterna });
         if (!dbPayload.titulo || !dbPayload.resumo) { toast('Preencha título e resumo.', 'error'); return; }
+
+        // 1) Salva no Supabase
         try {
-          if (editingId.noticias) { await sbUpdate('noticias', editingId.noticias, dbPayload); toast('Notícia atualizada!', 'success'); }
-          else { await sbInsert('noticias', dbPayload); toast('Notícia salva!', 'success'); }
-          closeNewsEditor(); loadNoticias(); loadDashboard();
-        } catch (e) { toast('Erro: ' + e.message, 'error'); }
+          if (editingId.noticias) {
+            await sbUpdate('noticias', editingId.noticias, dbPayload);
+            toast('💾 Notícia salva no banco!', 'success');
+          } else {
+            const inserted = await sbInsert('noticias', dbPayload);
+            if (inserted && inserted[0]) editingId.noticias = inserted[0].id;
+            toast('💾 Notícia salva no banco!', 'success');
+          }
+          loadNoticias(); loadDashboard();
+        } catch (e) {
+          toast('Erro ao salvar: ' + e.message, 'error');
+          return;
+        }
+
+        // 2) Publica automaticamente no GitHub se o token estiver configurado
+        const token = getGhToken();
+        if (!token) {
+          toast('⚠️ Token do GitHub não configurado — notícia salva apenas no banco. Configure em Configurações para publicar no site.', 'error');
+          closeNewsEditor();
+          return;
+        }
+
+        toast('🚀 Publicando no GitHub Pages…', 'info');
+        try {
+          const publicUrl = await publishToGithub(data);
+          if (publicUrl && editingId.noticias) {
+            try { await sbUpdate('noticias', editingId.noticias, { url_externa: publicUrl }); } catch { }
+            toast('✅ Publicado! A URL ficará ativa em ~1 minuto no GitHub Pages.', 'success');
+          }
+        } catch (e) {
+          toast('⚠️ Salvo no banco, mas erro ao publicar no GitHub: ' + e.message, 'error');
+        }
+
+        closeNewsEditor();
+        loadNoticias();
+        loadDashboard();
       }
 
       /* ══════════════════════════════════════════
