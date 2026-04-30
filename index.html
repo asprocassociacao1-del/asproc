@@ -1920,6 +1920,121 @@
                 transition: transform .25s, opacity .2s;
             }
         }
+        
+        /* ── Screen-reader only ── */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0,0,0,0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* ── Slider pause button ── */
+        .slider-pause-wrap {
+            position: absolute;
+            bottom: 28px;
+            right: 5%;
+            z-index: 10;
+        }
+        .slider-pause-btn {
+            background: rgba(0,0,0,.35);
+            border: 1.5px solid rgba(255,255,255,.3);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            font-size: .65rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: border-color .25s, background .25s;
+            backdrop-filter: blur(8px);
+        }
+        .slider-pause-btn:hover,
+        .slider-pause-btn:focus-visible {
+            border-color: var(--verde-neon);
+            background: rgba(75,158,63,.25);
+            outline: none;
+        }
+        .slider-pause-btn.paused {
+            border-color: var(--verde-neon);
+            color: var(--verde-neon);
+        }
+
+        /* ── Hero CTA hierarchy ── */
+        .slide-content .btn-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        /* Primary: solid fill — same as .slide-btn already is */
+        .slide-btn-primary {
+            background: var(--verde-claro);
+            color: white;
+        }
+        .slide-btn-primary:hover {
+            background: var(--verde-neon);
+            color: var(--escuro);
+        }
+        /* Secondary: ghost outline */
+        .slide-btn-secondary {
+            background: transparent !important;
+            color: rgba(245,240,232,.9) !important;
+            border: 1.5px solid rgba(245,240,232,.45);
+            padding: .85rem 2rem;
+        }
+        .slide-btn-secondary:hover {
+            background: rgba(245,240,232,.1) !important;
+            border-color: rgba(245,240,232,.8);
+            color: white !important;
+            transform: translateY(-3px);
+        }
+
+        /* ── Pirarucu btn group ── */
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-top: 2rem;
+        }
+        .btn-secondary-ghost {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            background: transparent;
+            border: 1.5px solid rgba(255,255,255,.25);
+            color: rgba(255,255,255,.7);
+            padding: .85rem 1.8rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: .9rem;
+            transition: all .3s;
+            white-space: nowrap;
+        }
+        .btn-secondary-ghost:hover {
+            border-color: rgba(255,255,255,.6);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        /* ── Reduced motion — disable all slider transitions ── */
+        @media (prefers-reduced-motion: reduce) {
+            .slide { transition: none; }
+            .slide-tag,
+            .slide-content h1,
+            .slide-content h2,
+            .slide-content p,
+            .slide-btn { transition: none; opacity: 1; transform: none; }
+        }
         </style>
 </head>
 
@@ -1964,7 +2079,8 @@
                 <h1 data-i18n="slide1_h1">Raízes profundas<br>na Amazônia</h1>
                 <p data-i18n="slide1_p">Defendendo os direitos das comunidades ribeirinhas do Médio Juruá há mais de 30
                     anos.</p>
-                <a href="sobre.html" class="slide-btn" data-i18n="slide1_btn">Conheça nossa história</a>
+                <div class="btn-row"><a href="sobre.html" class="slide-btn slide-btn-primary" data-i18n="slide1_btn">Conheça nossa história</a>
+                <a href="programas-projetos.html" class="slide-btn slide-btn-secondary" data-i18n="slide1_btn2">Ver projetos</a></div>
             </div>
         </div>
         <div class="slide"
@@ -1975,8 +2091,8 @@
                 <h2 data-i18n="slide2_h1">Sanear Amazônia,<br>proteger a vida</h1>
                 <p data-i18n="slide2_p">Levando saneamento básico às comunidades e preservando o ecossistema amazônico.
                 </p>
-                <a href="https://www.asproc.com.br/projeto-sanear.html" class="slide-btn" target="_blank"
-                    data-i18n="slide2_btn">Ver projeto</a>
+                <div class="btn-row"><a href="https://www.asproc.com.br/projeto-sanear.html" class="slide-btn slide-btn-primary" target="_blank" data-i18n="slide2_btn">Ver projeto</a>
+                <a href="programas-projetos.html" class="slide-btn slide-btn-secondary" data-i18n="slide2_btn2">Todos os projetos</a></div>
             </div>
         </div>
         <div class="slide"
@@ -1987,20 +2103,28 @@
                 <h2 data-i18n="slide3_h1">Manejo do Pirarucu<br>no Médio Juruá</h1>
                 <p data-i18n="slide3_p">Referência nacional em manejo sustentável do maior peixe de escamas da Amazônia.
                 </p>
-                <a href="https://asproc.com.br/projeto-manejo-pirarucu" class="slide-btn" target="_blank"
-                    data-i18n="slide3_btn">Saiba mais</a>
+                <div class="btn-row"><a href="https://asproc.com.br/projeto-manejo-pirarucu" class="slide-btn slide-btn-primary" target="_blank" data-i18n="slide3_btn">Saiba mais</a>
+                <a href="https://loja.asproc.org.br" class="slide-btn slide-btn-secondary" target="_blank" data-i18n="slide3_btn2">Comprar pirarucu</a></div>
             </div>
         </div>
 
         <div class="slider-arrows">
-            <button class="arrow-btn" onclick="prevSlide()">&#8592;</button>
-            <button class="arrow-btn" onclick="nextSlide()">&#8594;</button>
+            <button class="arrow-btn" onclick="prevSlide()" aria-label="Slide anterior">&#8592;</button>
+            <button class="arrow-btn" onclick="nextSlide()" aria-label="Próximo slide">&#8594;</button>
         </div>
         <div class="slider-dots">
-            <div class="dot active" onclick="goToSlide(0)"></div>
-            <div class="dot" onclick="goToSlide(1)"></div>
-            <div class="dot" onclick="goToSlide(2)"></div>
+            <div class="dot active" onclick="goToSlide(0)" role="button" tabindex="0" aria-label="Slide 1"></div>
+            <div class="dot" onclick="goToSlide(1)" role="button" tabindex="0" aria-label="Slide 2"></div>
+            <div class="dot" onclick="goToSlide(2)" role="button" tabindex="0" aria-label="Slide 3"></div>
         </div>
+        
+        <div class="slider-pause-wrap">
+            <button id="slider-pause-btn" class="slider-pause-btn"
+                    aria-label="Pausar apresentação"
+                    onclick="togglePause()">&#10074;&#10074;</button>
+        </div>
+        <div id="slider-live" aria-live="polite" aria-atomic="true"
+             class="sr-only">Slide 1 de 3</div>
         <div class="scroll-indicator">
             <span data-i18n="scroll_text">Scroll</span>
             <div class="scroll-arrow"></div>
@@ -2073,8 +2197,7 @@
                     <p data-i18n="pira_stat3">Início do projeto</p>
                 </div>
             </div>
-            <a href="http://www.asproc.com.br/projeto-manejo-pirarucu.html" class="btn-agua reveal"
-                style="transition-delay:.3s" target="_blank" data-i18n="pira_btn">Conhecer o projeto →</a>
+            <div class="btn-group reveal" style="transition-delay:.3s;margin-top:2rem"><a href="http://www.asproc.com.br/projeto-manejo-pirarucu.html" class="btn-agua btn-primary-ghost" target="_blank" data-i18n="pira_btn">Conhecer o projeto →</a><a href="https://gostodaamazonia.com.br" class="btn-secondary-ghost" target="_blank" data-i18n="pira_btn2">Gosto da Amazônia →</a></div>
         </div>
     </section>
 
@@ -2622,10 +2745,16 @@
         /* ==============================
            SLIDER
         ============================== */
+        /* ==============================
+           SLIDER — controlled autoplay
+        ============================== */
         let currentSlide = 0;
-        const slides = document.querySelectorAll('.slide');
-        const dots = document.querySelectorAll('.dot');
-        let autoplay;
+        const slides     = document.querySelectorAll('.slide');
+        const dots       = document.querySelectorAll('.dot');
+        const INTERVAL   = 5500;
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        let autoplayTimer = null;
+        let isPaused = false;
 
         function goToSlide(n) {
             slides[currentSlide].classList.remove('active');
@@ -2633,13 +2762,60 @@
             currentSlide = (n + slides.length) % slides.length;
             slides[currentSlide].classList.add('active');
             dots[currentSlide].classList.add('active');
+            // Update aria-live region
+            const liveEl = document.getElementById('slider-live');
+            if (liveEl) liveEl.textContent = 'Slide ' + (currentSlide + 1) + ' de ' + slides.length;
         }
         function nextSlide() { goToSlide(currentSlide + 1); }
         function prevSlide() { goToSlide(currentSlide - 1); }
 
-        autoplay = setInterval(nextSlide, 5500);
-        document.querySelector('.hero').addEventListener('mouseenter', () => clearInterval(autoplay));
-        document.querySelector('.hero').addEventListener('mouseleave', () => { autoplay = setInterval(nextSlide, 5500); });
+        function startAutoplay() {
+            if (reducedMotion || isPaused) return;
+            stopAutoplay();
+            autoplayTimer = setInterval(nextSlide, INTERVAL);
+        }
+        function stopAutoplay() {
+            if (autoplayTimer) { clearInterval(autoplayTimer); autoplayTimer = null; }
+        }
+
+        function togglePause() {
+            isPaused = !isPaused;
+            const btn = document.getElementById('slider-pause-btn');
+            if (isPaused) {
+                stopAutoplay();
+                btn.setAttribute('aria-label', 'Retomar apresentação');
+                btn.innerHTML = '&#9654;'; // play icon
+                btn.classList.add('paused');
+            } else {
+                startAutoplay();
+                btn.setAttribute('aria-label', 'Pausar apresentação');
+                btn.innerHTML = '&#10074;&#10074;'; // pause icon
+                btn.classList.remove('paused');
+            }
+        }
+
+        // Pause on hover (desktop) and on focus within slider
+        const heroEl = document.querySelector('.hero');
+        heroEl.addEventListener('mouseenter', stopAutoplay);
+        heroEl.addEventListener('mouseleave', () => { if (!isPaused) startAutoplay(); });
+        heroEl.addEventListener('focusin',  stopAutoplay);
+        heroEl.addEventListener('focusout', e => {
+            if (!heroEl.contains(e.relatedTarget) && !isPaused) startAutoplay();
+        });
+
+        // Pause on touch (mobile — user is interacting)
+        heroEl.addEventListener('touchstart', stopAutoplay, { passive: true });
+        heroEl.addEventListener('touchend',   () => { if (!isPaused) setTimeout(startAutoplay, 2000); }, { passive: true });
+
+        // Keyboard: arrows navigate slider when focused inside it
+        heroEl.addEventListener('keydown', e => {
+            if (e.key === 'ArrowRight') { nextSlide(); stopAutoplay(); }
+            if (e.key === 'ArrowLeft')  { prevSlide(); stopAutoplay(); }
+        });
+
+        // Start (skip if user prefers reduced motion)
+        if (!reducedMotion) startAutoplay();
+        else { /* static — show slide 1 only, no transitions */ }
 
         /* ==============================
            SCROLL REVEAL
