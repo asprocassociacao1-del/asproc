@@ -1,0 +1,2413 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <title>Trabalhe Conosco – ASPROC | Vagas na Amazônia</title>
+  <meta name="description" content="Faça parte da equipe que transforma vidas no Médio Juruá. Veja as vagas abertas e candidaturas espontâneas na ASPROC, associação com 30 anos de atuação na Amazônia.">
+  <link rel="canonical" href="https://www.asproc.com.br/trabalhe-conosco.html">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.asproc.com.br/trabalhe-conosco.html">
+  <meta property="og:title" content="Trabalhe Conosco – ASPROC | Vagas na Amazônia">
+  <meta property="og:description" content="Faça parte da equipe que transforma vidas no Médio Juruá. Veja as vagas abertas e candidaturas espontâneas na ASPROC, associação com 30 anos de atuação na Amazônia.">
+  <meta property="og:image" content="https://www.asproc.com.br/images/trabalhe-img-1.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:site_name" content="ASPROC">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Trabalhe Conosco – ASPROC | Vagas na Amazônia">
+  <meta name="twitter:description" content="Faça parte da equipe que transforma vidas no Médio Juruá. Veja as vagas abertas e candidaturas espontâneas na ASPROC, associação com 30 anos de atuação na Amazônia.">
+  <meta name="twitter:image" content="https://www.asproc.com.br/images/trabalhe-img-1.webp">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <script src="asproc-supabase.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --verde: #2d6a2d;
+            --verde-claro: #4a9e3f;
+            --verde-neon: #7bc95c;
+            --dourado: #c8a84b;
+            --terra: #8b4513;
+            --agua: #1a6b8a;
+            --branco: #f5f0e8;
+            --escuro: #0f1a0f;
+            --cinza: #2a3a2a;
+            --nav-bg: rgba(245, 240, 232, 0.96);
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        html {
+            scroll-behavior: smooth
+        }
+
+        body {
+            font-family: "DM Sans", sans-serif;
+            background: var(--escuro);
+            color: var(--branco);
+            overflow-x: hidden
+        }
+
+        /* ── CURSOR ── */
+        .cursor {
+            width: 12px;
+            height: 12px;
+            background: var(--verde-neon);
+            border-radius: 50%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: multiply;
+            transition: transform .08s
+        }
+
+        .cursor-ring {
+            width: 36px;
+            height: 36px;
+            border: 2px solid var(--verde-claro);
+            border-radius: 50%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 9998;
+            transition: transform .14s, width .2s, height .2s;
+            opacity: .5
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: var(--verde-claro);
+            z-index: 1001;
+            width: 0;
+            transition: width .1s
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 0 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+            background: var(--nav-bg);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(45, 106, 45, .12);
+            box-shadow: 0 2px 18px rgba(0, 0, 0, .08);
+            transition: all .3s
+        }
+
+        nav.scrolled {
+            height: 60px;
+            box-shadow: 0 4px 28px rgba(0, 0, 0, .13)
+        }
+
+        .nav-logo {
+            height: 44px;
+            object-fit: contain
+        }
+
+        .nav-links {
+            display: flex;
+            gap: .15rem;
+            list-style: none;
+            align-items: center
+        }
+
+        .nav-links a {
+            color: #1a2a1a;
+            text-decoration: none;
+            font-size: .78rem;
+            font-weight: 600;
+            letter-spacing: .07em;
+            text-transform: uppercase;
+            padding: .42rem .8rem;
+            border-radius: 7px;
+            transition: all .25s;
+            position: relative
+        }
+
+        .nav-links a:hover {
+            color: var(--verde);
+            background: rgba(74, 158, 63, .09)
+        }
+
+        .nav-links a.ativo {
+            color: var(--verde)
+        }
+
+        .nav-links a.ativo::after {
+            content: "";
+            position: absolute;
+            bottom: 2px;
+            left: .8rem;
+            right: .8rem;
+            height: 2px;
+            background: var(--verde-neon);
+            border-radius: 2px
+        }
+
+        .nav-cta {
+            background: var(--verde-claro) !important;
+            color: #fff !important;
+            padding: .48rem 1.3rem !important;
+            border-radius: 30px !important;
+            font-weight: 700 !important;
+            margin-left: .5rem;
+            box-shadow: 0 3px 12px rgba(74, 158, 63, .35)
+        }
+
+        .nav-cta:hover {
+            background: var(--verde-neon) !important;
+            color: var(--escuro) !important;
+            transform: translateY(-2px)
+        }
+
+        .nav-cta::after {
+            display: none !important
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 4px
+        }
+
+        .hamburger span {
+            width: 26px;
+            height: 2.5px;
+            background: #1a2a1a;
+            border-radius: 2px;
+            transition: all .3s
+        }
+
+        /* ── HERO APRIMORADO ── */
+        .page-hero {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+            padding: 0 8% 8%;
+            margin-top: 70px;
+            min-height: 600px
+        }
+
+        .ph-bg {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center 30%;
+            filter: brightness(.4);
+            transform: scale(1.05);
+            animation: szoom 12s ease-out forwards
+        }
+
+        @keyframes szoom {
+            from {
+                transform: scale(1.05)
+            }
+
+            to {
+                transform: scale(1)
+            }
+        }
+
+        .ph-overlay-gradient {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(15, 26, 15, .95) 0%, rgba(15, 26, 15, .6) 50%, transparent 100%)
+        }
+
+        .ph-ov {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(15, 26, 15, .95) 0%, transparent 60%)
+        }
+
+        .ph-cnt {
+            position: relative;
+            z-index: 1;
+            max-width: 700px
+        }
+
+        .bc {
+            font-size: .7rem;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .45);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: .5rem
+        }
+
+        .bc a {
+            color: var(--verde-neon);
+            text-decoration: none
+        }
+
+        .ph-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            background: rgba(123, 201, 92, .12);
+            border: 1px solid rgba(123, 201, 92, .3);
+            border-radius: 30px;
+            padding: .35rem 1rem;
+            font-size: .7rem;
+            font-weight: 700;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            color: var(--verde-neon);
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            transform: translateY(15px);
+            animation: hin .7s .2s ease forwards
+        }
+
+        .ph-eyebrow svg {
+            width: 14px;
+            height: 14px;
+            fill: var(--verde-neon)
+        }
+
+        .ph-title {
+            font-family: "Fraunces", serif;
+            font-size: clamp(3rem, 7vw, 6rem);
+            font-weight: 900;
+            line-height: .9;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: hin .9s .3s ease forwards;
+            letter-spacing: -0.02em
+        }
+
+        .ph-title em {
+            font-style: italic;
+            color: var(--verde-neon)
+        }
+
+        .ph-sub {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, .65);
+            margin-top: 1.2rem;
+            max-width: 500px;
+            line-height: 1.75;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: hin .8s .6s ease forwards
+        }
+
+        .ph-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: hin .8s .8s ease forwards;
+            flex-wrap: wrap
+        }
+
+        .ph-btn-primary {
+            background: var(--verde-claro);
+            color: #fff;
+            padding: .85rem 2rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: .875rem;
+            transition: all .3s;
+            border: none;
+            cursor: pointer;
+            font-family: "DM Sans", sans-serif
+        }
+
+        .ph-btn-primary:hover {
+            background: var(--verde-neon);
+            color: var(--escuro);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(123, 201, 92, .3)
+        }
+
+        .ph-btn-secondary {
+            background: transparent;
+            color: #fff;
+            padding: .85rem 2rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: .875rem;
+            border: 1px solid rgba(255, 255, 255, .3);
+            transition: all .3s
+        }
+
+        .ph-btn-secondary:hover {
+            border-color: #fff;
+            background: rgba(255, 255, 255, .08);
+            transform: translateY(-3px)
+        }
+
+        .ph-stats {
+            display: flex;
+            gap: 2.5rem;
+            margin-top: 3rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: hin .8s 1s ease forwards
+        }
+
+        .ph-stat {
+            text-align: left
+        }
+
+        .ph-stat-n {
+            font-family: "Fraunces", serif;
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--verde-neon);
+            line-height: 1
+        }
+
+        .ph-stat-l {
+            font-size: .72rem;
+            color: rgba(255, 255, 255, .45);
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            margin-top: .25rem
+        }
+
+        @keyframes hin {
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        /* ── SEÇÃO GERAL ── */
+        section {
+            padding: 90px 5%
+        }
+
+        .slbl {
+            font-size: .68rem;
+            font-weight: 700;
+            letter-spacing: .22em;
+            text-transform: uppercase;
+            color: var(--verde-neon);
+            margin-bottom: .7rem
+        }
+
+        .stit {
+            font-family: "Fraunces", serif;
+            font-size: clamp(1.8rem, 3.5vw, 3rem);
+            font-weight: 700;
+            line-height: 1.15;
+            margin-bottom: 1rem
+        }
+
+        .stit span {
+            color: var(--verde-neon)
+        }
+
+        .sdesc {
+            font-size: .95rem;
+            color: rgba(245, 240, 232, .65);
+            line-height: 1.85;
+            max-width: 600px
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(35px);
+            transition: opacity .7s ease, transform .7s ease
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0)
+        }
+
+        /* ── VALORES / BENEFÍCIOS ── */
+        .valores-sec {
+            background: linear-gradient(135deg, #0a120a 0%, #1a2a1a 100%);
+            border-top: 1px solid rgba(123, 201, 92, .08);
+            border-bottom: 1px solid rgba(123, 201, 92, .08)
+        }
+
+        .valores-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-top: 3rem
+        }
+
+        .valor-card {
+            background: rgba(255, 255, 255, .03);
+            border: 1px solid rgba(123, 201, 92, .1);
+            border-radius: 16px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            transition: all .4s;
+            cursor: default
+        }
+
+        .valor-card:hover {
+            background: rgba(123, 201, 92, .06);
+            border-color: rgba(123, 201, 92, .3);
+            transform: translateY(-6px)
+        }
+
+        .valor-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block
+        }
+
+        .valor-titulo {
+            font-family: "Fraunces", serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: .5rem
+        }
+
+        .valor-desc {
+            font-size: .82rem;
+            color: rgba(245, 240, 232, .55);
+            line-height: 1.6
+        }
+
+        /* ── VAGAS ── */
+        /* ── VAGAS GRID COMPACTA ── */
+        .vagas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem
+        }
+
+        .vcard {
+            background: var(--cinza);
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid rgba(123, 201, 92, .1);
+            transition: transform .25s, box-shadow .25s, border-color .25s;
+            cursor: pointer;
+            position: relative
+        }
+
+        .vcard:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, .4);
+            border-color: rgba(123, 201, 92, .3)
+        }
+
+        .vc-img {
+            position: relative;
+            overflow: hidden;
+            height: 110px
+        }
+
+        .vc-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform .4s ease
+        }
+
+        .vcard:hover .vc-img img {
+            transform: scale(1.06)
+        }
+
+        .vc-img-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 30%, rgba(26, 36, 26, .92) 100%)
+        }
+
+        /* Status dot no canto */
+        .vc-dot {
+            position: absolute;
+            top: .7rem;
+            right: .7rem;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, .5)
+        }
+
+        .vc-dot.ab {
+            background: #7bc95c
+        }
+
+        .vc-dot.enc {
+            background: #f87171
+        }
+
+        .vc-dot.sus {
+            background: #fbbf24
+        }
+
+        .vc-body {
+            padding: 1rem 1.1rem .9rem;
+            display: flex;
+            flex-direction: column;
+            gap: .5rem
+        }
+
+        .vc-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: .5rem
+        }
+
+        .vc-badges {
+            display: flex;
+            flex-direction: column;
+            gap: .3rem
+        }
+
+        .vc-status {
+            display: inline-block;
+            padding: .15rem .55rem;
+            border-radius: 20px;
+            font-size: .58rem;
+            font-weight: 700;
+            letter-spacing: .1em;
+            text-transform: uppercase
+        }
+
+        .vc-status.ab {
+            background: rgba(74, 158, 63, .15);
+            color: var(--verde-neon);
+            border: 1px solid rgba(123, 201, 92, .3)
+        }
+
+        .vc-prazo {
+            font-size: .65rem;
+            color: var(--dourado);
+            font-weight: 600;
+            background: rgba(200, 168, 75, .1);
+            padding: .18rem .55rem;
+            border-radius: 20px;
+            display: inline-block;
+            border: 1px solid rgba(200, 168, 75, .18)
+        }
+
+        .vc-title {
+            font-family: "Fraunces", serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            line-height: 1.25;
+            margin: 0
+        }
+
+        .vc-desc {
+            font-size: .78rem;
+            color: rgba(245, 240, 232, .55);
+            line-height: 1.6;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden
+        }
+
+        /* Chips inline na parte de baixo */
+        .vc-chips {
+            display: flex;
+            gap: .3rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem
+        }
+
+        .chip {
+            padding: .22rem .65rem;
+            background: rgba(123, 201, 92, .08);
+            border-radius: 20px;
+            font-size: .68rem;
+            color: rgba(245, 240, 232, .6);
+            border: 1px solid rgba(123, 201, 92, .1)
+        }
+
+        .vc-btns {
+            display: flex;
+            gap: .7rem;
+            flex-wrap: wrap;
+            margin-top: auto
+        }
+
+        .vbtn-dl {
+            padding: .55rem 1.2rem;
+            background: var(--verde-claro);
+            color: #fff;
+            border-radius: 30px;
+            font-size: .78rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all .3s;
+            display: inline-block
+        }
+
+        .vbtn-dl:hover {
+            background: var(--verde-neon);
+            color: var(--escuro);
+            transform: translateY(-2px)
+        }
+
+        .vbtn-apply {
+            padding: .55rem 1.2rem;
+            background: transparent;
+            color: var(--verde-neon);
+            border-radius: 30px;
+            font-size: .78rem;
+            font-weight: 700;
+            border: 1px solid rgba(123, 201, 92, .35);
+            cursor: pointer;
+            font-family: "DM Sans", sans-serif;
+            transition: all .3s
+        }
+
+        .vbtn-apply:hover {
+            background: rgba(123, 201, 92, .12);
+            border-color: var(--verde-neon);
+            transform: translateY(-2px)
+        }
+
+        /* ── FORMULÁRIO ── */
+        .form-sec {
+            background: linear-gradient(135deg, var(--cinza) 0%, #1e2e1e 100%)
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+            align-items: start
+        }
+
+        .form-info h3 {
+            font-family: "Fraunces", serif;
+            font-size: 1.8rem;
+            margin-bottom: .8rem;
+            line-height: 1.2
+        }
+
+        .form-info .sdesc {
+            max-width: 100%;
+            margin-bottom: 2rem
+        }
+
+        .step {
+            display: flex;
+            gap: 1.2rem;
+            margin-bottom: 1rem;
+            padding: 1.2rem;
+            background: rgba(255, 255, 255, .03);
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, .04);
+            transition: all .3s;
+            cursor: default
+        }
+
+        .step:hover {
+            background: rgba(123, 201, 92, .07);
+            border-color: rgba(123, 201, 92, .15)
+        }
+
+        .step-n {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--verde-claro), var(--verde-neon));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: .85rem;
+            flex-shrink: 0;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(74, 158, 63, .4)
+        }
+
+        .step-t h4 {
+            font-weight: 600;
+            font-size: .9rem;
+            margin-bottom: .25rem
+        }
+
+        .step-t p {
+            font-size: .8rem;
+            color: rgba(245, 240, 232, .5);
+            line-height: 1.55
+        }
+
+        .cform {
+            background: var(--escuro);
+            padding: 2.5rem;
+            border-radius: 24px;
+            border: 1px solid rgba(123, 201, 92, .12);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, .3)
+        }
+
+        .cform h3 {
+            font-family: "Fraunces", serif;
+            font-size: 1.45rem;
+            margin-bottom: 1.8rem
+        }
+
+        .fg2 {
+            margin-bottom: 1.2rem
+        }
+
+        .fg2 label {
+            display: block;
+            font-size: .72rem;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: rgba(245, 240, 232, .55);
+            margin-bottom: .5rem
+        }
+
+        .fg2 input,
+        .fg2 textarea,
+        .fg2 select {
+            width: 100%;
+            padding: .85rem 1.1rem;
+            background: rgba(255, 255, 255, .05);
+            border: 1px solid rgba(123, 201, 92, .15);
+            border-radius: 12px;
+            color: var(--branco);
+            font-family: "DM Sans", sans-serif;
+            font-size: .88rem;
+            transition: all .3s;
+            outline: none;
+            resize: none
+        }
+
+        .fg2 input:focus,
+        .fg2 textarea:focus,
+        .fg2 select:focus {
+            border-color: var(--verde-neon);
+            background: rgba(123, 201, 92, .06);
+            box-shadow: 0 0 0 3px rgba(123, 201, 92, .1)
+        }
+
+        .fg2 textarea {
+            min-height: 110px
+        }
+
+        .fg2 select option {
+            background: var(--cinza)
+        }
+
+        .fz {
+            border: 2px dashed rgba(123, 201, 92, .25);
+            border-radius: 14px;
+            padding: 1.8rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all .3s
+        }
+
+        .fz:hover {
+            border-color: var(--verde-neon);
+            background: rgba(123, 201, 92, .05)
+        }
+
+        .fz-icon {
+            font-size: 1.8rem;
+            margin-bottom: .5rem
+        }
+
+        .fz p {
+            font-size: .82rem;
+            color: rgba(245, 240, 232, .5);
+            line-height: 1.5
+        }
+
+        .csub {
+            width: 100%;
+            padding: .95rem;
+            background: linear-gradient(135deg, var(--verde-claro), #3d8a33);
+            color: #fff;
+            border: none;
+            border-radius: 40px;
+            font-family: "DM Sans", sans-serif;
+            font-size: .9rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all .3s;
+            margin-top: .5rem;
+            letter-spacing: .03em
+        }
+
+        .csub:hover {
+            background: linear-gradient(135deg, var(--verde-neon), var(--verde-claro));
+            color: var(--escuro);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(74, 158, 63, .4)
+        }
+
+        .form-ok {
+            display: none;
+            text-align: center;
+            padding: 2.5rem
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            background: #040c04;
+            padding: 60px 5% 28px;
+            border-top: 1px solid rgba(123, 201, 92, .15)
+        }
+
+        .fg {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem
+        }
+
+        .fb img {
+            height: 50px;
+            margin-bottom: 1.1rem;
+            display: block
+        }
+
+        .fb p {
+            font-size: .83rem;
+            color: rgba(245, 240, 232, .45);
+            line-height: 1.7;
+            margin-bottom: 1.4rem
+        }
+
+        .sl {
+            display: flex;
+            gap: .7rem
+        }
+
+        .sb {
+            width: 37px;
+            height: 37px;
+            border: 1px solid rgba(123, 201, 92, .28);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(245, 240, 232, .45);
+            text-decoration: none;
+            font-size: .78rem;
+            font-weight: 700;
+            transition: all .3s
+        }
+
+        .sb:hover {
+            border-color: var(--verde-neon);
+            color: var(--verde-neon);
+            transform: translateY(-3px)
+        }
+
+        .fc h4 {
+            font-size: .72rem;
+            font-weight: 700;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            color: var(--verde-neon);
+            margin-bottom: 1.1rem
+        }
+
+        .fc ul {
+            list-style: none
+        }
+
+        .fc ul li {
+            margin-bottom: .55rem
+        }
+
+        .fc ul a {
+            color: rgba(245, 240, 232, .45);
+            text-decoration: none;
+            font-size: .85rem;
+            transition: color .3s
+        }
+
+        .fc ul a:hover {
+            color: var(--branco)
+        }
+
+        .fbot {
+            border-top: 1px solid rgba(255, 255, 255, .07);
+            padding-top: 1.4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: .78rem;
+            color: rgba(245, 240, 232, .3);
+            flex-wrap: wrap;
+            gap: .5rem
+        }
+
+        /* ── BTN ── */
+        .btn-g {
+            display: inline-block;
+            background: var(--verde-claro);
+            color: #fff;
+            padding: .85rem 2rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: .875rem;
+            transition: all .3s
+        }
+
+        .btn-g:hover {
+            background: var(--verde-neon);
+            color: var(--escuro);
+            transform: translateY(-3px)
+        }
+
+        /* ── RESPONSIVE ── */
+        @media(max-width:900px) {
+            .nav-links {
+                display: none
+            }
+
+            .nav-links.open {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: rgba(245, 240, 232, .98);
+                padding: 1.5rem;
+                gap: .8rem;
+                border-bottom: 1px solid rgba(45, 106, 45, .12);
+                box-shadow: 0 8px 30px rgba(0, 0, 0, .1)
+            }
+
+            .hamburger {
+                display: flex
+            }
+
+            .fg {
+                grid-template-columns: 1fr 1fr
+            }
+
+            .vagas-grid {
+                grid-template-columns: 1fr
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr
+            }
+
+            .valores-grid {
+                grid-template-columns: 1fr 1fr
+            }
+
+            .ph-stats {
+                gap: 1.5rem
+            }
+        }
+
+        @media(max-width:600px) {
+            .fg {
+                grid-template-columns: 1fr
+            }
+
+            .valores-grid {
+                grid-template-columns: 1fr 1fr
+            }
+
+            .ph-stats {
+                display: none
+            }
+        }
+
+        /* CSS para status extras */
+        .vc-status.enc {
+            background: rgba(248, 113, 113, .12);
+            color: #f87171;
+            border: 1px solid rgba(248, 113, 113, .3)
+        }
+
+        .vc-status.sus {
+            background: rgba(250, 204, 21, .12);
+            color: #fbbf24;
+            border: 1px solid rgba(250, 204, 21, .3)
+        }
+
+        /* ── POPUP DE DETALHES DA VAGA ── */
+        /* ── POPUP DE VAGA ── */
+        .vaga-popup-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 9000;
+            background: rgba(8, 14, 8, .78);
+            backdrop-filter: blur(8px);
+            align-items: center;
+            justify-content: center;
+            padding: 1rem
+        }
+
+        .vaga-popup-overlay.open {
+            display: flex;
+            animation: vpFadeIn .22s ease
+        }
+
+        @keyframes vpFadeIn {
+            from {
+                opacity: 0
+            }
+
+            to {
+                opacity: 1
+            }
+        }
+
+        .vaga-popup {
+            background: var(--cinza);
+            border-radius: 22px;
+            border: 1px solid rgba(123, 201, 92, .2);
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, .8);
+            animation: vpSlideUp .28s cubic-bezier(.34, 1.56, .64, 1)
+        }
+
+        @keyframes vpSlideUp {
+            from {
+                opacity: 0;
+                transform: scale(.92) translateY(20px)
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0)
+            }
+        }
+
+        .vp-header {
+            position: relative;
+            height: 200px;
+            overflow: hidden;
+            flex-shrink: 0
+        }
+
+        .vp-header img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block
+        }
+
+        .vp-header-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, .08) 20%, rgba(20, 32, 20, .97) 100%)
+        }
+
+        .vp-header-info {
+            position: absolute;
+            bottom: 1.1rem;
+            left: 1.5rem;
+            right: 4.5rem
+        }
+
+        .vp-title {
+            font-family: "Fraunces", serif;
+            font-size: 1.45rem;
+            font-weight: 700;
+            line-height: 1.2;
+            color: var(--creme)
+        }
+
+        .vp-close {
+            position: absolute;
+            top: .9rem;
+            right: .9rem;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, .55);
+            border: 1px solid rgba(255, 255, 255, .18);
+            color: rgba(245, 240, 232, .75);
+            font-size: .95rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background .2s, color .2s;
+            z-index: 2
+        }
+
+        .vp-close:hover {
+            background: rgba(248, 113, 113, .3);
+            color: #f87171
+        }
+
+        /* Abas */
+        .vp-tabs {
+            display: flex;
+            gap: .25rem;
+            padding: .7rem 1.4rem .45rem;
+            border-bottom: 1px solid rgba(123, 201, 92, .1);
+            flex-shrink: 0;
+            background: var(--cinza)
+        }
+
+        .vp-tab {
+            padding: .4rem .9rem;
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+            color: rgba(245, 240, 232, .4);
+            font-size: .78rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: "DM Sans", sans-serif;
+            transition: background .2s, color .2s
+        }
+
+        .vp-tab.active {
+            background: rgba(123, 201, 92, .14);
+            color: var(--verde-neon)
+        }
+
+        .vp-tab:hover:not(.active) {
+            background: rgba(245, 240, 232, .07);
+            color: rgba(245, 240, 232, .8)
+        }
+
+        .vp-tab:disabled {
+            opacity: .28;
+            cursor: not-allowed
+        }
+
+        .vp-body {
+            padding: 1.35rem 1.5rem;
+            overflow-y: auto;
+            flex: 1
+        }
+
+        .vp-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .4rem;
+            margin-bottom: 1.15rem;
+            padding-bottom: .95rem;
+            border-bottom: 1px solid rgba(123, 201, 92, .1)
+        }
+
+        .vp-chip {
+            padding: .23rem .62rem;
+            border-radius: 99px;
+            font-size: .7rem;
+            font-weight: 600;
+            background: rgba(123, 201, 92, .08);
+            color: var(--verde-neon);
+            border: 1px solid rgba(123, 201, 92, .2)
+        }
+
+        .vp-chip.dourado {
+            background: rgba(200, 168, 75, .1);
+            color: var(--dourado);
+            border-color: rgba(200, 168, 75, .2)
+        }
+
+        .vp-chip.status-ab {
+            background: rgba(74, 158, 63, .15);
+            color: var(--verde-neon);
+            border-color: rgba(123, 201, 92, .3)
+        }
+
+        .vp-chip.status-enc {
+            background: rgba(248, 113, 113, .12);
+            color: #f87171;
+            border-color: rgba(248, 113, 113, .3)
+        }
+
+        .vp-chip.status-sus {
+            background: rgba(250, 204, 21, .12);
+            color: #fbbf24;
+            border-color: rgba(250, 204, 21, .3)
+        }
+
+        .vp-desc {
+            font-size: .85rem;
+            color: rgba(245, 240, 232, .72);
+            line-height: 1.8;
+            margin-bottom: 1.15rem
+        }
+
+        .vp-desc h1,
+        .vp-desc h2,
+        .vp-desc h3 {
+            font-family: "Fraunces", serif;
+            margin: .9rem 0 .4rem;
+            color: var(--creme)
+        }
+
+        .vp-desc ul,
+        .vp-desc ol {
+            padding-left: 1.4rem;
+            margin: .5rem 0
+        }
+
+        .vp-desc li {
+            margin-bottom: .25rem
+        }
+
+        .vp-desc strong {
+            color: var(--creme)
+        }
+
+        .vp-anexos {
+            display: flex;
+            flex-direction: column;
+            gap: .45rem;
+            margin-bottom: 1.3rem
+        }
+
+        .vp-anexo-link {
+            display: flex;
+            align-items: center;
+            gap: .55rem;
+            padding: .62rem 1rem;
+            background: rgba(123, 201, 92, .06);
+            border: 1px solid rgba(123, 201, 92, .16);
+            border-radius: 10px;
+            color: var(--verde-neon);
+            text-decoration: none;
+            font-size: .8rem;
+            font-weight: 600;
+            transition: background .2s, border-color .2s
+        }
+
+        .vp-anexo-link:hover {
+            background: rgba(123, 201, 92, .13);
+            border-color: rgba(123, 201, 92, .35)
+        }
+
+        .vp-anexo-link .al-arrow {
+            margin-left: auto;
+            opacity: .5;
+            font-size: .7rem
+        }
+
+        .vp-actions {
+            display: flex;
+            gap: .7rem;
+            flex-wrap: wrap
+        }
+
+        .vp-btn-cand {
+            flex: 1;
+            padding: .82rem 1.2rem;
+            background: linear-gradient(135deg, #7bc95c, #4a9e3f);
+            color: #0e1a0e;
+            border: none;
+            border-radius: 50px;
+            font-size: .88rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform .2s, box-shadow .2s;
+            font-family: "DM Sans", sans-serif
+        }
+
+        .vp-btn-cand:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(123, 201, 92, .35)
+        }
+
+        .vp-btn-cand.disabled {
+            opacity: .35;
+            pointer-events: none;
+            cursor: default
+        }
+
+        .vp-btn-fechar {
+            padding: .82rem 1.4rem;
+            background: rgba(245, 240, 232, .06);
+            border: 1px solid rgba(245, 240, 232, .12);
+            border-radius: 50px;
+            color: rgba(245, 240, 232, .55);
+            font-size: .85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background .2s;
+            font-family: "DM Sans", sans-serif
+        }
+
+        .vp-btn-fechar:hover {
+            background: rgba(245, 240, 232, .11)
+        }
+
+        /* Formulário de candidatura no popup */
+        .vp-ff {
+            display: flex;
+            flex-direction: column;
+            gap: .35rem;
+            margin-bottom: .82rem
+        }
+
+        .vp-ff label {
+            font-size: .67rem;
+            font-weight: 700;
+            letter-spacing: .07em;
+            text-transform: uppercase;
+            color: rgba(245, 240, 232, .42)
+        }
+
+        .vp-ff input,
+        .vp-ff textarea {
+            width: 100%;
+            padding: .58rem .88rem;
+            background: rgba(255, 255, 255, .05);
+            border: 1px solid rgba(123, 201, 92, .17);
+            border-radius: 10px;
+            color: var(--creme);
+            font-family: "DM Sans", sans-serif;
+            font-size: .84rem;
+            outline: none;
+            transition: border-color .2s, box-shadow .2s;
+            box-sizing: border-box
+        }
+
+        .vp-ff input:focus,
+        .vp-ff textarea:focus {
+            border-color: rgba(123, 201, 92, .55);
+            box-shadow: 0 0 0 3px rgba(123, 201, 92, .08)
+        }
+
+        .vp-ff textarea {
+            resize: vertical;
+            min-height: 70px
+        }
+
+        .vp-ff-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: .7rem;
+            margin-bottom: .82rem
+        }
+
+        @media(max-width:480px) {
+            .vp-ff-row {
+                grid-template-columns: 1fr
+            }
+        }
+
+        .vp-dz {
+            border: 1.5px dashed rgba(123, 201, 92, .28);
+            border-radius: 12px;
+            padding: 1.1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color .2s, background .2s
+        }
+
+        .vp-dz:hover {
+            border-color: rgba(123, 201, 92, .55);
+            background: rgba(123, 201, 92, .04)
+        }
+
+        .vp-dz.has-f {
+            border-color: rgba(123, 201, 92, .5);
+            background: rgba(123, 201, 92, .06)
+        }
+
+        .vp-prog {
+            margin: .75rem 0 .35rem;
+            display: none
+        }
+
+        .vp-prog-track {
+            height: 4px;
+            background: rgba(123, 201, 92, .15);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: .35rem
+        }
+
+        .vp-prog-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--verde-neon);
+            transition: width .35s
+        }
+
+        .vp-prog-msg {
+            font-size: .7rem;
+            color: rgba(245, 240, 232, .42);
+            margin: 0
+        }
+
+        /* hover overlay no card */
+        .vc-hover-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(10, 20, 10, 0);
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: .8rem;
+            opacity: 0;
+            transition: opacity .25s
+        }
+
+        .vcard:hover .vc-hover-overlay {
+            opacity: 1;
+            background: rgba(10, 20, 10, .18)
+        }
+
+        .vc-hover-btn {
+            padding: .4rem 1rem;
+            border-radius: 99px;
+            background: rgba(123, 201, 92, .9);
+            color: #0e1a0e;
+            font-size: .75rem;
+            font-weight: 700;
+            border: none;
+            cursor: pointer
+        }
+    </style>
+</head>
+
+<body>
+    <div class="cursor"></div>
+    <div class="cursor-ring"></div>
+    <div class="progress-bar" id="pb"></div>
+
+    <!-- NAV -->
+    <nav id="navbar">
+        <img
+             loading="lazy"src="images/trabalhe-img-1.webp"
+            alt="ASPROC" class="nav-logo">
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">In&#237;cio</a></li>
+            <li><a href="sobre.html">Sobre</a></li>
+            <li><a href="noticias.html">Not&#237;cias</a></li>
+            <li><a href="avisos.html">Avisos</a></li>
+            <li><a href="trabalhe-conosco.html" class="ativo">Trabalhe Conosco</a></li>
+            <li><a href="https://loja.asproc.org.br/" class="nav-cta" target="_blank">Loja Virtual</a></li>
+        </ul>
+        <div class="nav-right">
+            <div class="lang-switcher">
+                <button class="lang-btn active" onclick="setLang('pt')">PT</button>
+                <button class="lang-btn" onclick="setLang('en')">EN</button>
+                <button class="lang-btn" onclick="setLang('es')">ES</button>
+            </div>
+            <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+        </div>
+    </nav>
+
+    <!-- ── HERO ── -->
+    <div class="page-hero">
+        <div class="ph-bg"
+            style="background-image:url('images/trabalhe-hero.webp')">
+        </div>
+        <div class="ph-overlay-gradient"></div>
+        <div class="ph-ov"></div>
+        <div class="ph-cnt">
+            <div class="bc"><a href="index.html">Início</a> <span>›</span> <span>Trabalhe Conosco</span></div>
+            <div class="ph-eyebrow">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                </svg>
+                Médio Juruá, Amazônia
+            </div>
+            <h1 class="ph-title">Trabalhe<br><em>conosco</em></h1>
+            <p class="ph-sub">Faça parte da equipe que transforma vidas no Médio Juruá e defende a floresta e as
+                comunidades ribeirinhas.</p>
+            <div class="ph-actions">
+                <a href="#vagas-sec" class="ph-btn-primary">Ver Vagas Abertas</a>
+                <a href="#cf-sec" class="ph-btn-secondary">Candidatura Espontânea</a>
+            </div>
+            <div class="ph-stats">
+                <div class="ph-stat">
+                    <div class="ph-stat-n">+30</div>
+                    <div class="ph-stat-l">Anos de história</div>
+                </div>
+                <div class="ph-stat">
+                    <div class="ph-stat-n">5K+</div>
+                    <div class="ph-stat-l">Famílias atendidas</div>
+                </div>
+                <div class="ph-stat">
+                    <div class="ph-stat-n">🌿</div>
+                    <div class="ph-stat-l">Missão ambiental</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── VALORES / POR QUE TRABALHAR NA ASPROC ── -->
+    <section class="valores-sec">
+        <div class="slbl reveal">Por que a ASPROC</div>
+        <h2 class="stit reveal">Propósito que vai <span>além do trabalho</span></h2>
+        <p class="sdesc reveal">Aqui você não apenas trabalha — você contribui para a proteção da Amazônia e para o
+            futuro das comunidades ribeirinhas.</p>
+        <div class="valores-grid">
+            <div class="valor-card reveal" style="transition-delay:.1s">
+                <span class="valor-icon">🌱</span>
+                <div class="valor-titulo">Impacto Real</div>
+                <div class="valor-desc">Cada projeto transforma vidas nas comunidades do Médio Juruá, da pesca
+                    sustentável ao saneamento.</div>
+            </div>
+            <div class="valor-card reveal" style="transition-delay:.2s">
+                <span class="valor-icon">🤝</span>
+                <div class="valor-titulo">Time Unido</div>
+                <div class="valor-desc">Uma equipe comprometida com os mesmos valores: cooperação, respeito e amor pela
+                    floresta.</div>
+            </div>
+            <div class="valor-card reveal" style="transition-delay:.3s">
+                <span class="valor-icon">📚</span>
+                <div class="valor-titulo">Crescimento</div>
+                <div class="valor-desc">Acesso a capacitações, treinamentos e oportunidades de desenvolvimento
+                    profissional contínuo.</div>
+            </div>
+            <div class="valor-card reveal" style="transition-delay:.4s">
+                <span class="valor-icon">🌊</span>
+                <div class="valor-titulo">Amazônia Viva</div>
+                <div class="valor-desc">Trabalhe imerso na cultura e na riqueza da maior floresta tropical do planeta.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── VAGAS ── -->
+    <section style="background:var(--escuro)" id="vagas-sec">
+        <div class="slbl reveal">Oportunidades</div>
+        <h2 class="stit reveal">Vagas em <span>Aberto</span></h2>
+        <p class="sdesc reveal" style="margin-bottom:0">Processos seletivos abertos. <strong
+                style="color:var(--dourado)">Prazo final: 23 de Fevereiro de 2026.</strong></p>
+        <div class="vagas-grid" id="vagas-grid">
+            <div style="grid-column:1/-1;text-align:center;padding:3rem;color:rgba(245,240,232,.4)">
+                Carregando vagas…
+            </div>
+        </div>
+    </section>
+
+    <!-- ── FORMULÁRIO ── -->
+    <section class="form-sec" id="cf-sec">
+        <div class="form-grid">
+            <div class="form-info reveal">
+                <div class="slbl">Processo Seletivo</div>
+                <h3>Como se candidatar</h3>
+                <p class="sdesc" style="max-width:100%;margin-bottom:2rem">Envie sua candidatura pelo formulário abaixo
+                    ou diretamente para <strong style="color:var(--verde-neon)"><a href="/cdn-cgi/l/email-protection"
+                            class="__cf_email__"
+                            data-cfemail="7c0f1910191f1d133c1d0f0c0e131f52130e1b521e0e">[email&#160;protected]</a></strong>
+                    com o assunto correspondente à vaga.</p>
+                <div class="step">
+                    <div class="step-n">1</div>
+                    <div class="step-t">
+                        <h4>Leia o edital</h4>
+                        <p>Baixe e leia o edital completo da vaga de interesse.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-n">2</div>
+                    <div class="step-t">
+                        <h4>Prepare a documentação</h4>
+                        <p>Currículo atualizado + documentos exigidos no edital.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-n">3</div>
+                    <div class="step-t">
+                        <h4>Envie pelo formulário</h4>
+                        <p>Preencha e envie até 23/02/2026. Confirmação por e-mail.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-n">4</div>
+                    <div class="step-t">
+                        <h4>Aguarde o contato</h4>
+                        <p>Nossa equipe entrará em contato para as próximas etapas.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="cform reveal" style="transition-delay:.2s">
+                <h3>Enviar Candidatura</h3>
+                <div id="cf-inner">
+                    <div class="fg2"><label>Nome Completo *</label><input type="text" id="cf-nome"
+                            placeholder="Seu nome completo"></div>
+                    <div class="fg2"><label>E-mail *</label><input type="email" id="cf-email"
+                            placeholder="seu@email.com"></div>
+                    <div class="fg2"><label>Telefone / WhatsApp</label><input type="tel" id="cf-tel"
+                            placeholder="(92) 9 9999-9999"></div>
+                    <div class="fg2"><label>Vaga de Interesse *</label>
+                        <select id="cf-vaga">
+                            <option value="">Selecionar vaga…</option>
+                            <option>Assistente Técnico Administrativo</option>
+                            <option>Assistente Técnico Rural</option>
+                            <option>Candidatura Espontânea</option>
+                        </select>
+                    </div>
+                    <div class="fg2"><label>Motivação</label><textarea id="cf-msg"
+                            placeholder="Por que você quer trabalhar na ASPROC?"></textarea></div>
+                    <div class="fg2"><label>Currículo (PDF / DOC)</label>
+                        <div class="fz" onclick="document.getElementById('cf-file').click()">
+                            <div class="fz-icon">📎</div>
+                            <p id="fz-lbl">Clique para anexar ou arraste o arquivo aqui<br><small
+                                    style="opacity:.5">.pdf, .doc, .docx — máx. 5 MB</small></p>
+                            <input type="file" id="cf-file" accept=".pdf,.doc,.docx" style="display:none"
+                                onchange="document.getElementById('fz-lbl').textContent=this.files[0]?.name||'Clique para anexar'">
+                        </div>
+                    </div>
+                    <button class="csub" onclick="submitForm()">Enviar Candidatura →</button>
+                </div>
+                <div class="form-ok" id="cf-ok">
+                    <div style="font-size:3.5rem;margin-bottom:1rem">✅</div>
+                    <div style="font-size:1.2rem;font-weight:700;margin-bottom:.6rem;font-family:'Fraunces',serif">
+                        Candidatura enviada!</div>
+                    <div style="font-size:.88rem;color:rgba(245,240,232,.55)">Em breve nossa equipe entrará em contato
+                        pelo e-mail informado.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="fg">
+            <div class="fb"><img
+                     loading="lazy"src="images/trabalhe-img-2.webp"
+                    alt="ASPROC">
+                <p>Uma luta organizada de produtores agroextrativistas pela sobrevivência na floresta e a conservação
+                    ambiental.</p>
+                <div class="sl">
+                    <a class="sb" href="https://facebook.com/asproc.jurua" target="_blank">f</a>
+                    <a class="sb" href="https://instagram.com/asprocmediojurua" target="_blank">ig</a>
+                    <a class="sb" href="https://youtube.com/@asproc" target="_blank">▶</a>
+                    <a class="sb" href="https://linkedin.com/company/asprocmediojurua" target="_blank">in</a>
+                </div>
+            </div>
+            <div class="fc">
+                <h3>Navegação</h3>
+                <ul>
+                    <li><a href="index.html">Início</a></li>
+                    <li><a href="sobre.html">A ASPROC</a></li>
+                    <li><a href="noticias.html">Notícias</a></li>
+                    <li><a href="avisos.html">Avisos</a></li>
+                </ul>
+            </div>
+            <div class="fc">
+                <h3>Projetos</h3>
+                <ul>
+                    <li><a href="#">Manejo do Pirarucu</a></li>
+                    <li><a href="#">Sanear Amazônia</a></li>
+                    <li><a href="#">Comércio Ribeirinho</a></li>
+                    <li><a href="#">Políticas Públicas</a></li>
+                </ul>
+            </div>
+            <div class="fc">
+                <h3>Contato</h3>
+                <ul>
+                    <li><a href="/cdn-cgi/l/email-protection#91f2fefcf4e3f2f8f0fdd1f0e2e1e3fef2bffee3f6bff3e3"><span
+                                class="__cf_email__"
+                                data-cfemail="cdaea2a0a8bfaea4aca18dacbebdbfa2aee3a2bfaae3afbf">[email&#160;protected]</span></a>
+                    </li>
+                    <li><a href="https://loja.asproc.org.br" target="_blank">Loja Virtual</a></li>
+                    <li><a href="trabalhe-conosco.html">Trabalhe Conosco</a></li>
+                    <li><a href="sobre.html#contato">Fale Conosco</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="fbot">
+            <span>© 2024 ASPROC – Associação dos Produtores Rurais de Carauari. Todos os direitos reservados.</span>
+            <span>Médio Juruá, Amazônia 🌿</span>
+        </div>
+    </footer>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script>
+        const cur = document.querySelector(".cursor"), curR = document.querySelector(".cursor-ring");
+        document.addEventListener("mousemove", e => {
+            cur.style.transform = `translate(${e.clientX - 6}px,${e.clientY - 6}px)`;
+            curR.style.transform = `translate(${e.clientX - 18}px,${e.clientY - 18}px)`;
+        });
+        document.querySelectorAll("a,button,.card,.nc,.avcard,.vcard").forEach(el => {
+            el.addEventListener("mouseenter", () => { curR.style.width = "52px"; curR.style.height = "52px" });
+            el.addEventListener("mouseleave", () => { curR.style.width = "36px"; curR.style.height = "36px" });
+        });
+        const nb = document.getElementById("navbar");
+        window.addEventListener("scroll", () => {
+            nb.classList.toggle("scrolled", window.scrollY > 50);
+            const h = document.documentElement, pb = document.getElementById("pb");
+            if (pb) pb.style.width = (window.scrollY / (h.scrollHeight - h.clientHeight) * 100) + "%";
+        });
+        function toggleMenu() { document.getElementById("navLinks").classList.toggle("open") }
+        new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("visible") })
+        }, { threshold: .1 }).observe ||
+            (() => {
+                const o = new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("visible") }) }, { threshold: .1 });
+                document.querySelectorAll(".reveal").forEach(el => o.observe(el))
+            })();
+        document.querySelectorAll(".reveal").forEach(el => {
+            new IntersectionObserver(entries => { entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("visible") }) }, { threshold: .1 }).observe(el)
+        });
+
+        function setVaga(v) {
+            document.getElementById("cf-vaga").value = v;
+            document.getElementById("cf-sec").scrollIntoView({ behavior: "smooth" });
+        }
+        /* ─── submitForm: formulário externo da página ─── */
+        /* Usa credenciais hardcoded para não depender do asproc-supabase.js */
+        var _SB = 'https://wiatqtiyiznscjyoxxww.supabase.co';
+        var _KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpYXRxdGl5aXpuc2NqeW94eHd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1Njc0MDEsImV4cCI6MjA5MTE0MzQwMX0.xgaaZWX5kG3XowDtpR9Xd8S2S0nV-JTnv4ZwnP33PY8';
+        var _HDR = { apikey: _KEY, Authorization: 'Bearer ' + _KEY };
+
+        async function submitForm() {
+            var nome = (document.getElementById('cf-nome').value || '').trim();
+            var email = (document.getElementById('cf-email').value || '').trim();
+            var telefone = (document.getElementById('cf-tel').value || '').trim();
+            var vaga = (document.getElementById('cf-vaga').value || '').trim();
+            var mensagem = (document.getElementById('cf-msg').value || '').trim();
+            var fileInput = document.getElementById('cf-file');
+            var btn = document.querySelector('.csub');
+
+            if (!nome) { alert('Por favor, informe seu nome completo.'); return; }
+            if (!email || !email.includes('@')) { alert('Por favor, informe um e-mail válido.'); return; }
+            if (!vaga) { alert('Por favor, selecione a vaga de interesse.'); return; }
+
+            btn.disabled = true;
+            btn.textContent = 'Enviando…';
+
+            async function doSubmit(curriculo_url) {
+                try {
+                    /* NÃO enviamos o campo 'status' — deixamos o DEFAULT do banco agir */
+                    var payload = {
+                        nome: nome,
+                        email: email,
+                        telefone: telefone || null,
+                        vaga: vaga,
+                        mensagem: mensagem || null,
+                        curriculo_url: curriculo_url || null
+                    };
+                    var r = await fetch(_SB + '/rest/v1/candidaturas', {
+                        method: 'POST',
+                        headers: Object.assign({ 'Content-Type': 'application/json', Prefer: 'return=minimal' }, _HDR),
+                        body: JSON.stringify(payload)
+                    });
+                    if (!r.ok) {
+                        var err = await r.json().catch(function () { return {}; });
+                        throw new Error(err.message || ('HTTP ' + r.status));
+                    }
+                    document.getElementById('cf-inner').style.display = 'none';
+                    document.getElementById('cf-ok').style.display = 'block';
+                } catch (err) {
+                    console.error('[ASPROC] Erro ao enviar candidatura:', err);
+                    alert('Erro ao enviar candidatura. Tente novamente.\n' + err.message);
+                    btn.disabled = false;
+                    btn.textContent = 'Enviar Candidatura →';
+                }
+            }
+
+            var file = fileInput && fileInput.files[0];
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('Arquivo muito grande. Máximo: 5 MB.');
+                    btn.disabled = false;
+                    btn.textContent = 'Enviar Candidatura →';
+                    return;
+                }
+                var ext = file.name.split('.').pop();
+                var ns = nome.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9_-]/g, '_');
+                var fn = 'curriculos/' + Date.now() + '_' + ns + '.' + ext;
+                fetch(_SB + '/storage/v1/object/candidaturas/' + fn, {
+                    method: 'POST',
+                    headers: Object.assign({ 'Content-Type': file.type || 'application/octet-stream', 'x-upsert': 'true' }, _HDR),
+                    body: file
+                }).then(function (res) {
+                    if (res.ok) {
+                        var url = _SB + '/storage/v1/object/public/candidaturas/' + fn;
+                        doSubmit(url);
+                    } else {
+                        // fallback para PUT
+                        return fetch(_SB + '/storage/v1/object/candidaturas/' + fn, {
+                            method: 'PUT',
+                            headers: Object.assign({ 'Content-Type': file.type || 'application/octet-stream', 'x-upsert': 'true' }, _HDR),
+                            body: file
+                        }).then(function (res2) {
+                            if (res2.ok) {
+                                doSubmit(_SB + '/storage/v1/object/public/candidaturas/' + fn);
+                            } else {
+                                alert('Erro ao enviar o currículo. Verifique a conexão e tente novamente.');
+                                btn.disabled = false;
+                                btn.textContent = 'Enviar Candidatura →';
+                            }
+                        });
+                    }
+                }).catch(function (e) {
+                    console.warn('[ASPROC] Erro upload:', e);
+                    alert('Erro ao enviar o currículo: ' + e.message);
+                    btn.disabled = false;
+                    btn.textContent = 'Enviar Candidatura →';
+                });
+            } else {
+                doSubmit(null);
+            }
+        }
+    </script>
+
+
+
+    <!-- ===== VAGAS DINÂMICAS – SUPABASE ===== -->
+    <script>
+        (function () {
+            'use strict';
+
+            /* Credenciais vêm do asproc-supabase.js já carregado */
+            /* URL e KEY fixas — projeto ASPROC */
+            var SB_URL = 'https://wiatqtiyiznscjyoxxww.supabase.co';
+            var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpYXRxdGl5aXpuc2NqeW94eHd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1Njc0MDEsImV4cCI6MjA5MTE0MzQwMX0.xgaaZWX5kG3XowDtpR9Xd8S2S0nV-JTnv4ZwnP33PY8';
+
+            function fmt(d) {
+                if (!d) return '';
+                var p = d.split('-');
+                return p[2] + '/' + p[1] + '/' + p[0];
+            }
+
+            function statusCls(s) {
+                return s === 'aberta' ? 'ab' : s === 'encerrada' ? 'enc' : 'sus';
+            }
+
+            function statusLbl(s) {
+                return s === 'aberta' ? '● Aberta' : s === 'encerrada' ? '● Encerrada' : '● Suspensa';
+            }
+
+            function renderVagas(vagas) {
+                var grid = document.getElementById('vagas-grid');
+                if (!grid) return;
+
+                // Estilos extras de status
+                if (!document.getElementById('_vd_css')) {
+                    var st = document.createElement('style');
+                    st.id = '_vd_css';
+                    st.textContent = '.vc-status.enc{background:rgba(248,113,113,.12);color:#f87171;border:1px solid rgba(248,113,113,.3)}.vc-status.sus{background:rgba(250,204,21,.12);color:#fbbf24;border:1px solid rgba(250,204,21,.3)}';
+                    document.head.appendChild(st);
+                }
+
+                if (!vagas || !vagas.length) {
+                    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:rgba(245,240,232,.5)">Nenhuma vaga aberta no momento.<br><a href="#cf-sec" style="color:var(--verde-neon);margin-top:.8rem;display:inline-block">Envie candidatura espontânea →</a></div>';
+                    return;
+                }
+
+                // Guarda as vagas para o popup acessar
+                window._vagasData = vagas;
+
+                var html = '';
+                for (var i = 0; i < vagas.length; i++) {
+                    var v = vagas[i];
+                    var img = v.imagem_url || 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=600&q=80';
+                    var dotCls = v.status === 'aberta' ? 'ab' : v.status === 'encerrada' ? 'enc' : 'sus';
+
+                    var chips = '';
+                    if (v.local) chips += '<span class="chip" style="font-size:.68rem">' + v.local + '</span>';
+                    if (v.regime) chips += '<span class="chip" style="font-size:.68rem">' + v.regime + '</span>';
+                    if (v.escolaridade) chips += '<span class="chip" style="font-size:.68rem">' + v.escolaridade + '</span>';
+
+                    // Resumo: usa campo resumo se existir, senão strip do descricao
+                    var resumo = v.resumo || (v.descricao ? v.descricao.replace(/<[^>]*>/g, '').substring(0, 90) + '…' : '');
+
+                    html += '<div class="vcard visible" style="opacity:1;transform:none" data-idx="' + i + '" onclick="vpAbrir(window._vagasData[' + i + '])">' +
+                        '<div class="vc-img">' +
+                        '<img src="' + img + '" alt="' + v.titulo + '" loading="lazy">' +
+                        '<div class="vc-img-overlay"></div>' +
+                        '<div class="vc-dot ' + dotCls + '"></div>' +
+                        '<div class="vc-hover-overlay"><button class="vc-hover-btn">Ver detalhes →</button></div>' +
+                        '</div>' +
+                        '<div class="vc-body">' +
+                        '<div class="vc-title">' + v.titulo + '</div>' +
+                        (resumo ? '<div class="vc-desc">' + resumo + '</div>' : '') +
+                        (chips ? '<div class="vc-chips" style="flex-wrap:wrap;margin-top:.2rem">' + chips + '</div>' : '') +
+                        (v.prazo ? '<div class="vc-prazo" style="margin-top:.3rem;align-self:flex-start">⏰ ' + fmt(v.prazo) + '</div>' : '') +
+                        '</div></div>';
+                }
+                grid.innerHTML = html;
+
+                // Atualiza o <select> do formulário
+                var sel = document.getElementById('cf-vaga');
+                if (sel) {
+                    sel.innerHTML = '<option value="">Selecionar vaga…</option>';
+                    for (var j = 0; j < vagas.length; j++) {
+                        if (vagas[j].status === 'aberta') {
+                            var op = document.createElement('option');
+                            op.value = vagas[j].titulo;
+                            op.textContent = vagas[j].titulo;
+                            sel.appendChild(op);
+                        }
+                    }
+                    var esp = document.createElement('option');
+                    esp.value = 'Candidatura Espontânea';
+                    esp.textContent = 'Candidatura Espontânea';
+                    sel.appendChild(esp);
+                }
+            }
+
+            /* Função global para os botões "Candidatar-se" */
+            window.setVagaDyn = function (nome) {
+                var sel = document.getElementById('cf-vaga');
+                if (sel) {
+                    sel.value = nome;
+                    if (!sel.value) {
+                        var op = document.createElement('option');
+                        op.value = nome; op.textContent = nome;
+                        sel.appendChild(op);
+                        sel.value = nome;
+                    }
+                }
+                var sec = document.getElementById('cf-sec');
+                if (sec) sec.scrollIntoView({ behavior: 'smooth' });
+            };
+
+            /* Também sobrescreve setVaga() que já existe no HTML */
+            var _origSetVaga = window.setVaga;
+            window.setVaga = function (nome) {
+                window.setVagaDyn(nome);
+            };
+
+            /* Carrega vagas do Supabase */
+            function loadVagas() {
+                fetch(SB_URL + '/rest/v1/vagas?select=*&order=created_at.desc', {
+                    headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+                })
+                    .then(function (r) {
+                        if (!r.ok) throw new Error('HTTP ' + r.status);
+                        return r.json();
+                    })
+                    .then(renderVagas)
+                    .catch(function (err) {
+                        console.warn('[ASPROC] Erro ao carregar vagas:', err.message);
+                        var grid = document.getElementById('vagas-grid');
+                        if (grid) grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:rgba(245,240,232,.4)">Erro ao carregar vagas. Tente recarregar a página.</div>';
+                    });
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', loadVagas);
+            } else {
+                loadVagas();
+            }
+        })();
+    </script>
+    <!-- ===== FIM VAGAS DINÂMICAS ===== -->
+
+    <!-- ════ POPUP DE DETALHES DA VAGA ════ -->
+    <div class="vaga-popup-overlay" id="vaga-popup-overlay" onclick="vpClose(event)">
+        <div class="vaga-popup">
+
+            <!-- Cabeçalho com foto -->
+            <div class="vp-header">
+                <img id="vp-img" src="" alt="Imagem da vaga selecionada">
+                <div class="vp-header-overlay"></div>
+                <div class="vp-header-info">
+                    <div id="vp-sbadge" style="margin-bottom:.35rem"></div>
+                    <div class="vp-title" id="vp-titulo"></div>
+                </div>
+                <button class="vp-close" onclick="vpFechar()" title="Fechar (Esc)">✕</button>
+            </div>
+
+            <!-- Abas -->
+            <div class="vp-tabs">
+                <button class="vp-tab active" id="vp-tab-det" onclick="vpTab('det')">📋 Detalhes</button>
+                <button class="vp-tab" id="vp-tab-cand" onclick="vpTab('cand')">✍️ Candidatar-se</button>
+            </div>
+
+            <!-- PAINEL: Detalhes da vaga -->
+            <div class="vp-body" id="vp-pdet">
+                <div class="vp-meta" id="vp-meta"></div>
+                <div class="vp-desc" id="vp-desc"></div>
+                <div class="vp-anexos" id="vp-anexos"></div>
+                <div class="vp-actions">
+                    <button class="vp-btn-cand" id="vp-det-cand" onclick="vpTab('cand')">Candidatar-se →</button>
+                    <button class="vp-btn-fechar" onclick="vpFechar()">Fechar</button>
+                </div>
+            </div>
+
+            <!-- PAINEL: Formulário de candidatura -->
+            <div class="vp-body" id="vp-pcand" style="display:none">
+
+                <div id="vp-fwrap">
+                    <p style="font-size:.82rem;color:rgba(245,240,232,.5);margin:0 0 1rem;line-height:1.55">
+                        Candidatura para <strong id="vp-fvaga" style="color:var(--verde-neon)"></strong>.
+                        Preencha e envie — seus dados ficam salvos no nosso sistema.
+                    </p>
+
+                    <div class="vp-ff">
+                        <label>Nome Completo *</label>
+                        <input type="text" id="vp-nome" placeholder="Seu nome completo" autocomplete="name">
+                    </div>
+                    <div class="vp-ff-row">
+                        <div class="vp-ff">
+                            <label>E-mail *</label>
+                            <input type="email" id="vp-email" placeholder="seu@email.com" autocomplete="email">
+                        </div>
+                        <div class="vp-ff">
+                            <label>Telefone / WhatsApp</label>
+                            <input type="tel" id="vp-tel" placeholder="(92) 9 9999-9999" autocomplete="tel">
+                        </div>
+                    </div>
+                    <div class="vp-ff">
+                        <label>Motivação (opcional)</label>
+                        <textarea id="vp-msg" rows="3" placeholder="Por que você quer trabalhar na ASPROC?"></textarea>
+                    </div>
+                    <div class="vp-ff">
+                        <label>Currículo — PDF / DOC / DOCX (máx. 5 MB)</label>
+                        <div class="vp-dz" id="vp-dz" onclick="document.getElementById('vp-file').click()">
+                            <div style="font-size:1.5rem;margin-bottom:.3rem">📎</div>
+                            <div id="vp-flbl" style="font-size:.78rem;color:rgba(245,240,232,.42)">
+                                Clique ou arraste o arquivo aqui<br>
+                                <small style="opacity:.7">.pdf · .doc · .docx</small>
+                            </div>
+                            <input type="file" id="vp-file" accept=".pdf,.doc,.docx" style="display:none"
+                                onchange="vpOnFile(this)">
+                        </div>
+                    </div>
+
+                    <div class="vp-prog" id="vp-prog">
+                        <div class="vp-prog-track">
+                            <div class="vp-prog-bar" id="vp-pbar"></div>
+                        </div>
+                        <p class="vp-prog-msg" id="vp-pmsg">Enviando…</p>
+                    </div>
+
+                    <div class="vp-actions" style="margin-top:.9rem">
+                        <button class="vp-btn-cand" id="vp-sub" onclick="vpSubmit()">Enviar Candidatura →</button>
+                        <button class="vp-btn-fechar" onclick="vpTab('det')">← Voltar</button>
+                    </div>
+                </div>
+
+                <!-- Sucesso -->
+                <div id="vp-ok" style="display:none;text-align:center;padding:2.5rem 1rem">
+                    <div style="font-size:3rem;margin-bottom:.7rem">✅</div>
+                    <div
+                        style="font-family:'Fraunces',serif;font-size:1.2rem;font-weight:700;margin-bottom:.5rem;color:var(--verde-neon)">
+                        Candidatura enviada!
+                    </div>
+                    <p style="font-size:.83rem;color:rgba(245,240,232,.5);margin:0 0 1.3rem">
+                        Recebemos sua candidatura com sucesso.<br>Entraremos em contato em breve.
+                    </p>
+                    <button class="vp-btn-fechar" onclick="vpFechar()">Fechar</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        /* ══════════════════════════════════════════════════
+           POPUP DE VAGA — Detalhes + Candidatura integrada
+           Não depende de asproc-supabase.js
+        ══════════════════════════════════════════════════ */
+        (function () {
+            var SB = 'https://wiatqtiyiznscjyoxxww.supabase.co';
+            var KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpYXRxdGl5aXpuc2NqeW94eHd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1Njc0MDEsImV4cCI6MjA5MTE0MzQwMX0.xgaaZWX5kG3XowDtpR9Xd8S2S0nV-JTnv4ZwnP33PY8';
+            var HDR = { apikey: KEY, Authorization: 'Bearer ' + KEY };
+            var vagaAtual = null;
+
+            function g(id) { return document.getElementById(id); }
+
+            function fmtDate(d) {
+                if (!d) return '';
+                try {
+                    var p = new Date(d + 'T00:00:00');
+                    return p.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                } catch (e) { return d; }
+            }
+
+            function setBar(pct, msg) {
+                var el = g('vp-prog');
+                if (el) el.style.display = 'block';
+                var b = g('vp-pbar'); if (b) b.style.width = pct + '%';
+                var m = g('vp-pmsg'); if (m) m.textContent = msg || '';
+            }
+
+            /* ── Abrir popup ── */
+            function vpAbrir(vaga) {
+                vagaAtual = vaga;
+
+                g('vp-img').src = vaga.imagem_url || 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=900&q=80';
+                g('vp-img').alt = vaga.titulo;
+                g('vp-titulo').textContent = vaga.titulo;
+
+                // Badge de status
+                var stMap = {
+                    aberta: ['status-ab', '● Aberta'],
+                    encerrada: ['status-enc', '● Encerrada'],
+                    suspensa: ['status-sus', '● Suspensa']
+                };
+                var si = stMap[vaga.status] || ['status-ab', vaga.status];
+                g('vp-sbadge').innerHTML = '<span class="vp-chip ' + si[0] + '" style="font-size:.62rem">' + si[1] + '</span>';
+
+                // Meta chips
+                var chips = '';
+                if (vaga.prazo) chips += '<span class="vp-chip dourado">⏰ Prazo: ' + fmtDate(vaga.prazo) + '</span>';
+                if (vaga.local) chips += '<span class="vp-chip">📍 ' + vaga.local + '</span>';
+                if (vaga.regime) chips += '<span class="vp-chip">📑 ' + vaga.regime + '</span>';
+                if (vaga.carga_horaria) chips += '<span class="vp-chip">🕐 ' + vaga.carga_horaria + '</span>';
+                if (vaga.escolaridade) chips += '<span class="vp-chip">🎓 ' + vaga.escolaridade + '</span>';
+                g('vp-meta').innerHTML = chips;
+
+                // Descrição completa (rich text)
+                g('vp-desc').innerHTML = vaga.descricao
+                    || '<p style="color:rgba(245,240,232,.35);font-style:italic">Sem descrição detalhada.</p>';
+
+                // Anexos / editais
+                var anx = '';
+                if (vaga.anexos) {
+                    var arr = Array.isArray(vaga.anexos) ? vaga.anexos : [];
+                    try { if (!arr.length && typeof vaga.anexos === 'string') arr = JSON.parse(vaga.anexos); } catch (e) { }
+                    arr.forEach(function (a) {
+                        var ic = a.tipo === 'pdf' ? '📕' : (a.tipo === 'docx' || a.tipo === 'doc') ? '📘' : a.tipo === 'xlsx' || a.tipo === 'xls' ? '📗' : '📄';
+                        anx += '<a class="vp-anexo-link" href="' + a.url + '" target="_blank" rel="noopener">' + ic + ' ' + a.nome + '<span class="al-arrow">↗</span></a>';
+                    });
+                }
+                if (vaga.edital_url) {
+                    anx += '<a class="vp-anexo-link" href="' + vaga.edital_url + '" target="_blank" rel="noopener">📕 Baixar Edital<span class="al-arrow">↗</span></a>';
+                }
+                g('vp-anexos').innerHTML = anx;
+
+                // Botão na aba Detalhes + aba Candidatura
+                var aberta = (vaga.status === 'aberta');
+                var btnDet = g('vp-det-cand');
+                var tabC = g('vp-tab-cand');
+                if (aberta) {
+                    btnDet.className = 'vp-btn-cand';
+                    btnDet.textContent = 'Candidatar-se →';
+                    tabC.disabled = false;
+                    tabC.style.opacity = '';
+                } else {
+                    btnDet.className = 'vp-btn-cand disabled';
+                    btnDet.textContent = vaga.status === 'encerrada' ? 'Vaga Encerrada' : 'Vaga Suspensa';
+                    tabC.disabled = true;
+                    tabC.style.opacity = '.28';
+                }
+
+                // Nome da vaga no form
+                g('vp-fvaga').textContent = '"' + vaga.titulo + '"';
+
+                vpTab('det');
+                vpReset();
+
+                g('vaga-popup-overlay').classList.add('open');
+                document.body.style.overflow = 'hidden';
+            }
+
+            /* ── Alternar abas ── */
+            function vpTab(t) {
+                g('vp-tab-det').classList.toggle('active', t === 'det');
+                g('vp-tab-cand').classList.toggle('active', t === 'cand');
+                g('vp-pdet').style.display = t === 'det' ? '' : 'none';
+                g('vp-pcand').style.display = t === 'cand' ? '' : 'none';
+            }
+
+            /* ── Arquivo escolhido ── */
+            function vpOnFile(inp) {
+                var f = inp && inp.files && inp.files[0];
+                var lbl = g('vp-flbl');
+                var dz = g('vp-dz');
+                if (f) {
+                    lbl.innerHTML = '<strong style="color:var(--verde-neon)">' + f.name + '</strong><br>'
+                        + '<small style="opacity:.6">' + (f.size / 1024 / 1024).toFixed(2) + ' MB</small>';
+                    if (dz) dz.classList.add('has-f');
+                } else {
+                    lbl.innerHTML = 'Clique ou arraste o arquivo aqui<br><small style="opacity:.7">.pdf · .doc · .docx</small>';
+                    if (dz) dz.classList.remove('has-f');
+                }
+            }
+
+            /* ── Limpar form ── */
+            function vpReset() {
+                ['vp-nome', 'vp-email', 'vp-tel', 'vp-msg'].forEach(function (id) {
+                    var el = g(id); if (el) el.value = '';
+                });
+                var fi = g('vp-file'); if (fi) fi.value = '';
+                vpOnFile(null);
+                var p = g('vp-prog'); if (p) p.style.display = 'none';
+                var b = g('vp-pbar'); if (b) b.style.width = '0%';
+                var fw = g('vp-fwrap'); if (fw) fw.style.display = '';
+                var ok = g('vp-ok'); if (ok) ok.style.display = 'none';
+                var sb = g('vp-sub'); if (sb) { sb.disabled = false; sb.textContent = 'Enviar Candidatura →'; }
+            }
+
+            /* ── Enviar candidatura ── */
+            async function vpSubmit() {
+                var nome = (g('vp-nome').value || '').trim();
+                var email = (g('vp-email').value || '').trim();
+                var tel = (g('vp-tel').value || '').trim();
+                var msg = (g('vp-msg').value || '').trim();
+                var fi = g('vp-file');
+                var btn = g('vp-sub');
+
+                if (!nome) { alert('Por favor, informe seu nome completo.'); return; }
+                if (!email || !email.includes('@')) { alert('Por favor, informe um e-mail válido.'); return; }
+                if (!vagaAtual) { alert('Erro interno: vaga não identificada.'); return; }
+
+                btn.disabled = true;
+                btn.textContent = 'Enviando…';
+
+                var curriculo_url = null;
+                var file = fi && fi.files[0];
+
+                // ── Upload currículo ──
+                if (file) {
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('Arquivo muito grande. Máximo 5 MB.');
+                        btn.disabled = false; btn.textContent = 'Enviar Candidatura →';
+                        return;
+                    }
+                    setBar(20, 'Enviando currículo…');
+                    var ext = file.name.split('.').pop();
+                    var ns = nome.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9_-]/g, '_');
+                    var fn = 'curriculos/' + Date.now() + '_' + ns + '.' + ext;
+                    try {
+                        var up = await fetch(SB + '/storage/v1/object/candidaturas/' + fn, {
+                            method: 'POST',
+                            headers: Object.assign({
+                                'Content-Type': file.type || 'application/octet-stream',
+                                'x-upsert': 'true'
+                            }, HDR),
+                            body: file
+                        });
+                        if (!up.ok) {
+                            // fallback para PUT
+                            up = await fetch(SB + '/storage/v1/object/candidaturas/' + fn, {
+                                method: 'PUT',
+                                headers: Object.assign({
+                                    'Content-Type': file.type || 'application/octet-stream',
+                                    'x-upsert': 'true'
+                                }, HDR),
+                                body: file
+                            });
+                        }
+                        if (up.ok) {
+                            curriculo_url = SB + '/storage/v1/object/public/candidaturas/' + fn;
+                            setBar(65, 'Gravando candidatura…');
+                        } else {
+                            var upErr = await up.json().catch(function () { return {}; });
+                            throw new Error('Falha no upload do currículo: ' + (upErr.message || 'HTTP ' + up.status));
+                        }
+                    } catch (e) {
+                        console.error('[VP] Erro no upload:', e);
+                        alert('Erro ao enviar o currículo:\n' + e.message + '\n\nVerifique se o bucket "candidaturas" existe no Supabase Storage com permissão pública de INSERT.');
+                        btn.disabled = false; btn.textContent = 'Enviar Candidatura →';
+                        var p = g('vp-prog'); if (p) p.style.display = 'none';
+                        return;
+                    }
+                } else {
+                    setBar(40, 'Gravando candidatura…');
+                }
+
+                // ── Inserir no Supabase — SEM campo status (usa DEFAULT do banco) ──
+                try {
+                    var payload = {
+                        nome: nome,
+                        email: email,
+                        telefone: tel || null,
+                        vaga: vagaAtual.titulo,
+                        mensagem: msg || null,
+                        curriculo_url: curriculo_url
+                    };
+                    var res = await fetch(SB + '/rest/v1/candidaturas', {
+                        method: 'POST',
+                        headers: Object.assign({
+                            'Content-Type': 'application/json',
+                            Prefer: 'return=minimal'
+                        }, HDR),
+                        body: JSON.stringify(payload)
+                    });
+                    if (!res.ok) {
+                        var errJson = await res.json().catch(function () { return {}; });
+                        throw new Error(errJson.message || errJson.hint || ('HTTP ' + res.status));
+                    }
+                    setBar(100, '✅ Candidatura enviada!');
+                    setTimeout(function () {
+                        g('vp-fwrap').style.display = 'none';
+                        g('vp-ok').style.display = '';
+                    }, 500);
+                } catch (e) {
+                    console.error('[VP] Erro ao salvar:', e);
+                    alert('Erro ao enviar candidatura:\n' + e.message);
+                    btn.disabled = false;
+                    btn.textContent = 'Enviar Candidatura →';
+                    var p = g('vp-prog'); if (p) p.style.display = 'none';
+                }
+            }
+
+            /* ── Fechar ── */
+            function vpFechar() {
+                g('vaga-popup-overlay').classList.remove('open');
+                document.body.style.overflow = '';
+                vagaAtual = null;
+            }
+            function vpClose(e) {
+                if (e.target === g('vaga-popup-overlay')) vpFechar();
+            }
+            document.addEventListener('keydown', function (e) { if (e.key === 'Escape') vpFechar(); });
+
+            /* ── Drag & Drop ── */
+            document.addEventListener('DOMContentLoaded', function () {
+                var dz = g('vp-dz');
+                if (!dz) return;
+                dz.addEventListener('dragover', function (e) { e.preventDefault(); dz.style.borderColor = 'rgba(123,201,92,.6)'; });
+                dz.addEventListener('dragleave', function () { dz.style.borderColor = ''; });
+                dz.addEventListener('drop', function (e) {
+                    e.preventDefault(); dz.style.borderColor = '';
+                    var f = e.dataTransfer.files[0];
+                    if (f) {
+                        try { var dt = new DataTransfer(); dt.items.add(f); g('vp-file').files = dt.files; } catch (x) { }
+                        vpOnFile(g('vp-file'));
+                    }
+                });
+            });
+
+            /* Expor globalmente */
+            window.vpAbrir = vpAbrir;
+            window.vpFechar = vpFechar;
+            window.vpClose = vpClose;
+            window.vpTab = vpTab;
+            window.vpOnFile = vpOnFile;
+            window.vpSubmit = vpSubmit;
+        })();
+    </script>
+</body>
+
+</html>

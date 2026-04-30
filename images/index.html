@@ -1,0 +1,2897 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <title>ASPROC – Associação dos Produtores Rurais de Carauari</title>
+  <meta name="description" content="Há mais de 30 anos a ASPROC representa e apoia produtores agroextrativistas, pescadores e comunidades ribeirinhas do Médio Juruá, promovendo desenvolvimento sustentável na Amazônia.">
+  <link rel="canonical" href="https://www.asproc.com.br/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.asproc.com.br/">
+  <meta property="og:title" content="ASPROC – Associação dos Produtores Rurais de Carauari">
+  <meta property="og:description" content="Há mais de 30 anos a ASPROC representa e apoia produtores agroextrativistas, pescadores e comunidades ribeirinhas do Médio Juruá, promovendo desenvolvimento sustentável na Amazônia.">
+  <meta property="og:image" content="https://www.asproc.com.br/images/hero-slide-01.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:site_name" content="ASPROC">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ASPROC – Associação dos Produtores Rurais de Carauari">
+  <meta name="twitter:description" content="Há mais de 30 anos a ASPROC representa e apoia produtores agroextrativistas, pescadores e comunidades ribeirinhas do Médio Juruá, promovendo desenvolvimento sustentável na Amazônia.">
+  <meta name="twitter:image" content="https://www.asproc.com.br/images/hero-slide-01.webp">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "NGO",
+    "name": "ASPROC – Associação dos Produtores Rurais de Carauari",
+    "alternateName": "ASPROC",
+    "url": "https://www.asproc.com.br",
+    "logo": "https://www.asproc.com.br/images/footer-logo.webp",
+    "description": "Associação fundada em 1994 que representa produtores agroextrativistas, pescadores e comunidades ribeirinhas do Médio Juruá, promovendo desenvolvimento sustentável na Amazônia.",
+    "foundingDate": "1994",
+    "areaServed": {
+      "@type": "Place",
+      "name": "Médio Juruá, Amazonas, Brasil"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "customer support",
+      "url": "https://www.asproc.com.br"
+    },
+    "sameAs": [
+      "https://loja.asproc.org.br"
+    ],
+    "numberOfEmployees": {
+      "@type": "QuantitativeValue",
+      "value": 872
+    }
+  }
+  </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="asproc-supabase.js"></script>
+    <script src="asproc-logo.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --verde: #2d6a2d;
+            --verde-claro: #4a9e3f;
+            --verde-neon: #7bc95c;
+            --dourado: #c8a84b;
+            --terra: #8b4513;
+            --agua: #1a6b8a;
+            --branco: #f5f0e8;
+            --escuro: #0f1a0f;
+            --cinza: #1e2e1e;
+            --cinza2: #2a3a2a;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--escuro);
+            color: var(--branco);
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        /* ====== CURSOR PERSONALIZADO - CORRIGIDO ====== */
+        #cursor-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--verde-neon);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+            transition: width .15s, height .15s, background .15s;
+            mix-blend-mode: screen;
+        }
+
+        #cursor-ring {
+            width: 38px;
+            height: 38px;
+            border: 2px solid var(--verde-neon);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 99998;
+            transform: translate(-50%, -50%);
+            transition: width .25s ease, height .25s ease, border-color .25s, opacity .25s;
+            opacity: 0.55;
+        }
+
+        #cursor-dot.hovered {
+            width: 6px;
+            height: 6px;
+            background: white;
+        }
+
+        #cursor-ring.hovered {
+            width: 56px;
+            height: 56px;
+            border-color: white;
+            opacity: 0.85;
+        }
+
+        #cursor-dot.clicked {
+            transform: translate(-50%, -50%) scale(0.6);
+        }
+
+        #cursor-ring.clicked {
+            transform: translate(-50%, -50%) scale(1.4);
+            opacity: 0.3;
+        }
+
+        @media (hover: none) {
+            body {
+                cursor: auto;
+            }
+
+            #cursor-dot,
+            #cursor-ring {
+                display: none;
+            }
+        }
+
+        /* ====== PROGRESS BAR ====== */
+        #progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--verde-claro), var(--verde-neon));
+            z-index: 10001;
+            width: 0%;
+            transition: width .1s;
+        }
+
+        /* ====== NAVBAR ====== */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 0 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+            background: rgba(10, 20, 10, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(123, 201, 92, 0.12);
+            transition: all .35s;
+        }
+
+        nav.scrolled {
+            background: rgba(8, 15, 8, 0.97);
+            height: 60px;
+        }
+
+        .nav-logo {
+            height: 44px;
+            object-fit: contain;
+        }
+
+        .nav-center {
+            display: flex;
+            gap: 0;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.8rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: rgba(245, 240, 232, 0.7);
+            text-decoration: none;
+            font-size: 0.82rem;
+            font-weight: 500;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            transition: color .3s;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--verde-neon);
+            transition: width .3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--verde-neon);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a.ativo {
+            color: var(--verde-neon);
+        }
+
+        .nav-links a.ativo::after {
+            width: 100%;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-cta {
+            background: var(--verde-claro);
+            color: white !important;
+            padding: .45rem 1.1rem;
+            border-radius: 30px;
+            font-weight: 600 !important;
+            font-size: .82rem !important;
+            transition: background .3s, transform .2s !important;
+            letter-spacing: .04em !important;
+        }
+
+        .nav-cta:hover {
+            background: var(--verde-neon) !important;
+            transform: translateY(-2px);
+            color: var(--escuro) !important;
+        }
+
+        .nav-cta::after {
+            display: none !important;
+        }
+
+        /* Seletor de idioma */
+        .lang-switcher {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .lang-btn {
+            background: none;
+            border: 1px solid rgba(123, 201, 92, 0.3);
+            color: rgba(245, 240, 232, 0.5);
+            font-size: .72rem;
+            font-weight: 600;
+            letter-spacing: .05em;
+            padding: 3px 7px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all .25s;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .lang-btn:hover,
+        .lang-btn.active {
+            border-color: var(--verde-neon);
+            color: var(--verde-neon);
+            background: rgba(123, 201, 92, 0.08);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .hamburger span {
+            width: 26px;
+            height: 2px;
+            background: var(--branco);
+            border-radius: 2px;
+            transition: all .3s;
+        }
+
+        /* ====== HERO ====== */
+        .hero {
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 0 8%;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .slide-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(105deg, rgba(0, 0, 0, .78) 40%, rgba(0, 0, 0, .05));
+        }
+
+        .slide-content {
+            position: relative;
+            z-index: 1;
+            max-width: 620px;
+        }
+
+        .slide-tag {
+            display: inline-block;
+            background: var(--verde-claro);
+            color: white;
+            font-size: .7rem;
+            font-weight: 700;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            padding: .35rem .9rem;
+            border-radius: 30px;
+            margin-bottom: 1.2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all .6s .3s;
+        }
+
+        .slide.active .slide-tag {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .slide-content h1 {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            font-weight: 900;
+            line-height: 1.05;
+            margin-bottom: 1.2rem;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all .7s .5s;
+        }
+
+        .slide.active .slide-content h1 {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .slide-content p {
+            font-size: 1.05rem;
+            line-height: 1.7;
+            margin-bottom: 2rem;
+            max-width: 480px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all .7s .7s;
+        }
+
+        .slide.active .slide-content p {
+            opacity: .85;
+            transform: translateY(0);
+        }
+
+        .slide-btn {
+            display: inline-block;
+            background: var(--verde-claro);
+            color: white;
+            padding: .9rem 2.2rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: .9rem;
+            letter-spacing: .05em;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: background .3s, transform .3s, opacity .7s .9s;
+        }
+
+        .slide.active .slide-btn {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .slide-btn:hover {
+            background: var(--verde-neon);
+            color: var(--escuro);
+            transform: translateY(-3px);
+        }
+
+        .slider-dots {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .35);
+            cursor: pointer;
+            transition: all .3s;
+        }
+
+        .dot.active {
+            background: var(--verde-neon);
+            transform: scale(1.4);
+        }
+
+        .slider-arrows {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 2%;
+            z-index: 10;
+        }
+
+        .arrow-btn {
+            width: 50px;
+            height: 50px;
+            border: 2px solid rgba(255, 255, 255, .3);
+            background: rgba(0, 0, 0, .3);
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all .3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .arrow-btn:hover {
+            border-color: var(--verde-neon);
+            background: var(--verde-claro);
+            transform: scale(1.1);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            z-index: 10;
+            animation: bounce 2s infinite;
+        }
+
+        .scroll-indicator span {
+            font-size: .65rem;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            opacity: .6;
+        }
+
+        .scroll-arrow {
+            width: 20px;
+            height: 20px;
+            border-right: 2px solid rgba(255, 255, 255, .5);
+            border-bottom: 2px solid rgba(255, 255, 255, .5);
+            transform: rotate(45deg);
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateX(-50%) translateY(0);
+            }
+
+            50% {
+                transform: translateX(-50%) translateY(8px);
+            }
+        }
+
+        /* ====== SECTIONS ====== */
+        section {
+            padding: 100px 5%;
+        }
+
+        .section-label {
+            font-size: .7rem;
+            font-weight: 700;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            color: var(--verde-neon);
+            margin-bottom: .8rem;
+        }
+
+        .section-title {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            font-weight: 700;
+            line-height: 1.15;
+            margin-bottom: 1rem;
+        }
+
+        .section-title span {
+            color: var(--verde-neon);
+        }
+
+        .section-desc {
+            font-size: 1rem;
+            color: rgba(245, 240, 232, .65);
+            line-height: 1.8;
+            max-width: 600px;
+        }
+
+        /* ====== SOBRE ====== */
+        .sobre-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: center;
+            background: var(--cinza);
+        }
+
+        .sobre-text .section-desc {
+            max-width: 100%;
+        }
+
+        .sobre-badges {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .sobre-badge {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            background: rgba(123, 201, 92, .08);
+            border: 1px solid rgba(123, 201, 92, .2);
+            padding: .6rem 1rem;
+            border-radius: 8px;
+            font-size: .82rem;
+            color: rgba(245, 240, 232, .8);
+            transition: all .3s;
+        }
+
+        .sobre-badge:hover {
+            background: rgba(123, 201, 92, .14);
+            border-color: rgba(123, 201, 92, .4);
+            transform: translateY(-2px);
+        }
+
+        .sobre-badge .icon {
+            font-size: 1.2rem;
+        }
+
+        .sobre-img-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto;
+            gap: 12px;
+            position: relative;
+        }
+
+        .sobre-img {
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .sobre-img img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+            transition: transform .5s;
+        }
+
+        .sobre-img:hover img {
+            transform: scale(1.05);
+        }
+
+        .sobre-img.tall {
+            grid-row: span 2;
+        }
+
+        .sobre-img.tall img {
+            height: 100%;
+        }
+
+        .badge-anos {
+            position: absolute;
+            bottom: -20px;
+            right: -20px;
+            width: 90px;
+            height: 90px;
+            background: var(--verde-claro);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Fraunces', serif;
+            font-weight: 900;
+            z-index: 2;
+            border: 4px solid var(--escuro);
+        }
+
+        .badge-anos .num {
+            font-size: 1.8rem;
+            line-height: 1;
+        }
+
+        .badge-anos .txt {
+            font-size: .55rem;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            opacity: .9;
+        }
+
+        /* ====== AÇÕES ====== */
+        .acoes-section {
+            background: var(--escuro);
+        }
+
+        .acoes-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .acoes-header .section-desc {
+            margin: 0 auto;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: var(--cinza2);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: transform .4s, box-shadow .4s;
+            border: 1px solid rgba(123, 201, 92, .08);
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, .5), 0 0 0 1px rgba(123, 201, 92, .25);
+        }
+
+        .card-img {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .5s;
+        }
+
+        .card:hover .card-img img {
+            transform: scale(1.08);
+        }
+
+        .card-img-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, .5), transparent);
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .card-tag {
+            font-size: .65rem;
+            font-weight: 700;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            color: var(--verde-neon);
+            margin-bottom: .6rem;
+        }
+
+        .card h3 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: .8rem;
+            line-height: 1.3;
+        }
+
+        .card p {
+            font-size: .875rem;
+            color: rgba(245, 240, 232, .65);
+            line-height: 1.7;
+            margin-bottom: 1.2rem;
+        }
+
+        .card-link {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            color: var(--verde-neon);
+            font-size: .85rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: gap .3s;
+        }
+
+        .card-link:hover {
+            gap: .8rem;
+        }
+
+        /* ====== PIRARUCU ====== */
+        .pirarucu-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            min-height: 600px;
+            align-items: stretch;
+            padding: 0;
+        }
+
+        .pirarucu-img {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pirarucu-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 8s ease;
+        }
+
+        .pirarucu-section:hover .pirarucu-img img {
+            transform: scale(1.05);
+        }
+
+        .pirarucu-content {
+            background: linear-gradient(135deg, var(--agua) 0%, #0d3d52 100%);
+            padding: 5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .pirarucu-content .section-label {
+            color: #7fd4f5;
+        }
+
+        .pirarucu-content .section-title {
+            color: white;
+        }
+
+        .pirarucu-content .section-desc {
+            color: rgba(255, 255, 255, .75);
+            max-width: 100%;
+        }
+
+        .pirarucu-stats {
+            display: flex;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .pirarucu-stat {
+            border-left: 3px solid #7fd4f5;
+            padding-left: 1rem;
+        }
+
+        .pirarucu-stat .num {
+            font-family: 'Fraunces', serif;
+            font-size: 2rem;
+            font-weight: 900;
+            color: white;
+            line-height: 1;
+        }
+
+        .pirarucu-stat p {
+            font-size: .8rem;
+            color: rgba(255, 255, 255, .65);
+            margin-top: .2rem;
+        }
+
+        .btn-agua {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            background: rgba(255, 255, 255, .12);
+            border: 2px solid rgba(255, 255, 255, .3);
+            color: white;
+            padding: .85rem 1.8rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: .9rem;
+            transition: all .3s;
+        }
+
+        .btn-agua:hover {
+            background: rgba(255, 255, 255, .22);
+            border-color: white;
+            transform: translateY(-3px);
+        }
+
+        /* ====== RESUMO DOS PROJETOS ====== */
+        .projetos-section {
+            background: var(--cinza);
+            padding: 6rem 5%;
+        }
+
+        .projetos-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .projetos-header .section-desc {
+            margin: 0 auto;
+            max-width: 620px;
+        }
+
+        .projetos-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .projeto-card {
+            background: var(--cinza2);
+            border-radius: 20px;
+            border: 1px solid rgba(123, 201, 92, .1);
+            overflow: hidden;
+            transition: transform .4s, box-shadow .4s, border-color .4s;
+            cursor: pointer;
+        }
+
+        .projeto-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, .5), 0 0 0 1px rgba(123, 201, 92, .3);
+            border-color: rgba(123, 201, 92, .3);
+        }
+
+        .projeto-card-inner {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .projeto-banner {
+            height: 8px;
+            width: 100%;
+        }
+
+        .projeto-banner.verde {
+            background: linear-gradient(90deg, var(--verde), var(--verde-neon));
+        }
+
+        .projeto-banner.agua {
+            background: linear-gradient(90deg, var(--agua), #7fd4f5);
+        }
+
+        .projeto-banner.dourado {
+            background: linear-gradient(90deg, var(--dourado), #f5d06b);
+        }
+
+        .projeto-banner.terra {
+            background: linear-gradient(90deg, var(--terra), #d4814e);
+        }
+
+        .projeto-content {
+            padding: 2rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .projeto-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .projeto-icon.verde-bg {
+            background: rgba(75, 158, 63, .15);
+        }
+
+        .projeto-icon.agua-bg {
+            background: rgba(26, 107, 138, .2);
+        }
+
+        .projeto-icon.dourado-bg {
+            background: rgba(200, 168, 75, .15);
+        }
+
+        .projeto-icon.terra-bg {
+            background: rgba(139, 69, 19, .15);
+        }
+
+        .projeto-tag {
+            display: inline-block;
+            font-size: .65rem;
+            font-weight: 700;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            margin-bottom: .5rem;
+        }
+
+        .projeto-tag.verde-tag {
+            color: var(--verde-neon);
+        }
+
+        .projeto-tag.agua-tag {
+            color: #7fd4f5;
+        }
+
+        .projeto-tag.dourado-tag {
+            color: var(--dourado);
+        }
+
+        .projeto-tag.terra-tag {
+            color: #d4814e;
+        }
+
+        .projeto-titulo {
+            font-family: 'Fraunces', serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            color: var(--branco);
+        }
+
+        .projeto-desc {
+            font-size: .88rem;
+            color: rgba(245, 240, 232, .65);
+            line-height: 1.75;
+            margin-bottom: 1.5rem;
+            flex: 1;
+        }
+
+        .projeto-stats {
+            display: flex;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+            padding: 1rem 0;
+            border-top: 1px solid rgba(255, 255, 255, .06);
+            margin-bottom: 1.2rem;
+        }
+
+        .projeto-stat {
+            display: flex;
+            flex-direction: column;
+            gap: .15rem;
+        }
+
+        .projeto-stat-num {
+            font-family: 'Fraunces', serif;
+            font-size: 1.1rem;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .projeto-stat-lbl {
+            font-size: .65rem;
+            color: rgba(245, 240, 232, .45);
+            letter-spacing: .05em;
+            text-transform: uppercase;
+        }
+
+        .projeto-link {
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            font-size: .82rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: gap .3s;
+        }
+
+        .projeto-link.verde-link {
+            color: var(--verde-neon);
+        }
+
+        .projeto-link.agua-link {
+            color: #7fd4f5;
+        }
+
+        .projeto-link.dourado-link {
+            color: var(--dourado);
+        }
+
+        .projeto-link.terra-link {
+            color: #d4814e;
+        }
+
+        .projeto-link:hover {
+            gap: .8rem;
+        }
+
+        .projeto-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .5rem;
+            margin-bottom: 1rem;
+        }
+
+        .projeto-badge {
+            font-size: .65rem;
+            font-weight: 600;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            padding: .3rem .7rem;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, .1);
+            color: rgba(245, 240, 232, .6);
+        }
+
+        @media (max-width: 900px) {
+            .projetos-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ====== NÚMEROS ====== */
+        .numeros-section {
+            background: var(--verde);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .numeros-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='1' fill='rgba(255,255,255,0.05)'/%3E%3C/svg%3E");
+        }
+
+        .numeros-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+            position: relative;
+        }
+
+        .numero-item {
+            padding: 2rem 1rem;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid rgba(255, 255, 255, .1);
+            transition: all .3s;
+        }
+
+        .numero-item:hover {
+            background: rgba(255, 255, 255, .1);
+            transform: translateY(-4px);
+        }
+
+        .numero-item .icon {
+            font-size: 2rem;
+            margin-bottom: .8rem;
+        }
+
+        .numero-item .num {
+            font-family: 'Fraunces', serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: white;
+            line-height: 1;
+            display: block;
+        }
+
+        .numero-item p {
+            font-size: .85rem;
+            color: rgba(255, 255, 255, .7);
+            margin-top: .4rem;
+            line-height: 1.4;
+        }
+
+        /* ====== CONTRATAÇÃO ====== */
+        .contratacao-section {
+            background: var(--cinza);
+            text-align: center;
+        }
+
+        .contratacao-header {
+            margin-bottom: 3rem;
+        }
+
+        .cards-contratacao {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .card-contratacao {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, .4);
+            transition: transform .3s, box-shadow .3s;
+            cursor: pointer;
+            max-width: 500px;
+        }
+
+        .card-contratacao:hover {
+            transform: translateY(-6px) scale(1.01);
+            box-shadow: 0 16px 50px rgba(0, 0, 0, .5);
+        }
+
+        .card-contratacao img {
+            width: 100%;
+            display: block;
+        }
+
+        /* ====== NOTÍCIAS ====== */
+        .noticias-section {
+            background: var(--escuro);
+        }
+
+        .noticias-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .ver-todas {
+            color: var(--verde-neon);
+            text-decoration: none;
+            font-size: .9rem;
+            font-weight: 600;
+            transition: gap .3s;
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+        }
+
+        .ver-todas:hover {
+            gap: .8rem;
+        }
+
+        .noticias-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .noticia-card {
+            border-radius: 14px;
+            overflow: hidden;
+            background: var(--cinza2);
+            text-decoration: none;
+            color: var(--branco);
+            transition: transform .4s, box-shadow .4s;
+            border: 1px solid rgba(123, 201, 92, .08);
+            display: block;
+        }
+
+        .noticia-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, .5);
+        }
+
+        .noticia-img {
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .noticia-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .5s;
+        }
+
+        .noticia-card:hover .noticia-img img {
+            transform: scale(1.06);
+        }
+
+        .noticia-body {
+            padding: 1.4rem;
+        }
+
+        .noticia-data {
+            font-size: .72rem;
+            color: var(--verde-neon);
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            margin-bottom: .5rem;
+        }
+
+        .noticia-body h3 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            line-height: 1.35;
+        }
+
+        /* ====== LOJA ====== */
+        .loja-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            min-height: 550px;
+            align-items: stretch;
+            padding: 0;
+        }
+
+        .loja-content {
+            background: linear-gradient(135deg, #3d2b1f 0%, var(--terra) 100%);
+            padding: 5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .loja-content .section-label {
+            color: var(--dourado);
+        }
+
+        .loja-content .section-title,
+        .loja-content .section-desc {
+            color: white;
+        }
+
+        .loja-content .section-desc {
+            color: rgba(255, 255, 255, .75);
+            max-width: 100%;
+        }
+
+        .btn-loja {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            margin-top: 2rem;
+            background: var(--dourado);
+            color: #1a0f00;
+            padding: .9rem 2rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: .9rem;
+            transition: all .3s;
+            width: fit-content;
+        }
+
+        .btn-loja:hover {
+            background: #e0be5e;
+            transform: translateY(-3px);
+        }
+
+        .loja-img {
+            overflow: hidden;
+        }
+
+        .loja-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 8s ease;
+        }
+
+        .loja-section:hover .loja-img img {
+            transform: scale(1.04);
+        }
+
+        /* ====== VIDEO ====== */
+        .video-section {
+            background: var(--cinza);
+            text-align: center;
+        }
+
+        .video-section .section-desc {
+            margin: 0 auto 3rem;
+        }
+
+        .video-wrapper {
+            position: relative;
+            max-width: 860px;
+            margin: 0 auto;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, .6);
+        }
+
+        .video-thumb {
+            width: 100%;
+            display: block;
+        }
+
+        .play-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, .9);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all .3s;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .play-btn::after {
+            content: '';
+            margin-left: 6px;
+            border-left: 28px solid var(--verde);
+            border-top: 17px solid transparent;
+            border-bottom: 17px solid transparent;
+        }
+
+        .play-btn:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            background: var(--verde-neon);
+            box-shadow: 0 0 0 15px rgba(123, 201, 92, .2);
+        }
+
+        .play-btn:hover::after {
+            border-left-color: var(--escuro);
+        }
+
+        /* ====== FOOTER ====== */
+        footer {
+            background: #050d05;
+            padding: 60px 5% 30px;
+            border-top: 1px solid rgba(123, 201, 92, .12);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-brand img {
+            height: 48px;
+            margin-bottom: 1.2rem;
+        }
+
+        .footer-brand p {
+            font-size: .85rem;
+            color: rgba(245, 240, 232, .45);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: .8rem;
+        }
+
+        .social-btn {
+            width: 38px;
+            height: 38px;
+            border: 1px solid rgba(123, 201, 92, .25);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(245, 240, 232, .45);
+            text-decoration: none;
+            font-size: .8rem;
+            transition: all .3s;
+        }
+
+        .social-btn:hover {
+            border-color: var(--verde-neon);
+            color: var(--verde-neon);
+            transform: translateY(-3px);
+            background: rgba(123, 201, 92, .08);
+        }
+
+        .footer-col h4 {
+            font-size: .75rem;
+            font-weight: 700;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            color: var(--verde-neon);
+            margin-bottom: 1.2rem;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col ul li {
+            margin-bottom: .6rem;
+        }
+
+        .footer-col ul a {
+            color: rgba(245, 240, 232, .45);
+            text-decoration: none;
+            font-size: .875rem;
+            transition: color .3s;
+        }
+
+        .footer-col ul a:hover {
+            color: var(--branco);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, .06);
+            padding-top: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: .8rem;
+            color: rgba(245, 240, 232, .3);
+            flex-wrap: wrap;
+            gap: .5rem;
+        }
+
+        /* ====== MODAL VIDEO ====== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .92);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .3s;
+        }
+
+        .modal-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-inner {
+            position: relative;
+            width: 90%;
+            max-width: 900px;
+            aspect-ratio: 16/9;
+        }
+
+        .modal-inner iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 12px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: -45px;
+            right: 0;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: transform .2s;
+        }
+
+        .modal-close:hover {
+            transform: scale(1.2);
+        }
+
+        /* ====== POPUP PERSONALIZADO ====== */
+        .popup-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .6);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .4s;
+            backdrop-filter: blur(4px);
+        }
+
+        .popup-overlay.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .popup-box {
+            background: var(--cinza);
+            border-radius: 18px;
+            padding: 2.5rem;
+            max-width: 460px;
+            width: 90%;
+            border: 1px solid rgba(123, 201, 92, .2);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, .6);
+            transform: translateY(30px) scale(.95);
+            transition: all .4s cubic-bezier(.34, 1.56, .64, 1);
+            position: relative;
+            text-align: center;
+        }
+
+        .popup-overlay.open .popup-box {
+            transform: translateY(0) scale(1);
+        }
+
+        .popup-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .popup-title {
+            font-family: 'Fraunces', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: .7rem;
+            color: var(--branco);
+        }
+
+        .popup-desc {
+            font-size: .92rem;
+            color: rgba(245, 240, 232, .65);
+            line-height: 1.7;
+            margin-bottom: 1.8rem;
+        }
+
+        .popup-close-x {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: rgba(245, 240, 232, .4);
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: color .2s;
+            line-height: 1;
+        }
+
+        .popup-close-x:hover {
+            color: var(--branco);
+        }
+
+        .popup-actions {
+            display: flex;
+            gap: .8rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .popup-btn-primary {
+            background: var(--verde-claro);
+            color: white;
+            border: none;
+            padding: .75rem 1.8rem;
+            border-radius: 30px;
+            font-size: .9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .3s;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .popup-btn-primary:hover {
+            background: var(--verde-neon);
+            color: var(--escuro);
+            transform: translateY(-2px);
+        }
+
+        .popup-btn-secondary {
+            background: none;
+            color: rgba(245, 240, 232, .5);
+            border: 1px solid rgba(245, 240, 232, .2);
+            padding: .75rem 1.5rem;
+            border-radius: 30px;
+            font-size: .9rem;
+            cursor: pointer;
+            transition: all .3s;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .popup-btn-secondary:hover {
+            border-color: var(--branco);
+            color: var(--branco);
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--cinza);
+            border: 1px solid rgba(123, 201, 92, .3);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: .8rem;
+            max-width: 340px;
+            z-index: 9998;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all .5s cubic-bezier(.34, 1.56, .64, 1);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, .5);
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        .toast-text {
+            font-size: .875rem;
+            line-height: 1.4;
+        }
+
+        .toast-text strong {
+            color: var(--verde-neon);
+        }
+
+        /* ====== REVEAL ====== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity .7s ease, transform .7s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ====== RESPONSIVE ====== */
+        @media (max-width: 900px) {
+            .nav-links {
+                display: none;
+            }
+
+            .nav-links.open {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: rgba(8, 15, 8, .97);
+                padding: 1.5rem;
+                gap: 1.2rem;
+                border-bottom: 1px solid rgba(123, 201, 92, .15);
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .sobre-section {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .pirarucu-section,
+            .loja-section {
+                grid-template-columns: 1fr;
+            }
+
+            .pirarucu-content,
+            .loja-content {
+                padding: 3rem 5%;
+            }
+
+            .numeros-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .noticias-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .lang-switcher {
+                display: none;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .numeros-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sobre-img-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sobre-img.tall {
+                grid-row: span 1;
+            }
+
+            .sobre-img.tall img {
+                height: 200px;
+            }
+        }
+
+        /* ====== YOUTUBE FLOATING BUTTON ====== */
+        #yt-float {
+            position: fixed;
+            bottom: 32px;
+            right: 28px;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #FF0000;
+            color: #fff;
+            text-decoration: none;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 600;
+            letter-spacing: .04em;
+            padding: 11px 18px 11px 14px;
+            border-radius: 50px;
+            box-shadow: 0 4px 24px rgba(255, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.35);
+            transition: transform .2s, box-shadow .2s, background .2s;
+            cursor: none;
+        }
+
+        #yt-float:hover {
+            background: #cc0000;
+            transform: translateY(-3px) scale(1.04);
+            box-shadow: 0 8px 32px rgba(255, 0, 0, 0.55), 0 4px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        #yt-float svg {
+            flex-shrink: 0;
+            width: 26px;
+            height: 26px;
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .3));
+        }
+
+        #yt-float .yt-label {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+
+        #yt-float .yt-label span:first-child {
+            font-size: 0.65rem;
+            font-weight: 400;
+            opacity: .85;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+        }
+
+        #yt-float .yt-label span:last-child {
+            font-size: 0.88rem;
+            font-weight: 700;
+        }
+
+        #yt-float .yt-pulse {
+            position: absolute;
+            inset: 0;
+            border-radius: 50px;
+            background: #FF0000;
+            animation: yt-ping 2.4s ease-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes yt-ping {
+            0% {
+                transform: scale(1);
+                opacity: .55;
+            }
+
+            70% {
+                transform: scale(1.18);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1.18);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #yt-float .yt-label span:first-child {
+                display: none;
+            }
+
+            #yt-float {
+                padding: 11px 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Cursor Personalizado - ÚNICO (corrigido) -->
+    <div id="cursor-dot"></div>
+    <div id="cursor-ring"></div>
+    <div id="progress-bar"></div>
+
+    <!-- NAVBAR -->
+    <nav id="navbar">
+        <img src="" alt="ASPROC" class="nav-logo">
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html" class="ativo" data-i18n="nav_inicio">Início</a></li>
+            <li><a href="sobre.html" data-i18n="nav_sobre">Sobre</a></li>
+            <li><a href="programas-projetos.html" target="_blank" data-i18n="nav_projetos">Projetos</a></li>
+            <li><a href="noticias.html" data-i18n="nav_noticias">Notícias</a></li>
+            <li><a href="avisos.html" data-i18n="nav_avisos">Avisos</a></li>
+            <li><a href="trabalhe-conosco.html" data-i18n="nav_trabalhe">Trabalhe Conosco</a></li>
+            <li><a href="https://loja.asproc.org.br/" class="nav-cta" target="_blank" data-i18n="nav_loja">Loja
+                    Virtual</a></li>
+        </ul>
+        <div class="nav-right">
+            <div class="lang-switcher">
+                <button class="lang-btn active" onclick="setLang('pt')">PT</button>
+                <button class="lang-btn" onclick="setLang('en')">EN</button>
+                <button class="lang-btn" onclick="setLang('es')">ES</button>
+            </div>
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SLIDER -->
+    <section class="hero">
+        <div class="slide active"
+            style="background-image: url('images/hero-slide-01.webp')">
+            <div class="slide-overlay"></div>
+            <div class="slide-content">
+                <div class="slide-tag" data-i18n="slide1_tag">Associação desde 1994</div>
+                <h1 data-i18n="slide1_h1">Raízes profundas<br>na Amazônia</h1>
+                <p data-i18n="slide1_p">Defendendo os direitos das comunidades ribeirinhas do Médio Juruá há mais de 30
+                    anos.</p>
+                <a href="sobre.html" class="slide-btn" data-i18n="slide1_btn">Conheça nossa história</a>
+            </div>
+        </div>
+        <div class="slide"
+            style="background-image: url('images/hero-slide-02.webp')">
+            <div class="slide-overlay"></div>
+            <div class="slide-content">
+                <div class="slide-tag" data-i18n="slide2_tag">Meio Ambiente</div>
+                <h2 data-i18n="slide2_h1">Sanear Amazônia,<br>proteger a vida</h1>
+                <p data-i18n="slide2_p">Levando saneamento básico às comunidades e preservando o ecossistema amazônico.
+                </p>
+                <a href="https://www.asproc.com.br/projeto-sanear.html" class="slide-btn" target="_blank"
+                    data-i18n="slide2_btn">Ver projeto</a>
+            </div>
+        </div>
+        <div class="slide"
+            style="background-image: url('images/hero-slide-03.webp')">
+            <div class="slide-overlay"></div>
+            <div class="slide-content">
+                <div class="slide-tag" data-i18n="slide3_tag">Pesca Sustentável</div>
+                <h2 data-i18n="slide3_h1">Manejo do Pirarucu<br>no Médio Juruá</h1>
+                <p data-i18n="slide3_p">Referência nacional em manejo sustentável do maior peixe de escamas da Amazônia.
+                </p>
+                <a href="https://asproc.com.br/projeto-manejo-pirarucu" class="slide-btn" target="_blank"
+                    data-i18n="slide3_btn">Saiba mais</a>
+            </div>
+        </div>
+
+        <div class="slider-arrows">
+            <button class="arrow-btn" onclick="prevSlide()">&#8592;</button>
+            <button class="arrow-btn" onclick="nextSlide()">&#8594;</button>
+        </div>
+        <div class="slider-dots">
+            <div class="dot active" onclick="goToSlide(0)"></div>
+            <div class="dot" onclick="goToSlide(1)"></div>
+            <div class="dot" onclick="goToSlide(2)"></div>
+        </div>
+        <div class="scroll-indicator">
+            <span data-i18n="scroll_text">Scroll</span>
+            <div class="scroll-arrow"></div>
+        </div>
+    </section>
+
+    <!-- SOBRE -->
+    <section class="sobre-section" id="sobre">
+        <div class="sobre-text reveal">
+            <div class="section-label" data-i18n="sobre_label">Nossa Missão</div>
+            <h2 class="section-title" data-i18n="sobre_title">Vozes das <span>comunidades</span> ribeirinhas</h2>
+            <p class="section-desc" data-i18n="sobre_desc">A ASPROC representa e apoia os produtores agroextrativistas,
+                pescadores e ribeirinhos do Médio Juruá, promovendo desenvolvimento sustentável, geração de renda e
+                defesa dos territórios tradicionais da Amazônia.</p>
+            <div class="sobre-badges">
+                <div class="sobre-badge"><span class="icon">🌿</span><span data-i18n="badge_sustentavel">Desenvolvimento
+                        Sustentável</span></div>
+                <div class="sobre-badge"><span class="icon">🤝</span><span data-i18n="badge_direitos">Defesa de
+                        Direitos</span></div>
+                <div class="sobre-badge"><span class="icon">🐟</span><span data-i18n="badge_manejo">Manejo
+                        Sustentável</span></div>
+                <div class="sobre-badge"><span class="icon">🏘️</span><span data-i18n="badge_comunidades">64
+                        Comunidades</span></div>
+            </div>
+        </div>
+        <div class="sobre-img-grid reveal" style="transition-delay:.15s">
+            <div class="sobre-img tall">
+                <img src="images/sobre-comunidade-tall.webp"
+                    alt="Comunidades ASPROC" loading="lazy">
+            </div>
+            <div class="sobre-img">
+                <img  loading="lazy"src="images/sobre-associados.webp"
+                    alt="Projeto SABC" loading="lazy">
+            </div>
+            <div class="sobre-img">
+                <img  loading="lazy"src="images/sobre-projeto-sabc.webp"
+                    alt="Comércio Ribeirinho" loading="lazy">
+            </div>
+            <div class="badge-anos">
+                <div class="num">30+</div>
+                <div class="txt" data-i18n="anos_txt">anos</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PIRARUCU DESTAQUE -->
+    <section class="pirarucu-section" id="acoes">
+        <div class="pirarucu-img">
+            <img  loading="lazy"src="images/pirarucu-section.webp"
+                alt="Pirarucu de Manejo" loading="lazy">
+        </div>
+        <div class="pirarucu-content">
+            <div class="section-label" data-i18n="pira_label">Projeto Principal</div>
+            <h2 class="section-title reveal" data-i18n="pira_title">Manejo do <span
+                    style="color:#7fd4f5">Pirarucu</span></h2>
+            <p class="section-desc reveal" style="transition-delay:.1s" data-i18n="pira_desc">O maior peixe de escamas
+                do mundo gerenciado pelas próprias comunidades. O projeto garante renda, preserva a espécie e fortalece
+                a identidade ribeirinha.</p>
+            <div class="pirarucu-stats reveal" style="transition-delay:.2s">
+                <div class="pirarucu-stat">
+                    <div class="num">+180t</div>
+                    <p data-i18n="pira_stat1">Peixe manejado/ano</p>
+                </div>
+                <div class="pirarucu-stat">
+                    <div class="num">28</div>
+                    <p data-i18n="pira_stat2">Lagos monitorados</p>
+                </div>
+                <div class="pirarucu-stat">
+                    <div class="num">2002</div>
+                    <p data-i18n="pira_stat3">Início do projeto</p>
+                </div>
+            </div>
+            <a href="http://www.asproc.com.br/projeto-manejo-pirarucu.html" class="btn-agua reveal"
+                style="transition-delay:.3s" target="_blank" data-i18n="pira_btn">Conhecer o projeto →</a>
+        </div>
+    </section>
+
+    <!-- AÇÕES -->
+    <section class="acoes-section">
+        <div class="acoes-header reveal">
+            <div class="section-label" data-i18n="acoes_label">O Que Fazemos</div>
+            <h2 class="section-title" data-i18n="acoes_title">Nossas <span>Ações</span></h2>
+            <p class="section-desc" data-i18n="acoes_desc">Trabalhamos em frentes complementares para fortalecer as
+                comunidades ribeirinhas do Médio Juruá.</p>
+        </div>
+        <div class="cards-grid">
+            <div class="card reveal"
+                onclick="window.open('https://asproc.com.br/projeto-comercio-ribeirinho', '_blank')">
+                <div class="card-img">
+                    <img  loading="lazy"src="images/card-comercio-ribeirinho.webp"
+                        alt="Comércio Ribeirinho" loading="lazy">
+                    <div class="card-img-overlay"></div>
+                </div>
+                <div class="card-body">
+                    <div class="card-tag" data-i18n="card1_tag">Economia</div>
+                    <h3 data-i18n="card1_title">Comércio Ribeirinho</h3>
+                    <p data-i18n="card1_desc">Fortalecemos a cadeia produtiva local conectando produtores ao mercado
+                        nacional e internacional.</p>
+                    <span class="card-link" data-i18n="saiba_mais">Saiba mais →</span>
+                </div>
+            </div>
+            <div class="card reveal" style="transition-delay:.1s"
+                onclick="window.open('https://asproc.com.br/projeto-sanear', '_blank')">
+                <div class="card-img">
+                    <img  loading="lazy"src="images/card-sanear.webp"
+                        alt="Sanear Amazônia" loading="lazy">
+                    <div class="card-img-overlay"></div>
+                </div>
+                <div class="card-body">
+                    <div class="card-tag" data-i18n="card2_tag">Saneamento</div>
+                    <h3 data-i18n="card2_title">Projeto Sanear Amazônia</h3>
+                    <p data-i18n="card2_desc">Levando água tratada e saneamento básico para comunidades ribeirinhas que
+                        nunca tiveram acesso.</p>
+                    <span class="card-link" data-i18n="saiba_mais">Saiba mais →</span>
+                </div>
+            </div>
+            <div class="card reveal" style="transition-delay:.2s"
+                onclick="window.open('http://www.asproc.com.br/projeto-manejo-pirarucu.html', '_blank')">
+                <div class="card-img">
+                    <img  loading="lazy"src="images/card-manejo-pirarucu.webp"
+                        alt="Manejo do Pirarucu" loading="lazy">
+                    <div class="card-img-overlay"></div>
+                </div>
+                <div class="card-body">
+                    <div class="card-tag" data-i18n="card3_tag">Biodiversidade</div>
+                    <h3 data-i18n="card3_title">Manejo do Pirarucu</h3>
+                    <p data-i18n="card3_desc">Referência nacional em gestão comunitária de recursos pesqueiros com base
+                        científica e tradicional.</p>
+                    <span class="card-link" data-i18n="saiba_mais">Saiba mais →</span>
+                </div>
+            </div>
+            <div class="card reveal" style="transition-delay:.3s"
+                onclick="window.open('https://asproc.com.br/acesso-politicas-publicas', '_blank')">
+                <div class="card-img">
+                    <img  loading="lazy"src="images/card-politicas-publicas.webp"
+                        alt="Políticas Públicas" loading="lazy">
+                    <div class="card-img-overlay"></div>
+                </div>
+                <div class="card-body">
+                    <div class="card-tag" data-i18n="card4_tag">Política</div>
+                    <h3 data-i18n="card4_title">Acesso a Políticas Públicas</h3>
+                    <p data-i18n="card4_desc">ASPROC acessa programas Federais e Estaduais e garante a compra de
+                        produtos agroextrativistas.</p>
+                    <span class="card-link" data-i18n="saiba_mais">Saiba mais →</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- RESUMO DOS PROJETOS -->
+    <section class="projetos-section" id="projetos">
+        <div class="projetos-header reveal">
+            <div class="section-label" style="color:var(--verde-neon)">Nossos Programas</div>
+            <h2 class="section-title">Projetos em <span>Destaque</span></h2>
+            <p class="section-desc">Conheça em detalhes os projetos e programas que transformam a vida das comunidades
+                ribeirinhas do Médio Juruá.</p>
+        </div>
+
+        <div class="projetos-grid">
+
+            <!-- PIRARUCU -->
+            <div class="projeto-card reveal"
+                onclick="window.open('http://www.asproc.com.br/projeto-manejo-pirarucu.html', '_blank')">
+                <div class="projeto-card-inner">
+                    <div class="projeto-banner agua"></div>
+                    <div class="projeto-content">
+                        <div class="projeto-icon agua-bg">🐟</div>
+                        <span class="projeto-tag agua-tag">Biodiversidade · Pesca Sustentável</span>
+                        <h3 class="projeto-titulo">Manejo do Pirarucu no Médio Juruá</h3>
+                        <p class="projeto-desc">
+                            Referência nacional, este programa garante a sobrevivência do maior peixe de escamas do
+                            mundo com base científica e conhecimento tradicional. As comunidades monitoram os lagos,
+                            contam os cardumes e definem cotas de pesca sustentável — garantindo renda e conservação ao
+                            mesmo tempo. Iniciado em 1999, tornou-se modelo para toda a Amazônia brasileira.
+                        </p>
+                        <div class="projeto-badges">
+                            <span class="projeto-badge">Reservas Extrativistas</span>
+                            <span class="projeto-badge">ICMBio</span>
+                            <span class="projeto-badge">Gestão Comunitária</span>
+                        </div>
+                        <div class="projeto-stats">
+                            <div class="projeto-stat">
+                                <span class="projeto-stat-num" style="color:#7fd4f5">+12.000</span>
+                                <span class="projeto-stat-lbl">Peixes/ano</span>
+                            </div>
+                            <div class="projeto-stat">
+                                <span class="projeto-stat-num" style="color:#7fd4f5">50+</span>
+                                <span class="projeto-stat-lbl">Lagos monitorados</span>
+                            </div>
+                            <div class="projeto-stat">
+                                <span class="projeto-stat-num" style="color:#7fd4f5">1999</span>
+                                <span class="projeto-stat-lbl">Início do projeto</span>
+                            </div>
+                        </div>
+                        <a href="http://www.asproc.com.br/projeto-manejo-pirarucu.html" target="_blank"
+                            class="projeto-link agua-link">Conhecer o projeto →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SANEAR AMAZÔNIA -->
+            <div class="projeto-card reveal" style="transition-delay:.1s"
+                onclick="window.open('https://asproc.com.br/projeto-sanear', '_blank')">
+                <div class="projeto-card-inner">
+                    <div class="projeto-banner verde"></div>
+                    <div class="projeto-content">
+                        <div class="projeto-icon verde-bg">💧</div>
+                        <span class="projeto-tag verde-tag">Saneamento · Saúde</span>
+                        <h3 class="projeto-titulo">Projeto Sanear Amazônia</h3>
+                        <p class="projeto-desc">
+                            Leva água tratada e saneamento básico a comunidades ribeirinhas que nunca tiveram acesso a
+                            esse direito fundamental. O programa instala sistemas de captação, tratamento e distribuição
+                            de água, além de construir fossas biodigestoras e promover a educação sanitária nas
+                            comunidades. Um passo essencial para dignidade e saúde na floresta.
+                        </p>
+                        <div class="projeto-badges">
+                            <span class="projeto-badge">Funasa</span>
+                            <span class="projeto-badge">Governo Federal</span>
+                            <span class="projeto-badge">Saúde Pública</span>
+                        </div>
+                        <div class="projeto-stats">
+                            <div class="projeto-stat">
+                                <span class="projeto-stat-num" style="color:var(--verde-neon)">30+</span>
+                                <span class="projeto-stat-lbl">Comunidades atendidas</span>
+                            </div>
+                            <div class="projeto-stat">
+                                <span class="projeto-stat-num" style="color:var(--verde-neon)">4.000+</span>
+                                <span class="projeto-stat-lbl">Pessoas beneficiadas</span>
+                            </div>
+                            <div class="projeto-stat">
+                                <span class="projeto-stat-num" style="color:var(--verde-neon)">100%</span>
+                                <span class="projeto-stat-lbl">Água tratada</span>
+                            </div>
+                        </div>
+                        <a href="https://asproc.com.br/projeto-sanear" target="_blank"
+                            class="projeto-link verde-link">Ver o projeto →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COMÉRCIO RIBEIRINHO -->
+            <div class="projeto-card reveal" style="transition-delay:.2s"
+                onclick="window.open('https://asproc.com.br/projeto-comercio-ribeirinho', '_blank')">
+                <div class="projeto-card-inner">
+                    <div class="projeto-banner dourado"></div>
+                    <div class="projeto-content">
+                        <div class="projeto-icon dourado-bg">🌿</div>
+                        <span class="projeto-tag dourado-tag">Economia · Agroextrativismo</span>
+                        <h3 class="projeto-titulo">Comércio Ribeirinho</h3>
+                        <p class="projeto-desc">
+                            Fortalece a cadeia produtiva local conectando produtores agroextrativistas ao mercado
+                            nacional e internacional. O programa apoia a comercialização de produtos como andiroba,
+                            copaíba, açaí, castanha e pescado, garantindo preço justo e escoamento da produção. Inclui
+                            capacitação em beneficiamento, embalagem e rastreabilidade dos produtos da floresta.
+                        </p>
+                        <div class="projeto-badges">
+                            <span class="projeto-badge">PAA</span>
+                            <span class="projeto-badge">PNAE</span>
+                            <span class="projeto-badge">Mercado Justo</span>
+                            <span class="projeto-badge">Produtos Florestais</span>
+                        </div>
+                        <div class="projeto-stats">
+                            <div class="projeto-stat">
+                                <span class="projeto-stat-num" style="color:var(--dourado)">500+</span>
+                                <span class="projeto-stat-lbl">Famílias produtoras</span>
+                            </div>
+                            <div class="projeto-stat">
+                                <span class="projeto-stat-num" style="color:var(--dourado)">8</span>
+                                <span class="projeto-stat-lbl">Produtos comercializados</span>
+                            </div>
+                            <div class="projeto-stat">
+                                <span class="projeto-stat-num" style="color:var(--dourado)">2003</span>
+                                <span class="projeto-stat-lbl">Desde</span>
+                            </div>
+                        </div>
+                        <a href="https://asproc.com.br/projeto-comercio-ribeirinho" target="_blank"
+                            class="projeto-link dourado-link">Saiba mais →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- POLÍTICAS PÚBLICAS -->
+            <div class="projeto-card reveal" style="transition-delay:.3s"
+                onclick="window.open('https://asproc.com.br/acesso-politicas-publicas', '_blank')">
+                <div class="projeto-card-inner">
+                    <div class="projeto-banner terra"></div>
+                    <div class="projeto-content">
+                        <div class="projeto-icon terra-bg">🤝</div>
+                        <span class="projeto-tag terra-tag">Política · Direitos</span>
+                        <h3 class="projeto-titulo">Acesso a Políticas Públicas</h3>
+                        <p class="projeto-desc">
+                            A ASPROC atua como ponte entre as comunidades e o poder público, garantindo que
+                            agroextrativistas tenham acesso a programas federais e estaduais como Bolsa Verde, Programa
+                            de Aquisição de Alimentos (PAA), assistência técnica rural e crédito via Pronaf. O trabalho
+                            inclui mobilização, documentação e representação política das famílias ribeirinhas.
+                        </p>
+                        <div class="projeto-badges">
+                            <span class="projeto-badge">Pronaf</span>
+                            <span class="projet-badge">Bolsa Verde</span>
+                            <span class="projeto-badge">ATER</span>
+                            <span class="projeto-badge">Advocacy</span>
+                        </div>
+                        <div class="projeto-stats">
+                            <div class="projeto-stat">
+                                <span class="projeto-stat-num" style="color:#d4814e">64</span>
+                                <span class="projeto-stat-lbl">Comunidades representadas</span>
+                            </div>
+                            <div class="projeto-stat">
+                                <span class="projeto-stat-num" style="color:#d4814e">10+</span>
+                                <span class="projeto-stat-lbl">Programas acessados</span>
+                            </div>
+                            <div class="projeto-stat">
+                                <span class="projeto-stat-num" style="color:#d4814e">1994</span>
+                                <span class="projeto-stat-lbl">Atuando desde</span>
+                            </div>
+                        </div>
+                        <a href="https://asproc.com.br/acesso-politicas-publicas" target="_blank"
+                            class="projeto-link terra-link">Ver detalhes →</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- NÚMEROS -->
+    <section class="numeros-section" id="numeros">
+        <div class="section-label" style="color:#b8f5a0" data-i18n="numeros_label">Nosso Impacto</div>
+        <h2 class="section-title" data-i18n="numeros_title">Nossos <span style="color:#b8f5a0">Números</span></h2>
+        <p class="section-desc" style="margin: 0 auto" data-i18n="numeros_desc">Nossos números comprovam a importância
+            da ASPROC na vida dos trabalhadores agroextrativistas das comunidades ribeirinhas.</p>
+        <div class="numeros-grid">
+            <div class="numero-item reveal">
+                <div class="icon">👥</div><span class="num" data-target="872">0</span>
+                <p data-i18n="num1_label">Associados</p>
+            </div>
+            <div class="numero-item reveal" style="transition-delay:.1s">
+                <div class="icon">🏘️</div><span class="num" data-target="64">0</span>
+                <p data-i18n="num2_label">Comunidades ribeirinhas atendidas</p>
+            </div>
+            <div class="numero-item reveal" style="transition-delay:.2s">
+                <div class="icon">🌿</div><span class="num" data-target="4791">0</span>
+                <p data-i18n="num3_label">Pessoas beneficiadas</p>
+            </div>
+            <div class="numero-item reveal" style="transition-delay:.3s">
+                <div class="icon">🏠</div><span class="num" data-target="1304">0</span>
+                <p data-i18n="num4_label">Famílias beneficiadas</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- VAGAS -->
+    <section class="contratacao-section" id="vagas">
+        <div class="contratacao-header reveal">
+            <div class="section-label" data-i18n="vagas_label">Trabalhe Conosco</div>
+            <h2 class="section-title" data-i18n="vagas_title">Vagas em <span>Aberto</span></h2>
+            <p class="section-desc" style="margin:0 auto" data-i18n="vagas_desc">A ASPROC está com processos seletivos
+                abertos. Clique na imagem para ver os detalhes.</p>
+        </div>
+        <div class="cards-contratacao">
+            <div class="card-contratacao reveal" onclick="openVagaPopup('admin')">
+                <img  loading="lazy"src="images/vaga-admin.webp"
+                    alt="Assistente Técnico Administrativo" loading="lazy">
+            </div>
+            <div class="card-contratacao reveal" style="transition-delay:.15s" onclick="openVagaPopup('rural')">
+                <img  loading="lazy"src="images/vaga-rural.webp"
+                    alt="Assistente Técnico Rural" loading="lazy">
+            </div>
+        </div>
+    </section>
+
+    <!-- NOTÍCIAS -->
+    <section class="noticias-section" id="noticias">
+        <div class="noticias-header reveal">
+            <div>
+                <div class="section-label" data-i18n="noticias_label">Fique por Dentro</div>
+                <h2 class="section-title" data-i18n="noticias_title">Últimas <span>Notícias</span></h2>
+            </div>
+            <a href="noticias.html" class="ver-todas" data-i18n="ver_todas">Ver todas as notícias →</a>
+        </div>
+        <div class="noticias-grid">
+            <a href="noticias.html" class="noticia-card reveal">
+                <div class="noticia-img"><img
+                         loading="lazy"src="images/noticia-01.webp"
+                        alt="III Encontro" loading="lazy"></div>
+                <div class="noticia-body">
+                    <div class="noticia-data">Fevereiro 2026</div>
+                    <h3 data-i18n="noticia1_title">III Encontro da Cadeia Produtiva de Oleaginosas do Médio Juruá</h3>
+                </div>
+            </a>
+            <a href="noticias.html" class="noticia-card reveal" style="transition-delay:.1s">
+                <div class="noticia-img"><img
+                         loading="lazy"src="images/noticia-02.webp"
+                        alt="SABC" loading="lazy"></div>
+                <div class="noticia-body">
+                    <div class="noticia-data">Janeiro 2026</div>
+                    <h3 data-i18n="noticia2_title">Resultados do Sistema Agroflorestal Biodiverso nas Comunidades</h3>
+                </div>
+            </a>
+            <a href="noticias.html" class="noticia-card reveal" style="transition-delay:.2s">
+                <div class="noticia-img"><img
+                         loading="lazy"src="images/noticia-03.webp"
+                        alt="Comércio" loading="lazy"></div>
+                <div class="noticia-body">
+                    <div class="noticia-data">Dezembro 2025</div>
+                    <h3 data-i18n="noticia3_title">Fortalecimento do Comércio Ribeirinho no Médio Juruá</h3>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- LOJA -->
+    <section class="loja-section">
+        <div class="loja-content">
+            <div class="section-label" data-i18n="loja_label">Produtos da Amazônia</div>
+            <h2 class="section-title reveal" data-i18n="loja_title">Produtos direto da <span
+                    style="color:var(--dourado)">floresta</span></h2>
+            <p class="section-desc reveal" style="transition-delay:.1s" data-i18n="loja_desc">Adquira produtos
+                agroextrativistas sustentáveis das comunidades ribeirinhas: óleos, castanhas, artesanatos e muito mais.
+            </p>
+            <a href="https://loja.asproc.org.br/" class="btn-loja reveal" style="transition-delay:.2s" target="_blank"
+                data-i18n="loja_btn">🛒 Visitar a Loja</a>
+        </div>
+        <div class="loja-img">
+            <img  loading="lazy"src="images/loja-virtual.webp"
+                alt="Produtos da Amazônia" loading="lazy">
+        </div>
+    </section>
+
+    <!-- VIDEO -->
+    <section class="video-section">
+        <div class="section-label" data-i18n="video_label">Quem Somos</div>
+        <h2 class="section-title reveal" data-i18n="video_title">Assista ao nosso <span>documentário</span></h2>
+        <p class="section-desc reveal" style="transition-delay:.1s" data-i18n="video_desc">Conheça a realidade das
+            comunidades do Médio Juruá e o trabalho transformador da ASPROC.</p>
+        <div class="video-wrapper reveal" style="transition-delay:.2s" onclick="openVideoModal()">
+            <img  loading="lazy"src="images/video-thumb.webp"
+                alt="Assistir documentário" class="video-thumb">
+            <button class="play-btn" aria-label="Assistir vídeo"></button>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer id="contato">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <img  loading="lazy"src="images/footer-logo.webp"
+                    alt="ASPROC">
+                <p data-i18n="footer_desc">Associação dos Produtores Rurais de Carauari. Defendendo os direitos e o modo
+                    de vida das comunidades tradicionais do Médio Juruá desde 1994.</p>
+                <div class="social-links">
+                    <a href="https://www.facebook.com/asproc.jurua" class="social-btn" target="_blank"
+                        title="Facebook">f</a>
+                    <a href="https://www.instagram.com/asproc/" class="social-btn" target="_blank"
+                        title="Instagram">in</a>
+                    <a href="https://www.youtube.com/@asproc" class="social-btn" target="_blank" title="YouTube">▶</a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h3 data-i18n="footer_nav">Navegação</h3>
+                <ul>
+                    <li><a href="sobre.html" data-i18n="nav_sobre">Sobre nós</a></li>
+                    <li><a href="#acoes" data-i18n="footer_acoes">Nossas Ações</a></li>
+                    <li><a href="#numeros" data-i18n="numeros_title_short">Números</a></li>
+                    <li><a href="noticias.html" data-i18n="nav_noticias">Notícias</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3 data-i18n="footer_projetos">Projetos</h3>
+                <ul>
+                    <li><a href="http://www.asproc.com.br/projeto-manejo-pirarucu.html" target="_blank">Manejo do
+                            Pirarucu</a></li>
+                    <li><a href="https://www.asproc.com.br/projeto-sanear.html" target="_blank">Sanear Amazônia</a>
+                    </li>
+                    <li><a href="https://asproc.com.br/projeto-comercio-ribeirinho" target="_blank">Comércio
+                            Ribeirinho</a>
+                    </li>
+                    <li><a href="https://asproc.com.br/acesso-politicas-publicas" target="_blank">Políticas
+                            Públicas</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3 data-i18n="footer_contato">Contato</h3>
+                <ul>
+                    <li><a href="/cdn-cgi/l/email-protection#d1b2bebfa5b0a5be91b0a2a1a3beb2ffbea3b6ffb3a3"><span
+                                class="__cf_email__"
+                                data-cfemail="82e1edecf6e3f6edc2e3f1f2f0ede1acedf0e5ace0f0">[email&#160;protected]</span></a>
+                    </li>
+                    <li><a href="https://www.asproc.com.br" target="_blank">asproc.com.br</a></li>
+                    <li><a href="https://loja.asproc.org.br/" target="_blank" data-i18n="nav_loja">Loja Virtual</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span data-i18n="footer_copy">© 2025 ASPROC – Associação dos Produtores Rurais de Carauari. Todos os
+                direitos reservados.</span>
+            <span>Médio Juruá, Amazônia 🌿</span>
+        </div>
+    </footer>
+
+    <!-- MODAL VIDEO -->
+    <div class="modal-overlay" id="videoModal" onclick="closeVideoModal(event)">
+        <div class="modal-inner">
+            <button class="modal-close" onclick="closeVideoModal()">✕</button>
+            <iframe id="videoFrame" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <!-- POPUP VAGA -->
+    <div class="popup-overlay" id="vagaPopup">
+        <div class="popup-box">
+            <button class="popup-close-x" onclick="closePopup('vagaPopup')">✕</button>
+            <div class="popup-icon">📋</div>
+            <h3 class="popup-title" id="vagaPopupTitle">Vaga em Aberto</h3>
+            <p class="popup-desc" id="vagaPopupDesc">Confira os detalhes desta vaga e envie sua candidatura.</p>
+            <div class="popup-actions">
+                <a href="trabalhe-conosco.html" class="popup-btn-primary" data-i18n="popup_candidatar">Candidatar-se</a>
+                <button class="popup-btn-secondary" onclick="closePopup('vagaPopup')"
+                    data-i18n="popup_fechar">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toastMsg">
+        <span class="toast-icon">🌿</span>
+        <div class="toast-text" id="toastText"></div>
+    </div>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script>
+        /* ==============================
+           CURSOR PERSONALIZADO — CORRIGIDO
+        ============================== */
+        (function () {
+            const dot = document.getElementById('cursor-dot');
+            const ring = document.getElementById('cursor-ring');
+            let mouseX = 0, mouseY = 0;
+            let ringX = 0, ringY = 0;
+            let rafId;
+
+            document.addEventListener('mousemove', e => {
+                mouseX = e.clientX; mouseY = e.clientY;
+                dot.style.left = mouseX + 'px';
+                dot.style.top = mouseY + 'px';
+            });
+
+            function animateRing() {
+                ringX += (mouseX - ringX) * 0.12;
+                ringY += (mouseY - ringY) * 0.12;
+                ring.style.left = ringX + 'px';
+                ring.style.top = ringY + 'px';
+                rafId = requestAnimationFrame(animateRing);
+            }
+            animateRing();
+
+            document.querySelectorAll('a, button, .card, .numero-item, .noticia-card, .card-contratacao, .sobre-badge').forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    dot.classList.add('hovered');
+                    ring.classList.add('hovered');
+                });
+                el.addEventListener('mouseleave', () => {
+                    dot.classList.remove('hovered');
+                    ring.classList.remove('hovered');
+                });
+            });
+
+            document.addEventListener('mousedown', () => {
+                dot.classList.add('clicked');
+                ring.classList.add('clicked');
+            });
+            document.addEventListener('mouseup', () => {
+                dot.classList.remove('clicked');
+                ring.classList.remove('clicked');
+            });
+
+            document.addEventListener('mouseleave', () => {
+                dot.style.opacity = '0'; ring.style.opacity = '0';
+            });
+            document.addEventListener('mouseenter', () => {
+                dot.style.opacity = '1'; ring.style.opacity = '0.55';
+            });
+        })();
+
+        /* ==============================
+           PROGRESS BAR
+        ============================== */
+        window.addEventListener('scroll', () => {
+            const h = document.documentElement;
+            const pct = (window.scrollY / (h.scrollHeight - h.clientHeight)) * 100;
+            document.getElementById('progress-bar').style.width = pct + '%';
+        });
+
+        /* ==============================
+           NAVBAR
+        ============================== */
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 50);
+        });
+        function toggleMenu() {
+            document.getElementById('navLinks').classList.toggle('open');
+        }
+
+        /* ==============================
+           SLIDER
+        ============================== */
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.dot');
+        let autoplay;
+
+        function goToSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            dots[currentSlide].classList.remove('active');
+            currentSlide = (n + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+            dots[currentSlide].classList.add('active');
+        }
+        function nextSlide() { goToSlide(currentSlide + 1); }
+        function prevSlide() { goToSlide(currentSlide - 1); }
+
+        autoplay = setInterval(nextSlide, 5500);
+        document.querySelector('.hero').addEventListener('mouseenter', () => clearInterval(autoplay));
+        document.querySelector('.hero').addEventListener('mouseleave', () => { autoplay = setInterval(nextSlide, 5500); });
+
+        /* ==============================
+           SCROLL REVEAL
+        ============================== */
+        const revealObs = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+        /* ==============================
+           COUNTER
+        ============================== */
+        function animateCounter(el, target) {
+            const dur = 2200; const start = performance.now();
+            function step(now) {
+                const t = Math.min((now - start) / dur, 1);
+                const ease = 1 - Math.pow(1 - t, 3);
+                el.textContent = Math.floor(ease * target).toLocaleString('pt-BR');
+                if (t < 1) requestAnimationFrame(step);
+            }
+            requestAnimationFrame(step);
+        }
+        const counterObs = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting) {
+                    e.target.querySelectorAll('[data-target]').forEach(n => animateCounter(n, +n.dataset.target));
+                    counterObs.unobserve(e.target);
+                }
+            });
+        }, { threshold: 0.3 });
+        const numSec = document.querySelector('.numeros-section');
+        if (numSec) counterObs.observe(numSec);
+
+        /* ==============================
+           VIDEO MODAL
+        ============================== */
+        function openVideoModal() {
+            document.getElementById('videoModal').classList.add('open');
+            document.getElementById('videoFrame').src = 'https://www.youtube.com/embed/c2i6P2x8kW4?autoplay=1';
+            document.body.style.overflow = 'hidden';
+        }
+        function closeVideoModal(e) {
+            if (!e || e.target === document.getElementById('videoModal') || e.target.classList.contains('modal-close')) {
+                document.getElementById('videoModal').classList.remove('open');
+                document.getElementById('videoFrame').src = '';
+                document.body.style.overflow = '';
+            }
+        }
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') { closeVideoModal(); closePopup('vagaPopup'); }
+        });
+
+        /* ==============================
+           POPUP VAGAS
+        ============================== */
+        const vagaInfo = {
+            admin: {
+                title: 'Assistente Técnico Administrativo e Financeiro',
+                desc: 'Vaga para profissional com experiência administrativa e financeira. Prazo de inscrição: 23 de Fevereiro de 2026.'
+            },
+            rural: {
+                title: 'Assistente Técnico Rural',
+                desc: 'Vaga para profissional com conhecimento em práticas agrícolas e extensão rural. Prazo de inscrição: 23 de Fevereiro de 2026.'
+            }
+        };
+
+        function openVagaPopup(tipo) {
+            const info = vagaInfo[tipo];
+            document.getElementById('vagaPopupTitle').textContent = info.title;
+            document.getElementById('vagaPopupDesc').textContent = info.desc;
+            document.getElementById('vagaPopup').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        function closePopup(id) {
+            document.getElementById(id).classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        /* ==============================
+           TOAST
+        ============================== */
+        function showToast(msg) {
+            const t = document.getElementById('toastMsg');
+            document.getElementById('toastText').innerHTML = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 4000);
+        }
+
+        // Mostrar toast de boas-vindas após 3s
+        setTimeout(() => {
+            showToast('<strong>Bem-vindo à ASPROC!</strong><br>Conheça nossas vagas abertas.');
+        }, 3000);
+
+        /* ==============================
+           MULTILÍNGUE
+        ============================== */
+        const i18n = {
+            pt: {
+                nav_inicio: 'Início', nav_sobre: 'Sobre', nav_noticias: 'Notícias',
+                nav_avisos: 'Avisos', nav_trabalhe: 'Trabalhe Conosco', nav_loja: 'Loja Virtual',
+                slide1_tag: 'Associação desde 1994', slide1_h1: 'Raízes profundas<br>na Amazônia',
+                slide1_p: 'Defendendo os direitos das comunidades ribeirinhas do Médio Juruá há mais de 30 anos.',
+                slide1_btn: 'Conheça nossa história',
+                slide2_tag: 'Meio Ambiente', slide2_h1: 'Sanear Amazônia,<br>proteger a vida',
+                slide2_p: 'Levando saneamento básico às comunidades e preservando o ecossistema amazônico.',
+                slide2_btn: 'Ver projeto',
+                slide3_tag: 'Pesca Sustentável', slide3_h1: 'Manejo do Pirarucu<br>no Médio Juruá',
+                slide3_p: 'Referência nacional em manejo sustentável do maior peixe de escamas da Amazônia.',
+                slide3_btn: 'Saiba mais',
+                scroll_text: 'Scroll',
+                sobre_label: 'Nossa Missão', sobre_title: 'Vozes das <span>comunidades</span> ribeirinhas',
+                sobre_desc: 'A ASPROC representa e apoia os produtores agroextrativistas, pescadores e ribeirinhos do Médio Juruá, promovendo desenvolvimento sustentável, geração de renda e defesa dos territórios tradicionais da Amazônia.',
+                badge_sustentavel: 'Desenvolvimento Sustentável', badge_direitos: 'Defesa de Direitos',
+                badge_manejo: 'Manejo Sustentável', badge_comunidades: '64 Comunidades', anos_txt: 'anos',
+                pira_label: 'Projeto Principal', pira_title: 'Manejo do <span style="color:#7fd4f5">Pirarucu</span>',
+                pira_desc: 'O maior peixe de escamas do mundo gerenciado pelas próprias comunidades.',
+                pira_stat1: 'Peixe manejado/ano', pira_stat2: 'Lagos monitorados', pira_stat3: 'Início do projeto',
+                pira_btn: 'Conhecer o projeto →',
+                acoes_label: 'O Que Fazemos', acoes_title: 'Nossas <span>Ações</span>',
+                acoes_desc: 'Trabalhamos em frentes complementares para fortalecer as comunidades ribeirinhas do Médio Juruá.',
+                card1_tag: 'Economia', card1_title: 'Comércio Ribeirinho',
+                card1_desc: 'Fortalecemos a cadeia produtiva local conectando produtores ao mercado.',
+                card2_tag: 'Saneamento', card2_title: 'Projeto Sanear Amazônia',
+                card2_desc: 'Levando água tratada e saneamento às comunidades ribeirinhas.',
+                card3_tag: 'Biodiversidade', card3_title: 'Manejo do Pirarucu',
+                card3_desc: 'Referência nacional em gestão comunitária de recursos pesqueiros.',
+                card4_tag: 'Política', card4_title: 'Acesso a Políticas Públicas',
+                card4_desc: 'Garantindo programas Federais e Estaduais para os agroextrativistas.',
+                saiba_mais: 'Saiba mais →',
+                numeros_label: 'Nosso Impacto', numeros_title: 'Nossos <span>Números</span>',
+                numeros_title_short: 'Números',
+                numeros_desc: 'Nossos números comprovam a importância da ASPROC na vida dos trabalhadores.',
+                num1_label: 'Associados', num2_label: 'Comunidades ribeirinhas',
+                num3_label: 'Pessoas beneficiadas', num4_label: 'Famílias beneficiadas',
+                vagas_label: 'Trabalhe Conosco', vagas_title: 'Vagas em <span>Aberto</span>',
+                vagas_desc: 'A ASPROC está com processos seletivos abertos. Clique na imagem para ver os detalhes.',
+                noticias_label: 'Fique por Dentro', noticias_title: 'Últimas <span>Notícias</span>',
+                ver_todas: 'Ver todas as notícias →',
+                noticia1_title: 'III Encontro da Cadeia Produtiva de Oleaginosas do Médio Juruá',
+                noticia2_title: 'Resultados do Sistema Agroflorestal Biodiverso nas Comunidades',
+                noticia3_title: 'Fortalecimento do Comércio Ribeirinho no Médio Juruá',
+                loja_label: 'Produtos da Amazônia', loja_title: 'Produtos direto da <span style="color:var(--dourado)">floresta</span>',
+                loja_desc: 'Adquira produtos agroextrativistas sustentáveis das comunidades ribeirinhas.',
+                loja_btn: '🛒 Visitar a Loja',
+                video_label: 'Quem Somos', video_title: 'Assista ao nosso <span>documentário</span>',
+                video_desc: 'Conheça a realidade das comunidades do Médio Juruá e o trabalho transformador da ASPROC.',
+                footer_desc: 'Associação dos Produtores Rurais de Carauari. Defendendo os direitos das comunidades tradicionais do Médio Juruá desde 1994.',
+                footer_nav: 'Navegação', footer_acoes: 'Nossas Ações', footer_projetos: 'Projetos', footer_contato: 'Contato',
+                footer_copy: '© 2025 ASPROC – Associação dos Produtores Rurais de Carauari. Todos os direitos reservados.',
+                popup_candidatar: 'Candidatar-se', popup_fechar: 'Fechar'
+            },
+            en: {
+                nav_inicio: 'Home', nav_sobre: 'About', nav_noticias: 'News',
+                nav_avisos: 'Notices', nav_trabalhe: 'Work With Us', nav_loja: 'Online Store',
+                slide1_tag: 'Association since 1994', slide1_h1: 'Deep roots<br>in the Amazon',
+                slide1_p: 'Defending the rights of riverside communities in the Middle Juruá for over 30 years.',
+                slide1_btn: 'Our story',
+                slide2_tag: 'Environment', slide2_h1: 'Sanitate the Amazon,<br>protect life',
+                slide2_p: 'Bringing basic sanitation to communities and preserving the Amazonian ecosystem.',
+                slide2_btn: 'See project',
+                slide3_tag: 'Sustainable Fishing', slide3_h1: 'Pirarucu Management<br>in the Middle Juruá',
+                slide3_p: "National reference in sustainable management of the Amazon's largest scaled fish.",
+                slide3_btn: 'Learn more',
+                scroll_text: 'Scroll',
+                sobre_label: 'Our Mission', sobre_title: 'Voices of the <span>riverside</span> communities',
+                sobre_desc: "ASPROC represents and supports agroextractivist producers, fishermen and riverside communities of the Middle Juruá, promoting sustainable development and defending traditional Amazonian territories.",
+                badge_sustentavel: 'Sustainable Development', badge_direitos: 'Rights Defense',
+                badge_manejo: 'Sustainable Management', badge_comunidades: '64 Communities', anos_txt: 'years',
+                pira_label: 'Main Project', pira_title: 'Pirarucu <span style="color:#7fd4f5">Management</span>',
+                pira_desc: "The world's largest scaled fish managed by the communities themselves.",
+                pira_stat1: 'Fish managed/year', pira_stat2: 'Monitored lakes', pira_stat3: 'Project start',
+                pira_btn: 'Learn about the project →',
+                acoes_label: 'What We Do', acoes_title: 'Our <span>Actions</span>',
+                acoes_desc: 'We work on complementary fronts to strengthen riverside communities.',
+                card1_tag: 'Economy', card1_title: 'Riverside Trade',
+                card1_desc: 'We strengthen the local production chain connecting producers to markets.',
+                card2_tag: 'Sanitation', card2_title: 'Sanitate Amazon Project',
+                card2_desc: 'Bringing treated water and sanitation to riverside communities.',
+                card3_tag: 'Biodiversity', card3_title: 'Pirarucu Management',
+                card3_desc: 'National reference in community-based fishery resource management.',
+                card4_tag: 'Policy', card4_title: 'Access to Public Policies',
+                card4_desc: 'Ensuring Federal and State programs for agroextractivists.',
+                saiba_mais: 'Learn more →',
+                numeros_label: 'Our Impact', numeros_title: 'Our <span>Numbers</span>',
+                numeros_title_short: 'Numbers',
+                numeros_desc: "Our numbers prove ASPROC's importance in the lives of agroextractivist workers.",
+                num1_label: 'Members', num2_label: 'Riverside communities',
+                num3_label: 'People benefited', num4_label: 'Families benefited',
+                vagas_label: 'Work With Us', vagas_title: 'Open <span>Positions</span>',
+                vagas_desc: 'ASPROC has open selection processes. Click on the image for details.',
+                noticias_label: 'Stay Updated', noticias_title: 'Latest <span>News</span>',
+                ver_todas: 'See all news →',
+                noticia1_title: '3rd Meeting of the Oilseed Production Chain of the Middle Juruá',
+                noticia2_title: 'Results of the Biodiverse Agroforestry System in Communities',
+                noticia3_title: 'Strengthening Riverside Trade in the Middle Juruá',
+                loja_label: 'Amazon Products', loja_title: 'Products straight from the <span style="color:var(--dourado)">forest</span>',
+                loja_desc: 'Buy sustainable agroextractivist products from riverside communities.',
+                loja_btn: '🛒 Visit the Store',
+                video_label: 'Who We Are', video_title: 'Watch our <span>documentary</span>',
+                video_desc: 'Get to know the reality of Middle Juruá communities and ASPROC\'s transformative work.',
+                footer_desc: 'Association of Rural Producers of Carauari. Defending the rights of traditional communities of the Middle Juruá since 1994.',
+                footer_nav: 'Navigation', footer_acoes: 'Our Actions', footer_projetos: 'Projects', footer_contato: 'Contact',
+                footer_copy: '© 2025 ASPROC – Association of Rural Producers of Carauari. All rights reserved.',
+                popup_candidatar: 'Apply Now', popup_fechar: 'Close'
+            },
+            es: {
+                nav_inicio: 'Inicio', nav_sobre: 'Sobre', nav_noticias: 'Noticias',
+                nav_avisos: 'Avisos', nav_trabalhe: 'Trabaja Con Nosotros', nav_loja: 'Tienda Virtual',
+                slide1_tag: 'Asociación desde 1994', slide1_h1: 'Raíces profundas<br>en la Amazonia',
+                slide1_p: 'Defendiendo los derechos de las comunidades ribereñas del Medio Juruá por más de 30 años.',
+                slide1_btn: 'Conoce nuestra historia',
+                slide2_tag: 'Medio Ambiente', slide2_h1: 'Sanear la Amazonia,<br>proteger la vida',
+                slide2_p: 'Llevando saneamiento básico a las comunidades y preservando el ecosistema amazónico.',
+                slide2_btn: 'Ver proyecto',
+                slide3_tag: 'Pesca Sostenible', slide3_h1: 'Manejo del Paiche<br>en el Medio Juruá',
+                slide3_p: 'Referencia nacional en manejo sostenible del mayor pez de escamas de la Amazonia.',
+                slide3_btn: 'Saber más',
+                scroll_text: 'Desplazar',
+                sobre_label: 'Nuestra Misión', sobre_title: 'Voces de las <span>comunidades</span> ribereñas',
+                sobre_desc: 'ASPROC representa y apoya a productores agroextractivos, pescadores y ribereños del Medio Juruá, promoviendo el desarrollo sostenible y la defensa de los territorios tradicionales amazónicos.',
+                badge_sustentavel: 'Desarrollo Sostenible', badge_direitos: 'Defensa de Derechos',
+                badge_manejo: 'Manejo Sostenible', badge_comunidades: '64 Comunidades', anos_txt: 'años',
+                pira_label: 'Proyecto Principal', pira_title: 'Manejo del <span style="color:#7fd4f5">Paiche</span>',
+                pira_desc: 'El mayor pez de escamas del mundo gestionado por las propias comunidades.',
+                pira_stat1: 'Pez manejado/año', pira_stat2: 'Lagos monitoreados', pira_stat3: 'Inicio del proyecto',
+                pira_btn: 'Conocer el proyecto →',
+                acoes_label: 'Lo Que Hacemos', acoes_title: 'Nuestras <span>Acciones</span>',
+                acoes_desc: 'Trabajamos en frentes complementarios para fortalecer las comunidades ribereñas.',
+                card1_tag: 'Economía', card1_title: 'Comercio Ribereño',
+                card1_desc: 'Fortalecemos la cadena productiva local conectando productores al mercado.',
+                card2_tag: 'Saneamiento', card2_title: 'Proyecto Sanear Amazonia',
+                card2_desc: 'Llevando agua tratada y saneamiento a las comunidades ribereñas.',
+                card3_tag: 'Biodiversidad', card3_title: 'Manejo del Paiche',
+                card3_desc: 'Referencia nacional en gestión comunitaria de recursos pesqueros.',
+                card4_tag: 'Política', card4_title: 'Acceso a Políticas Públicas',
+                card4_desc: 'Garantizando programas Federales y Estatales para los agroextractivos.',
+                saiba_mais: 'Saber más →',
+                numeros_label: 'Nuestro Impacto', numeros_title: 'Nuestros <span>Números</span>',
+                numeros_title_short: 'Números',
+                numeros_desc: 'Nuestros números comprueban la importancia de ASPROC en la vida de los trabajadores.',
+                num1_label: 'Asociados', num2_label: 'Comunidades ribereñas',
+                num3_label: 'Personas beneficiadas', num4_label: 'Familias beneficiadas',
+                vagas_label: 'Trabaja Con Nosotros', vagas_title: 'Vacantes <span>Abiertas</span>',
+                vagas_desc: 'ASPROC tiene procesos de selección abiertos. Haz clic en la imagen para ver los detalles.',
+                noticias_label: 'Mantente Informado', noticias_title: 'Últimas <span>Noticias</span>',
+                ver_todas: 'Ver todas las noticias →',
+                noticia1_title: 'III Encuentro de la Cadena Productiva de Oleaginosas del Medio Juruá',
+                noticia2_title: 'Resultados del Sistema Agroforestal Biodiverso en las Comunidades',
+                noticia3_title: 'Fortalecimiento del Comercio Ribereño en el Medio Juruá',
+                loja_label: 'Productos de la Amazonia', loja_title: 'Productos directos del <span style="color:var(--dourado)">bosque</span>',
+                loja_desc: 'Compra productos agroextractivos sostenibles de las comunidades ribereñas.',
+                loja_btn: '🛒 Visitar la Tienda',
+                video_label: 'Quiénes Somos', video_title: 'Mira nuestro <span>documental</span>',
+                video_desc: 'Conoce la realidad de las comunidades del Medio Juruá y el trabajo transformador de ASPROC.',
+                footer_desc: 'Asociación de Productores Rurales de Carauari. Defendiendo los derechos de las comunidades tradicionales del Medio Juruá desde 1994.',
+                footer_nav: 'Navegación', footer_acoes: 'Nuestras Acciones', footer_projetos: 'Proyectos', footer_contato: 'Contacto',
+                footer_copy: '© 2025 ASPROC – Asociación de Productores Rurales de Carauari. Todos los derechos reservados.',
+                popup_candidatar: 'Postularse', popup_fechar: 'Cerrar'
+            }
+        };
+
+        let currentLang = 'pt';
+
+        // ── Carrega textos personalizados do Supabase ──────────────────
+        const _SB_URL = 'https://wiatqtiyiznscjyoxxww.supabase.co';
+        const _SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpYXRxdGl5aXpuc2NqeW94eHd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1Njc0MDEsImV4cCI6MjA5MTE0MzQwMX0.xgaaZWX5kG3XowDtpR9Xd8S2S0nV-JTnv4ZwnP33PY8';
+
+        async function loadTextosDinamicos() {
+            try {
+                const res = await fetch(
+                    `${_SB_URL}/rest/v1/site_textos?select=lang,chave,valor`,
+                    { headers: { 'apikey': _SB_KEY, 'Authorization': 'Bearer ' + _SB_KEY } }
+                );
+                if (!res.ok) return;
+                const rows = await res.json();
+                rows.forEach(({ lang, chave, valor }) => {
+                    if (translations[lang]) translations[lang][chave] = valor;
+                });
+            } catch (e) {
+                console.warn('[ASPROC] textos dinâmicos indisponíveis:', e.message);
+            }
+        }
+
+        function setLang(lang) {
+            currentLang = lang;
+            document.documentElement.lang = lang === 'pt' ? 'pt-BR' : lang;
+            document.querySelectorAll('.lang-btn').forEach((btn, i) => {
+                btn.classList.toggle('active', ['pt', 'en', 'es'][i] === lang);
+            });
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                const translation = translations[lang] && translations[lang][key];
+                if (translation !== undefined) {
+                    el.innerHTML = translation;
+                }
+            });
+        }
+
+        // Carrega textos do banco, depois aplica idioma
+        loadTextosDinamicos().then(() => setLang(currentLang));
+    </script>
+
+    <!-- Botão flutuante YouTube -->
+    <a id="yt-float" href="https://www.youtube.com/@asproc154" target="_blank" rel="noopener"
+        title="Siga o canal da ASPROC no YouTube">
+        <div class="yt-pulse"></div>
+        <svg viewBox="0 0 24 24" fill="#fff" xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+        </svg>
+        <div class="yt-label">
+            <span>Siga nosso canal</span>
+            <span>@asproc154</span>
+        </div>
+    </a>
+</body>
+
+</html>

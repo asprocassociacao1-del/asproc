@@ -1,0 +1,3367 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <title>Programas e Projetos – ASPROC | Desenvolvimento Sustentável na Amazônia</title>
+  <meta name="description" content="Conheça os projetos da ASPROC: manejo do pirarucu, saneamento, comércio ribeirinho, açaí manejado e mais. Iniciativas que transformam comunidades no Médio Juruá há 30 anos.">
+  <link rel="canonical" href="https://www.asproc.com.br/programas-projetos.html">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.asproc.com.br/programas-projetos.html">
+  <meta property="og:title" content="Programas e Projetos – ASPROC | Desenvolvimento Sustentável na Amazônia">
+  <meta property="og:description" content="Conheça os projetos da ASPROC: manejo do pirarucu, saneamento, comércio ribeirinho, açaí manejado e mais. Iniciativas que transformam comunidades no Médio Juruá há 30 anos.">
+  <meta property="og:image" content="https://www.asproc.com.br/images/card-manejo-pirarucu.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:site_name" content="ASPROC">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Programas e Projetos – ASPROC | Desenvolvimento Sustentável na Amazônia">
+  <meta name="twitter:description" content="Conheça os projetos da ASPROC: manejo do pirarucu, saneamento, comércio ribeirinho, açaí manejado e mais. Iniciativas que transformam comunidades no Médio Juruá há 30 anos.">
+  <meta name="twitter:image" content="https://www.asproc.com.br/images/card-manejo-pirarucu.webp">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Open Graph / WhatsApp / Telegram / Facebook -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --verde: #2d6a2d;
+      --verde-claro: #4a9e3f;
+      --verde-neon: #7bc95c;
+      --dourado: #c8a84b;
+      --terra: #8b4513;
+      --agua: #1a6b8a;
+      --agua-claro: #3a9bbf;
+      --branco: #f5f0e8;
+      --escuro: #0f1a0f;
+      --cinza: #1e2e1e;
+      --cinza2: #2a3a2a;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--escuro);
+      color: var(--branco);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── CURSOR ── */
+    #cursor-dot {
+      width: 10px;
+      height: 10px;
+      background: var(--verde-neon);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 99999;
+      transform: translate(-50%, -50%);
+      transition: width .15s, height .15s, background .15s;
+      mix-blend-mode: screen;
+    }
+
+    #cursor-ring {
+      width: 38px;
+      height: 38px;
+      border: 2px solid var(--verde-neon);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 99998;
+      transform: translate(-50%, -50%);
+      transition: width .25s ease, height .25s ease, border-color .25s, opacity .25s;
+      opacity: .55;
+    }
+
+    #cursor-dot.hovered {
+      width: 6px;
+      height: 6px;
+      background: white;
+    }
+
+    #cursor-ring.hovered {
+      width: 56px;
+      height: 56px;
+      border-color: white;
+      opacity: .85;
+    }
+
+    @media (hover: none) {
+      body {
+        cursor: auto;
+      }
+
+      #cursor-dot,
+      #cursor-ring {
+        display: none;
+      }
+    }
+
+    /* ── PROGRESS BAR ── */
+    #progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--verde-claro), var(--verde-neon));
+      z-index: 10001;
+      width: 0%;
+      transition: width .1s;
+    }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      padding: 0 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+      background: rgba(10, 20, 10, .88);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(123, 201, 92, .12);
+      transition: all .35s
+    }
+
+    nav.scrolled {
+      background: rgba(8, 15, 8, .97);
+      height: 60px
+    }
+
+    .nav-logo {
+      height: 44px;
+      object-fit: contain
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.8rem;
+      list-style: none
+    }
+
+    .nav-links a {
+      color: rgba(245, 240, 232, .7);
+      text-decoration: none;
+      font-size: .82rem;
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      transition: color .3s;
+      position: relative
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--verde-neon);
+      transition: width .3s
+    }
+
+    .nav-links a:hover,
+    .nav-links a.ativo {
+      color: var(--verde-neon)
+    }
+
+    .nav-links a:hover::after,
+    .nav-links a.ativo::after {
+      width: 100%
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem
+    }
+
+    .nav-cta {
+      background: var(--verde-claro) !important;
+      color: #fff !important;
+      padding: .45rem 1.1rem;
+      border-radius: 30px;
+      font-weight: 600 !important;
+      font-size: .82rem !important;
+      transition: background .3s, transform .2s !important
+    }
+
+    .nav-cta:hover {
+      background: var(--verde-neon) !important;
+      transform: translateY(-2px);
+      color: var(--escuro) !important
+    }
+
+    .nav-cta::after {
+      display: none !important
+    }
+
+    .lang-switcher {
+      display: flex;
+      gap: 4px
+    }
+
+    .lang-btn {
+      background: none;
+      border: 1px solid rgba(123, 201, 92, .3);
+      color: rgba(245, 240, 232, .5);
+      font-size: .72rem;
+      font-weight: 600;
+      padding: 3px 7px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all .25s;
+      font-family: 'DM Sans', sans-serif
+    }
+
+    .lang-btn:hover,
+    .lang-btn.active {
+      border-color: var(--verde-neon);
+      color: var(--verde-neon);
+      background: rgba(123, 201, 92, .08)
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px
+    }
+
+    .hamburger span {
+      width: 26px;
+      height: 2px;
+      background: var(--branco);
+      border-radius: 2px;
+      transition: all .3s
+    }
+
+    /* HERO */
+
+    .hero-projetos {
+      min-height: 100vh;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: var(--escuro);
+    }
+
+    .hero-canvas {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 40%, rgba(45, 106, 45, .4) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at 80% 60%, rgba(26, 107, 138, .25) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 40% at 50% 80%, rgba(200, 168, 75, .12) 0%, transparent 50%);
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(123, 201, 92, .04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(123, 201, 92, .04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      animation: gridMove 20s linear infinite;
+    }
+
+    @keyframes gridMove {
+      0% {
+        background-position: 0 0;
+      }
+
+      100% {
+        background-position: 60px 60px;
+      }
+    }
+
+    .hero-particles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      animation: float-particle linear infinite;
+      opacity: 0;
+    }
+
+    @keyframes float-particle {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+
+      10% {
+        opacity: .6;
+      }
+
+      90% {
+        opacity: .3;
+      }
+
+      100% {
+        transform: translateY(-20vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      max-width: 900px;
+      padding: 0 5%;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: .7rem;
+      background: rgba(123, 201, 92, .1);
+      border: 1px solid rgba(123, 201, 92, .3);
+      padding: .5rem 1.4rem;
+      border-radius: 40px;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--verde-neon);
+      margin-bottom: 2rem;
+      animation: fadeInUp .8s .2s both;
+    }
+
+    .hero-eyebrow::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--verde-neon);
+      border-radius: 50%;
+      animation: pulse-dot 2s infinite;
+    }
+
+    @keyframes pulse-dot {
+
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      50% {
+        transform: scale(1.6);
+        opacity: .5;
+      }
+    }
+
+    .hero-title {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 900;
+      line-height: 1.0;
+      margin-bottom: 1.5rem;
+      animation: fadeInUp .8s .4s both;
+    }
+
+    .hero-title .word-verde {
+      color: var(--verde-neon);
+    }
+
+    .hero-title .word-dourado {
+      color: var(--dourado);
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      line-height: 1.8;
+      color: rgba(245, 240, 232, .7);
+      max-width: 620px;
+      margin: 0 auto 3rem;
+      animation: fadeInUp .8s .6s both;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 2.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeInUp .8s .8s both;
+    }
+
+    .hero-stat {
+      text-align: center;
+    }
+
+    .hero-stat-num {
+      font-family: 'Fraunces', serif;
+      font-size: 2.2rem;
+      font-weight: 900;
+      color: var(--verde-neon);
+      line-height: 1;
+    }
+
+    .hero-stat-label {
+      font-size: .75rem;
+      color: rgba(245, 240, 232, .55);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-top: .4rem;
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .6rem;
+      animation: fadeIn 1s 1.2s both;
+    }
+
+    .hero-scroll span {
+      font-size: .65rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: rgba(245, 240, 232, .4);
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 50px;
+      background: linear-gradient(to bottom, var(--verde-neon), transparent);
+      animation: scrollPulse 2s infinite;
+    }
+
+    @keyframes scrollPulse {
+
+      0%,
+      100% {
+        opacity: .3;
+        transform: scaleY(1);
+      }
+
+      50% {
+        opacity: 1;
+        transform: scaleY(1.1);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* ── SECTION HEADING ── */
+    .section-label {
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .25em;
+      text-transform: uppercase;
+      color: var(--verde-neon);
+      margin-bottom: .8rem;
+    }
+
+    .section-title {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 1.2rem;
+    }
+
+    .section-desc {
+      color: rgba(245, 240, 232, .65);
+      font-size: 1.05rem;
+      line-height: 1.8;
+      max-width: 600px;
+    }
+
+    /* ── PROJETOS CARDS ── */
+    .projetos-section {
+      padding: 8rem 5% 5rem;
+    }
+
+    .projetos-header {
+      text-align: center;
+      margin-bottom: 5rem;
+    }
+
+    .projetos-grid {
+      display: grid;
+      gap: 0;
+    }
+
+    /* ── PROJETO CARD GRANDE ── */
+    .projeto-card {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 560px;
+      overflow: hidden;
+      border-radius: 2px;
+      margin-bottom: 3px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .projeto-card:hover .projeto-visual {
+      transform: scale(1.04);
+    }
+
+    .projeto-card:hover .projeto-cta {
+      gap: 1rem;
+    }
+
+    .projeto-visual {
+      position: relative;
+      transition: transform .8s cubic-bezier(.25, .46, .45, .94);
+      overflow: hidden;
+    }
+
+    .projeto-visual-bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .projeto-visual-overlay {
+      position: absolute;
+      inset: 0;
+    }
+
+    .projeto-visual-number {
+      position: absolute;
+      bottom: -20px;
+      right: -10px;
+      font-family: 'Fraunces', serif;
+      font-size: 14rem;
+      font-weight: 900;
+      line-height: 1;
+      opacity: .06;
+      color: white;
+      pointer-events: none;
+    }
+
+    .projeto-info {
+      padding: 4rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .projeto-info::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: .04;
+      pointer-events: none;
+      background-image: repeating-linear-gradient(45deg,
+          currentColor 0px, currentColor 1px,
+          transparent 1px, transparent 12px);
+    }
+
+    .projeto-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      padding: .35rem .9rem;
+      border-radius: 30px;
+      margin-bottom: 1.5rem;
+      width: fit-content;
+    }
+
+    .projeto-title {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 1.2rem;
+    }
+
+    .projeto-desc {
+      font-size: .95rem;
+      line-height: 1.8;
+      color: rgba(245, 240, 232, .7);
+      margin-bottom: 2rem;
+    }
+
+    .projeto-bullets {
+      list-style: none;
+      margin-bottom: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: .6rem;
+    }
+
+    .projeto-bullets li {
+      display: flex;
+      align-items: flex-start;
+      gap: .7rem;
+      font-size: .88rem;
+      color: rgba(245, 240, 232, .75);
+    }
+
+    .projeto-bullets li::before {
+      content: '→';
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .projeto-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      padding: .9rem 2rem;
+      border-radius: 40px;
+      font-weight: 700;
+      font-size: .9rem;
+      text-decoration: none;
+      width: fit-content;
+      transition: gap .3s, transform .3s;
+      letter-spacing: .04em;
+      position: relative;
+      z-index: 2;
+    }
+
+    .projeto-cta:hover {
+      transform: translateY(-2px);
+    }
+
+    /* ── PIRARUCU THEME ── */
+    .card-pirarucu {
+      background: linear-gradient(135deg, #0a1f2e 0%, #0d2d1a 100%);
+    }
+
+    .card-pirarucu .projeto-info {
+      color: var(--branco);
+    }
+
+    .pirarucu-tag {
+      background: rgba(26, 107, 138, .25);
+      color: #7fd4f5;
+      border: 1px solid rgba(127, 212, 245, .2);
+    }
+
+    .pirarucu-bullets li::before {
+      color: #7fd4f5;
+    }
+
+    .pirarucu-cta {
+      background: #1a6b8a;
+      color: white;
+    }
+
+    .pirarucu-cta:hover {
+      background: #7fd4f5;
+      color: #0a1f2e;
+    }
+
+    .pirarucu-visual {
+      background: linear-gradient(135deg, #071825 0%, #0d2d3a 50%, #0a3520 100%);
+    }
+
+    .pirarucu-svg-bg {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    /* ── COMERCIO THEME ── */
+    .card-comercio {
+      background: linear-gradient(135deg, #1a0f05 0%, #2a1a05 100%);
+    }
+
+    .card-comercio .projeto-info {
+      color: var(--branco);
+    }
+
+    .comercio-tag {
+      background: rgba(200, 168, 75, .2);
+      color: var(--dourado);
+      border: 1px solid rgba(200, 168, 75, .25);
+    }
+
+    .comercio-bullets li::before {
+      color: var(--dourado);
+    }
+
+    .comercio-cta {
+      background: var(--dourado);
+      color: #1a0f05;
+    }
+
+    .comercio-cta:hover {
+      background: #f0d070;
+    }
+
+    .comercio-visual {
+      background: linear-gradient(135deg, #1a0f05 0%, #2d1a08 100%);
+    }
+
+    /* ── SANEAR THEME ── */
+    .card-sanear {
+      background: linear-gradient(135deg, #051520 0%, #082d20 100%);
+    }
+
+    .card-sanear .projeto-info {
+      color: var(--branco);
+    }
+
+    .sanear-tag {
+      background: rgba(74, 158, 63, .2);
+      color: var(--verde-neon);
+      border: 1px solid rgba(123, 201, 92, .2);
+    }
+
+    .sanear-bullets li::before {
+      color: var(--verde-neon);
+    }
+
+    .sanear-cta {
+      background: var(--verde-claro);
+      color: white;
+    }
+
+    .sanear-cta:hover {
+      background: var(--verde-neon);
+      color: var(--escuro);
+    }
+
+    .sanear-visual {
+      background: linear-gradient(135deg, #051520 0%, #082d20 100%);
+    }
+
+    /* Alternating layout */
+    .projeto-card:nth-child(even) {
+      direction: rtl;
+    }
+
+    .projeto-card:nth-child(even)>* {
+      direction: ltr;
+    }
+
+    /* ── LOJA DESTAQUE ── */
+    .loja-section {
+      padding: 6rem 5%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .loja-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 80% at 0% 50%, rgba(200, 168, 75, .08) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 60% at 100% 50%, rgba(74, 158, 63, .06) 0%, transparent 50%);
+    }
+
+    .loja-inner {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+
+    .loja-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: rgba(200, 168, 75, .1);
+      border: 1px solid rgba(200, 168, 75, .3);
+      color: var(--dourado);
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      padding: .35rem .9rem;
+      border-radius: 30px;
+      margin-bottom: 1.2rem;
+    }
+
+    .loja-title {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 1.2rem;
+    }
+
+    .loja-title span {
+      color: var(--dourado);
+    }
+
+    .loja-desc {
+      color: rgba(245, 240, 232, .7);
+      font-size: 1rem;
+      line-height: 1.8;
+      margin-bottom: 2rem;
+    }
+
+    .loja-features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .loja-feature {
+      background: rgba(200, 168, 75, .07);
+      border: 1px solid rgba(200, 168, 75, .12);
+      border-radius: 12px;
+      padding: 1rem;
+    }
+
+    .loja-feature-icon {
+      font-size: 1.4rem;
+      margin-bottom: .4rem;
+    }
+
+    .loja-feature-text {
+      font-size: .82rem;
+      color: rgba(245, 240, 232, .75);
+      line-height: 1.5;
+    }
+
+    .loja-cta-group {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-loja-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      background: var(--dourado);
+      color: #1a0f05;
+      padding: 1rem 2.2rem;
+      border-radius: 40px;
+      font-weight: 700;
+      font-size: .95rem;
+      text-decoration: none;
+      transition: background .3s, transform .3s;
+    }
+
+    .btn-loja-primary:hover {
+      background: #f0d070;
+      transform: translateY(-2px);
+    }
+
+    .btn-loja-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      background: transparent;
+      color: var(--dourado);
+      border: 1px solid rgba(200, 168, 75, .4);
+      padding: 1rem 2.2rem;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: .95rem;
+      text-decoration: none;
+      transition: border-color .3s, background .3s;
+    }
+
+    .btn-loja-secondary:hover {
+      border-color: var(--dourado);
+      background: rgba(200, 168, 75, .08);
+    }
+
+    .loja-visual {
+      position: relative;
+    }
+
+    .loja-frame {
+      width: 100%;
+      aspect-ratio: 4/3;
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, .5), 0 0 0 1px rgba(200, 168, 75, .15);
+    }
+
+    .loja-iframe {
+      width: 130%;
+      height: 130%;
+      transform: scale(.77) translate(-11.5%, -11.5%);
+      border: none;
+      pointer-events: none;
+      border-radius: 8px;
+    }
+
+    .loja-frame-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 36px;
+      background: rgba(20, 20, 20, .95);
+      display: flex;
+      align-items: center;
+      padding: 0 1rem;
+      gap: .4rem;
+      z-index: 2;
+    }
+
+    .loja-frame-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .loja-frame-url {
+      flex: 1;
+      background: rgba(255, 255, 255, .07);
+      border-radius: 4px;
+      height: 20px;
+      margin: 0 .8rem;
+      display: flex;
+      align-items: center;
+      padding: 0 .6rem;
+      font-size: .65rem;
+      color: rgba(255, 255, 255, .4);
+    }
+
+    .loja-float-badge {
+      position: absolute;
+      top: -1rem;
+      right: -1rem;
+      background: var(--dourado);
+      color: #1a0f05;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: .65rem;
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.3;
+      box-shadow: 0 4px 20px rgba(200, 168, 75, .5);
+      animation: rotate-badge 10s linear infinite;
+    }
+
+    @keyframes rotate-badge {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .loja-float-badge span {
+      display: block;
+      animation: rotate-badge 10s linear reverse infinite;
+    }
+
+    /* ── IMPACT NUMBERS ── */
+    .numeros-section {
+      padding: 6rem 5%;
+      background: var(--cinza);
+    }
+
+    .numeros-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .numeros-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .numeros-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+    }
+
+    .numero-card {
+      background: var(--cinza2);
+      padding: 2.5rem 2rem;
+      text-align: center;
+      border: 1px solid rgba(123, 201, 92, .08);
+      transition: border-color .3s, background .3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .numero-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(123, 201, 92, .04) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity .3s;
+    }
+
+    .numero-card:hover {
+      border-color: rgba(123, 201, 92, .2);
+      background: #2e4030;
+    }
+
+    .numero-card:hover::before {
+      opacity: 1;
+    }
+
+    .numero-icon {
+      font-size: 2rem;
+      margin-bottom: .8rem;
+    }
+
+    .numero-val {
+      font-family: 'Fraunces', serif;
+      font-size: 3rem;
+      font-weight: 900;
+      color: var(--verde-neon);
+      line-height: 1;
+      margin-bottom: .5rem;
+    }
+
+    .numero-label {
+      font-size: .8rem;
+      color: rgba(245, 240, 232, .55);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #080f08;
+      padding: 4rem 5% 2rem;
+      border-top: 1px solid rgba(123, 201, 92, .08);
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .footer-brand {
+      font-family: 'Fraunces', serif;
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: var(--verde-neon);
+    }
+
+    .footer-brand span {
+      color: var(--dourado);
+    }
+
+    .footer-nav {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-nav a {
+      color: rgba(245, 240, 232, .5);
+      text-decoration: none;
+      font-size: .8rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      transition: color .3s;
+    }
+
+    .footer-nav a:hover {
+      color: var(--verde-neon);
+    }
+
+    .footer-copy {
+      text-align: center;
+      font-size: .75rem;
+      color: rgba(245, 240, 232, .3);
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255, 255, 255, .05);
+    }
+
+    /* ── REVEAL ANIMATIONS ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity .8s cubic-bezier(.25, .46, .45, .94), transform .8s cubic-bezier(.25, .46, .45, .94);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-delay-1 {
+      transition-delay: .1s;
+    }
+
+    .reveal-delay-2 {
+      transition-delay: .2s;
+    }
+
+    .reveal-delay-3 {
+      transition-delay: .3s;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .projeto-card {
+        grid-template-columns: 1fr;
+        min-height: auto;
+      }
+
+      .projeto-card:nth-child(even) {
+        direction: ltr;
+      }
+
+      .projeto-visual {
+        min-height: 280px;
+      }
+
+      .projeto-info {
+        padding: 2.5rem;
+      }
+
+      .loja-inner {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+      }
+
+      .numeros-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .nav-links {
+        display: none;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .numeros-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .loja-features {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ── GOSTO DA AMAZÔNIA THEME ── */
+    .card-gosto {
+      background: linear-gradient(135deg, #1a0d03 0%, #0f1a0a 100%);
+    }
+
+    .card-gosto .projeto-info {
+      color: var(--branco);
+    }
+
+    .gosto-tag {
+      background: rgba(232, 164, 74, .18);
+      color: #e8a44a;
+      border: 1px solid rgba(232, 164, 74, .25);
+    }
+
+    .gosto-visual {
+      background: linear-gradient(135deg, #1a0d03 0%, #0f2010 100%);
+    }
+
+    .gosto-cta {
+      background: #c8621a;
+      color: white;
+    }
+
+    .gosto-cta:hover {
+      background: #e8a44a;
+      color: #1a0d03;
+    }
+
+    /* Gosto detail expandable */
+    .gosto-detail-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(232, 164, 74, .08);
+      border: 1px solid rgba(232, 164, 74, .18);
+      border-radius: 10px;
+      padding: .7rem 1.2rem;
+      cursor: pointer;
+      font-size: .82rem;
+      font-weight: 600;
+      color: #e8a44a;
+      letter-spacing: .06em;
+      transition: background .3s;
+      margin-bottom: .8rem;
+    }
+
+    .gosto-detail-toggle:hover {
+      background: rgba(232, 164, 74, .14);
+    }
+
+    .gosto-chevron {
+      display: inline-block;
+      transition: transform .4s;
+      font-style: normal;
+    }
+
+    .gosto-chevron.open {
+      transform: rotate(180deg);
+    }
+
+    .gosto-detail {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .6s cubic-bezier(.25, .46, .45, .94), opacity .4s;
+      opacity: 0;
+      margin-bottom: 0;
+    }
+
+    .gosto-detail.expanded {
+      max-height: 600px;
+      opacity: 1;
+      margin-bottom: 1.5rem;
+    }
+
+    .gosto-subsection {
+      margin-bottom: 1rem;
+    }
+
+    .gosto-subsec-title {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: #e8a44a;
+      margin-bottom: .4rem;
+    }
+
+    .gosto-subsec-text {
+      font-size: .85rem;
+      line-height: 1.65;
+      color: rgba(245, 240, 232, .65);
+    }
+
+    .gosto-acoes {
+      display: flex;
+      flex-direction: column;
+      gap: .8rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .gosto-acao {
+      display: flex;
+      gap: .9rem;
+      align-items: flex-start;
+      background: rgba(255, 255, 255, .03);
+      border: 1px solid rgba(232, 164, 74, .1);
+      border-radius: 10px;
+      padding: .8rem 1rem;
+    }
+
+    .gosto-acao-icon {
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    .gosto-acao-title {
+      font-size: .78rem;
+      font-weight: 700;
+      color: #e8a44a;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: .3rem;
+    }
+
+    .gosto-acao-text {
+      font-size: .82rem;
+      line-height: 1.55;
+      color: rgba(245, 240, 232, .6);
+    }
+
+    .gosto-impacto {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      background: linear-gradient(135deg, rgba(200, 98, 26, .15) 0%, rgba(232, 164, 74, .1) 100%);
+      border: 1px solid rgba(232, 164, 74, .2);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      margin-bottom: .6rem;
+    }
+
+    .gosto-impacto-num {
+      font-family: 'Fraunces', serif;
+      font-size: 2rem;
+      font-weight: 900;
+      color: #e8a44a;
+      line-height: 1;
+    }
+
+    .gosto-impacto-label {
+      font-size: .7rem;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: rgba(245, 240, 232, .5);
+      margin-top: .2rem;
+    }
+
+    /* ══════════════════════════════════════
+       MOBILE MENU — SMART BOTTOM NAVIGATION
+    ══════════════════════════════════════ */
+
+    /* Hamburger button — only on mobile */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px
+    }
+
+    .hamburger span {
+      width: 26px;
+      height: 2px;
+      background: var(--branco);
+      border-radius: 2px;
+      transition: all .3s
+    }
+
+    .card-rios {
+      background: linear-gradient(135deg, #051520 0%, #082d20 100%);
+    }
+
+    .card-rios .projeto-info {
+      color: var(--branco);
+    }
+
+    .rios-tag {
+      background: rgba(26, 107, 138, .22);
+      color: #7fd4f5;
+      border: 1px solid rgba(127, 212, 245, .22);
+    }
+
+    .rios-visual {
+      background: linear-gradient(135deg, #03090f 0%, #051a10 100%);
+    }
+
+    .rios-cta {
+      background: #1a6b8a;
+      color: white;
+    }
+
+    .rios-cta:hover {
+      background: #7fd4f5;
+      color: #051520;
+    }
+
+    .rios-bullets li::before {
+      color: #7fd4f5;
+    }
+
+    /* ── SHARE BUTTON em cada card ── */
+    .projeto-share-row {
+      display: flex;
+      gap: .7rem;
+      align-items: center;
+      margin-top: 1.2rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid rgba(245, 240, 232, .07);
+      flex-wrap: wrap;
+    }
+
+    .btn-share-wpp {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: #25d366;
+      color: white;
+      padding: .5rem 1.1rem;
+      border-radius: 30px;
+      font-size: .78rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform .2s, background .2s;
+      white-space: nowrap;
+    }
+
+    .btn-share-wpp:hover {
+      background: #1ebe5d;
+      transform: translateY(-2px);
+    }
+
+    .btn-share-copy {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: rgba(245, 240, 232, .07);
+      color: rgba(245, 240, 232, .6);
+      border: 1px solid rgba(245, 240, 232, .12);
+      padding: .5rem 1.1rem;
+      border-radius: 30px;
+      font-size: .78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform .2s, background .2s;
+      font-family: 'DM Sans', sans-serif;
+      white-space: nowrap;
+    }
+
+    .btn-share-copy:hover {
+      background: rgba(245, 240, 232, .12);
+      transform: translateY(-2px);
+    }
+
+    .share-copied-tip {
+      font-size: .72rem;
+      color: var(--verde-neon);
+      opacity: 0;
+      transition: opacity .3s;
+      white-space: nowrap;
+    }
+
+    .share-copied-tip.show {
+      opacity: 1;
+    }
+
+    .card-polpas {
+      background: linear-gradient(135deg, #0d1f10 0%, #1a1005 100%);
+    }
+
+    .card-polpas .projeto-info {
+      color: var(--branco);
+    }
+
+    .polpas-tag {
+      background: rgba(90, 180, 60, .18);
+      color: #7bc95c;
+      border: 1px solid rgba(123, 201, 92, .25);
+    }
+
+    .polpas-visual {
+      background: linear-gradient(135deg, #061208 0%, #1a1205 100%);
+    }
+
+    .polpas-cta {
+      background: var(--verde-claro);
+      color: white;
+    }
+
+    .polpas-cta:hover {
+      background: var(--verde-neon);
+      color: var(--escuro);
+    }
+
+    .polpas-bullets li::before {
+      color: var(--verde-neon);
+    }
+
+    /* Progress bar badge inside card */
+    .polpas-progress-wrap {
+      margin-bottom: 1.8rem;
+    }
+
+    .polpas-progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: .72rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: rgba(245, 240, 232, .5);
+      margin-bottom: .5rem;
+    }
+
+    .polpas-progress-label span:last-child {
+      color: var(--verde-neon);
+      font-weight: 700;
+    }
+
+    .polpas-bar-bg {
+      height: 6px;
+      background: rgba(255, 255, 255, .07);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .polpas-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--verde-claro), var(--verde-neon));
+      border-radius: 3px;
+      transition: width 1.4s cubic-bezier(.25, .46, .45, .94) .4s;
+    }
+
+    .polpas-bar-fill.animated {
+      width: 38%;
+    }
+
+    /* ── ANIMATED SVG ILLUSTRATIONS ── */
+    .fish-svg {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .water-wave {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+
+    /* ── FRUTOS DA FLORESTA (AÇAÍ) THEME ── */
+    .card-acai {
+      background: linear-gradient(135deg, #1a0a2e 0%, #0d1a0d 100%);
+    }
+
+    .card-acai .projeto-info {
+      color: var(--branco);
+    }
+
+    .acai-tag {
+      background: rgba(74, 26, 107, .28);
+      color: #c87bef;
+      border: 1px solid rgba(200, 123, 239, .28);
+    }
+
+    .acai-visual {
+      background: linear-gradient(135deg, #120820 0%, #0a1a0a 100%);
+    }
+
+    .acai-cta {
+      background: #7a3a9b;
+      color: white;
+    }
+
+    .acai-cta:hover {
+      background: #c87bef;
+      color: #1a0a2e;
+    }
+
+    .acai-bullets li::before {
+      color: #c87bef;
+    }
+
+    /* Progress bar for açaí */
+    .acai-progress-wrap {
+      margin-bottom: 1.8rem;
+    }
+
+    .acai-progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: .72rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: rgba(245, 240, 232, .5);
+      margin-bottom: .5rem;
+    }
+
+    .acai-progress-label span:last-child {
+      color: #c87bef;
+      font-weight: 700;
+    }
+
+    .acai-bar-bg {
+      height: 6px;
+      background: rgba(255, 255, 255, .07);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .acai-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #7a3a9b, #c87bef);
+      border-radius: 3px;
+      transition: width 1.4s cubic-bezier(.25, .46, .45, .94) .4s;
+    }
+
+    .acai-bar-fill.animated {
+      width: 14%;
+    }
+
+    /* ── PESCA JUSTA THEME ── */
+    .card-pesca-justa {
+      background: linear-gradient(135deg, #050f1a 0%, #0d2030 100%);
+    }
+
+    .card-pesca-justa .projeto-info {
+      color: var(--branco);
+    }
+
+    .pesca-justa-tag {
+      background: rgba(26, 107, 138, .22);
+      color: #7fd4f5;
+      border: 1px solid rgba(127, 212, 245, .22);
+    }
+
+    .pesca-justa-visual {
+      background: linear-gradient(135deg, #03090f 0%, #091825 100%);
+    }
+
+    .pesca-justa-cta {
+      background: #1a6b8a;
+      color: white;
+    }
+
+    .pesca-justa-cta:hover {
+      background: #7fd4f5;
+      color: #050f1a;
+    }
+
+    .pesca-justa-bullets li::before {
+      color: #7fd4f5;
+    }
+
+    /* ── JURUÁ SUSTENTÁVEL THEME ── */
+    .card-jurua {
+      background: linear-gradient(135deg, #1a1005 0%, #0d2010 100%);
+    }
+
+    .card-jurua .projeto-info {
+      color: var(--branco);
+    }
+
+    .jurua-tag {
+      background: rgba(212, 168, 49, .2);
+      color: #d4a831;
+      border: 1px solid rgba(212, 168, 49, .28);
+    }
+
+    .jurua-bullets li::before {
+      color: #d4a831;
+    }
+
+    .jurua-cta {
+      background: #d4a831;
+      color: #1a0f05;
+    }
+
+    .jurua-cta:hover {
+      background: #e8c06b;
+      color: #1a0f05;
+    }
+
+    .jurua-visual {
+      background: linear-gradient(135deg, #0a1a05 0%, #1a2d08 50%, #0d2010 100%);
+    }
+
+    /* Progress bar for Pesca Justa */
+    .pesca-justa-progress-wrap {
+      margin-bottom: 1.8rem;
+    }
+
+    .pesca-justa-progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: .72rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: rgba(245, 240, 232, .5);
+      margin-bottom: .5rem;
+    }
+
+    .pesca-justa-progress-label span:last-child {
+      color: #7fd4f5;
+      font-weight: 700;
+    }
+
+    .pesca-justa-bar-bg {
+      height: 6px;
+      background: rgba(255, 255, 255, .07);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .pesca-justa-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #1a6b8a, #7fd4f5);
+      border-radius: 3px;
+      transition: width 1.4s cubic-bezier(.25, .46, .45, .94) .4s;
+    }
+
+    .pesca-justa-bar-fill.animated {
+      width: 94%;
+    }
+  </style>
+  <script src="asproc-logo.js"></script>
+</head>
+
+<body>
+
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+  <div id="progress-bar"></div>
+
+  <!-- ── NAVBAR ── -->
+  <!-- NAV -->
+  <nav id="navbar">
+    <img
+       loading="lazy"src="images/pp-hero.webp"
+      alt="ASPROC" class="nav-logo">
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">In&#237;cio</a></li>
+      <li><a href="sobre.html">Sobre</a></li>
+      <li><a href="noticias.html">Not&#237;cias</a></li>
+      <li><a href="programas-projetos.html" class="ativo">Projetos</a></li>
+      <li><a href="avisos.html">Avisos</a></li>
+      <li><a href="trabalhe-conosco.html">Trabalhe Conosco</a></li>
+      <li><a href="https://loja.asproc.org.br/" class="nav-cta" target="_blank">Loja Virtual</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="lang-switcher">
+        <button class="lang-btn active" onclick="setLang('pt')">PT</button>
+        <button class="lang-btn" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('es')">ES</button>
+      </div>
+      <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+    </div>
+  </nav>
+
+  <!-- ── MOBILE DRAWER ── -->
+
+
+  <!-- ── MOBILE BOTTOM TAB BAR ── -->
+
+
+  <!-- ── HERO ── -->
+  <section class="hero-projetos">
+    <div class="hero-canvas"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-particles" id="particles"></div>
+
+    <div class="hero-content">
+      <div class="hero-eyebrow">Médio Juruá, Amazônia</div>
+      <h1 class="hero-title">
+        Programas<br>
+        <em class="word-dourado" style="font-style:italic;">& Projetos</em>
+      </h1>
+      <p class="hero-subtitle">
+        Iniciativas que transformam territórios, fortalecem comunidades ribeirinhas
+        e constroem um futuro sustentável na Amazônia.
+      </p>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-num" data-target="8">0</div>
+          <div class="hero-stat-label"> tivos</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num" data-target="64">0</div>
+          <div class="hero-stat-label">Comunidades</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">+30</div>
+          <div class="hero-stat-label">Anos de atuação</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num" data-target="5000">0</div>
+          <div class="hero-stat-label">Famílias beneficiadas</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-scroll">
+      <span>Explorar</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ── PROJETOS ── -->
+  <section class="projetos-section">
+    <div class="projetos-header reveal">
+      <div class="section-label">Nossas Iniciativas</div>
+      <h2 class="section-title">Projetos que <span style="color:var(--verde-neon)">transformam</span></h2>
+      <p class="section-desc" style="margin:0 auto">
+        Da floresta ao mercado, da água ao peixe — cada projeto representa décadas
+        de parceria com as comunidades do Médio Juruá.
+      </p>
+    </div>
+
+    <div class="projetos-grid">
+
+      <!-- PIRARUCU -->
+      <article class="projeto-card card-pirarucu reveal">
+        <div class="projeto-visual pirarucu-visual">
+          <div class="projeto-visual-bg"
+            style="background-image:url('https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80'); mix-blend-mode: luminosity; opacity: .25;">
+          </div>
+          <div class="projeto-visual-overlay"
+            style="background: linear-gradient(135deg, rgba(7,24,37,.9) 0%, rgba(13,44,26,.8) 100%);"></div>
+
+          <!-- Animated Fish SVG -->
+          <div class="fish-svg">
+            <svg viewBox="0 0 400 300" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="fishGlow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#7fd4f5" stop-opacity=".3" />
+                  <stop offset="100%" stop-color="#7fd4f5" stop-opacity="0" />
+                </radialGradient>
+                <linearGradient id="fishGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#1a6b8a" />
+                  <stop offset="50%" stop-color="#7fd4f5" />
+                  <stop offset="100%" stop-color="#1a6b8a" />
+                </linearGradient>
+              </defs>
+              <!-- Water ripples -->
+              <g opacity=".2">
+                <ellipse cx="200" cy="220" rx="150" ry="20" fill="none" stroke="#7fd4f5" stroke-width="1">
+                  <animate attributeName="rx" values="150;170;150" dur="4s" repeatCount="indefinite" />
+                  <animate attributeName="opacity" values=".2;.05;.2" dur="4s" repeatCount="indefinite" />
+                </ellipse>
+                <ellipse cx="200" cy="220" rx="100" ry="13" fill="none" stroke="#7fd4f5" stroke-width="1">
+                  <animate attributeName="rx" values="100;120;100" dur="3s" repeatCount="indefinite" />
+                </ellipse>
+              </g>
+              <!-- Fish body -->
+              <g transform="translate(200,140)">
+                <animateTransform attributeName="transform" type="translate" values="200,140;200,130;200,150;200,140"
+                  dur="4s" repeatCount="indefinite" calcMode="spline" keySplines=".4 0 .6 1; .4 0 .6 1; .4 0 .6 1" />
+                <ellipse cx="0" cy="0" rx="80" ry="30" fill="url(#fishGrad)" opacity=".8" />
+                <ellipse cx="0" cy="0" rx="80" ry="30" fill="none" stroke="#7fd4f5" stroke-width="1" opacity=".5" />
+                <!-- Tail -->
+                <path d="M-70,0 L-100,-25 L-110,0 L-100,25 Z" fill="#1a6b8a" opacity=".8">
+                  <animateTransform attributeName="transform" type="rotate" values="0,−70,0;8,-70,0;-8,-70,0;0,-70,0"
+                    dur="1.5s" repeatCount="indefinite" />
+                </path>
+                <!-- Eye -->
+                <circle cx="55" cy="-8" r="6" fill="#7fd4f5" opacity=".9" />
+                <circle cx="56" cy="-8" r="3" fill="#07182a" />
+                <!-- Scales pattern -->
+                <path d="M20,-15 Q30,-5 20,5 M0,-18 Q10,-5 0,8 M-20,-15 Q-10,-5 -20,5" fill="none" stroke="#7fd4f5"
+                  stroke-width=".8" opacity=".4" />
+                <!-- Fin -->
+                <path d="M10,-30 L30,-45 L50,-32 L40,-28 L20,-28 Z" fill="#1a6b8a" opacity=".7" />
+                <!-- Glow -->
+                <ellipse cx="0" cy="0" rx="90" ry="40" fill="url(#fishGlow)" />
+              </g>
+              <!-- Bubbles -->
+              <circle cx="260" cy="100" r="4" fill="none" stroke="#7fd4f5" stroke-width="1" opacity=".5">
+                <animate attributeName="cy" values="100;60" dur="3s" repeatCount="indefinite" />
+                <animate attributeName="opacity" values=".5;0" dur="3s" repeatCount="indefinite" />
+              </circle>
+              <circle cx="240" cy="120" r="2.5" fill="none" stroke="#7fd4f5" stroke-width="1" opacity=".4">
+                <animate attributeName="cy" values="120;80" dur="2.5s" repeatCount="indefinite" begin="1s" />
+                <animate attributeName="opacity" values=".4;0" dur="2.5s" repeatCount="indefinite" begin="1s" />
+              </circle>
+            </svg>
+          </div>
+          <div class="projeto-visual-number">01</div>
+        </div>
+
+        <div class="projeto-info">
+          <div class="projeto-tag pirarucu-tag">🐟 Pesca Sustentável</div>
+          <h2 class="projeto-title">Manejo do Pirarucu<br><em style="color:#7fd4f5;font-style:italic">no Médio
+              Juruá</em></h2>
+          <p class="projeto-desc">
+            Referência nacional em manejo comunitário do maior peixe de escamas da Amazônia.
+            São décadas de parceria com pescadores ribeirinhos construindo um modelo de
+            conservação que concilia geração de renda e preservação ambiental.
+          </p>
+          <ul class="projeto-bullets">
+            <li>Manejo de mais de 60 mil pirarucus por ano</li>
+            <li>Monitoramento de lagos em toda a região</li>
+            <li>Geração de renda para famílias ribeirinhas</li>
+            <li>Modelo replicado em toda a Amazônia</li>
+          </ul>
+          <a href="http://www.asproc.com.br/projeto-manejo-pirarucu.html" target="_blank"
+            class="projeto-cta pirarucu-cta">
+            Conhecer o projeto <span>→</span>
+          </a>
+          <div class="projeto-share-row">
+            <button class="btn-share-wpp"
+              onclick="shareWhatsApp('http://www.asproc.com.br/projeto-manejo-pirarucu.html')"><svg width="14"
+                height="14" viewBox="0 0 24 24" fill="white">
+                <path
+                  d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                <path
+                  d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.121 1.532 5.853L.057 23.636a.5.5 0 0 0 .601.628l5.998-1.57A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.959 0-3.782-.574-5.32-1.562l-.38-.232-3.961 1.037 1.044-3.875-.249-.389A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+              </svg> WhatsApp</button>
+            <button class="btn-share-copy"
+              onclick="copyProjectLink('http://www.asproc.com.br/projeto-manejo-pirarucu.html', this)">🔗 Copiar
+              link</button>
+            <span class="share-copied-tip">✓ Copiado!</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- COMÉRCIO RIBEIRINHO -->
+      <article class="projeto-card card-comercio reveal reveal-delay-1">
+        <div class="projeto-visual comercio-visual">
+          <div class="projeto-visual-bg"
+            style="background-image:url('https://images.unsplash.com/photo-1488330890490-c291ecf62571?w=800&q=80'); mix-blend-mode: luminosity; opacity: .2;">
+          </div>
+          <div class="projeto-visual-overlay"
+            style="background: linear-gradient(135deg, rgba(26,15,5,.9) 0%, rgba(42,26,8,.85) 100%);"></div>
+
+          <!-- Animated Market SVG -->
+          <div class="fish-svg">
+            <svg viewBox="0 0 400 300" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="marketGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#c8a84b" />
+                  <stop offset="100%" stop-color="#8b6a1f" />
+                </linearGradient>
+              </defs>
+              <!-- River boat -->
+              <g transform="translate(200,180)">
+                <animateTransform attributeName="transform" type="translate" values="200,180;200,172;200,188;200,180"
+                  dur="5s" repeatCount="indefinite" calcMode="spline" keySplines=".4 0 .6 1; .4 0 .6 1; .4 0 .6 1" />
+                <!-- Hull -->
+                <path d="M-90,0 Q-70,20 0,22 Q70,20 90,0 L80,-10 L-80,-10 Z" fill="#8b6a1f" opacity=".9" />
+                <!-- Deck -->
+                <rect x="-70" y="-25" width="140" height="16" fill="#c8a84b" opacity=".8" rx="2" />
+                <!-- Cargo boxes -->
+                <rect x="-50" y="-42" width="22" height="18" fill="#6b4a1f" rx="2" opacity=".9" />
+                <rect x="-24" y="-45" width="22" height="21" fill="#8b6a1f" rx="2" opacity=".9" />
+                <rect x="2" y="-40" width="22" height="16" fill="#6b4a1f" rx="2" opacity=".9" />
+                <rect x="28" y="-44" width="18" height="20" fill="#8b6a1f" rx="2" opacity=".9" />
+                <!-- Mast -->
+                <line x1="0" y1="-9" x2="0" y2="-70" stroke="#c8a84b" stroke-width="2" opacity=".7" />
+                <!-- Flag -->
+                <path d="M0,-70 L30,-60 L0,-50 Z" fill="#c8a84b" opacity=".8">
+                  <animateTransform attributeName="transform" type="skewX" values="0;5;0;-5;0" dur="2s"
+                    repeatCount="indefinite" />
+                </path>
+              </g>
+              <!-- Water waves -->
+              <g opacity=".15">
+                <path d="M50,200 Q100,190 150,200 Q200,210 250,200 Q300,190 350,200" fill="none" stroke="#c8a84b"
+                  stroke-width="2" />
+                <path d="M30,215 Q90,205 150,215 Q210,225 270,215 Q320,205 370,215" fill="none" stroke="#c8a84b"
+                  stroke-width="1.5" />
+              </g>
+              <!-- Stars/sparkles -->
+              <g fill="#c8a84b" opacity=".6">
+                <circle cx="80" cy="80" r="2">
+                  <animate attributeName="opacity" values=".6;0;.6" dur="2s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="320" cy="100" r="2">
+                  <animate attributeName="opacity" values=".6;0;.6" dur="2.5s" repeatCount="indefinite" begin=".5s" />
+                </circle>
+                <circle cx="150" cy="60" r="1.5">
+                  <animate attributeName="opacity" values=".6;0;.6" dur="1.8s" repeatCount="indefinite" begin="1s" />
+                </circle>
+                <circle cx="280" cy="70" r="2">
+                  <animate attributeName="opacity" values=".6;0;.6" dur="3s" repeatCount="indefinite" begin="1.5s" />
+                </circle>
+              </g>
+            </svg>
+          </div>
+          <div class="projeto-visual-number">02</div>
+        </div>
+
+        <div class="projeto-info">
+          <div class="projeto-tag comercio-tag">🚢 Economia Ribeirinha</div>
+          <h2 class="projeto-title">Projeto Comércio<br><em
+              style="color:var(--dourado);font-style:italic">Ribeirinho</em></h2>
+          <p class="projeto-desc">
+            Fortalecendo a cadeia produtiva local, conectando produtores agroextrativistas
+            ao mercado com dignidade e solidariedade. Da floresta à cidade, do rio
+            à mesa, valorizando cada produto e cada mão que o produziu.
+          </p>
+          <ul class="projeto-bullets">
+            <li>Escoamento da produção agroextrativista</li>
+            <li>Preços justos para os produtores ribeirinhos</li>
+            <li>Fortalecimento da economia local e solidária</li>
+            <li>Acesso a mercados regionais e nacionais</li>
+          </ul>
+          <a href="http://www.asproc.com.br/projeto-comercio-ribeirinho.html" target="_blank"
+            class="projeto-cta comercio-cta">
+            Conhecer o projeto <span>→</span>
+          </a>
+          <div class="projeto-share-row">
+            <button class="btn-share-wpp"
+              onclick="shareWhatsApp('http://www.asproc.com.br/projeto-comercio-ribeirinho.html')"><svg width="14"
+                height="14" viewBox="0 0 24 24" fill="white">
+                <path
+                  d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                <path
+                  d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.121 1.532 5.853L.057 23.636a.5.5 0 0 0 .601.628l5.998-1.57A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.959 0-3.782-.574-5.32-1.562l-.38-.232-3.961 1.037 1.044-3.875-.249-.389A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+              </svg> WhatsApp</button>
+            <button class="btn-share-copy"
+              onclick="copyProjectLink('http://www.asproc.com.br/projeto-comercio-ribeirinho.html', this)">🔗 Copiar
+              link</button>
+            <span class="share-copied-tip">✓ Copiado!</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- SANEAR AMAZÔNIA -->
+      <article class="projeto-card card-sanear reveal reveal-delay-2">
+        <div class="projeto-visual sanear-visual">
+          <div class="projeto-visual-bg"
+            style="background-image:url('https://images.unsplash.com/photo-1446776877081-d282a0f896e2?w=800&q=80'); mix-blend-mode: luminosity; opacity: .2;">
+          </div>
+          <div class="projeto-visual-overlay"
+            style="background: linear-gradient(135deg, rgba(5,21,32,.9) 0%, rgba(8,45,32,.85) 100%);"></div>
+
+          <!-- Animated Water SVG -->
+          <div class="fish-svg">
+            <svg viewBox="0 0 400 300" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="waterDrop" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#7bc95c" />
+                  <stop offset="100%" stop-color="#1a6b8a" />
+                </linearGradient>
+                <clipPath id="dropClip">
+                  <path d="M200,60 Q240,100 240,140 Q240,185 200,185 Q160,185 160,140 Q160,100 200,60 Z" />
+                </clipPath>
+              </defs>
+              <!-- Main water drop -->
+              <g>
+                <path d="M200,60 Q240,100 240,140 Q240,185 200,185 Q160,185 160,140 Q160,100 200,60 Z"
+                  fill="url(#waterDrop)" opacity=".2" />
+                <path d="M200,60 Q240,100 240,140 Q240,185 200,185 Q160,185 160,140 Q160,100 200,60 Z" fill="none"
+                  stroke="#7bc95c" stroke-width="1.5" opacity=".6" />
+                <!-- Water fill animation -->
+                <rect x="160" y="100" width="80" height="85" fill="#1a6b8a" opacity=".4" clip-path="url(#dropClip)">
+                  <animate attributeName="y" values="185;100;185" dur="4s" repeatCount="indefinite" calcMode="spline"
+                    keySplines=".4 0 .6 1; .4 0 .6 1" />
+                </rect>
+              </g>
+              <!-- Ripple circles -->
+              <circle cx="200" cy="200" r="20" fill="none" stroke="#7bc95c" stroke-width="1" opacity="0">
+                <animate attributeName="r" values="20;60" dur="3s" repeatCount="indefinite" />
+                <animate attributeName="opacity" values=".4;0" dur="3s" repeatCount="indefinite" />
+              </circle>
+              <circle cx="200" cy="200" r="20" fill="none" stroke="#7bc95c" stroke-width="1" opacity="0">
+                <animate attributeName="r" values="20;60" dur="3s" repeatCount="indefinite" begin="1s" />
+                <animate attributeName="opacity" values=".4;0" dur="3s" repeatCount="indefinite" begin="1s" />
+              </circle>
+              <!-- Water sparkles -->
+              <g fill="#7bc95c">
+                <circle cx="120" cy="120" r="2" opacity=".5">
+                  <animate attributeName="cy" values="120;100" dur="2s" repeatCount="indefinite" />
+                  <animate attributeName="opacity" values=".5;0" dur="2s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="280" cy="130" r="2" opacity=".5">
+                  <animate attributeName="cy" values="130;110" dur="2.5s" repeatCount="indefinite" begin=".8s" />
+                  <animate attributeName="opacity" values=".5;0" dur="2.5s" repeatCount="indefinite" begin=".8s" />
+                </circle>
+                <circle cx="160" cy="90" r="1.5" opacity=".4">
+                  <animate attributeName="cy" values="90;70" dur="1.8s" repeatCount="indefinite" begin="1.2s" />
+                  <animate attributeName="opacity" values=".4;0" dur="1.8s" repeatCount="indefinite" begin="1.2s" />
+                </circle>
+              </g>
+              <!-- Community houses -->
+              <g opacity=".4" transform="translate(0,20)">
+                <path d="M60,230 L60,205 L80,195 L100,205 L100,230 Z" fill="#4a9e3f" />
+                <rect x="68" y="215" width="10" height="15" fill="#082d20" />
+                <path d="M290,230 L290,205 L310,195 L330,205 L330,230 Z" fill="#4a9e3f" />
+                <rect x="298" y="215" width="10" height="15" fill="#082d20" />
+                <!-- Connection line (water pipe) -->
+                <line x1="100" y1="218" x2="290" y2="218" stroke="#7bc95c" stroke-width="1.5" stroke-dasharray="6,4"
+                  opacity=".5" />
+              </g>
+            </svg>
+          </div>
+          <div class="projeto-visual-number">03</div>
+        </div>
+
+        <div class="projeto-info">
+          <div class="projeto-tag sanear-tag">💧 Saneamento Básico</div>
+          <h2 class="projeto-title">Projeto Sanear<br><em
+              style="color:var(--verde-neon);font-style:italic">Amazônia</em></h2>
+          <p class="projeto-desc">
+            Levando água tratada e saneamento básico às comunidades ribeirinhas,
+            transformando a qualidade de vida de famílias que vivem em uma das
+            regiões mais isoladas do Brasil.
+          </p>
+          <ul class="projeto-bullets">
+            <li>Sistemas de abastecimento de água potável</li>
+            <li>Saneamento básico em comunidades remotas</li>
+            <li>Preservação do ecossistema amazônico</li>
+            <li>Redução de doenças de veiculação hídrica</li>
+          </ul>
+          <a href="http://www.asproc.com.br/projeto-sanear.html" target="_blank" class="projeto-cta sanear-cta">
+            Conhecer o projeto <span>→</span>
+          </a>
+          <div class="projeto-share-row">
+            <button class="btn-share-wpp" onclick="shareWhatsApp('http://www.asproc.com.br/projeto-sanear.html')"><svg
+                width="14" height="14" viewBox="0 0 24 24" fill="white">
+                <path
+                  d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                <path
+                  d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.121 1.532 5.853L.057 23.636a.5.5 0 0 0 .601.628l5.998-1.57A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.959 0-3.782-.574-5.32-1.562l-.38-.232-3.961 1.037 1.044-3.875-.249-.389A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+              </svg> WhatsApp</button>
+            <button class="btn-share-copy"
+              onclick="copyProjectLink('http://www.asproc.com.br/projeto-sanear.html', this)">🔗 Copiar link</button>
+            <span class="share-copied-tip">✓ Copiado!</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- GOSTO DA AMAZÔNIA -->
+      <article class="projeto-card card-gosto reveal">
+        <div class="projeto-visual gosto-visual">
+          <!-- Background image from gostodaamazonia.com.br -->
+          <div class="projeto-visual-bg"
+            style="background-image:url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80'); opacity:.18; mix-blend-mode:luminosity;">
+          </div>
+          <div class="projeto-visual-overlay"
+            style="background: linear-gradient(135deg, rgba(10,25,5,.92) 0%, rgba(50,15,5,.85) 100%);"></div>
+
+          <!-- Gosto da Amazônia animated SVG illustration -->
+          <div class="fish-svg">
+            <svg viewBox="0 0 400 300" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="gostGlow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#e8a44a" stop-opacity=".35" />
+                  <stop offset="100%" stop-color="#e8a44a" stop-opacity="0" />
+                </radialGradient>
+                <linearGradient id="gostGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#c8621a" />
+                  <stop offset="50%" stop-color="#e8a44a" />
+                  <stop offset="100%" stop-color="#c8621a" />
+                </linearGradient>
+                <linearGradient id="plateGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#f0d080" />
+                  <stop offset="100%" stop-color="#c09040" />
+                </linearGradient>
+              </defs>
+
+              <!-- Steam animations above plate -->
+              <g opacity=".5">
+                <path d="M160,95 Q155,80 165,68 Q175,56 165,44" fill="none" stroke="#e8a44a" stroke-width="2"
+                  stroke-linecap="round">
+                  <animate attributeName="opacity" values="0;.6;0" dur="3s" begin="0s" repeatCount="indefinite" />
+                  <animate attributeName="d"
+                    values="M160,95 Q155,80 165,68 Q175,56 165,44;M160,95 Q168,80 158,68 Q148,56 160,44;M160,95 Q155,80 165,68 Q175,56 165,44"
+                    dur="3s" repeatCount="indefinite" />
+                </path>
+                <path d="M200,88 Q195,73 205,61 Q215,49 205,37" fill="none" stroke="#e8a44a" stroke-width="2"
+                  stroke-linecap="round">
+                  <animate attributeName="opacity" values="0;.5;0" dur="3.5s" begin="1s" repeatCount="indefinite" />
+                  <animate attributeName="d"
+                    values="M200,88 Q195,73 205,61;M200,88 Q208,73 198,61;M200,88 Q195,73 205,61" dur="3.5s"
+                    repeatCount="indefinite" />
+                </path>
+                <path d="M240,95 Q235,80 245,68 Q255,56 245,44" fill="none" stroke="#e8a44a" stroke-width="2"
+                  stroke-linecap="round">
+                  <animate attributeName="opacity" values="0;.55;0" dur="2.8s" begin="0.5s" repeatCount="indefinite" />
+                  <animate attributeName="d"
+                    values="M240,95 Q235,80 245,68;M240,95 Q248,80 238,68;M240,95 Q235,80 245,68" dur="2.8s"
+                    repeatCount="indefinite" />
+                </path>
+              </g>
+
+              <!-- Plate base -->
+              <ellipse cx="200" cy="210" rx="130" ry="20" fill="rgba(0,0,0,.3)" />
+              <ellipse cx="200" cy="200" rx="125" ry="18" fill="#2a1a08" />
+              <ellipse cx="200" cy="197" rx="118" ry="15" fill="url(#plateGrad)" opacity=".9" />
+              <ellipse cx="200" cy="194" rx="95" ry="11" fill="#1a0f05" />
+
+              <!-- Pirarucu fish on plate -->
+              <g transform="translate(200,175)">
+                <animateTransform attributeName="transform" type="translate" values="200,175;200,172;200,175" dur="5s"
+                  repeatCount="indefinite" calcMode="spline" keySplines=".4 0 .6 1;.4 0 .6 1" />
+                <!-- Body -->
+                <ellipse cx="0" cy="0" rx="75" ry="22" fill="url(#gostGrad)" opacity=".95" />
+                <!-- Grilled stripes -->
+                <line x1="-40" y1="-15" x2="-40" y2="15" stroke="#8a3a10" stroke-width="3" opacity=".5" />
+                <line x1="-20" y1="-17" x2="-20" y2="17" stroke="#8a3a10" stroke-width="3" opacity=".5" />
+                <line x1="0" y1="-18" x2="0" y2="18" stroke="#8a3a10" stroke-width="3" opacity=".5" />
+                <line x1="20" y1="-17" x2="20" y2="17" stroke="#8a3a10" stroke-width="3" opacity=".5" />
+                <line x1="40" y1="-15" x2="40" y2="15" stroke="#8a3a10" stroke-width="3" opacity=".5" />
+                <!-- Tail -->
+                <path d="M65,0 L90,-20 L95,0 L90,20 Z" fill="#c8621a" opacity=".85" />
+                <!-- Eye -->
+                <circle cx="-58" cy="-6" r="5" fill="#e8a44a" opacity=".9" />
+                <circle cx="-59" cy="-6" r="2.5" fill="#1a0a00" />
+                <!-- Glow halo -->
+                <ellipse cx="0" cy="0" rx="85" ry="30" fill="url(#gostGlow)" />
+              </g>
+
+              <!-- Herbs / garnish -->
+              <g opacity=".7">
+                <circle cx="145" cy="190" r="6" fill="#4a9e3f" />
+                <circle cx="135" cy="185" r="4" fill="#7bc95c" />
+                <circle cx="255" cy="190" r="6" fill="#4a9e3f" />
+                <circle cx="265" cy="186" r="4" fill="#7bc95c" />
+              </g>
+
+              <!-- Amazônia leaf motif -->
+              <g transform="translate(330,50)" opacity=".6">
+                <path d="M0,0 Q15,-30 30,-10 Q15,10 0,0 Z" fill="#4a9e3f" />
+                <line x1="15" y1="-10" x2="15" y2="5" stroke="#2d6a2d" stroke-width="1" />
+              </g>
+              <g transform="translate(55,60)" opacity=".5">
+                <path d="M0,0 Q-12,-25 -25,-8 Q-12,8 0,0 Z" fill="#4a9e3f" />
+                <line x1="-12" y1="-8" x2="-12" y2="5" stroke="#2d6a2d" stroke-width="1" />
+              </g>
+
+              <!-- Label -->
+              <text x="200" y="250" text-anchor="middle" font-family="serif" font-size="11" fill="#e8a44a" opacity=".8"
+                letter-spacing="3">GOSTO DA AMAZÔNIA</text>
+            </svg>
+          </div>
+
+          <!-- Site preview frame overlay -->
+          <div
+            style="position:absolute;bottom:1.5rem;left:1.5rem;background:rgba(10,5,0,.85);border:1px solid rgba(232,164,74,.25);border-radius:10px;padding:.6rem 1rem;display:flex;align-items:center;gap:.5rem;backdrop-filter:blur(8px);">
+            <div style="width:7px;height:7px;background:#e8a44a;border-radius:50%;animation:pulse-dot 2s infinite;">
+            </div>
+            <span
+              style="font-size:.65rem;color:rgba(245,240,232,.6);letter-spacing:.15em;text-transform:uppercase;">gostodaamazonia.com.br</span>
+          </div>
+
+          <div class="projeto-visual-number">04</div>
+        </div>
+
+        <div class="projeto-info" style="background:linear-gradient(135deg,#1a0d03 0%,#0f1a0a 100%);">
+          <div class="projeto-tag gosto-tag">🍽️ Gastronomia & Conservação</div>
+          <h2 class="projeto-title">Gosto da<br><em style="color:#e8a44a;font-style:italic;">Amazônia</em></h2>
+          <p class="projeto-desc">
+            Iniciativa estratégica que une a gastronomia à conservação ambiental, conectando
+            o trabalho dos manejadores do Médio Juruá aos grandes centros consumidores —
+            garantindo que o valor do produto retorne para a floresta e para as famílias que a protegem.
+          </p>
+
+          <!-- Expandable detail section -->
+          <div class="gosto-detail-toggle" id="gostoToggle" onclick="toggleGostoDetail()">
+            <span>Ver detalhes do projeto</span>
+            <span class="gosto-chevron">↓</span>
+          </div>
+
+          <div class="gosto-detail" id="gostoDetail">
+            <div class="gosto-subsection">
+              <div class="gosto-subsec-title">🎯 Objetivos</div>
+              <p class="gosto-subsec-text">Conciliar a conservação dos recursos naturais e a redução do desmatamento com
+                o bem-estar das populações tradicionais.</p>
+            </div>
+
+            <div class="gosto-acoes">
+              <div class="gosto-acao">
+                <div class="gosto-acao-icon">🏗️</div>
+                <div>
+                  <div class="gosto-acao-title">Infraestrutura</div>
+                  <div class="gosto-acao-text">Conclusão da reforma civil do Entreposto de Pescado da ASPROC, garantindo
+                    ambiente adequado e sanitariamente seguro para o beneficiamento.</div>
+                </div>
+              </div>
+              <div class="gosto-acao">
+                <div class="gosto-acao-icon">⚙️</div>
+                <div>
+                  <div class="gosto-acao-title">Equipamentos</div>
+                  <div class="gosto-acao-text">Aquisição de insumos modernos, maquinários para processamento e
+                    embalagens personalizadas que agregam valor ao produto final congelado.</div>
+                </div>
+              </div>
+              <div class="gosto-acao">
+                <div class="gosto-acao-icon">🔧</div>
+                <div>
+                  <div class="gosto-acao-title">Operação</div>
+                  <div class="gosto-acao-text">Suporte técnico para a manutenção do entreposto durante seu primeiro ano
+                    de funcionamento pleno.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="gosto-impacto">
+              <div class="gosto-impacto-num">R$ 8M</div>
+              <div class="gosto-impacto-label">investidos</div>
+              <div style="width:1px;height:40px;background:rgba(232,164,74,.2);"></div>
+              <div class="gosto-impacto-num">95%</div>
+              <div class="gosto-impacto-label">metas executadas</div>
+            </div>
+          </div>
+
+          <ul class="projeto-bullets">
+            <li>Manejo Comunitário do Pirarucu no Médio Juruá</li>
+            <li>Processamento e embalagem com rastreabilidade</li>
+            <li>Modelo de negócio sustentável comprovado</li>
+            <li>Renda digna ao ribeirinho mantendo a floresta</li>
+          </ul>
+          <a href="https://gostodaamazonia.com.br" target="_blank" class="projeto-cta gosto-cta">
+            Visitar o site <span>→</span>
+          </a>
+          <div class="projeto-share-row">
+            <button class="btn-share-wpp" onclick="shareWhatsApp('https://gostodaamazonia.com.br')"><svg width="14"
+                height="14" viewBox="0 0 24 24" fill="white">
+                <path
+                  d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                <path
+                  d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.121 1.532 5.853L.057 23.636a.5.5 0 0 0 .601.628l5.998-1.57A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.959 0-3.782-.574-5.32-1.562l-.38-.232-3.961 1.037 1.044-3.875-.249-.389A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+              </svg> WhatsApp</button>
+            <button class="btn-share-copy" onclick="copyProjectLink('https://gostodaamazonia.com.br', this)">🔗 Copiar
+              link</button>
+            <span class="share-copied-tip">✓ Copiado!</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- FÁBRICA DE POLPAS DE FRUTAS -->
+      <article class="projeto-card card-polpas reveal">
+        <div class="projeto-visual polpas-visual">
+          <div class="projeto-visual-bg"
+            style="background-image:url('https://images.unsplash.com/photo-1610832958506-aa56368176cf?w=800&q=80'); opacity:.15; mix-blend-mode:luminosity;">
+          </div>
+          <div class="projeto-visual-overlay"
+            style="background:linear-gradient(135deg,rgba(6,18,8,.93) 0%,rgba(20,12,2,.88) 100%);"></div>
+
+          <!-- Animated Fruits & Factory SVG -->
+          <div class="fish-svg">
+            <svg viewBox="0 0 400 300" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="fruitGlow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#7bc95c" stop-opacity=".3" />
+                  <stop offset="100%" stop-color="#c8a84b" stop-opacity="0" />
+                </radialGradient>
+                <linearGradient id="fruitGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#e84e1b" />
+                  <stop offset="100%" stop-color="#f09c2a" />
+                </linearGradient>
+                <linearGradient id="fruitGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#f7c52a" />
+                  <stop offset="100%" stop-color="#e88e10" />
+                </linearGradient>
+                <linearGradient id="fruitGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#7bc95c" />
+                  <stop offset="100%" stop-color="#2d8a20" />
+                </linearGradient>
+              </defs>
+
+              <!-- Background glow -->
+              <ellipse cx="200" cy="160" rx="120" ry="80" fill="url(#fruitGlow)" />
+
+              <!-- Factory silhouette -->
+              <g opacity=".25" transform="translate(80,170)">
+                <rect x="0" y="0" width="240" height="60" fill="#4a9e3f" rx="2" />
+                <rect x="20" y="-20" width="40" height="25" fill="#4a9e3f" />
+                <rect x="80" y="-30" width="40" height="35" fill="#4a9e3f" />
+                <rect x="160" y="-15" width="30" height="20" fill="#4a9e3f" />
+                <!-- Chimneys -->
+                <rect x="30" y="-55" width="8" height="38" fill="#2d6a2d" />
+                <rect x="55" y="-45" width="8" height="28" fill="#2d6a2d" />
+                <rect x="95" y="-65" width="8" height="38" fill="#2d6a2d" />
+                <!-- Windows -->
+                <rect x="10" y="10" width="20" height="18" fill="#7bc95c" opacity=".6" rx="2" />
+                <rect x="50" y="10" width="20" height="18" fill="#7bc95c" opacity=".6" rx="2" />
+                <rect x="120" y="10" width="20" height="18" fill="#c8a84b" opacity=".5" rx="2" />
+                <rect x="160" y="10" width="20" height="18" fill="#7bc95c" opacity=".4" rx="2" />
+                <rect x="200" y="10" width="20" height="18" fill="#c8a84b" opacity=".4" rx="2" />
+              </g>
+
+              <!-- Floating fruits with orbit animation -->
+              <!-- Açaí / dark berry -->
+              <g>
+                <animateTransform attributeName="transform" type="translate" values="200,100; 190,92; 200,100" dur="6s"
+                  repeatCount="indefinite" calcMode="spline" keySplines=".4 0 .6 1; .4 0 .6 1" />
+                <circle cx="200" cy="100" r="22" fill="url(#fruitGrad1)" opacity=".9" />
+                <circle cx="200" cy="100" r="22" fill="none" stroke="#f09c2a" stroke-width="1" opacity=".5" />
+                <!-- Leaf -->
+                <path d="M200,78 Q210,65 220,68 Q215,78 200,78 Z" fill="#7bc95c" opacity=".9" />
+                <!-- Shine -->
+                <ellipse cx="193" cy="92" rx="5" ry="4" fill="white" opacity=".25" transform="rotate(-30,193,92)" />
+              </g>
+
+              <!-- Pupunha / peach fruit -->
+              <g transform="translate(-70, 10)">
+                <animateTransform attributeName="transform" type="translate" values="-70,10; -65,4; -70,10" dur="7s"
+                  begin="1s" repeatCount="indefinite" calcMode="spline" keySplines=".4 0 .6 1; .4 0 .6 1" />
+                <circle cx="200" cy="110" r="18" fill="url(#fruitGrad2)" opacity=".9" />
+                <path d="M200,92 Q207,82 215,85 Q210,94 200,92 Z" fill="#7bc95c" opacity=".85" />
+                <ellipse cx="194" cy="104" rx="4" ry="3" fill="white" opacity=".2" transform="rotate(-25,194,104)" />
+              </g>
+
+              <!-- Cupuaçu / green fruit -->
+              <g transform="translate(65, 15)">
+                <animateTransform attributeName="transform" type="translate" values="65,15; 70,8; 65,15" dur="5.5s"
+                  begin="2s" repeatCount="indefinite" calcMode="spline" keySplines=".4 0 .6 1; .4 0 .6 1" />
+                <ellipse cx="200" cy="115" rx="24" ry="19" fill="url(#fruitGrad3)" opacity=".88" />
+                <path d="M200,96 Q208,84 218,88 Q212,98 200,96 Z" fill="#2d6a2d" opacity=".9" />
+                <path d="M196,98 L204,115 M200,96 L200,115" stroke="#2d8a20" stroke-width=".8" opacity=".4" />
+                <ellipse cx="194" cy="108" rx="5" ry="3.5" fill="white" opacity=".2" transform="rotate(-20,194,108)" />
+              </g>
+
+              <!-- Steam wisps from factory -->
+              <g opacity=".35">
+                <path d="M155,168 Q150,155 158,145 Q166,135 158,125" fill="none" stroke="#7bc95c" stroke-width="1.5"
+                  stroke-linecap="round">
+                  <animate attributeName="opacity" values="0;.5;0" dur="3.2s" begin="0s" repeatCount="indefinite" />
+                </path>
+                <path d="M185,162 Q180,149 188,139" fill="none" stroke="#c8a84b" stroke-width="1.5"
+                  stroke-linecap="round">
+                  <animate attributeName="opacity" values="0;.4;0" dur="2.8s" begin="1.2s" repeatCount="indefinite" />
+                </path>
+                <path d="M220,165 Q215,152 222,142 Q229,132 222,122" fill="none" stroke="#7bc95c" stroke-width="1.5"
+                  stroke-linecap="round">
+                  <animate attributeName="opacity" values="0;.45;0" dur="3.5s" begin="0.7s" repeatCount="indefinite" />
+                </path>
+              </g>
+
+              <!-- Polpa bag/packet -->
+              <g transform="translate(200,195)" opacity=".85">
+                <animateTransform attributeName="transform" type="translate" values="200,195; 200,191; 200,195" dur="4s"
+                  begin=".5s" repeatCount="indefinite" calcMode="spline" keySplines=".4 0 .6 1; .4 0 .6 1" />
+                <rect x="-22" y="-15" width="44" height="30" rx="5" fill="#1a3a10" stroke="#7bc95c" stroke-width="1"
+                  opacity=".9" />
+                <text x="0" y="6" text-anchor="middle" font-family="sans-serif" font-size="6" fill="#7bc95c"
+                  font-weight="bold" letter-spacing="1">POLPA</text>
+                <rect x="-15" y="-10" width="30" height="4" rx="2" fill="#7bc95c" opacity=".3" />
+              </g>
+
+              <!-- Label -->
+              <text x="200" y="260" text-anchor="middle" font-family="serif" font-size="10" fill="#7bc95c" opacity=".7"
+                letter-spacing="3">FÁBRICA DE POLPAS</text>
+            </svg>
+          </div>
+
+          <div class="projeto-visual-number">05</div>
+        </div>
+
+        <div class="projeto-info" style="background:linear-gradient(135deg,#0d1f10 0%,#1a1005 100%);">
+          <div class="projeto-tag polpas-tag">🍊 Agroindústria Sustentável</div>
+          <h2 class="projeto-title">Fábrica de<br><em style="color:var(--verde-neon);font-style:italic;">Polpas de
+              Frutas</em></h2>
+          <p class="projeto-desc">
+            Em parceria com o CLUA, a ASPROC dá passos decisivos para a implementação de uma unidade
+            de beneficiamento de frutas — transformando a produção primária em produtos de maior valor
+            agregado e menor perecibilidade, abrindo portas a novos mercados nacionais e internacionais.
+          </p>
+
+          <!-- Execution progress -->
+          <div class="polpas-progress-wrap">
+            <div class="polpas-progress-label">
+              <span>Execução do Projeto</span>
+              <span>38% concluído</span>
+            </div>
+            <div class="polpas-bar-bg">
+              <div class="polpas-bar-fill" id="polpasBar"></div>
+            </div>
+          </div>
+
+          <ul class="projeto-bullets polpas-bullets">
+            <li>Rondas comunitárias de vigilância e manejo produtivo</li>
+            <li>Encontros anuais entre manejadores e produtores</li>
+            <li>Selos de qualidade e novas redes de financiamento</li>
+            <li>Diversificação além da pesca: excelência em frutos</li>
+          </ul>
+          <a href="fabrica-polpas-de-frutas.html" class="projeto-cta polpas-cta">
+            Ver projeto completo <span>→</span>
+          </a>
+          <div class="projeto-share-row">
+            <button class="btn-share-wpp"
+              onclick="shareWhatsApp('http://www.asproc.com.br/fabrica-polpas-de-frutas.html')"><svg width="14"
+                height="14" viewBox="0 0 24 24" fill="white">
+                <path
+                  d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                <path
+                  d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.121 1.532 5.853L.057 23.636a.5.5 0 0 0 .601.628l5.998-1.57A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.959 0-3.782-.574-5.32-1.562l-.38-.232-3.961 1.037 1.044-3.875-.249-.389A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+              </svg> WhatsApp</button>
+            <button class="btn-share-copy"
+              onclick="copyProjectLink('http://www.asproc.com.br/fabrica-polpas-de-frutas.html', this)">🔗 Copiar
+              link</button>
+            <span class="share-copied-tip">✓ Copiado!</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- FRUTOS DA FLORESTA -->
+      <article class="projeto-card card-acai reveal">
+        <div class="projeto-visual acai-visual">
+          <div class="projeto-visual-overlay"
+            style="background: linear-gradient(135deg, rgba(18,8,32,.92) 0%, rgba(10,26,10,.85) 100%);"></div>
+
+          <!-- Animated Açaí SVG -->
+          <div class="fish-svg">
+            <svg viewBox="0 0 400 300" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="acaiGlowCard" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#c87bef" stop-opacity=".2" />
+                  <stop offset="100%" stop-color="#c87bef" stop-opacity="0" />
+                </radialGradient>
+                <linearGradient id="acaiBerryCard" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#7a3a9b" />
+                  <stop offset="100%" stop-color="#2a0a4b" />
+                </linearGradient>
+                <linearGradient id="acaiStemCard" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#7bc95c" />
+                  <stop offset="100%" stop-color="#2d6a2d" />
+                </linearGradient>
+              </defs>
+
+              <!-- Background glow -->
+              <ellipse cx="200" cy="180" rx="130" ry="90" fill="url(#acaiGlowCard)" />
+
+              <!-- Palm trunk -->
+              <rect x="196" y="220" width="8" height="60" rx="4" fill="url(#acaiStemCard)" opacity=".7" />
+
+              <!-- Palm fronds -->
+              <g opacity=".65">
+                <path d="M200,130 Q155,100 115,112" fill="none" stroke="#4a9e3f" stroke-width="2"
+                  stroke-linecap="round" />
+                <path d="M200,130 Q245,100 285,112" fill="none" stroke="#4a9e3f" stroke-width="2"
+                  stroke-linecap="round" />
+                <path d="M200,130 Q198,88 200,65" fill="none" stroke="#4a9e3f" stroke-width="2"
+                  stroke-linecap="round" />
+                <path d="M200,130 Q170,95 158,72" fill="none" stroke="#4a9e3f" stroke-width="1.5"
+                  stroke-linecap="round" />
+                <path d="M200,130 Q230,95 242,72" fill="none" stroke="#4a9e3f" stroke-width="1.5"
+                  stroke-linecap="round" />
+                <ellipse cx="106" cy="106" rx="15" ry="7" fill="#4a9e3f" transform="rotate(-15,106,106)" />
+                <ellipse cx="292" cy="106" rx="15" ry="7" fill="#4a9e3f" transform="rotate(15,292,106)" />
+                <ellipse cx="200" cy="58" rx="8" ry="14" fill="#4a9e3f" />
+                <ellipse cx="150" cy="66" rx="12" ry="6" fill="#4a9e3f" transform="rotate(-30,150,66)" />
+                <ellipse cx="250" cy="66" rx="12" ry="6" fill="#4a9e3f" transform="rotate(30,250,66)" />
+              </g>
+
+              <!-- Açaí bunch with float animation -->
+              <g>
+                <animateTransform attributeName="transform" type="translate" values="0,0;0,-6;0,0" dur="5s"
+                  repeatCount="indefinite" calcMode="spline" keySplines=".4 0 .6 1;.4 0 .6 1" />
+                <!-- Bunch stems -->
+                <path d="M200,145 Q192,170 185,200 M200,145 Q203,173 210,200 M200,145 Q199,172 200,202" fill="none"
+                  stroke="#c8a84b" stroke-width="1.2" opacity=".6" />
+                <!-- Berry cluster -->
+                <circle cx="200" cy="206" r="12" fill="url(#acaiBerryCard)" opacity=".95" />
+                <circle cx="186" cy="196" r="10" fill="url(#acaiBerryCard)" opacity=".9" />
+                <circle cx="214" cy="196" r="10" fill="url(#acaiBerryCard)" opacity=".9" />
+                <circle cx="177" cy="207" r="9" fill="url(#acaiBerryCard)" opacity=".85" />
+                <circle cx="223" cy="207" r="9" fill="url(#acaiBerryCard)" opacity=".85" />
+                <circle cx="190" cy="218" r="8" fill="url(#acaiBerryCard)" opacity=".8" />
+                <circle cx="210" cy="218" r="8" fill="url(#acaiBerryCard)" opacity=".8" />
+                <circle cx="200" cy="193" r="8" fill="url(#acaiBerryCard)" opacity=".88" />
+                <!-- Berry highlights -->
+                <circle cx="196" cy="203" r="2.5" fill="white" opacity=".14" />
+                <circle cx="183" cy="193" r="2" fill="white" opacity=".12" />
+                <circle cx="211" cy="193" r="2" fill="white" opacity=".12" />
+              </g>
+
+              <!-- Glow under bunch -->
+              <ellipse cx="200" cy="225" rx="50" ry="14" fill="url(#acaiGlowCard)" />
+
+              <!-- Floating berries -->
+              <circle cx="110" cy="170" r="4" fill="#7a3a9b" opacity=".45">
+                <animate attributeName="cy" values="170;154;170" dur="4s" repeatCount="indefinite" />
+                <animate attributeName="opacity" values=".45;.15;.45" dur="4s" repeatCount="indefinite" />
+              </circle>
+              <circle cx="295" cy="160" r="3.5" fill="#c87bef" opacity=".35">
+                <animate attributeName="cy" values="160;143;160" dur="5s" begin="1.2s" repeatCount="indefinite" />
+                <animate attributeName="opacity" values=".35;.1;.35" dur="5s" begin="1.2s" repeatCount="indefinite" />
+              </circle>
+              <circle cx="130" cy="230" r="3" fill="#c87bef" opacity=".3">
+                <animate attributeName="cy" values="230;218;230" dur="3.5s" begin=".6s" repeatCount="indefinite" />
+              </circle>
+              <circle cx="275" cy="240" r="3" fill="#7a3a9b" opacity=".3">
+                <animate attributeName="cy" values="240;226;240" dur="4.2s" begin="2s" repeatCount="indefinite" />
+              </circle>
+
+              <!-- FUNBIO badge -->
+              <g transform="translate(20,240)">
+                <rect width="80" height="22" rx="11" fill="rgba(74,26,107,.5)" stroke="rgba(200,123,239,.3)"
+                  stroke-width="1" />
+                <text x="40" y="15" text-anchor="middle" font-family="sans-serif" font-size="7.5" fill="#c87bef"
+                  font-weight="bold" letter-spacing="1">FUNBIO</text>
+              </g>
+
+              <!-- Label -->
+              <text x="200" y="280" text-anchor="middle" font-family="serif" font-size="10" fill="#c87bef" opacity=".65"
+                letter-spacing="3">FRUTOS DA FLORESTA</text>
+            </svg>
+          </div>
+
+          <div class="projeto-visual-number">06</div>
+        </div>
+
+        <div class="projeto-info">
+          <div class="projeto-tag acai-tag">🍇 Sociobioeconomia</div>
+          <h2 class="projeto-title">Frutos da<br><em style="color:#c87bef;font-style:italic">Floresta</em></h2>
+          <p class="projeto-desc">
+            Apoiado pelo FUNBIO, este projeto amplia estrategicamente a cadeia de valor
+            do açaí manejado, transformando as 45 comunidades ribeirinhas em protagonistas
+            do processamento e da venda — com marca própria, tecnologia industrial e equidade de gênero.
+          </p>
+
+          <!-- Execution progress -->
+          <div class="acai-progress-wrap">
+            <div class="acai-progress-label">
+              <span>Execução do Projeto</span>
+              <span>14% concluído</span>
+            </div>
+            <div class="acai-bar-bg">
+              <div class="acai-bar-fill" id="acaiBar"></div>
+            </div>
+          </div>
+
+          <ul class="projeto-bullets acai-bullets">
+            <li>Projeto técnico e logística para agroindústria do açaí</li>
+            <li>Criação de marca e registro no INPI</li>
+            <li>Equipamentos industriais de ponta para despolpa</li>
+            <li>Investimento previsto de R$ 6,8 milhões</li>
+          </ul>
+          <a href="projeto-frutos-da-floresta.html" class="projeto-cta acai-cta">
+            Ver projeto completo <span>→</span>
+          </a>
+          <div class="projeto-share-row">
+            <button class="btn-share-wpp"
+              onclick="shareWhatsApp('http://www.asproc.com.br/projeto-frutos-da-floresta.html')"><svg width="14"
+                height="14" viewBox="0 0 24 24" fill="white">
+                <path
+                  d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                <path
+                  d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.121 1.532 5.853L.057 23.636a.5.5 0 0 0 .601.628l5.998-1.57A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.959 0-3.782-.574-5.32-1.562l-.38-.232-3.961 1.037 1.044-3.875-.249-.389A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+              </svg> WhatsApp</button>
+            <button class="btn-share-copy"
+              onclick="copyProjectLink('http://www.asproc.com.br/projeto-frutos-da-floresta.html', this)">🔗 Copiar
+              link</button>
+            <span class="share-copied-tip">✓ Copiado!</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- PESCA JUSTA E SUSTENTÁVEL -->
+      <article class="projeto-card card-pesca-justa reveal reveal-delay-1">
+        <div class="projeto-visual pesca-justa-visual">
+          <div class="projeto-visual-overlay"
+            style="background: linear-gradient(135deg, rgba(3,9,15,.93) 0%, rgba(9,24,37,.88) 100%);"></div>
+
+          <!-- Animated Fish / Entreposto SVG -->
+          <div class="fish-svg">
+            <svg viewBox="0 0 400 300" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="pescaGlow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#1a6b8a" stop-opacity=".4" />
+                  <stop offset="100%" stop-color="#1a6b8a" stop-opacity="0" />
+                </radialGradient>
+                <linearGradient id="pescaFishGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#1a6b8a" />
+                  <stop offset="50%" stop-color="#7fd4f5" />
+                  <stop offset="100%" stop-color="#1a6b8a" />
+                </linearGradient>
+              </defs>
+              <!-- Glow -->
+              <ellipse cx="200" cy="150" r="110" fill="url(#pescaGlow)" />
+              <!-- Water waves -->
+              <g opacity=".15">
+                <ellipse cx="200" cy="235" rx="170" ry="18" fill="none" stroke="#7fd4f5" stroke-width="1.2">
+                  <animate attributeName="rx" values="170;190;170" dur="5s" repeatCount="indefinite" />
+                </ellipse>
+                <ellipse cx="200" cy="252" rx="130" ry="12" fill="none" stroke="#7fd4f5" stroke-width="1">
+                  <animate attributeName="rx" values="130;148;130" dur="4s" repeatCount="indefinite" />
+                </ellipse>
+              </g>
+              <!-- Pirarucu -->
+              <g>
+                <animateTransform attributeName="transform" type="translate" values="0,0; 0,-10; 0,0" dur="4.5s"
+                  repeatCount="indefinite" calcMode="spline" keySplines=".4 0 .6 1; .4 0 .6 1" />
+                <ellipse cx="200" cy="145" rx="100" ry="34" fill="url(#pescaFishGrad)" opacity=".85" />
+                <ellipse cx="200" cy="145" rx="100" ry="34" fill="none" stroke="#7fd4f5" stroke-width="1"
+                  opacity=".35" />
+                <!-- Tail -->
+                <path d="M108,145 L78,118 L68,145 L78,172 Z" fill="#1a6b8a" opacity=".85">
+                  <animateTransform attributeName="transform" type="rotate"
+                    values="0,108,145; 7,108,145; -7,108,145; 0,108,145" dur="1.6s" repeatCount="indefinite" />
+                </path>
+                <!-- Eye -->
+                <circle cx="286" cy="135" r="7" fill="#7fd4f5" opacity=".9" />
+                <circle cx="287" cy="135" r="3.5" fill="#03090f" />
+                <!-- Scales -->
+                <path d="M225,128 Q238,138 225,148 M204,125 Q218,136 204,147" fill="none" stroke="#7fd4f5"
+                  stroke-width="1" opacity=".3" />
+                <!-- Dorsal fin -->
+                <path d="M200,111 L230,88 L262,104 L245,111 L215,111 Z" fill="#1a6b8a" opacity=".7" />
+              </g>
+              <!-- Bubbles -->
+              <circle cx="255" cy="100" r="4" fill="none" stroke="#7fd4f5" stroke-width="1" opacity=".45">
+                <animate attributeName="cy" values="100;50" dur="3s" repeatCount="indefinite" />
+                <animate attributeName="opacity" values=".45;0" dur="3s" repeatCount="indefinite" />
+              </circle>
+              <circle cx="235" cy="115" r="2.5" fill="none" stroke="#7fd4f5" stroke-width="1" opacity=".35">
+                <animate attributeName="cy" values="115;65" dur="2.8s" repeatCount="indefinite" begin="1s" />
+                <animate attributeName="opacity" values=".35;0" dur="2.8s" repeatCount="indefinite" begin="1s" />
+              </circle>
+              <!-- JBS badge -->
+              <g transform="translate(20,230)">
+                <rect width="90" height="26" rx="13" fill="rgba(26,107,138,.4)" stroke="rgba(127,212,245,.3)"
+                  stroke-width="1" />
+                <text x="45" y="17" text-anchor="middle" font-family="sans-serif" font-size="8.5" fill="#7fd4f5"
+                  font-weight="700" letter-spacing="2">JBS × ASPROC</text>
+              </g>
+              <!-- 94% badge -->
+              <g transform="translate(295,220)">
+                <circle r="34" cx="34" cy="34" fill="rgba(5,15,26,.8)" stroke="rgba(127,212,245,.22)"
+                  stroke-width="1" />
+                <text x="34" y="29" text-anchor="middle" font-family="serif" font-size="16" fill="#7fd4f5"
+                  font-weight="900">94%</text>
+                <text x="34" y="43" text-anchor="middle" font-family="sans-serif" font-size="7"
+                  fill="rgba(245,240,232,.5)" letter-spacing="1">EXEC.</text>
+              </g>
+              <!-- Label -->
+              <text x="200" y="285" text-anchor="middle" font-family="serif" font-size="10" fill="#7fd4f5" opacity=".65"
+                letter-spacing="3">PESCA JUSTA E SUSTENTÁVEL</text>
+            </svg>
+          </div>
+          <div class="projeto-visual-number">07</div>
+        </div>
+
+        <div class="projeto-info" style="background:linear-gradient(135deg,#050f1a 0%,#0d2030 100%);">
+          <div class="projeto-tag pesca-justa-tag">🐟 Pesca & Infraestrutura</div>
+          <h2 class="projeto-title">Pesca Justa e<br><em style="color:#7fd4f5;font-style:italic;">Sustentável</em></h2>
+          <p class="projeto-desc">
+            Em parceria com o Grupo JBS, o projeto reconstrói e moderniza o Entreposto de
+            Processamento de Pescado da ASPROC — garantindo conformidade sanitária, gestão
+            eficiente e acesso direto ao mercado para os manejadores do Médio Juruá.
+          </p>
+
+          <!-- Execution progress -->
+          <div class="pesca-justa-progress-wrap">
+            <div class="pesca-justa-progress-label">
+              <span>Execução do Projeto</span>
+              <span>94% concluído</span>
+            </div>
+            <div class="pesca-justa-bar-bg">
+              <div class="pesca-justa-bar-fill" id="pescaJustaBar"></div>
+            </div>
+          </div>
+
+          <ul class="projeto-bullets pesca-justa-bullets">
+            <li>Reconstrução e modernização do Entreposto de Pescado</li>
+            <li>Adequação sanitária conforme exigências dos órgãos de vigilância</li>
+            <li>Eliminação de atravessadores com canais de venda diretos</li>
+            <li>4.791 comunitários beneficiados em 62 comunidades</li>
+          </ul>
+          <a href="pesca-justa-sustentavel.html" class="projeto-cta pesca-justa-cta">
+            Ver projeto completo <span>→</span>
+          </a>
+          <div class="projeto-share-row">
+            <button class="btn-share-wpp"
+              onclick="shareWhatsApp('http://www.asproc.com.br/pesca-justa-sustentavel.html')"><svg width="14"
+                height="14" viewBox="0 0 24 24" fill="white">
+                <path
+                  d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                <path
+                  d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.121 1.532 5.853L.057 23.636a.5.5 0 0 0 .601.628l5.998-1.57A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.959 0-3.782-.574-5.32-1.562l-.38-.232-3.961 1.037 1.044-3.875-.249-.389A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+              </svg> WhatsApp</button>
+            <button class="btn-share-copy"
+              onclick="copyProjectLink('http://www.asproc.com.br/pesca-justa-sustentavel.html', this)">🔗 Copiar
+              link</button>
+            <span class="share-copied-tip">✓ Copiado!</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- JURUÁ SUSTENTÁVEL E SOLIDÁRIO -->
+      <article class="projeto-card card-jurua reveal reveal-delay-2">
+        <div class="projeto-visual jurua-visual">
+          <div class="projeto-visual-overlay"
+            style="background: linear-gradient(135deg, rgba(10,26,5,.93) 0%, rgba(26,20,5,.88) 100%);"></div>
+
+          <!-- Animated Cantina Boat SVG -->
+          <div class="fish-svg">
+            <svg viewBox="0 0 400 300" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="jurua-glow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#d4a831" stop-opacity=".25" />
+                  <stop offset="100%" stop-color="#d4a831" stop-opacity="0" />
+                </radialGradient>
+                <linearGradient id="jurua-water" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#1a4a2a" />
+                  <stop offset="100%" stop-color="#0a1a10" />
+                </linearGradient>
+                <linearGradient id="jurua-boat" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#d4a831" />
+                  <stop offset="100%" stop-color="#8b6a1f" />
+                </linearGradient>
+              </defs>
+              <!-- Background glow -->
+              <ellipse cx="200" cy="180" rx="140" ry="100" fill="url(#jurua-glow)" />
+              <!-- River -->
+              <ellipse cx="200" cy="250" rx="280" ry="55" fill="url(#jurua-water)" opacity=".7" />
+              <!-- River ripples -->
+              <g opacity=".18">
+                <ellipse cx="200" cy="268" rx="200" ry="16" fill="none" stroke="#7bc95c" stroke-width="1.2">
+                  <animate attributeName="rx" values="200;220;200" dur="5s" repeatCount="indefinite" />
+                </ellipse>
+                <ellipse cx="200" cy="282" rx="150" ry="10" fill="none" stroke="#d4a831" stroke-width=".8">
+                  <animate attributeName="rx" values="150;165;150" dur="4s" repeatCount="indefinite" />
+                </ellipse>
+              </g>
+              <!-- Forest silhouettes -->
+              <g opacity=".35">
+                <path d="M0,200 Q15,170 30,190 Q45,155 60,180 Q75,158 90,182 Q105,162 120,188 L120,250 L0,250 Z"
+                  fill="#2d6a2d" />
+                <path
+                  d="M280,200 Q295,170 310,190 Q325,155 340,180 Q355,158 370,182 Q385,162 400,188 L400,250 L280,250 Z"
+                  fill="#2d6a2d" />
+              </g>
+              <!-- Stars -->
+              <g fill="#d4a831" opacity=".55">
+                <circle cx="60" cy="60" r="1.5">
+                  <animate attributeName="opacity" values=".55;.1;.55" dur="3s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="180" cy="40" r="1.2">
+                  <animate attributeName="opacity" values=".55;.1;.55" dur="2.5s" repeatCount="indefinite"
+                    begin=".7s" />
+                </circle>
+                <circle cx="320" cy="70" r="1.5">
+                  <animate attributeName="opacity" values=".55;.1;.55" dur="4s" repeatCount="indefinite" begin="1.3s" />
+                </circle>
+                <circle cx="350" cy="45" r="1">
+                  <animate attributeName="opacity" values=".55;.1;.55" dur="3.5s" repeatCount="indefinite" begin="2s" />
+                </circle>
+              </g>
+              <!-- Moon reflection -->
+              <ellipse cx="340" cy="260" rx="18" ry="7" fill="#d4a831" opacity=".1">
+                <animate attributeName="rx" values="18;22;18" dur="4s" repeatCount="indefinite" />
+              </ellipse>
+              <!-- Cantina Boat (animated float) -->
+              <g>
+                <animateTransform attributeName="transform" type="translate" values="0,0;0,-5;0,0" dur="5s"
+                  repeatCount="indefinite" calcMode="spline" keySplines=".4 0 .6 1;.4 0 .6 1" />
+                <!-- Hull -->
+                <path d="M110,248 Q130,262 200,264 Q270,262 290,248 L283,236 L117,236 Z" fill="#6b4010" opacity=".95" />
+                <!-- Deck -->
+                <rect x="122" y="220" width="156" height="18" fill="url(#jurua-boat)" rx="2" opacity=".9" />
+                <!-- Cabin -->
+                <rect x="138" y="194" width="65" height="28" fill="#3a2005" rx="3" opacity=".95" />
+                <rect x="144" y="199" width="16" height="14" fill="#7fd4f5" opacity=".2" rx="1" />
+                <rect x="164" y="199" width="12" height="14" fill="#7fd4f5" opacity=".15" rx="1" />
+                <!-- Cargo boxes -->
+                <rect x="214" y="205" width="28" height="17" fill="#2a1505" rx="2" opacity=".9" />
+                <rect x="246" y="208" width="22" height="14" fill="#3a2008" rx="2" opacity=".9" />
+                <rect x="271" y="210" width="18" height="12" fill="#2a1505" rx="2" opacity=".9" />
+                <!-- Mast -->
+                <line x1="200" y1="220" x2="200" y2="170" stroke="#d4a831" stroke-width="2" opacity=".8" />
+                <line x1="200" y1="182" x2="168" y2="196" stroke="#c8a84b" stroke-width="1" opacity=".45" />
+                <line x1="200" y1="182" x2="232" y2="196" stroke="#c8a84b" stroke-width="1" opacity=".45" />
+                <!-- Flag -->
+                <path d="M200,170 L226,179 L200,188 Z" fill="#7bc95c" opacity=".9">
+                  <animateTransform attributeName="transform" type="skewX" values="0;7;0;-7;0" dur="2.2s"
+                    repeatCount="indefinite" />
+                </path>
+              </g>
+              <!-- BNDES / Fundo Amazônia badge -->
+              <g transform="translate(15,240)">
+                <rect width="110" height="24" rx="12" fill="rgba(45,106,45,.5)" stroke="rgba(123,201,92,.3)"
+                  stroke-width="1" />
+                <text x="55" y="16" text-anchor="middle" font-family="sans-serif" font-size="7.5" fill="#7bc95c"
+                  font-weight="700" letter-spacing="1">FUNDO AMAZÔNIA</text>
+              </g>
+              <!-- Budget badge -->
+              <g transform="translate(270,228)">
+                <rect width="115" height="32" rx="10" fill="rgba(15,20,8,.8)" stroke="rgba(212,168,49,.25)"
+                  stroke-width="1" />
+                <text x="57" y="13" text-anchor="middle" font-family="sans-serif" font-size="7"
+                  fill="rgba(245,240,232,.5)" letter-spacing="1">ORÇAMENTO</text>
+                <text x="57" y="26" text-anchor="middle" font-family="serif" font-size="13" fill="#d4a831"
+                  font-weight="900">R$ 38,9M</text>
+              </g>
+              <!-- Label -->
+              <text x="200" y="290" text-anchor="middle" font-family="serif" font-size="9.5" fill="#d4a831"
+                opacity=".65" letter-spacing="3">JURUÁ SUSTENTÁVEL</text>
+            </svg>
+          </div>
+          <div class="projeto-visual-number">08</div>
+        </div>
+
+        <div class="projeto-info">
+          <div class="projeto-tag jurua-tag">🌿 Maior Projeto em Escala</div>
+          <h2 class="projeto-title">Juruá Sustentável<br><em style="color:#d4a831;font-style:italic">e Solidário</em>
+          </h2>
+          <p class="projeto-desc">
+            O maior projeto em escala da ASPROC, apoiado pelo Fundo Amazônia (BNDES)
+            e pelo Ministério do Meio Ambiente. Foca na consolidação do Comércio Ribeirinho,
+            garantindo o abastecimento de itens básicos e a compra da produção
+            das famílias em áreas remotas do Médio Juruá.
+          </p>
+          <ul class="projeto-bullets jurua-bullets">
+            <li>Logística de comercialização via sistema de "Cantinas"</li>
+            <li>Vigilância territorial e monitoramento de lagos</li>
+            <li>Equipamentos de transporte e processamento para produtores</li>
+            <li>R$ 38,9 milhões investidos nas cadeias socioprodutivas</li>
+          </ul>
+          <a href="projeto-jurua-sustentavel-solidario.html" class="projeto-cta jurua-cta">
+            Ver projeto completo <span>→</span>
+          </a>
+          <div class="projeto-share-row">
+            <button class="btn-share-wpp"
+              onclick="shareWhatsApp('http://www.asproc.com.br/projeto-jurua-sustentavel-solidario.html')"><svg
+                width="14" height="14" viewBox="0 0 24 24" fill="white">
+                <path
+                  d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                <path
+                  d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.121 1.532 5.853L.057 23.636a.5.5 0 0 0 .601.628l5.998-1.57A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.959 0-3.782-.574-5.32-1.562l-.38-.232-3.961 1.037 1.044-3.875-.249-.389A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+              </svg> WhatsApp</button>
+            <button class="btn-share-copy"
+              onclick="copyProjectLink('http://www.asproc.com.br/projeto-jurua-sustentavel-solidario.html', this)">🔗
+              Copiar link</button>
+            <span class="share-copied-tip">✓ Copiado!</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- RIOS VIVOS -->
+      <article class="projeto-card card-rios reveal">
+        <div class="projeto-visual rios-visual">
+          <div class="projeto-visual-bg"
+            style="background-image:url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80'); mix-blend-mode:luminosity; opacity:.18;">
+          </div>
+          <div class="projeto-visual-overlay"
+            style="background:linear-gradient(135deg,rgba(3,9,15,.93) 0%,rgba(5,26,16,.88) 100%);"></div>
+
+          <!-- Animated River & Recycling SVG -->
+          <div class="fish-svg">
+            <svg viewBox="0 0 400 300" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <radialGradient id="riosGlow" cx="50%" cy="60%" r="50%">
+                  <stop offset="0%" stop-color="#1a6b8a" stop-opacity=".4" />
+                  <stop offset="100%" stop-color="#1a6b8a" stop-opacity="0" />
+                </radialGradient>
+                <linearGradient id="riosWater" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#1a4d5a" />
+                  <stop offset="100%" stop-color="#0a2030" />
+                </linearGradient>
+              </defs>
+              <ellipse cx="200" cy="230" rx="160" ry="80" fill="url(#riosGlow)" />
+              <!-- Forest -->
+              <g opacity=".28">
+                <path d="M0,180 Q20,155 40,172 Q60,148 80,165 Q100,148 120,168 L120,240 L0,240 Z" fill="#2d6a2d" />
+                <path d="M280,180 Q300,155 320,172 Q340,148 360,165 Q380,148 400,168 L400,240 L280,240 Z"
+                  fill="#2d6a2d" />
+              </g>
+              <!-- River -->
+              <ellipse cx="200" cy="255" rx="240" ry="42" fill="url(#riosWater)" opacity=".8" />
+              <g opacity=".18">
+                <ellipse cx="200" cy="268" rx="200" ry="14" fill="none" stroke="#7fd4f5" stroke-width="1.2">
+                  <animate attributeName="rx" values="200;218;200" dur="5s" repeatCount="indefinite" />
+                </ellipse>
+                <ellipse cx="200" cy="280" rx="140" ry="9" fill="none" stroke="#7fd4f5" stroke-width=".8">
+                  <animate attributeName="rx" values="140;155;140" dur="4s" repeatCount="indefinite" begin="1s" />
+                </ellipse>
+              </g>
+              <!-- Recycling symbol floating -->
+              <g>
+                <animateTransform attributeName="transform" type="translate" values="0,0;0,-7;0,0" dur="4.5s"
+                  repeatCount="indefinite" calcMode="spline" keySplines=".4 0 .6 1;.4 0 .6 1" />
+                <circle cx="200" cy="130" r="50" fill="rgba(26,107,138,.2)" stroke="rgba(127,212,245,.35)"
+                  stroke-width="1.5" />
+                <path d="M200,88 L213,108 L205,108 L205,126 L186,126 L186,112 L178,112 Z" fill="none" stroke="#7fd4f5"
+                  stroke-width="2.5" stroke-linejoin="round" opacity=".75" />
+                <path d="M175,143 L162,123 L170,123 L178,105 L194,113 L183,118 Z" fill="none" stroke="#7bc95c"
+                  stroke-width="2.5" stroke-linejoin="round" opacity=".75" />
+                <path d="M225,143 L238,123 L230,123 L214,105 L207,118 L219,121 Z" fill="none" stroke="#c8a84b"
+                  stroke-width="2.5" stroke-linejoin="round" opacity=".75" />
+                <circle cx="200" cy="124" r="7" fill="rgba(127,212,245,.45)" />
+              </g>
+              <!-- Water drop -->
+              <g transform="translate(310,195)">
+                <animateTransform attributeName="transform" type="translate" values="310,195;310,189;310,195" dur="5s"
+                  repeatCount="indefinite" begin="1.5s" />
+                <path d="M0,-18 Q12,0 12,10 A12,12 0 0,1 -12,10 Q-12,0 0,-18 Z" fill="rgba(127,212,245,.55)"
+                  stroke="rgba(127,212,245,.8)" stroke-width="1" />
+              </g>
+              <!-- Trash bag -->
+              <g transform="translate(75,198)">
+                <animateTransform attributeName="transform" type="translate" values="75,198;75,193;75,198" dur="3.5s"
+                  repeatCount="indefinite" begin=".5s" />
+                <path d="M0,0 Q-12,4 -12,24 Q-12,44 0,48 Q12,44 12,24 Q12,4 0,0 Z" fill="#2d6a2d" opacity=".8"
+                  stroke="rgba(123,201,92,.3)" stroke-width="1" />
+                <circle cx="0" cy="0" r="4.5" fill="#4a9e3f" opacity=".8" />
+              </g>
+              <!-- Stars -->
+              <g fill="#7fd4f5" opacity=".5">
+                <circle cx="48" cy="40" r="1.5">
+                  <animate attributeName="opacity" values=".5;.1;.5" dur="3s" repeatCount="indefinite" />
+                </circle>
+                <circle cx="170" cy="22" r="1.2">
+                  <animate attributeName="opacity" values=".5;.1;.5" dur="2.5s" repeatCount="indefinite" begin=".8s" />
+                </circle>
+                <circle cx="340" cy="50" r="1.5">
+                  <animate attributeName="opacity" values=".5;.1;.5" dur="4s" repeatCount="indefinite" begin="1.5s" />
+                </circle>
+              </g>
+              <text x="200" y="296" text-anchor="middle" font-family="sans-serif" font-size="8.5" fill="#7fd4f5"
+                opacity=".5" letter-spacing="3">RIOS VIVOS</text>
+            </svg>
+          </div>
+          <div class="projeto-visual-number">09</div>
+        </div>
+
+        <div class="projeto-info">
+          <div class="projeto-tag rios-tag">💧 Gestão Ambiental</div>
+          <h2 class="projeto-title">Rios Vivos<br><em style="color:#7fd4f5;font-style:italic">Meio Ambiente & Saúde</em>
+          </h2>
+          <p class="projeto-desc">
+            A resposta da ASPROC ao desafio do lixo em áreas isoladas. Gestão adequada
+            de resíduos sólidos e conscientização ambiental para que o cuidado com a
+            floresta comece dentro de casa e nas margens dos rios.
+          </p>
+          <ul class="projeto-bullets rios-bullets">
+            <li>Coleta sistemática em 10 comunidades piloto</li>
+            <li>3.000 kg de resíduos retirados da natureza</li>
+            <li>197 famílias beneficiadas diretamente</li>
+            <li>Logística reversa via parceria com "Nós Podemos"</li>
+          </ul>
+          <a href="projeto-rios-vivo.html" class="projeto-cta rios-cta">
+            Conhecer o projeto <span>→</span>
+          </a>
+          <div class="projeto-share-row">
+            <button class="btn-share-wpp" onclick="shareWhatsApp('http://www.asproc.com.br/rios-vivos.html')"><svg
+                width="14" height="14" viewBox="0 0 24 24" fill="white">
+                <path
+                  d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
+                <path
+                  d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.121 1.532 5.853L.057 23.636a.5.5 0 0 0 .601.628l5.998-1.57A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.959 0-3.782-.574-5.32-1.562l-.38-.232-3.961 1.037 1.044-3.875-.249-.389A9.96 9.96 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z" />
+              </svg> WhatsApp</button>
+            <button class="btn-share-copy"
+              onclick="copyProjectLink('http://www.asproc.com.br/rios-vivos.html', this)">🔗 Copiar link</button>
+            <span class="share-copied-tip">✓ Copiado!</span>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ── NÚMEROS DE IMPACTO ── -->
+  <section class="numeros-section">
+    <div class="numeros-inner">
+      <div class="numeros-header reveal">
+        <div class="section-label">Nosso Impacto</div>
+        <h2 class="section-title">Resultados em <span style="color:var(--verde-neon)">números</span></h2>
+      </div>
+      <div class="numeros-grid">
+        <div class="numero-card reveal">
+          <div class="numero-icon">🐟</div>
+          <div class="numero-val" data-target="60000">0</div>
+          <div class="numero-label">Pirarucus manejados/ano</div>
+        </div>
+        <div class="numero-card reveal reveal-delay-1">
+          <div class="numero-icon">🏘️</div>
+          <div class="numero-val" data-target="64">0</div>
+          <div class="numero-label">Comunidades atendidas</div>
+        </div>
+        <div class="numero-card reveal reveal-delay-2">
+          <div class="numero-icon">💧</div>
+          <div class="numero-val" data-target="15">0</div>
+          <div class="numero-label">Comunidades com água tratada</div>
+        </div>
+        <div class="numero-card reveal reveal-delay-3">
+          <div class="numero-icon">🌿</div>
+          <div class="numero-val" data-target="30">0</div>
+          <div class="numero-label">Anos de atuação</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── LOJA DESTAQUE ── -->
+  <section class="loja-section">
+    <div class="loja-inner">
+      <div class="loja-text reveal">
+        <div class="loja-badge">🌿 Produtos da Amazônia</div>
+        <h2 class="loja-title">
+          Da floresta<br>direto para <span>você</span>
+        </h2>
+        <p class="loja-desc">
+          Na nossa loja online você encontra produtos agroextrativistas sustentáveis
+          produzidos pelas comunidades ribeirinhas do Médio Juruá. Cada compra é um
+          ato de solidariedade e apoio ao modo de vida tradicional amazônico.
+        </p>
+        <div class="loja-features">
+          <div class="loja-feature">
+            <div class="loja-feature-icon">🫙</div>
+            <div class="loja-feature-text">Óleos, castanhas e produtos da floresta com procedência garantida</div>
+          </div>
+          <div class="loja-feature">
+            <div class="loja-feature-icon">✊</div>
+            <div class="loja-feature-text">Renda direta para as famílias produtoras ribeirinhas</div>
+          </div>
+          <div class="loja-feature">
+            <div class="loja-feature-icon">🌱</div>
+            <div class="loja-feature-text">Produção 100% sustentável e agroextrativista</div>
+          </div>
+          <div class="loja-feature">
+            <div class="loja-feature-icon">📦</div>
+            <div class="loja-feature-text">Entrega para todo o Brasil com rastreabilidade</div>
+          </div>
+        </div>
+        <div class="loja-cta-group">
+          <a href="https://loja.asproc.org.br" target="_blank" class="btn-loja-primary">
+            🛒 Visitar a Loja
+          </a>
+          <a href="projeto-comercio.html" class="btn-loja-secondary">
+            Sobre o Comércio Ribeirinho →
+          </a>
+        </div>
+      </div>
+
+      <div class="loja-visual reveal reveal-delay-1">
+        <div class="loja-float-badge">
+          <span>🌿</span>
+          <span style="font-size:.58rem;">LOJA<br>ONLINE</span>
+        </div>
+        <div class="loja-frame">
+          <div class="loja-frame-bar">
+            <div class="loja-frame-dot" style="background:#ff5f56;"></div>
+            <div class="loja-frame-dot" style="background:#ffbd2e;"></div>
+            <div class="loja-frame-dot" style="background:#27c93f;"></div>
+            <div class="loja-frame-url">loja.asproc.org.br</div>
+          </div>
+          <iframe src="https://loja.asproc.org.br" class="loja-iframe" title="Loja ASPROC" loading="lazy"
+            sandbox="allow-same-origin allow-scripts">
+          </iframe>
+          <!-- Overlay for click-through -->
+          <a href="https://loja.asproc.org.br" target="_blank"
+            style="position:absolute;inset:0;z-index:3;display:flex;align-items:flex-end;justify-content:center;padding-bottom:1.5rem;text-decoration:none;background:linear-gradient(to top,rgba(10,20,10,.7) 0%,transparent 50%);">
+            <span
+              style="background:var(--dourado);color:#1a0f05;padding:.6rem 1.8rem;border-radius:30px;font-weight:700;font-size:.85rem;">
+              Abrir Loja →
+            </span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">ASPROC<span>.</span></div>
+      <nav class="footer-nav">
+        <a href="index.html">Início</a>
+        <a href="sobre.html">Sobre</a>
+        <a href="#">Projetos</a>
+        <a href="noticias.html">Notícias</a>
+        <a href="avisos.html">Avisos</a>
+        <a href="trabalhe-conosco.html">Trabalhe Conosco</a>
+        <a href="https://loja.asproc.org.br" target="_blank">Loja</a>
+      </nav>
+    </div>
+    <p class="footer-copy">© 2025 ASPROC – Associação dos Produtores Rurais de Carauari. Todos os direitos reservados.
+    </p>
+  </footer>
+
+  <script>
+    // Compartilhar via WhatsApp com pré-visualização OG
+    // O WhatsApp lê as meta tags og:image / og:title / og:description da URL passada.
+    // Por isso o link enviado aponta para a página do projeto (que deve ter essas tags no <head>).
+    function shareWhatsApp(url) {
+      const wppUrl = 'https://wa.me/?text=' + encodeURIComponent(url);
+      window.open(wppUrl, '_blank', 'noopener');
+    }
+
+    // Compartilhar projeto: copia link e mostra feedback
+    function copyProjectLink(url, btn) {
+      navigator.clipboard.writeText(url).then(() => {
+        const tip = btn.nextElementSibling;
+        tip.classList.add('show');
+        btn.textContent = '✓ Copiado!';
+        setTimeout(() => {
+          tip.classList.remove('show');
+          btn.textContent = '🔗 Copiar link';
+        }, 2500);
+      }).catch(() => {
+        // fallback para navegadores sem clipboard API
+        const ta = document.createElement('textarea');
+        ta.value = url; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        const tip = btn.nextElementSibling;
+        tip.classList.add('show');
+        btn.textContent = '✓ Copiado!';
+        setTimeout(() => { tip.classList.remove('show'); btn.textContent = '🔗 Copiar link'; }, 2500);
+      });
+    }
+
+    // Cursor
+    const dot = document.getElementById('cursor-dot');
+    const ring = document.getElementById('cursor-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    function animCursor() {
+      dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+      rx += (mx - rx) * .12; ry += (my - ry) * .12;
+      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+      requestAnimationFrame(animCursor);
+    }
+    animCursor();
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => { dot.classList.add('hovered'); ring.classList.add('hovered'); });
+      el.addEventListener('mouseleave', () => { dot.classList.remove('hovered'); ring.classList.remove('hovered'); });
+    });
+    document.addEventListener('mousedown', () => { dot.classList.add('clicked'); ring.classList.add('clicked'); });
+    document.addEventListener('mouseup', () => { dot.classList.remove('clicked'); ring.classList.remove('clicked'); });
+
+    // Progress bar
+    const pb = document.getElementById('progress-bar');
+    window.addEventListener('scroll', () => {
+      const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+      pb.style.width = pct + '%';
+    });
+
+    // Navbar
+    const nav = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // Particles
+    const pc = document.getElementById('particles');
+    for (let i = 0; i < 25; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      const size = Math.random() * 4 + 2;
+      const isLeaf = Math.random() > .6;
+      p.style.cssText = `
+      left: ${Math.random() * 100}%;
+      width: ${size}px; height: ${size}px;
+      background: ${isLeaf ? '#7bc95c' : 'rgba(200,168,75,.6)'};
+      animation-duration: ${Math.random() * 15 + 10}s;
+      animation-delay: ${Math.random() * 10}s;
+    `;
+      pc.appendChild(p);
+    }
+
+    // Reveal on scroll
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: .15 });
+    reveals.forEach(r => observer.observe(r));
+
+    // Counter animation
+    function animateCounter(el) {
+      const target = parseInt(el.dataset.target);
+      if (!target) return;
+      const duration = 2000;
+      const start = performance.now();
+      function update(now) {
+        const progress = Math.min((now - start) / duration, 1);
+        const ease = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.round(ease * target).toLocaleString('pt-BR');
+        if (progress < 1) requestAnimationFrame(update);
+      }
+      requestAnimationFrame(update);
+    }
+    const counterObserver = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          animateCounter(e.target);
+          counterObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: .5 });
+    document.querySelectorAll('[data-target]').forEach(el => counterObserver.observe(el));
+    // Gosto da Amazônia detail toggle
+    function toggleGostoDetail() {
+      const detail = document.getElementById('gostoDetail');
+      const chevron = document.querySelector('.gosto-chevron');
+      const toggle = document.getElementById('gostoToggle');
+      const isOpen = detail.classList.contains('expanded');
+      detail.classList.toggle('expanded', !isOpen);
+      chevron.classList.toggle('open', !isOpen);
+      toggle.querySelector('span').textContent = isOpen ? 'Ver detalhes do projeto' : 'Fechar detalhes';
+    }
+
+    // ── MOBILE MENU ──
+
+
+
+
+    function toggleMenu() { document.getElementById('navLinks').classList.toggle('open') }
+    function setLang(lang) { document.querySelectorAll('.lang-btn').forEach((b, i) => b.classList.toggle('active', ['pt', 'en', 'es'][i] === lang)) }
+    // Close on escape
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && menuOpen) closeMobMenu(); });
+
+    // Animate polpas progress bar when in view
+    const polpasBar = document.getElementById('polpasBar');
+    if (polpasBar) {
+      const barObserver = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) { polpasBar.classList.add('animated'); barObserver.unobserve(e.target); }
+        });
+      }, { threshold: .4 });
+      barObserver.observe(polpasBar);
+    }
+
+    // Animate açaí progress bar when in view
+    const acaiBar = document.getElementById('acaiBar');
+    if (acaiBar) {
+      const acaiBarObserver = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) { acaiBar.classList.add('animated'); acaiBarObserver.unobserve(e.target); }
+        });
+      }, { threshold: .4 });
+      acaiBarObserver.observe(acaiBar);
+    }
+
+    // Animate Pesca Justa progress bar when in view
+    const pescaJustaBar = document.getElementById('pescaJustaBar');
+    if (pescaJustaBar) {
+      const pescaJustaBarObserver = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) { pescaJustaBar.classList.add('animated'); pescaJustaBarObserver.unobserve(e.target); }
+        });
+      }, { threshold: .4 });
+      pescaJustaBarObserver.observe(pescaJustaBar);
+    }
+  </script>
+</body>
+
+</html>

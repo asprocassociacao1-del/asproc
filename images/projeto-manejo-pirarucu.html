@@ -1,0 +1,1900 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <title>Pirarucu Selvagem de Manejo – ASPROC | Médio Juruá, Amazonas</title>
+  <meta name="description" content="Pirarucu selvagem pescado com manejo comunitário sustentável na Reserva do Médio Juruá. Rastreável da origem. 251 famílias, 853% de crescimento do estoque. ASPROC, Amazonas.">
+  <link rel="canonical" href="https://www.asproc.com.br/projeto-manejo-pirarucu.html">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.asproc.com.br/projeto-manejo-pirarucu.html">
+  <meta property="og:title" content="Pirarucu Selvagem de Manejo – ASPROC | Médio Juruá, Amazonas">
+  <meta property="og:description" content="Pirarucu selvagem pescado com manejo comunitário sustentável na Reserva do Médio Juruá. Rastreável da origem. 251 famílias, 853% de crescimento do estoque. ASPROC, Amazonas.">
+  <meta property="og:image" content="https://www.asproc.com.br/images/card-manejo-pirarucu.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:site_name" content="ASPROC">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Pirarucu Selvagem de Manejo – ASPROC | Médio Juruá, Amazonas">
+  <meta name="twitter:description" content="Pirarucu selvagem pescado com manejo comunitário sustentável na Reserva do Médio Juruá. Rastreável da origem. 251 famílias, 853% de crescimento do estoque. ASPROC, Amazonas.">
+  <meta name="twitter:image" content="https://www.asproc.com.br/images/card-manejo-pirarucu.webp">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Syne:wght@400;600;700;800&family=IBM+Plex+Sans:wght@300;400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --rio: #0a3d52;
+      --rio-med: #115e7e;
+      --rio-claro: #1e8faf;
+      --brilho: #57c4e5;
+      --brilho-2: #a8dff0;
+      --floresta: #0f3d1a;
+      --folha: #2a7a35;
+      --folha-claro: #4db860;
+      --terra: #8b4a1a;
+      --ouro: #d4a030;
+      --ouro-claro: #f0c060;
+      --noite: #030d12;
+      --noite-2: #06181f;
+      --noite-3: #091e26;
+      --noite-4: #0d2835;
+      --branco: #f2fbff;
+      --branco-dim: rgba(242, 251, 255, 0.72);
+      --branco-ghost: rgba(242, 251, 255, 0.35);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: 'IBM Plex Sans', sans-serif;
+      background: var(--noite);
+      color: var(--branco);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── CURSOR ── */
+    #c-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--brilho);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 99999;
+      transform: translate(-50%, -50%);
+      mix-blend-mode: screen;
+      transition: width .1s, height .1s;
+    }
+
+    #c-ring {
+      width: 32px;
+      height: 32px;
+      border: 1.5px solid var(--brilho);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 99998;
+      transform: translate(-50%, -50%);
+      opacity: .4;
+    }
+
+    #c-dot.on {
+      width: 5px;
+      height: 5px;
+    }
+
+    #c-ring.on {
+      width: 48px;
+      height: 48px;
+      opacity: .7;
+    }
+
+    @media (hover: none) {
+      body {
+        cursor: auto;
+      }
+
+      #c-dot,
+      #c-ring {
+        display: none;
+      }
+    }
+
+    /* ── PROGRESS ── */
+    #prog {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--rio-claro), var(--brilho), var(--ouro-claro));
+      z-index: 10001;
+      width: 0%;
+      transition: width .1s linear;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      height: 68px;
+      padding: 0 6%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(3, 13, 18, 0);
+      backdrop-filter: blur(0px);
+      border-bottom: 1px solid rgba(87, 196, 229, 0);
+      transition: all .4s;
+    }
+
+    nav.scrolled {
+      background: rgba(3, 13, 18, .92);
+      backdrop-filter: blur(24px);
+      border-bottom-color: rgba(87, 196, 229, .1);
+      height: 58px;
+    }
+
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--branco);
+      text-decoration: none;
+      letter-spacing: .04em;
+    }
+
+    .nav-logo em {
+      color: var(--brilho);
+      font-style: normal;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: .78rem;
+      font-weight: 600;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--branco-dim);
+      text-decoration: none;
+      transition: color .25s;
+    }
+
+    .nav-links a:hover {
+      color: var(--brilho);
+    }
+
+    .nav-cta {
+      font-family: 'Syne', sans-serif;
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--noite);
+      background: var(--brilho);
+      padding: .5rem 1.4rem;
+      border-radius: 2px;
+      text-decoration: none;
+      transition: background .25s;
+    }
+
+    .nav-cta:hover {
+      background: var(--branco);
+    }
+
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+    }
+
+    .nav-hamburger span {
+      width: 22px;
+      height: 1.5px;
+      background: var(--branco);
+      display: block;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      padding-bottom: 8vh;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg,
+          rgba(3, 13, 18, .3) 0%,
+          rgba(6, 24, 31, .6) 40%,
+          rgba(9, 30, 38, .85) 75%,
+          var(--noite) 100%);
+      z-index: 1;
+    }
+
+    .hero-photo {
+      position: absolute;
+      inset: 0;
+      background-image: url('https://rastreabilidadedopirarucu.asproc.org.br/wp-content/uploads/2022/08/pirarucu-lombo2.jpg');
+      background-size: cover;
+      background-position: center 30%;
+      filter: saturate(.7) brightness(.6);
+      transform: scale(1.04);
+      transition: transform 8s ease-out;
+    }
+
+    .hero-photo.loaded {
+      transform: scale(1);
+    }
+
+    /* Water light caustics */
+    .hero-caustics {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background:
+        radial-gradient(ellipse 40% 20% at 15% 20%, rgba(87, 196, 229, .08) 0%, transparent 70%),
+        radial-gradient(ellipse 30% 15% at 70% 35%, rgba(87, 196, 229, .06) 0%, transparent 70%),
+        radial-gradient(ellipse 20% 10% at 45% 60%, rgba(87, 196, 229, .04) 0%, transparent 70%);
+      animation: caustics 12s ease-in-out infinite alternate;
+    }
+
+    @keyframes caustics {
+      from {
+        opacity: .7;
+        transform: scale(1);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1.05) translateX(-1%);
+      }
+    }
+
+    /* Vertical scan lines texture */
+    .hero-grain {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      opacity: .035;
+      background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 255, 255, .5) 2px, rgba(255, 255, 255, .5) 3px);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      padding: 0 8%;
+      max-width: 1200px;
+      width: 100%;
+    }
+
+    .hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      font-family: 'Syne', sans-serif;
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: var(--brilho);
+      margin-bottom: 1.8rem;
+      animation: fadeUp .8s .2s both;
+    }
+
+    .hero-kicker::before {
+      content: '';
+      width: 28px;
+      height: 1px;
+      background: var(--brilho);
+    }
+
+    .hero-h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 900;
+      line-height: .95;
+      margin-bottom: 2.2rem;
+      animation: fadeUp .8s .35s both;
+    }
+
+    .hero-h1 .line-1 {
+      display: block;
+    }
+
+    .hero-h1 .line-2 {
+      display: block;
+      color: var(--brilho);
+      font-style: italic;
+    }
+
+    .hero-h1 .line-3 {
+      display: block;
+      font-size: .42em;
+      font-weight: 400;
+      font-style: normal;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--branco-dim);
+      margin-top: .4em;
+      font-family: 'Syne', sans-serif;
+    }
+
+    .hero-bottom {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 2rem;
+      flex-wrap: wrap;
+      animation: fadeUp .8s .5s both;
+    }
+
+    .hero-desc {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: var(--branco-dim);
+      max-width: 480px;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 0;
+      flex-shrink: 0;
+    }
+
+    .hero-stat {
+      padding: 1.2rem 1.8rem;
+      border-left: 1px solid rgba(87, 196, 229, .2);
+      text-align: center;
+    }
+
+    .hero-stat:first-child {
+      border-left: none;
+    }
+
+    .hero-stat strong {
+      display: block;
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--ouro-claro);
+      line-height: 1;
+    }
+
+    .hero-stat span {
+      display: block;
+      font-size: .65rem;
+      font-weight: 600;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: rgba(87, 196, 229, .7);
+      margin-top: .3rem;
+    }
+
+    /* Scroll hint */
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .5rem;
+      animation: fadeUp 1s 1.2s both;
+    }
+
+    .scroll-hint span {
+      font-size: .6rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: rgba(87, 196, 229, .4);
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 50px;
+      background: linear-gradient(to bottom, rgba(87, 196, 229, .4), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollPulse {
+
+      0%,
+      100% {
+        transform: scaleY(1);
+        opacity: .6;
+      }
+
+      50% {
+        transform: scaleY(.6);
+        opacity: 1;
+      }
+    }
+
+    /* ── DIVIDER ── */
+    .wave {
+      position: relative;
+      height: 60px;
+      overflow: hidden;
+      margin-top: -2px;
+    }
+
+    .wave svg {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+    }
+
+    /* ── SECTIONS BASE ── */
+    section {
+      padding: 7rem 8%;
+    }
+
+    .sec-alt {
+      background: var(--noite-2);
+    }
+
+    .sec-dark {
+      background: var(--noite-3);
+    }
+
+    .label {
+      font-family: 'Syne', sans-serif;
+      font-size: .62rem;
+      font-weight: 700;
+      letter-spacing: .3em;
+      text-transform: uppercase;
+      color: var(--brilho);
+      margin-bottom: .9rem;
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+    }
+
+    .label::after {
+      content: '';
+      flex: 1;
+      max-width: 40px;
+      height: 1px;
+      background: rgba(87, 196, 229, .3);
+    }
+
+    h2.section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+
+    h2.section-title em {
+      color: var(--brilho);
+      font-style: italic;
+    }
+
+    .section-intro {
+      font-size: 1.05rem;
+      line-height: 1.85;
+      color: var(--branco-dim);
+      max-width: 600px;
+    }
+
+    /* ── REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+
+    .reveal.vis {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .d1 {
+      transition-delay: .1s;
+    }
+
+    .d2 {
+      transition-delay: .2s;
+    }
+
+    .d3 {
+      transition-delay: .3s;
+    }
+
+    .d4 {
+      transition-delay: .4s;
+    }
+
+    .d5 {
+      transition-delay: .5s;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ── ORIGEM (ORIGEM SECTION) ── */
+    .origem-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+
+    .origem-map-wrap {
+      position: relative;
+    }
+
+    .origem-img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      border-radius: 4px;
+      filter: saturate(.85) brightness(.75);
+      display: block;
+    }
+
+    .origem-badge {
+      position: absolute;
+      bottom: -1.5rem;
+      right: -1.5rem;
+      background: var(--noite-3);
+      border: 1px solid rgba(87, 196, 229, .2);
+      border-radius: 4px;
+      padding: 1.2rem 1.5rem;
+      min-width: 200px;
+    }
+
+    .origem-badge p {
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: rgba(87, 196, 229, .5);
+      margin-bottom: .4rem;
+    }
+
+    .origem-badge strong {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--ouro-claro);
+      display: block;
+    }
+
+    .origem-text {
+      padding-right: 2rem;
+    }
+
+    .origem-text p {
+      font-size: .98rem;
+      line-height: 1.9;
+      color: var(--branco-dim);
+      margin-bottom: 1.2rem;
+    }
+
+    .origem-text strong {
+      color: var(--brilho);
+      font-weight: 500;
+    }
+
+    .origem-facts {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .fact {
+      background: rgba(30, 143, 175, .08);
+      border: 1px solid rgba(87, 196, 229, .12);
+      border-radius: 4px;
+      padding: 1rem 1.2rem;
+      transition: border-color .3s, background .3s;
+    }
+
+    .fact:hover {
+      border-color: rgba(87, 196, 229, .3);
+      background: rgba(30, 143, 175, .15);
+    }
+
+    .fact-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--ouro-claro);
+      line-height: 1;
+      margin-bottom: .3rem;
+    }
+
+    .fact-desc {
+      font-size: .78rem;
+      line-height: 1.5;
+      color: rgba(242, 251, 255, .55);
+    }
+
+    /* ── QUALIDADE ── */
+    .qualidade-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5px;
+      border: 1.5px solid rgba(87, 196, 229, .1);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 3.5rem;
+    }
+
+    .qual-card {
+      background: var(--noite-4);
+      padding: 2.5rem 2rem;
+      position: relative;
+      transition: background .3s;
+    }
+
+    .qual-card:hover {
+      background: rgba(30, 143, 175, .12);
+    }
+
+    .qual-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--rio-claro), var(--brilho));
+      transform: scaleX(0);
+      transition: transform .35s;
+      transform-origin: left;
+    }
+
+    .qual-card:hover::after {
+      transform: scaleX(1);
+    }
+
+    .qual-icon {
+      width: 48px;
+      height: 48px;
+      border: 1px solid rgba(87, 196, 229, .2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .qual-icon svg {
+      width: 22px;
+      height: 22px;
+      fill: var(--brilho);
+    }
+
+    .qual-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: .7rem;
+    }
+
+    .qual-desc {
+      font-size: .88rem;
+      line-height: 1.75;
+      color: var(--branco-dim);
+    }
+
+    /* ── PROCESSO ── */
+    .processo-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-bottom: 4rem;
+    }
+
+    .processo-steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      position: relative;
+    }
+
+    .processo-steps::after {
+      content: '';
+      position: absolute;
+      top: 32px;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg,
+          transparent 0%,
+          rgba(87, 196, 229, .2) 10%,
+          rgba(87, 196, 229, .2) 90%,
+          transparent 100%);
+    }
+
+    .pstep {
+      padding: 0 1.5rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .pstep-num {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      border: 1px solid rgba(87, 196, 229, .3);
+      background: var(--noite-3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      position: relative;
+      z-index: 1;
+      transition: border-color .3s, background .3s;
+    }
+
+    .pstep:hover .pstep-num {
+      border-color: var(--brilho);
+      background: rgba(30, 143, 175, .2);
+    }
+
+    .pstep-num span {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--brilho);
+    }
+
+    .pstep-title {
+      font-family: 'Syne', sans-serif;
+      font-size: .85rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      margin-bottom: .6rem;
+    }
+
+    .pstep-desc {
+      font-size: .8rem;
+      line-height: 1.65;
+      color: var(--branco-ghost);
+    }
+
+    /* ── BENEFÍCIOS ── */
+    .beneficios-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 2px;
+      margin-top: 3.5rem;
+    }
+
+    .bene-item {
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 3/4;
+    }
+
+    .bene-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(.7) brightness(.55);
+      transition: filter .5s, transform .5s;
+    }
+
+    .bene-item:hover img {
+      filter: saturate(.9) brightness(.75);
+      transform: scale(1.04);
+    }
+
+    .bene-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(3, 13, 18, .92) 0%, rgba(3, 13, 18, .2) 60%, transparent 100%);
+    }
+
+    .bene-content {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 2rem 1.8rem;
+    }
+
+    .bene-icon {
+      width: 40px;
+      height: 40px;
+      border: 1px solid rgba(87, 196, 229, .4);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .bene-icon svg {
+      width: 18px;
+      height: 18px;
+      fill: var(--brilho);
+    }
+
+    .bene-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: .5rem;
+    }
+
+    .bene-desc {
+      font-size: .82rem;
+      line-height: 1.65;
+      color: var(--branco-dim);
+    }
+
+    /* ── RASTREABILIDADE SAFRA ── */
+    .safra-wrap {
+      border: 1px solid rgba(87, 196, 229, .12);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 3.5rem;
+    }
+
+    .safra-header {
+      background: rgba(30, 143, 175, .1);
+      border-bottom: 1px solid rgba(87, 196, 229, .1);
+      padding: 1.5rem 2.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .safra-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--folha-claro);
+      box-shadow: 0 0 12px var(--folha-claro);
+      animation: livePulse 2s ease-in-out infinite;
+    }
+
+    @keyframes livePulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: .4;
+      }
+    }
+
+    .safra-header span {
+      font-family: 'Syne', sans-serif;
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--folha-claro);
+    }
+
+    .safra-header em {
+      font-style: normal;
+      font-size: .7rem;
+      color: rgba(87, 196, 229, .5);
+      margin-left: auto;
+      letter-spacing: .1em;
+    }
+
+    .safra-body {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+    }
+
+    .safra-item {
+      padding: 2rem 1.8rem;
+      border-right: 1px solid rgba(87, 196, 229, .08);
+      text-align: center;
+    }
+
+    .safra-item:last-child {
+      border-right: none;
+    }
+
+    .safra-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: var(--ouro-claro);
+      line-height: 1;
+      margin-bottom: .4rem;
+    }
+
+    .safra-label {
+      font-size: .72rem;
+      line-height: 1.5;
+      color: rgba(87, 196, 229, .6);
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      font-weight: 600;
+    }
+
+    /* ── RECEITAS ── */
+    .receitas-cta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      flex-wrap: wrap;
+      background: rgba(30, 143, 175, .07);
+      border: 1px solid rgba(87, 196, 229, .12);
+      border-radius: 4px;
+      padding: 3rem 3.5rem;
+      margin-top: 3.5rem;
+    }
+
+    .receitas-cta-left {
+      max-width: 500px;
+    }
+
+    .receitas-cta-left h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: .8rem;
+    }
+
+    .receitas-cta-left p {
+      font-size: .95rem;
+      line-height: 1.8;
+      color: var(--branco-dim);
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      font-family: 'Syne', sans-serif;
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--noite);
+      background: var(--brilho);
+      padding: .9rem 2rem;
+      border-radius: 2px;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background .25s, transform .2s;
+      flex-shrink: 0;
+    }
+
+    .btn-primary:hover {
+      background: var(--branco);
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      font-family: 'Syne', sans-serif;
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--brilho);
+      background: transparent;
+      padding: .9rem 2rem;
+      border: 1px solid rgba(87, 196, 229, .4);
+      border-radius: 2px;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: border-color .25s, background .25s;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--brilho);
+      background: rgba(87, 196, 229, .07);
+    }
+
+    /* ── MARCA COLETIVA ── */
+    .marca-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+
+    .marca-logo-wrap {
+      background: white;
+      border-radius: 4px;
+      padding: 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .marca-logo-wrap img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .marca-text p {
+      font-size: .98rem;
+      line-height: 1.9;
+      color: var(--branco-dim);
+      margin-bottom: 1.2rem;
+    }
+
+    .marca-text strong {
+      color: var(--ouro-claro);
+      font-weight: 500;
+    }
+
+    .marca-link {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      font-family: 'Syne', sans-serif;
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--brilho);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(87, 196, 229, .3);
+      padding-bottom: .2rem;
+      margin-top: 1rem;
+      transition: border-color .25s;
+      display: inline-block;
+    }
+
+    .marca-link:hover {
+      border-color: var(--brilho);
+    }
+
+    /* ── QUOTE ── */
+    .quote-wrap {
+      padding: 7rem 8%;
+      background: linear-gradient(135deg, rgba(15, 61, 26, .4) 0%, rgba(9, 30, 38, .8) 100%);
+      border-top: 1px solid rgba(87, 196, 229, .07);
+      border-bottom: 1px solid rgba(87, 196, 229, .07);
+      text-align: center;
+    }
+
+    .quote-inner {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    blockquote {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.3rem, 3vw, 2.1rem);
+      font-style: italic;
+      line-height: 1.55;
+      color: var(--branco);
+      margin-bottom: 1.8rem;
+      position: relative;
+    }
+
+    blockquote::before {
+      content: '\201C';
+      position: absolute;
+      top: -2rem;
+      left: -1rem;
+      font-size: 6rem;
+      line-height: 1;
+      color: rgba(87, 196, 229, .12);
+      font-family: 'Playfair Display', serif;
+    }
+
+    .quote-attr {
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: rgba(87, 196, 229, .5);
+    }
+
+    .quote-attr strong {
+      color: var(--ouro-claro);
+    }
+
+    /* ── CONTATO ── */
+    .contato-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: start;
+    }
+
+    .contato-info h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+    }
+
+    .contato-items {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .contato-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .contato-item-icon {
+      width: 36px;
+      height: 36px;
+      flex-shrink: 0;
+      border: 1px solid rgba(87, 196, 229, .2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .contato-item-icon svg {
+      width: 15px;
+      height: 15px;
+      fill: var(--brilho);
+    }
+
+    .contato-item-text span {
+      display: block;
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(87, 196, 229, .5);
+      margin-bottom: .2rem;
+    }
+
+    .contato-item-text p {
+      font-size: .95rem;
+      color: var(--branco-dim);
+      line-height: 1.5;
+    }
+
+    .contato-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: .4rem;
+    }
+
+    .form-group label {
+      font-size: .68rem;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(87, 196, 229, .5);
+    }
+
+    .form-group input,
+    .form-group textarea {
+      background: rgba(13, 40, 53, .6);
+      border: 1px solid rgba(87, 196, 229, .15);
+      border-radius: 2px;
+      padding: .8rem 1rem;
+      color: var(--branco);
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: .92rem;
+      outline: none;
+      transition: border-color .25s;
+      width: 100%;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: rgba(87, 196, 229, .5);
+    }
+
+    .form-group textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: rgba(87, 196, 229, .25);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--noite);
+      border-top: 1px solid rgba(87, 196, 229, .08);
+      padding: 3rem 8%;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+
+    .footer-brand {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--branco);
+    }
+
+    .footer-brand em {
+      color: var(--brilho);
+      font-style: normal;
+    }
+
+    .footer-tagline {
+      font-size: .78rem;
+      color: rgba(87, 196, 229, .5);
+      margin-top: .3rem;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.8rem;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-size: .78rem;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: rgba(242, 251, 255, .4);
+      text-decoration: none;
+      transition: color .25s;
+    }
+
+    .footer-links a:hover {
+      color: var(--brilho);
+    }
+
+    .footer-copy {
+      font-size: .75rem;
+      color: rgba(87, 196, 229, .3);
+      padding-top: 2rem;
+      border-top: 1px solid rgba(87, 196, 229, .06);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-copy a {
+      color: rgba(87, 196, 229, .5);
+      text-decoration: none;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+
+      .origem-grid,
+      .marca-grid,
+      .contato-grid {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+      }
+
+      .origem-badge {
+        position: static;
+        margin-top: 1rem;
+      }
+
+      .beneficios-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .bene-item {
+        aspect-ratio: 16/7;
+      }
+    }
+
+    @media (max-width: 768px) {
+      section {
+        padding: 5rem 6%;
+      }
+
+      .hero-stats {
+        width: 100%;
+      }
+
+      .processo-steps {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .processo-steps::after {
+        display: none;
+      }
+
+      .qualidade-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .safra-body {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .nav-hamburger {
+        display: flex;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-stat {
+        padding: .8rem 1rem;
+      }
+
+      .hero-stat strong {
+        font-size: 1.6rem;
+      }
+
+      .processo-steps {
+        grid-template-columns: 1fr;
+      }
+
+      .safra-body {
+        grid-template-columns: 1fr;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .receitas-cta {
+        padding: 2rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="c-dot"></div>
+  <div id="c-ring"></div>
+  <div id="prog"></div>
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <a href="https://rastreabilidadedopirarucu.asproc.org.br" class="nav-logo">ASPROC<em>.</em></a>
+    <ul class="nav-links">
+      <li><a href="#origem">Origem</a></li>
+      <li><a href="#qualidade">Qualidade</a></li>
+      <li><a href="#processo">Processo</a></li>
+      <li><a href="#beneficios">Benefícios</a></li>
+      <li><a href="#marca">Marca</a></li>
+      <li><a href="#contato">Contato</a></li>
+    </ul>
+    <a href="https://gostodaamazonia.com.br" target="_blank" class="nav-cta">Gosto da Amazônia</a>
+    <div class="nav-hamburger" onclick="document.querySelector('.nav-links').style.display='flex'">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <div class="hero-photo" id="heroBg"></div>
+    <div class="hero-bg"></div>
+    <div class="hero-caustics"></div>
+    <div class="hero-grain"></div>
+
+    <div class="hero-content">
+      <p class="hero-kicker">Pirarucu Selvagem de Manejo · Médio Juruá</p>
+      <h1 class="hero-h1">
+        <span class="line-1">Pirarucu</span>
+        <span class="line-2">Selvagem</span>
+        <span class="line-3">ASPROC — Reserva do Médio Juruá, Amazonas</span>
+      </h1>
+      <div class="hero-bottom">
+        <p class="hero-desc">
+          O maior peixe de escamas do mundo, pescado com manejo comunitário em áreas protegidas do Amazonas. Rastreável
+          da origem até a sua mesa.
+        </p>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <strong>251</strong>
+            <span>famílias</span>
+          </div>
+          <div class="hero-stat">
+            <strong>853%</strong>
+            <span>crescimento do estoque</span>
+          </div>
+          <div class="hero-stat">
+            <strong>1.02M</strong>
+            <span>ha protegidos</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scroll-hint">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ORIGEM -->
+  <section id="origem">
+    <div class="origem-grid">
+      <div class="reveal">
+        <div class="origem-map-wrap">
+          <img src="https://rastreabilidadedopirarucu.asproc.org.br/wp-content/uploads/2022/08/pirarucu-lombo2.jpg"
+            alt="Pirarucu do Médio Juruá" class="origem-img"
+            onerror="this.src='';this.style.background='linear-gradient(135deg,#0a3d52,#030d12)';this.style.minHeight='320px'">
+          <div class="origem-badge">
+            <p>Safra</p>
+            <strong>2022 · Carauari–AM</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="origem-text reveal d2">
+        <div class="label">Local de Origem</div>
+        <h2 class="section-title">Médio Juruá,<br><em>Amazonas</em></h2>
+        <p>
+          Este produto vem da região do Médio Juruá, no estado do Amazonas, das áreas protegidas <strong>Reserva de
+            Desenvolvimento Sustentável Uacari</strong> e <strong>Reserva Extrativista do Médio Juruá</strong> e da área
+          de Acordo de Pesca de Carauari.
+        </p>
+        <p>
+          É comercializado pela <strong>Associação dos Produtores Rurais de Carauari (ASPROC)</strong>, que coordena o
+          arranjo comercial coletivo entre áreas comunitárias produtoras no Amazonas.
+        </p>
+        <div class="origem-facts">
+          <div class="fact">
+            <div class="fact-num">251</div>
+            <div class="fact-desc">Famílias envolvidas na safra 2022</div>
+          </div>
+          <div class="fact">
+            <div class="fact-num">1,02M</div>
+            <div class="fact-desc">Hectares de floresta protegida</div>
+          </div>
+          <div class="fact">
+            <div class="fact-num">853%</div>
+            <div class="fact-desc">Crescimento dos estoques (2011–2021)</div>
+          </div>
+          <div class="fact">
+            <div class="fact-num">2022</div>
+            <div class="fact-desc">Safra de referência rastreada</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUALIDADE -->
+  <section id="qualidade" class="sec-alt">
+    <div class="reveal">
+      <div class="label">Produto</div>
+      <h2 class="section-title">Qualidade do <em>Produto</em></h2>
+      <p class="section-intro">Natural, selvagem e rastreável. O pirarucu de manejo é um alimento de excelência,
+        produzido com responsabilidade ambiental e social.</p>
+    </div>
+    <div class="qualidade-grid reveal d2">
+      <div class="qual-card">
+        <div class="qual-icon">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+          </svg>
+        </div>
+        <div class="qual-title">100% Natural</div>
+        <div class="qual-desc">Sem uso de rações ou aditivos químicos. Peixe selvagem capturado em seu habitat natural,
+          nas águas limpas do Rio Juruá e seus afluentes.</div>
+      </div>
+      <div class="qual-card">
+        <div class="qual-icon">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 4.17L19 8.3V11c0 4.28-2.9 8.14-7 9.39-4.1-1.25-7-5.11-7-9.39V8.3L12 5.17z" />
+          </svg>
+        </div>
+        <div class="qual-title">Pesca Regulamentada</div>
+        <div class="qual-desc">Pesca manejada e regulamentada pelo IBAMA, com cotas sustentáveis definidas por
+          monitoramento científico das populações.</div>
+      </div>
+      <div class="qual-card">
+        <div class="qual-icon">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M12 2a5 5 0 015 5c0 2.76-2.24 5-5 5s-5-2.24-5-5 2.24-5 5-5zm0 12c5.33 0 8 2.67 8 4v2H4v-2c0-1.33 2.67-4 8-4z" />
+          </svg>
+        </div>
+        <div class="qual-title">Seguro e Saudável</div>
+        <div class="qual-desc">Alimento seguro, rico em ômega 3 e proteínas de alto valor biológico. Carne sem pele e
+          sem espinha, versátil e de fácil preparo.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESSO -->
+  <section id="processo">
+    <div class="reveal">
+      <div class="label">Como Funciona</div>
+      <h2 class="section-title">Processo de <em>Manejo</em></h2>
+      <p class="section-intro">O manejo segue etapas rigorosas que garantem a sustentabilidade dos estoques e a justa
+        distribuição de benefícios para as comunidades.</p>
+    </div>
+
+    <!-- Safra Data -->
+    <div class="safra-wrap reveal d2">
+      <div class="safra-header">
+        <div class="safra-dot"></div>
+        <span>Safra 2022 — Dados de Rastreabilidade</span>
+        <em>Médio Juruá, Amazonas</em>
+      </div>
+      <div class="safra-body">
+        <div class="safra-item">
+          <div class="safra-num">2022</div>
+          <div class="safra-label">Safra</div>
+        </div>
+        <div class="safra-item">
+          <div class="safra-num">251</div>
+          <div class="safra-label">Famílias Envolvidas</div>
+        </div>
+        <div class="safra-item">
+          <div class="safra-num">1,02M</div>
+          <div class="safra-label">ha de Floresta Protegida</div>
+        </div>
+        <div class="safra-item">
+          <div class="safra-num">853%</div>
+          <div class="safra-label">Crescimento dos Estoques</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="processo-steps" style="margin-top:4rem;">
+      <div class="pstep reveal d1">
+        <div class="pstep-num"><span>01</span></div>
+        <div class="pstep-title">Contagem</div>
+        <div class="pstep-desc">Monitoramento periódico dos pirarucus nos lagos, com estimativas de população precisas.
+        </div>
+      </div>
+      <div class="pstep reveal d2">
+        <div class="pstep-num"><span>02</span></div>
+        <div class="pstep-title">Cota de Pesca</div>
+        <div class="pstep-desc">Com base nos dados, define-se a cota sustentável de captura, respeitando os limites de
+          cada lago.</div>
+      </div>
+      <div class="pstep reveal d3">
+        <div class="pstep-num"><span>03</span></div>
+        <div class="pstep-title">Pesca Manejada</div>
+        <div class="pstep-desc">Pesca controlada com técnicas tradicionais adaptadas, minimizando o impacto ambiental.
+        </div>
+      </div>
+      <div class="pstep reveal d4">
+        <div class="pstep-num"><span>04</span></div>
+        <div class="pstep-title">Comercialização</div>
+        <div class="pstep-desc">Comercializado em mercados regionais e nacionais, garantindo renda justa para as
+          famílias.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BENEFÍCIOS -->
+  <section id="beneficios" class="sec-dark">
+    <div class="reveal">
+      <div class="label">Impacto</div>
+      <h2 class="section-title">Benefícios <em>Socioambientais</em></h2>
+      <p class="section-intro">Cada produto comprado fortalece um ecossistema completo — ambiental, social e econômico.
+      </p>
+    </div>
+    <div class="beneficios-grid reveal d2">
+      <div class="bene-item">
+        <img src="https://rastreabilidadedopirarucu.asproc.org.br/wp-content/uploads/2022/08/beneficio_a.jpg"
+          alt="Sustentabilidade Ambiental"
+          onerror="this.src='';this.style.background='linear-gradient(135deg,#0f3d1a,#030d12)'">
+        <div class="bene-overlay"></div>
+        <div class="bene-content">
+          <div class="bene-icon">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-2.3A4.49 4.49 0 008 20c9 0 12.09-10 12.09-10 0 0-3.09 0-3.09-1zM20 2H4v2h4l-4 9h2l1-3h4l1 3h2l-4-9h4V2z" />
+            </svg>
+          </div>
+          <div class="bene-title">Sustentabilidade</div>
+          <div class="bene-desc">Recuperação dos estoques de pirarucu, de outros peixes e quelônios, promovendo o
+            equilíbrio do ecossistema local.</div>
+        </div>
+      </div>
+      <div class="bene-item">
+        <img src="https://rastreabilidadedopirarucu.asproc.org.br/wp-content/uploads/2022/08/beneficio_b.jpg"
+          alt="Geração de Renda" onerror="this.src='';this.style.background='linear-gradient(135deg,#8b4a1a,#030d12)'">
+        <div class="bene-overlay"></div>
+        <div class="bene-content">
+          <div class="bene-icon">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z" />
+            </svg>
+          </div>
+          <div class="bene-title">Geração de Renda</div>
+          <div class="bene-desc">Segurança alimentar e renda para povos e comunidades tradicionais do Médio Juruá.</div>
+        </div>
+      </div>
+      <div class="bene-item">
+        <img src="https://rastreabilidadedopirarucu.asproc.org.br/wp-content/uploads/2022/08/beneficio_c.jpg"
+          alt="Qualidade de Vida" onerror="this.src='';this.style.background='linear-gradient(135deg,#0a3d52,#030d12)'">
+        <div class="bene-overlay"></div>
+        <div class="bene-content">
+          <div class="bene-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+            </svg>
+          </div>
+          <div class="bene-title">Qualidade de Vida</div>
+          <div class="bene-desc">Proteção territorial e governança local que promove saúde, habitação, mobilidade,
+            segurança e educação.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RECEITAS -->
+  <section id="receitas" class="sec-alt">
+    <div class="reveal">
+      <div class="label">Na Cozinha</div>
+      <h2 class="section-title">Receitas com <em>Pirarucu</em></h2>
+      <p class="section-intro">Carne versátil, sem espinha e sem pele — ideal para pratos tradicionais e contemporâneos.
+      </p>
+    </div>
+    <div class="receitas-cta reveal d2">
+      <div class="receitas-cta-left">
+        <h3>Inove na cozinha com o sabor da Amazônia</h3>
+        <p>Explore receitas especiais desenvolvidas por chefs e cozinheiros tradicionais usando carne de pirarucu do
+          Médio Juruá. Do ceviche ao moquecão, do defumado ao grelhado — um ingrediente, infinitas possibilidades.</p>
+      </div>
+      <a href="https://gostodaamazonia.com.br/receitas/" target="_blank" class="btn-primary">Ver Receitas →</a>
+    </div>
+  </section>
+
+  <!-- MARCA COLETIVA -->
+  <section id="marca">
+    <div class="marca-grid">
+      <div class="reveal">
+        <div class="marca-logo-wrap">
+          <img
+            src="https://rastreabilidadedopirarucu.asproc.org.br/wp-content/uploads/2022/08/logo_gosto_da_amazonia.jpeg"
+            alt="Logo Gosto da Amazônia" style="max-height: 280px; width: auto;" onerror="this.style.display='none'">
+        </div>
+      </div>
+      <div class="marca-text reveal d2">
+        <div class="label">Marca Coletiva</div>
+        <h2 class="section-title">Gosto da <em>Amazônia</em></h2>
+        <p>
+          O <strong>Gosto da Amazônia</strong> é uma marca coletiva, promovida pelo Coletivo do Pirarucu, com o objetivo
+          de melhorar a qualidade de vida de povos e comunidades tradicionais.
+        </p>
+        <p>
+          A marca promove a comercialização de produtos da <strong>sociobiodiversidade amazônica</strong>, conectando as
+          comunidades ribeirinhas aos mercados consumidores de forma justa e transparente.
+        </p>
+        <a href="https://gostodaamazonia.com.br/coletivo-do-pirarucu/" target="_blank" class="marca-link">
+          Saiba mais sobre o Coletivo →
+        </a>
+        <div style="margin-top: 2rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+          <a href="https://gostodaamazonia.com.br/o-manejo/" target="_blank" class="btn-outline">Sobre o Manejo</a>
+          <a href="https://gostodaamazonia.com.br" target="_blank" class="btn-primary">Visitar Site</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUOTE -->
+  <div class="quote-wrap">
+    <div class="quote-inner reveal">
+      <blockquote>
+        O pirarucu é parte da nossa identidade. Manejar ele é cuidar da nossa terra, da nossa água, do futuro dos nossos
+        filhos.
+      </blockquote>
+      <p class="quote-attr"><strong>Pescador ribeirinho</strong> — Médio Juruá, Amazonas</p>
+    </div>
+  </div>
+
+  <!-- CONTATO -->
+  <section id="contato" class="sec-alt">
+    <div class="reveal" style="margin-bottom:3.5rem;">
+      <div class="label">Fale Conosco</div>
+      <h2 class="section-title">Entre em contato com a <em>ASPROC</em></h2>
+    </div>
+    <div class="contato-grid">
+      <div class="contato-info reveal">
+        <h3>Associação dos Produtores Rurais de Carauari</h3>
+        <div class="contato-items">
+          <div class="contato-item">
+            <div class="contato-item-icon">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M6.62 10.79c1.44 2.83 3.76 5.15 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+              </svg>
+            </div>
+            <div class="contato-item-text">
+              <span>Telefone / WhatsApp</span>
+              <p>+55 (92) 98429-9235</p>
+            </div>
+          </div>
+          <div class="contato-item">
+            <div class="contato-item-icon">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
+              </svg>
+            </div>
+            <div class="contato-item-text">
+              <span>E-mail</span>
+              <p>contato@asproc.org.br</p>
+            </div>
+          </div>
+          <div class="contato-item">
+            <div class="contato-item-icon">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" />
+              </svg>
+            </div>
+            <div class="contato-item-text">
+              <span>Endereço</span>
+              <p>Rua Castelo Branco, 380 — Centro<br>CEP 69500-000, Carauari–AM</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="contato-form reveal d2">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nome</label>
+            <input type="text" placeholder="Seu nome completo">
+          </div>
+          <div class="form-group">
+            <label>E-mail</label>
+            <input type="email" placeholder="seu@email.com">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Assunto</label>
+          <input type="text" placeholder="Como podemos ajudar?">
+        </div>
+        <div class="form-group">
+          <label>Mensagem</label>
+          <textarea placeholder="Escreva sua mensagem..."></textarea>
+        </div>
+        <button type="button" class="btn-primary" style="align-self:flex-start">Enviar Mensagem →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">ASPROC<em>.</em></div>
+        <div class="footer-tagline">Rastreabilidade do Pirarucu — Médio Juruá, Amazonas</div>
+      </div>
+      <ul class="footer-links">
+        <li><a href="#origem">Origem</a></li>
+        <li><a href="#qualidade">Qualidade</a></li>
+        <li><a href="#processo">Processo</a></li>
+        <li><a href="#beneficios">Benefícios</a></li>
+        <li><a href="#marca">Marca</a></li>
+        <li><a href="https://gostodaamazonia.com.br" target="_blank">Gosto da Amazônia</a></li>
+      </ul>
+    </div>
+    <div class="footer-copy">
+      <span>© 2025 ASPROC – Todos os direitos reservados.</span>
+      <a href="https://rastreabilidadedopirarucu.asproc.org.br"
+        target="_blank">rastreabilidadedopirarucu.asproc.org.br</a>
+    </div>
+  </footer>
+
+  <script>
+    // Cursor
+    const dot = document.getElementById('c-dot');
+    const ring = document.getElementById('c-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; dot.style.left = mx + 'px'; dot.style.top = my + 'px'; });
+    function animRing() { rx += (mx - rx) * .1; ry += (my - ry) * .1; ring.style.left = rx + 'px'; ring.style.top = ry + 'px'; requestAnimationFrame(animRing); }
+    animRing();
+    document.querySelectorAll('a,button,input,textarea,.fact,.qual-card,.bene-item').forEach(el => {
+      el.addEventListener('mouseenter', () => { dot.classList.add('on'); ring.classList.add('on'); });
+      el.addEventListener('mouseleave', () => { dot.classList.remove('on'); ring.classList.remove('on'); });
+    });
+
+    // Progress bar
+    const prog = document.getElementById('prog');
+    window.addEventListener('scroll', () => {
+      prog.style.width = (window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100) + '%';
+    });
+
+    // Nav scroll
+    const nav = document.getElementById('navbar');
+    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 60));
+
+    // Hero parallax
+    const heroBg = document.getElementById('heroBg');
+    heroBg.classList.add('loaded');
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      if (y < window.innerHeight) { heroBg.style.transform = `translateY(${y * .3}px) scale(1)`; }
+    });
+
+    // Reveal
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); });
+    }, { threshold: .12 });
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+  </script>
+</body>
+
+</html>

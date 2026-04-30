@@ -1,0 +1,1773 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <title>Sobre a ASPROC – 30 anos defendendo o Médio Juruá | Amazônia</title>
+  <meta name="description" content="Fundada em 1994, a ASPROC representa 872 associados em 64 comunidades ribeirinhas do Médio Juruá. Conheça nossa história, missão e os povos que defendemos.">
+  <link rel="canonical" href="https://www.asproc.com.br/sobre.html">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.asproc.com.br/sobre.html">
+  <meta property="og:title" content="Sobre a ASPROC – 30 anos defendendo o Médio Juruá | Amazônia">
+  <meta property="og:description" content="Fundada em 1994, a ASPROC representa 872 associados em 64 comunidades ribeirinhas do Médio Juruá. Conheça nossa história, missão e os povos que defendemos.">
+  <meta property="og:image" content="https://www.asproc.com.br/images/sobre-comunidade.webp">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:site_name" content="ASPROC">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Sobre a ASPROC – 30 anos defendendo o Médio Juruá | Amazônia">
+  <meta name="twitter:description" content="Fundada em 1994, a ASPROC representa 872 associados em 64 comunidades ribeirinhas do Médio Juruá. Conheça nossa história, missão e os povos que defendemos.">
+  <meta name="twitter:image" content="https://www.asproc.com.br/images/sobre-comunidade.webp">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <script src="asproc-supabase.js"></script>
+    <script src="asproc-logo.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,400&family=DM+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --verde: #2d6a2d;
+            --verde-claro: #4a9e3f;
+            --verde-neon: #7bc95c;
+            --dourado: #c8a84b;
+            --terra: #8b4513;
+            --agua: #1a6b8a;
+            --branco: #f5f0e8;
+            --escuro: #0f1a0f;
+            --cinza: #1e2e1e;
+            --cinza2: #2a3a2a;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        html {
+            scroll-behavior: smooth
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--escuro);
+            color: var(--branco);
+            overflow-x: hidden;
+            cursor: none
+        }
+
+        /* CURSOR */
+        #cursor-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--verde-neon);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+            transition: width .15s, height .15s;
+            mix-blend-mode: screen
+        }
+
+        #cursor-ring {
+            width: 38px;
+            height: 38px;
+            border: 2px solid var(--verde-neon);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 99998;
+            transform: translate(-50%, -50%);
+            transition: width .25s, height .25s, border-color .25s;
+            opacity: .55
+        }
+
+        #cursor-dot.h {
+            width: 6px;
+            height: 6px;
+            background: #fff
+        }
+
+        #cursor-ring.h {
+            width: 56px;
+            height: 56px;
+            border-color: #fff;
+            opacity: .85
+        }
+
+        @media(hover:none) {
+            body {
+                cursor: auto
+            }
+
+            #cursor-dot,
+            #cursor-ring {
+                display: none
+            }
+        }
+
+        /* PROGRESS */
+        #pb {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--verde-claro), var(--verde-neon));
+            z-index: 10001;
+            width: 0;
+            transition: width .1s
+        }
+
+        /* NAV */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 0 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+            background: rgba(10, 20, 10, .88);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(123, 201, 92, .12);
+            transition: all .35s
+        }
+
+        nav.scrolled {
+            background: rgba(8, 15, 8, .97);
+            height: 60px
+        }
+
+        .nav-logo {
+            height: 44px;
+            object-fit: contain
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.8rem;
+            list-style: none
+        }
+
+        .nav-links a {
+            color: rgba(245, 240, 232, .7);
+            text-decoration: none;
+            font-size: .82rem;
+            font-weight: 500;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            transition: color .3s;
+            position: relative
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--verde-neon);
+            transition: width .3s
+        }
+
+        .nav-links a:hover,
+        .nav-links a.ativo {
+            color: var(--verde-neon)
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.ativo::after {
+            width: 100%
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem
+        }
+
+        .nav-cta {
+            background: var(--verde-claro) !important;
+            color: #fff !important;
+            padding: .45rem 1.1rem;
+            border-radius: 30px;
+            font-weight: 600 !important;
+            font-size: .82rem !important;
+            transition: background .3s, transform .2s !important
+        }
+
+        .nav-cta:hover {
+            background: var(--verde-neon) !important;
+            transform: translateY(-2px);
+            color: var(--escuro) !important
+        }
+
+        .nav-cta::after {
+            display: none !important
+        }
+
+        .lang-switcher {
+            display: flex;
+            gap: 4px
+        }
+
+        .lang-btn {
+            background: none;
+            border: 1px solid rgba(123, 201, 92, .3);
+            color: rgba(245, 240, 232, .5);
+            font-size: .72rem;
+            font-weight: 600;
+            padding: 3px 7px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all .25s;
+            font-family: 'DM Sans', sans-serif
+        }
+
+        .lang-btn:hover,
+        .lang-btn.active {
+            border-color: var(--verde-neon);
+            color: var(--verde-neon);
+            background: rgba(123, 201, 92, .08)
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 4px
+        }
+
+        .hamburger span {
+            width: 26px;
+            height: 2px;
+            background: var(--branco);
+            border-radius: 2px;
+            transition: all .3s
+        }
+
+        /* HERO */
+        .page-hero {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+            padding: 0 8% 7%;
+            margin-top: 70px;
+            min-height: 540px
+        }
+
+        .ph-bg {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center 40%;
+            filter: brightness(.4);
+            transform: scale(1.05);
+            animation: szoom 14s ease-out forwards
+        }
+
+        @keyframes szoom {
+            from {
+                transform: scale(1.05)
+            }
+
+            to {
+                transform: scale(1)
+            }
+        }
+
+        .ph-ov {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(15, 26, 15, .93) 0%, rgba(0, 0, 0, .15) 60%)
+        }
+
+        .ph-cnt {
+            position: relative;
+            z-index: 1;
+            max-width: 680px
+        }
+
+        .bc {
+            font-size: .7rem;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .45);
+            margin-bottom: .8rem;
+            display: flex;
+            align-items: center;
+            gap: .5rem
+        }
+
+        .bc a {
+            color: var(--verde-neon);
+            text-decoration: none
+        }
+
+        .ph-tag {
+            display: inline-block;
+            background: var(--verde-claro);
+            color: #fff;
+            font-size: .7rem;
+            font-weight: 700;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            padding: .32rem .85rem;
+            border-radius: 20px;
+            margin-bottom: 1rem;
+            opacity: 0;
+            animation: hin .7s .2s forwards
+        }
+
+        .ph-title {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(2.8rem, 6.5vw, 5.5rem);
+            font-weight: 900;
+            line-height: .95;
+            margin-bottom: 1.2rem;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: hin .9s .35s ease forwards
+        }
+
+        .ph-title em {
+            font-style: italic;
+            color: var(--verde-neon)
+        }
+
+        .ph-sub {
+            font-size: 1.05rem;
+            color: rgba(255, 255, 255, .68);
+            max-width: 540px;
+            line-height: 1.75;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: hin .8s .65s ease forwards
+        }
+
+        @keyframes hin {
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .ph-stats {
+            display: flex;
+            gap: 2.5rem;
+            margin-top: 2.5rem;
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: hin .8s .9s ease forwards
+        }
+
+        .ph-stat {
+            text-align: center
+        }
+
+        .ph-stat .n {
+            font-family: 'Fraunces', serif;
+            font-size: 2.4rem;
+            font-weight: 900;
+            color: #fff;
+            line-height: 1
+        }
+
+        .ph-stat .l {
+            font-size: .72rem;
+            color: rgba(255, 255, 255, .55);
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            margin-top: .2rem
+        }
+
+        /* SECTIONS COMMON */
+        section {
+            padding: 90px 5%
+        }
+
+        .slbl {
+            font-size: .7rem;
+            font-weight: 700;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            color: var(--verde-neon);
+            margin-bottom: .8rem
+        }
+
+        .stit {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            font-weight: 700;
+            line-height: 1.15;
+            margin-bottom: 1rem
+        }
+
+        .stit span {
+            color: var(--verde-neon)
+        }
+
+        .sdesc {
+            font-size: 1rem;
+            color: rgba(245, 240, 232, .65);
+            line-height: 1.85;
+            max-width: 600px
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity .7s ease, transform .7s ease
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0)
+        }
+
+        /* HISTÓRIA */
+        .historia-section {
+            background: var(--cinza);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: center
+        }
+
+        .hist-img-wrap {
+            position: relative
+        }
+
+        .hist-img-wrap img {
+            width: 100%;
+            height: 520px;
+            object-fit: cover;
+            border-radius: 16px;
+            display: block
+        }
+
+        .hist-badge {
+            position: absolute;
+            bottom: -20px;
+            right: -20px;
+            width: 110px;
+            height: 110px;
+            background: var(--verde-claro);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Fraunces', serif;
+            font-weight: 900;
+            border: 4px solid var(--cinza);
+            z-index: 2
+        }
+
+        .hist-badge .n {
+            font-size: 2rem;
+            line-height: 1;
+            color: #fff
+        }
+
+        .hist-badge .l {
+            font-size: .5rem;
+            font-weight: 600;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .85)
+        }
+
+        .hist-text .sdesc {
+            max-width: 100%
+        }
+
+        .hist-text p+p {
+            margin-top: 1.2rem
+        }
+
+        .hist-text a {
+            color: var(--verde-neon);
+            text-decoration: none;
+            font-weight: 600
+        }
+
+        .hist-text a:hover {
+            text-decoration: underline
+        }
+
+        /* MISSÃO / VALORES */
+        .mv-section {
+            background: var(--escuro)
+        }
+
+        .mv-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 3rem
+        }
+
+        .mv-card {
+            background: var(--cinza);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(123, 201, 92, .08);
+            transition: all .4s
+        }
+
+        .mv-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, .45);
+            border-color: rgba(123, 201, 92, .25)
+        }
+
+        .mv-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem
+        }
+
+        .mv-card h3 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: .8rem
+        }
+
+        .mv-card p {
+            font-size: .875rem;
+            color: rgba(245, 240, 232, .6);
+            line-height: 1.75
+        }
+
+        /* TIMELINE */
+        .timeline-section {
+            background: var(--cinza)
+        }
+
+        .timeline {
+            position: relative;
+            margin-top: 3rem;
+            padding-left: 2rem
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--verde-neon), rgba(123, 201, 92, .15))
+        }
+
+        .tl-item {
+            position: relative;
+            padding-bottom: 3rem;
+            padding-left: 2rem
+        }
+
+        .tl-item:last-child {
+            padding-bottom: 0
+        }
+
+        .tl-dot {
+            position: absolute;
+            left: -2.5rem;
+            top: .3rem;
+            width: 14px;
+            height: 14px;
+            background: var(--verde-neon);
+            border-radius: 50%;
+            border: 3px solid var(--cinza);
+            transition: transform .3s
+        }
+
+        .tl-item:hover .tl-dot {
+            transform: scale(1.4)
+        }
+
+        .tl-year {
+            font-family: 'Fraunces', serif;
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: var(--verde-neon);
+            margin-bottom: .3rem
+        }
+
+        .tl-title {
+            font-family: 'Fraunces', serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: .5rem
+        }
+
+        .tl-desc {
+            font-size: .88rem;
+            color: rgba(245, 240, 232, .6);
+            line-height: 1.7
+        }
+
+        /* EQUIPE / LIDERANÇA */
+        .equipe-section {
+            background: var(--escuro)
+        }
+
+        .equipe-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem
+        }
+
+        .eq-card {
+            background: var(--cinza);
+            border-radius: 14px;
+            padding: 1.8rem 1.5rem;
+            text-align: center;
+            border: 1px solid rgba(123, 201, 92, .08);
+            transition: all .35s
+        }
+
+        .eq-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, .4);
+            border-color: rgba(123, 201, 92, .2)
+        }
+
+        .eq-avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--verde), var(--verde-claro));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin: 0 auto 1rem
+        }
+
+        .eq-card h4 {
+            font-family: 'Fraunces', serif;
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: .25rem
+        }
+
+        .eq-card span {
+            font-size: .78rem;
+            color: var(--verde-neon);
+            font-weight: 600;
+            letter-spacing: .06em;
+            text-transform: uppercase
+        }
+
+        /* PARCEIROS */
+        .parceiros-section {
+            background: var(--cinza);
+            text-align: center
+        }
+
+        .parceiros-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2.5rem
+        }
+
+        .parceiro {
+            background: rgba(255, 255, 255, .04);
+            border: 1px solid rgba(123, 201, 92, .12);
+            border-radius: 12px;
+            padding: .9rem 1.6rem;
+            font-size: .85rem;
+            color: rgba(245, 240, 232, .6);
+            transition: all .3s;
+            cursor: default
+        }
+
+        .parceiro:hover {
+            background: rgba(123, 201, 92, .08);
+            border-color: rgba(123, 201, 92, .3);
+            color: var(--branco);
+            transform: translateY(-3px)
+        }
+
+        /* PIRARUCU DESTAQUE */
+        .pira-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            min-height: 560px;
+            align-items: stretch;
+            padding: 0
+        }
+
+        .pira-img {
+            overflow: hidden;
+            position: relative
+        }
+
+        .pira-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 8s ease
+        }
+
+        .pira-section:hover .pira-img img {
+            transform: scale(1.04)
+        }
+
+        .pira-content {
+            background: linear-gradient(135deg, var(--agua), #0d3d52);
+            padding: 5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center
+        }
+
+        .pira-content .slbl {
+            color: #7fd4f5
+        }
+
+        .pira-content .stit {
+            color: #fff
+        }
+
+        .pira-content .sdesc {
+            color: rgba(255, 255, 255, .72);
+            max-width: 100%
+        }
+
+        .pira-stats {
+            display: flex;
+            gap: 2rem;
+            margin: 2rem 0;
+            flex-wrap: wrap
+        }
+
+        .pira-stat {
+            border-left: 3px solid #7fd4f5;
+            padding-left: 1rem
+        }
+
+        .pira-stat .n {
+            font-family: 'Fraunces', serif;
+            font-size: 2rem;
+            font-weight: 900;
+            color: #fff;
+            line-height: 1
+        }
+
+        .pira-stat p {
+            font-size: .78rem;
+            color: rgba(255, 255, 255, .6);
+            margin-top: .2rem
+        }
+
+        .btn-agua {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            background: rgba(255, 255, 255, .12);
+            border: 2px solid rgba(255, 255, 255, .3);
+            color: #fff;
+            padding: .85rem 1.8rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: .9rem;
+            transition: all .3s;
+            width: fit-content;
+            margin-top: 1.5rem
+        }
+
+        .btn-agua:hover {
+            background: rgba(255, 255, 255, .22);
+            border-color: #fff;
+            transform: translateY(-3px)
+        }
+
+        /* CONTATO */
+        .contato-section {
+            background: var(--escuro)
+        }
+
+        .contato-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: start;
+            margin-top: 3rem
+        }
+
+        .contato-info .item {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.8rem;
+            align-items: flex-start
+        }
+
+        .contato-info .ic {
+            width: 44px;
+            height: 44px;
+            background: rgba(123, 201, 92, .1);
+            border: 1px solid rgba(123, 201, 92, .2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0
+        }
+
+        .contato-info h4 {
+            font-weight: 700;
+            font-size: .9rem;
+            margin-bottom: .2rem
+        }
+
+        .contato-info p,
+        .contato-info a {
+            font-size: .88rem;
+            color: rgba(245, 240, 232, .6);
+            text-decoration: none;
+            transition: color .3s
+        }
+
+        .contato-info a:hover {
+            color: var(--verde-neon)
+        }
+
+        .contato-form {
+            background: var(--cinza);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid rgba(123, 201, 92, .1)
+        }
+
+        .contato-form h3 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: .4rem;
+            margin-bottom: 1rem
+        }
+
+        .form-group label {
+            font-size: .78rem;
+            font-weight: 600;
+            color: rgba(245, 240, 232, .55);
+            letter-spacing: .06em;
+            text-transform: uppercase
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            background: rgba(255, 255, 255, .05);
+            border: 1px solid rgba(123, 201, 92, .15);
+            border-radius: 8px;
+            padding: .75rem 1rem;
+            color: var(--branco);
+            font-family: 'DM Sans', sans-serif;
+            font-size: .9rem;
+            outline: none;
+            transition: all .3s;
+            resize: none
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--verde-neon);
+            background: rgba(123, 201, 92, .05)
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(245, 240, 232, .25)
+        }
+
+        .form-group select option {
+            background: var(--cinza);
+            color: var(--branco)
+        }
+
+        .btn-form {
+            width: 100%;
+            background: var(--verde-claro);
+            color: #fff;
+            border: none;
+            padding: .9rem;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: .95rem;
+            cursor: pointer;
+            transition: all .3s;
+            font-family: 'DM Sans', sans-serif
+        }
+
+        .btn-form:hover {
+            background: var(--verde-neon);
+            color: var(--escuro);
+            transform: translateY(-2px)
+        }
+
+        .form-success {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            color: var(--verde-neon);
+            font-size: 1.1rem;
+            font-weight: 600
+        }
+
+        /* POPUP */
+        .popup-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .6);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .4s;
+            backdrop-filter: blur(4px)
+        }
+
+        .popup-overlay.open {
+            opacity: 1;
+            pointer-events: all
+        }
+
+        .popup-box {
+            background: var(--cinza);
+            border-radius: 18px;
+            padding: 2.5rem;
+            max-width: 460px;
+            width: 90%;
+            border: 1px solid rgba(123, 201, 92, .2);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, .6);
+            transform: translateY(30px) scale(.95);
+            transition: all .4s cubic-bezier(.34, 1.56, .64, 1);
+            position: relative;
+            text-align: center
+        }
+
+        .popup-overlay.open .popup-box {
+            transform: translateY(0) scale(1)
+        }
+
+        .popup-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem
+        }
+
+        .popup-title {
+            font-family: 'Fraunces', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: .7rem
+        }
+
+        .popup-desc {
+            font-size: .92rem;
+            color: rgba(245, 240, 232, .65);
+            line-height: 1.7;
+            margin-bottom: 1.8rem
+        }
+
+        .popup-close-x {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: rgba(245, 240, 232, .4);
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: color .2s;
+            line-height: 1
+        }
+
+        .popup-close-x:hover {
+            color: var(--branco)
+        }
+
+        .popup-btn {
+            background: var(--verde-claro);
+            color: #fff;
+            border: none;
+            padding: .75rem 2rem;
+            border-radius: 30px;
+            font-size: .9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .3s;
+            font-family: 'DM Sans', sans-serif
+        }
+
+        .popup-btn:hover {
+            background: var(--verde-neon);
+            color: var(--escuro)
+        }
+
+        /* TOAST */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--cinza);
+            border: 1px solid rgba(123, 201, 92, .3);
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: .8rem;
+            max-width: 340px;
+            z-index: 9998;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all .5s cubic-bezier(.34, 1.56, .64, 1);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, .5)
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1
+        }
+
+        .toast-icon {
+            font-size: 1.4rem;
+            flex-shrink: 0
+        }
+
+        .toast-text {
+            font-size: .875rem;
+            line-height: 1.4
+        }
+
+        .toast-text strong {
+            color: var(--verde-neon)
+        }
+
+        /* FOOTER */
+        footer {
+            background: #050d05;
+            padding: 60px 5% 28px;
+            border-top: 1px solid rgba(123, 201, 92, .12)
+        }
+
+        .fg {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 3rem
+        }
+
+        .footer-brand img {
+            height: 48px;
+            margin-bottom: 1.1rem;
+            display: block
+        }
+
+        .footer-brand p {
+            font-size: .83rem;
+            color: rgba(245, 240, 232, .45);
+            line-height: 1.7;
+            margin-bottom: 1.4rem
+        }
+
+        .sl {
+            display: flex;
+            gap: .7rem
+        }
+
+        .sb {
+            width: 37px;
+            height: 37px;
+            border: 1px solid rgba(123, 201, 92, .28);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(245, 240, 232, .45);
+            text-decoration: none;
+            font-size: .78rem;
+            font-weight: 700;
+            transition: all .3s
+        }
+
+        .sb:hover {
+            border-color: var(--verde-neon);
+            color: var(--verde-neon);
+            transform: translateY(-3px);
+            background: rgba(123, 201, 92, .08)
+        }
+
+        .fc h4 {
+            font-size: .72rem;
+            font-weight: 700;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            color: var(--verde-neon);
+            margin-bottom: 1.1rem
+        }
+
+        .fc ul {
+            list-style: none
+        }
+
+        .fc li {
+            margin-bottom: .55rem
+        }
+
+        .fc a {
+            color: rgba(245, 240, 232, .45);
+            text-decoration: none;
+            font-size: .85rem;
+            transition: color .3s
+        }
+
+        .fc a:hover {
+            color: var(--branco)
+        }
+
+        .fbot {
+            border-top: 1px solid rgba(255, 255, 255, .07);
+            padding-top: 1.4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: .78rem;
+            color: rgba(245, 240, 232, .3);
+            flex-wrap: wrap;
+            gap: .5rem
+        }
+
+        @media(max-width:960px) {
+            .historia-section {
+                grid-template-columns: 1fr;
+                gap: 3rem
+            }
+
+            .mv-grid {
+                grid-template-columns: 1fr 1fr
+            }
+
+            .pira-section {
+                grid-template-columns: 1fr
+            }
+
+            .contato-grid {
+                grid-template-columns: 1fr
+            }
+
+            .form-row {
+                grid-template-columns: 1fr
+            }
+
+            .fg {
+                grid-template-columns: 1fr 1fr
+            }
+
+            .nav-links {
+                display: none
+            }
+
+            .nav-links.open {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: rgba(8, 15, 8, .97);
+                padding: 1.5rem;
+                gap: 1.2rem;
+                border-bottom: 1px solid rgba(123, 201, 92, .15)
+            }
+
+            .hamburger {
+                display: flex
+            }
+
+            .lang-switcher {
+                display: none
+            }
+        }
+
+        @media(max-width:640px) {
+            .mv-grid {
+                grid-template-columns: 1fr
+            }
+
+            .fg {
+                grid-template-columns: 1fr
+            }
+
+            .hist-img-wrap img {
+                height: 300px
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="cursor-dot"></div>
+    <div id="cursor-ring"></div>
+    <div id="pb"></div>
+
+    <!-- NAV -->
+    <nav id="navbar">
+        <img src="" alt="ASPROC" class="nav-logo">
+        <ul class="nav-links" id="navLinks">
+            <li><a href="index.html">Início</a></li>
+            <li><a href="sobre.html" class="ativo">Sobre</a></li>
+            <li><a href="noticias.html">Notícias</a></li>
+            <li><a href="avisos.html">Avisos</a></li>
+            <li><a href="programas-projetos.html">Projetos</a></li>
+            <li><a href="trabalhe-conosco.html">Trabalhe Conosco</a></li>
+            <li><a href="https://loja.asproc.org.br/" class="nav-cta" target="_blank">Loja Virtual</a></li>
+        </ul>
+        <div class="nav-right">
+            <div class="lang-switcher">
+                <button class="lang-btn active" onclick="setLang('pt')">PT</button>
+                <button class="lang-btn" onclick="setLang('en')">EN</button>
+                <button class="lang-btn" onclick="setLang('es')">ES</button>
+            </div>
+            <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <div class="page-hero">
+        <div class="ph-bg"
+            style="background-image:url('images/sobre-hero.webp')">
+        </div>
+        <div class="ph-ov"></div>
+        <div class="ph-cnt">
+            <div class="bc"><a href="index.html">Início</a> › <span>Sobre</span></div>
+            <div class="ph-tag">Fundada em 1994</div>
+            <h1 class="ph-title">A voz das <em>comunidades</em><br>do Médio Juruá</h1>
+            <p class="ph-sub">Defendemos os direitos dos povos agroextrativistas, pescadores e ribeirinhos com
+                organização, diálogo e ação coletiva.</p>
+            <div class="ph-stats">
+                <div class="ph-stat">
+                    <div class="n">30+</div>
+                    <div class="l">Anos de história</div>
+                </div>
+                <div class="ph-stat">
+                    <div class="n">872</div>
+                    <div class="l">Associados</div>
+                </div>
+                <div class="ph-stat">
+                    <div class="n">64</div>
+                    <div class="l">Comunidades</div>
+                </div>
+                <div class="ph-stat">
+                    <div class="n">4.791</div>
+                    <div class="l">Pessoas beneficiadas</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HISTÓRIA -->
+    <section class="historia-section" id="historia">
+        <div class="hist-img-wrap reveal">
+            <img  loading="lazy"src="images/sobre-comunidade.webp"
+                alt="Comunidade ribeirinha" loading="lazy">
+            <div class="hist-badge">
+                <div class="n">1994</div>
+                <div class="l">Fundação</div>
+            </div>
+        </div>
+        <div class="hist-text reveal" style="transition-delay:.15s">
+            <div class="slbl">Nossa História</div>
+            <h2 class="stit">Três décadas de <span>luta e conquistas</span></h2>
+            <p class="sdesc">A ASPROC – Associação dos Produtores Rurais de Carauari foi fundada em 1994, nascida da
+                necessidade das comunidades ribeirinhas do Médio Juruá de ter uma organização que as representasse,
+                defendesse seus direitos e abrisse caminhos para o desenvolvimento sustentável.</p>
+            <p class="sdesc" style="margin-top:1.2rem">Ao longo de mais de 30 anos, construímos pontes entre as
+                comunidades e o poder público, acessamos políticas de governo, desenvolvemos projetos de manejo
+                sustentável e consolidamos nossa presença na Amazônia como referência em desenvolvimento comunitário.
+            </p>
+            <p class="sdesc" style="margin-top:1.2rem">Hoje, representamos <strong style="color:var(--verde-neon)">872
+                    associados</strong> em <strong style="color:var(--verde-neon)">64 comunidades</strong>, beneficiando
+                mais de 4.700 pessoas em toda a região do Médio Juruá.</p>
+            <div style="display:flex;gap:1rem;margin-top:2rem;flex-wrap:wrap">
+                <a href="noticias.html"
+                    style="display:inline-flex;align-items:center;gap:.5rem;background:var(--verde-claro);color:#fff;padding:.85rem 1.8rem;border-radius:40px;text-decoration:none;font-weight:600;font-size:.9rem;transition:all .3s"
+                    onmouseover="this.style.background='var(--verde-neon)';this.style.color='var(--escuro)'"
+                    onmouseout="this.style.background='var(--verde-claro)';this.style.color='#fff'">📰 Ver notícias</a>
+                <a href="#contato"
+                    style="display:inline-flex;align-items:center;gap:.5rem;background:transparent;color:rgba(245,240,232,.7);padding:.85rem 1.8rem;border-radius:40px;text-decoration:none;font-weight:600;font-size:.9rem;border:1px solid rgba(245,240,232,.2);transition:all .3s"
+                    onmouseover="this.style.borderColor='var(--verde-neon)';this.style.color='var(--verde-neon)'"
+                    onmouseout="this.style.borderColor='rgba(245,240,232,.2)';this.style.color='rgba(245,240,232,.7)'">📬
+                    Fale conosco</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- MISSÃO, VISÃO, VALORES -->
+    <section class="mv-section" id="missao">
+        <div class="reveal">
+            <div class="slbl">Quem Somos</div>
+            <h2 class="stit">Missão, Visão e <span>Valores</span></h2>
+        </div>
+        <div class="mv-grid">
+            <div class="mv-card reveal" style="transition-delay:.1s">
+                <div class="mv-icon">🎯</div>
+                <h3>Missão</h3>
+                <p>Representar, defender e fortalecer os direitos dos produtores agroextrativistas, pescadores e
+                    ribeirinhos do Médio Juruá, promovendo desenvolvimento sustentável com valorização da cultura e do
+                    território.</p>
+            </div>
+            <div class="mv-card reveal" style="transition-delay:.2s">
+                <div class="mv-icon">🌟</div>
+                <h3>Visão</h3>
+                <p>Ser reconhecida como referência nacional em organização comunitária e desenvolvimento sustentável na
+                    Amazônia, garantindo qualidade de vida e dignidade para as famílias ribeirinhas.</p>
+            </div>
+            <div class="mv-card reveal" style="transition-delay:.3s">
+                <div class="mv-icon">💚</div>
+                <h3>Valores</h3>
+                <p>Solidariedade, democracia participativa, respeito à natureza, valorização da cultura ribeirinha,
+                    transparência, compromisso com a sustentabilidade e a justiça socioambiental.</p>
+            </div>
+            <div class="mv-card reveal" style="transition-delay:.4s">
+                <div class="mv-icon">🌿</div>
+                <h3>Sustentabilidade</h3>
+                <p>Toda a nossa atuação tem como base o respeito ao meio ambiente. Acreditamos que conservação e
+                    desenvolvimento podem e devem caminhar juntos.</p>
+            </div>
+            <div class="mv-card reveal" style="transition-delay:.5s">
+                <div class="mv-icon">🤝</div>
+                <h3>Organização Coletiva</h3>
+                <p>Somos uma associação democrática onde cada voz importa. Decisões são tomadas em assembleia,
+                    fortalecendo o protagonismo das comunidades.</p>
+            </div>
+            <div class="mv-card reveal" style="transition-delay:.6s">
+                <div class="mv-icon">🗺️</div>
+                <h3>Território</h3>
+                <p>O território é a base da nossa identidade. Trabalhamos para garantir que as comunidades ribeirinhas
+                    permaneçam em suas terras com dignidade e direitos assegurados.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- PIRARUCU DESTAQUE -->
+    <section class="pira-section">
+        <div class="pira-img">
+            <img  loading="lazy"src="images/sobre-img-2.webp"
+                alt="Processamento do Pirarucu" loading="lazy">
+        </div>
+        <div class="pira-content">
+            <div class="slbl">Projeto Emblemático</div>
+            <h2 class="stit reveal" style="color:#fff">Manejo do <span style="color:#7fd4f5">Pirarucu</span></h2>
+            <p class="sdesc reveal" style="transition-delay:.1s">O maior peixe de escamas de água doce do mundo
+                gerenciado pelas próprias comunidades ribeirinhas. Desde 2002, o projeto é referência nacional em pesca
+                sustentável, conciliando conservação ambiental e geração de renda.</p>
+            <div class="pira-stats reveal" style="transition-delay:.2s">
+                <div class="pira-stat">
+                    <div class="n">+180t</div>
+                    <p>Peixe manejado/ano</p>
+                </div>
+                <div class="pira-stat">
+                    <div class="n">28</div>
+                    <p>Lagos monitorados</p>
+                </div>
+                <div class="pira-stat">
+                    <div class="n">2002</div>
+                    <p>Início do projeto</p>
+                </div>
+            </div>
+            <a href="www.asproc.com.br/projeto-manejo-pirarucu.html" class="btn-agua reveal"
+                style="transition-delay:.3s" target="_blank">Conhecer o projeto →</a>
+        </div>
+    </section>
+
+    <!-- TIMELINE -->
+    <section class="timeline-section" id="timeline">
+        <div class="reveal">
+            <div class="slbl">Nossa Trajetória</div>
+            <h2 class="stit">Linha do <span>Tempo</span></h2>
+        </div>
+        <div class="timeline">
+            <div class="tl-item reveal">
+                <div class="tl-dot"></div>
+                <div class="tl-year">1994</div>
+                <div class="tl-title">Fundação da ASPROC</div>
+                <div class="tl-desc">Criação da Associação dos Produtores Rurais de Carauari por lideranças das
+                    comunidades ribeirinhas do Médio Juruá, com foco na defesa dos direitos agroextrativistas.</div>
+            </div>
+            <div class="tl-item reveal" style="transition-delay:.08s">
+                <div class="tl-dot"></div>
+                <div class="tl-year">2002</div>
+                <div class="tl-title">Início do Manejo do Pirarucu</div>
+                <div class="tl-desc">Lançamento do projeto que se tornaria referência nacional, com monitoramento
+                    participativo e manejo sustentável do maior peixe de escamas da Amazônia.</div>
+            </div>
+            <div class="tl-item reveal" style="transition-delay:.16s">
+                <div class="tl-dot"></div>
+                <div class="tl-year">2010</div>
+                <div class="tl-title">Comércio Ribeirinho</div>
+                <div class="tl-desc">Estruturação da cadeia produtiva local, conectando produtores ao mercado formal e
+                    garantindo melhores preços pelos produtos agroextrativistas.</div>
+            </div>
+            <div class="tl-item reveal" style="transition-delay:.24s">
+                <div class="tl-dot"></div>
+                <div class="tl-year">2015</div>
+                <div class="tl-title">Acesso a Políticas Públicas</div>
+                <div class="tl-desc">Expansão do acesso a programas federais e estaduais, garantindo benefícios e
+                    direitos para centenas de famílias associadas na região.</div>
+            </div>
+            <div class="tl-item reveal" style="transition-delay:.32s">
+                <div class="tl-dot"></div>
+                <div class="tl-year">2019</div>
+                <div class="tl-title">Projeto Sanear Amazônia</div>
+                <div class="tl-desc">Início do projeto de saneamento básico para comunidades ribeirinhas, levando água
+                    tratada e infraestrutura sanitária a lugares historicamente negligenciados.</div>
+            </div>
+            <div class="tl-item reveal" style="transition-delay:.4s">
+                <div class="tl-dot"></div>
+                <div class="tl-year">2024</div>
+                <div class="tl-title">30 Anos de Conquistas</div>
+                <div class="tl-desc">Comemoramos três décadas de história com 872 associados, 64 comunidades atendidas e
+                    mais de 4.700 pessoas beneficiadas pelas ações da ASPROC.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LIDERANÇA -->
+    <section class="equipe-section" id="lideranca">
+        <div class="reveal">
+            <div class="slbl">Nossa Equipe</div>
+            <h2 class="stit">Lideranças e <span>Diretoria</span></h2>
+            <p class="sdesc">Pessoas comprometidas com a causa ribeirinha que fazem a ASPROC acontecer todos os dias.
+            </p>
+        </div>
+        <div class="equipe-grid">
+            <div class="eq-card reveal" style="transition-delay:.1s">
+                <div class="eq-avatar">👤</div>
+                <h3>Diretoria Executiva</h3>
+                <span>Presidência</span>
+            </div>
+            <div class="eq-card reveal" style="transition-delay:.2s">
+                <div class="eq-avatar">👤</div>
+                <h3>Diretoria Técnica</h3>
+                <span>Projetos & Ações</span>
+            </div>
+            <div class="eq-card reveal" style="transition-delay:.3s">
+                <div class="eq-avatar">👤</div>
+                <h3>Conselho Fiscal</h3>
+                <span>Transparência</span>
+            </div>
+            <div class="eq-card reveal" style="transition-delay:.4s">
+                <div class="eq-avatar">👤</div>
+                <h3>Comunicação</h3>
+                <span>Visibilidade</span>
+            </div>
+            <div class="eq-card reveal" style="transition-delay:.5s">
+                <div class="eq-avatar">👤</div>
+                <h3>Área Social</h3>
+                <span>Comunidades</span>
+            </div>
+            <div class="eq-card reveal" style="transition-delay:.6s">
+                <div class="eq-avatar">👤</div>
+                <h3>Administrativo</h3>
+                <span>Gestão</span>
+            </div>
+        </div>
+        <p style="text-align:center;margin-top:2rem;font-size:.85rem;color:rgba(245,240,232,.4)">* Informações
+            detalhadas sobre a diretoria serão atualizadas em breve.</p>
+    </section>
+
+    <!-- PARCEIROS -->
+    <section class="parceiros-section">
+        <div class="reveal">
+            <div class="slbl">Quem Apoia</div>
+            <h2 class="stit">Parceiros e <span>Apoiadores</span></h2>
+            <p class="sdesc" style="margin:0 auto">Contamos com o apoio de organizações nacionais e internacionais que
+                acreditam no potencial das comunidades amazônicas.</p>
+        </div>
+        <div class="parceiros-grid">
+            <div class="parceiro reveal">🌍 WWF Brasil</div>
+            <div class="parceiro reveal" style="transition-delay:.05s">🌿 IDESAM</div>
+            <div class="parceiro reveal" style="transition-delay:.1s">🏛️ Governo do Amazonas</div>
+            <div class="parceiro reveal" style="transition-delay:.15s">🇧🇷 FUNAI</div>
+            <div class="parceiro reveal" style="transition-delay:.2s">💧 ANA</div>
+            <div class="parceiro reveal" style="transition-delay:.25s">🌱 GIZ Brasil</div>
+            <div class="parceiro reveal" style="transition-delay:.3s">🐟 MPA</div>
+            <div class="parceiro reveal" style="transition-delay:.35s">📚 UFAM</div>
+            <div class="parceiro reveal" style="transition-delay:.4s">🌳 Amazon Fund</div>
+            <div class="parceiro reveal" style="transition-delay:.45s">🤝 ISA</div>
+        </div>
+    </section>
+
+    <!-- CONTATO -->
+    <section class="contato-section" id="contato">
+        <div class="reveal">
+            <div class="slbl">Fale Conosco</div>
+            <h2 class="stit">Entre em <span>Contato</span></h2>
+            <p class="sdesc">Tem dúvidas, sugestões ou quer saber mais sobre a ASPROC? Envie uma mensagem.</p>
+        </div>
+        <div class="contato-grid">
+            <div class="contato-info reveal" style="transition-delay:.1s">
+                <div class="item">
+                    <div class="ic">📍</div>
+                    <div>
+                        <h3>Endereço</h3>
+                        <p>Carauari, Amazonas – Brasil<br>Médio Juruá, Amazônia</p>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="ic">📧</div>
+                    <div>
+                        <h3>E-mail</h3><a
+                            href="/cdn-cgi/l/email-protection#7e1d11100a1f0a113e1f0d0e0c111d50110c19501c0c"><span
+                                class="__cf_email__"
+                                data-cfemail="41222e2f3520352e01203231332e226f2e33266f2333">[email&#160;protected]</span></a>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="ic">🌐</div>
+                    <div>
+                        <h3>Site</h3><a href="https://asproc.org.br" target="_blank">asproc.org.br</a>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="ic">🛒</div>
+                    <div>
+                        <h3>Loja Virtual</h3><a href="https://loja.asproc.org.br" target="_blank">loja.asproc.org.br</a>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="ic">📘</div>
+                    <div>
+                        <h3>Redes Sociais</h3>
+                        <div style="display:flex;gap:.8rem;margin-top:.4rem">
+                            <a href="https://facebook.com/asproc.jurua" target="_blank"
+                                style="color:var(--verde-neon);font-size:.88rem;text-decoration:none">Facebook</a>
+                            <a href="https://instagram.com/asproc" target="_blank"
+                                style="color:var(--verde-neon);font-size:.88rem;text-decoration:none">Instagram</a>
+                            <a href="https://youtube.com/@asproc" target="_blank"
+                                style="color:var(--verde-neon);font-size:.88rem;text-decoration:none">YouTube</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="contato-form reveal" style="transition-delay:.2s">
+                <h3>💬 Envie sua mensagem</h3>
+                <div id="formSuccess" class="form-success">✅ Mensagem enviada! Entraremos em contato em breve.</div>
+                <div id="formBody">
+                    <div class="form-row">
+                        <div class="form-group"><label>Nome</label><input type="text" id="f-nome"
+                                placeholder="Seu nome completo"></div>
+                        <div class="form-group"><label>E-mail</label><input type="email" id="f-email"
+                                placeholder="seu@email.com"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Assunto</label>
+                        <select id="f-assunto">
+                            <option value="">Selecione o assunto</option>
+                            <option>Informações sobre projetos</option>
+                            <option>Tornar-me associado</option>
+                            <option>Parceria institucional</option>
+                            <option>Imprensa / Mídia</option>
+                            <option>Outros</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Mensagem</label><textarea id="f-msg" rows="5"
+                            placeholder="Escreva sua mensagem…"></textarea></div>
+                    <button class="btn-form" onclick="enviarForm()">Enviar Mensagem →</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="fg">
+            <div class="footer-brand">
+                <img  loading="lazy"src="images/sobre-img-3.webp"
+                    alt="ASPROC">
+                <p>Associação dos Produtores Rurais de Carauari. Defendendo os direitos das comunidades tradicionais do
+                    Médio Juruá desde 1994.</p>
+                <div class="sl">
+                    <a class="sb" href="https://facebook.com/asproc.jurua" target="_blank">f</a>
+                    <a class="sb" href="https://instagram.com/asproc" target="_blank">in</a>
+                    <a class="sb" href="https://youtube.com/@asproc" target="_blank">▶</a>
+                </div>
+            </div>
+            <div class="fc">
+                <h3>Navegação</h3>
+                <ul>
+                    <li><a href="index.html">Início</a></li>
+                    <li><a href="sobre.html">A ASPROC</a></li>
+                    <li><a href="noticias.html">Notícias</a></li>
+                    <li><a href="avisos.html">Avisos</a></li>
+                </ul>
+            </div>
+            <div class="fc">
+                <h3>Projetos</h3>
+                <ul>
+                    <li><a href="www.asproc.com.br/projeto-manejo-pirarucu.html" target="_blank">Manejo do
+                            Pirarucu</a></li>
+                    <li><a href="www.asproc.com.br/projeto-sanear.html" target="_blank">Sanear Amazônia</a>
+                    </li>
+                    <li><a href="https://asproc.org.br/projeto-comercio-ribeirinho/" target="_blank">Comércio
+                            Ribeirinho</a>
+                    </li>
+                    <li><a href="https://asproc.org.br/acesso-a-politicas-publicas/" target="_blank">Políticas
+                            Públicas</a></li>
+                </ul>
+            </div>
+            <div class="fc">
+                <h3>Contato</h3>
+                <ul>
+                    <li><a href="/cdn-cgi/l/email-protection#ff9c90918b9e8b90bf9e8c8f8d909cd1908d98d19d8d"><span
+                                class="__cf_email__"
+                                data-cfemail="f4979b9a8095809bb4958784869b97da9b8693da9686">[email&#160;protected]</span></a>
+                    </li>
+                    <li><a href="https://loja.asproc.org.br" target="_blank">Loja Virtual</a></li>
+                    <li><a href="trabalhe-conosco.html">Trabalhe Conosco</a></li>
+                    <li><a href="#contato">Fale Conosco</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="fbot">
+            <span>© 2025 ASPROC – Associação dos Produtores Rurais de Carauari. Todos os direitos reservados.</span>
+            <span>Médio Juruá, Amazônia 🌿</span>
+        </div>
+    </footer>
+
+    <!-- POPUP AVISO -->
+    <div class="popup-overlay" id="popupAviso">
+        <div class="popup-box">
+            <button class="popup-close-x" onclick="closePopup()">✕</button>
+            <div class="popup-icon">🌿</div>
+            <h3 class="popup-title">Bem-vindo à ASPROC!</h3>
+            <p class="popup-desc">Conheça nossa história de 30 anos defendendo as comunidades ribeirinhas do Médio
+                Juruá. Navegue pelas seções e descubra nosso trabalho.</p>
+            <button class="popup-btn" onclick="closePopup()">Explorar →</button>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toastMsg"><span class="toast-icon">✉️</span>
+        <div class="toast-text" id="toastText"></div>
+    </div>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script>
+        /* CURSOR */
+        (function () {
+            const dot = document.getElementById('cursor-dot'), ring = document.getElementById('cursor-ring');
+            let mx = 0, my = 0, rx = 0, ry = 0;
+            document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; dot.style.left = mx + 'px'; dot.style.top = my + 'px' });
+            (function anim() { rx += (mx - rx) * .12; ry += (my - ry) * .12; ring.style.left = rx + 'px'; ring.style.top = ry + 'px'; requestAnimationFrame(anim) })();
+            document.querySelectorAll('a,button,.mv-card,.eq-card,.parceiro,.tl-item').forEach(el => {
+                el.addEventListener('mouseenter', () => { dot.classList.add('h'); ring.classList.add('h') });
+                el.addEventListener('mouseleave', () => { dot.classList.remove('h'); ring.classList.remove('h') });
+            });
+            document.addEventListener('mouseleave', () => { dot.style.opacity = '0'; ring.style.opacity = '0' });
+            document.addEventListener('mouseenter', () => { dot.style.opacity = '1'; ring.style.opacity = '.55' });
+        })();
+
+        /* PROGRESS + NAV */
+        const nb = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            nb.classList.toggle('scrolled', window.scrollY > 50);
+            const h = document.documentElement;
+            document.getElementById('pb').style.width = (window.scrollY / (h.scrollHeight - h.clientHeight) * 100) + '%';
+        });
+        function toggleMenu() { document.getElementById('navLinks').classList.toggle('open') }
+
+        /* REVEAL */
+        const ro = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible') })
+            , { threshold: .1 });
+        document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+
+        /* POPUP */
+        setTimeout(() => document.getElementById('popupAviso').classList.add('open'), 2000);
+        function closePopup() { document.getElementById('popupAviso').classList.remove('open'); document.body.style.overflow = '' }
+        document.getElementById('popupAviso').addEventListener('click', e => { if (e.target === e.currentTarget) closePopup() });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closePopup() });
+
+        /* FORM */
+        function enviarForm() {
+            const nome = document.getElementById('f-nome').value;
+            const email = document.getElementById('f-email').value;
+            const assunto = document.getElementById('f-assunto').value;
+            const msg = document.getElementById('f-msg').value;
+            if (!nome || !email || !assunto || !msg) { showToast('⚠️ Preencha todos os campos.'); return; }
+            if (!email.includes('@')) { showToast('⚠️ E-mail inválido.'); return; }
+            document.getElementById('formBody').style.display = 'none';
+            document.getElementById('formSuccess').style.display = 'block';
+            showToast('✅ <strong>Mensagem enviada!</strong> Obrigado, ' + nome + '!');
+        }
+
+        /* TOAST */
+        function showToast(msg) {
+            const t = document.getElementById('toastMsg');
+            document.getElementById('toastText').innerHTML = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 4500);
+        }
+
+        /* LANG */
+        function setLang(lang) {
+            document.querySelectorAll('.lang-btn').forEach((b, i) => b.classList.toggle('active', ['pt', 'en', 'es'][i] === lang));
+            const d = {
+                pt: { hero_tag: 'Fundada em 1994', hero_h1: 'A voz das <em>comunidades</em><br>do Médio Juruá', missao_lbl: 'Quem Somos', missao_tit: 'Missão, Visão e <span>Valores</span>' },
+                en: { hero_tag: 'Founded in 1994', hero_h1: 'The voice of <em>riverside</em><br>communities', missao_lbl: 'Who We Are', missao_tit: 'Mission, Vision & <span>Values</span>' },
+                es: { hero_tag: 'Fundada en 1994', hero_h1: 'La voz de las <em>comunidades</em><br>del Medio Juruá', missao_lbl: 'Quiénes Somos', missao_tit: 'Misión, Visión y <span>Valores</span>' }
+            };
+            const t = d[lang];
+            document.getElementById('hero-tag').innerText = t.hero_tag;
+            document.getElementById('hero-h1').innerHTML = t.hero_h1;
+            document.getElementById('missao-lbl').innerText = t.missao_lbl;
+            document.getElementById('missao-tit').innerHTML = t.missao_tit;
+        }
+        setLang('pt');
+    </script>
+</body>
+
+</html>
