@@ -1244,7 +1244,57 @@
                 height: 300px
             }
         }
-    </style>
+    
+        /* ── Mobile nav improvements ── */
+        .nav-cta {
+            white-space: nowrap;
+        }
+        .nav-links.open .nav-cta {
+            display: inline-block;
+            align-self: flex-start;
+            margin-top: .25rem;
+        }
+        /* Lang switcher inside mobile menu */
+        .nav-links.open .nav-lang-mobile {
+            display: flex;
+            gap: 6px;
+            padding-top: .5rem;
+            border-top: 1px solid rgba(123,201,92,.12);
+            margin-top: .25rem;
+        }
+        .nav-lang-mobile {
+            display: none;
+        }
+        /* Overlay backdrop */
+        .nav-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            top: 70px;
+            z-index: 999;
+            background: transparent;
+        }
+        .nav-overlay.open {
+            display: block;
+        }
+        @media (max-width: 900px) {
+            .hamburger {
+                display: flex;
+            }
+            .hamburger[aria-expanded="true"] span:nth-child(1) {
+                transform: translateY(7px) rotate(45deg);
+            }
+            .hamburger[aria-expanded="true"] span:nth-child(2) {
+                opacity: 0;
+            }
+            .hamburger[aria-expanded="true"] span:nth-child(3) {
+                transform: translateY(-7px) rotate(-45deg);
+            }
+            .hamburger span {
+                transition: transform .25s, opacity .2s;
+            }
+        }
+        </style>
 </head>
 
 <body>
@@ -1255,7 +1305,7 @@
 
     <!-- NAV -->
     <nav id="navbar">
-        <img src="" alt="" class="nav-logo">
+        <img src="" alt="ASPROC" class="nav-logo">
         <ul class="nav-links" id="navLinks">
             <li><a href="index.html">Início</a></li>
             <li><a href="sobre.html" class="ativo">Sobre</a></li>
@@ -1263,7 +1313,7 @@
             <li><a href="avisos.html">Avisos</a></li>
             <li><a href="programas-projetos.html">Projetos</a></li>
             <li><a href="trabalhe-conosco.html">Trabalhe Conosco</a></li>
-            <li><a href="https://loja.asproc.org.br/" class="nav-cta" target="_blank">Loja Virtual</a></li>
+            <li><a href="https://loja.asproc.org.br/" class="nav-cta" target="_blank">Loja</a></li>
         </ul>
         <div class="nav-right">
             <div class="lang-switcher">
@@ -1271,8 +1321,9 @@
                 <button class="lang-btn" onclick="setLang('en')">EN</button>
                 <button class="lang-btn" onclick="setLang('es')">ES</button>
             </div>
-            <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+            <button class="hamburger" aria-label="Abrir menu" aria-expanded="false" aria-controls="navLinks" onclick="toggleMenu()"><span></span><span></span><span></span></button>
         </div>
+        <div id="navOverlay" class="nav-overlay" onclick="closeMenu()"></div>
     </nav>
 
     <!-- HERO -->
@@ -1486,32 +1537,32 @@
         <div class="equipe-grid">
             <div class="eq-card reveal" style="transition-delay:.1s">
                 <div class="eq-avatar">👤</div>
-                <h4>Diretoria Executiva</h4>
+                <h3>Diretoria Executiva</h3>
                 <span>Presidência</span>
             </div>
             <div class="eq-card reveal" style="transition-delay:.2s">
                 <div class="eq-avatar">👤</div>
-                <h4>Diretoria Técnica</h4>
+                <h3>Diretoria Técnica</h3>
                 <span>Projetos & Ações</span>
             </div>
             <div class="eq-card reveal" style="transition-delay:.3s">
                 <div class="eq-avatar">👤</div>
-                <h4>Conselho Fiscal</h4>
+                <h3>Conselho Fiscal</h3>
                 <span>Transparência</span>
             </div>
             <div class="eq-card reveal" style="transition-delay:.4s">
                 <div class="eq-avatar">👤</div>
-                <h4>Comunicação</h4>
+                <h3>Comunicação</h3>
                 <span>Visibilidade</span>
             </div>
             <div class="eq-card reveal" style="transition-delay:.5s">
                 <div class="eq-avatar">👤</div>
-                <h4>Área Social</h4>
+                <h3>Área Social</h3>
                 <span>Comunidades</span>
             </div>
             <div class="eq-card reveal" style="transition-delay:.6s">
                 <div class="eq-avatar">👤</div>
-                <h4>Administrativo</h4>
+                <h3>Administrativo</h3>
                 <span>Gestão</span>
             </div>
         </div>
@@ -1553,14 +1604,14 @@
                 <div class="item">
                     <div class="ic">📍</div>
                     <div>
-                        <h4>Endereço</h4>
+                        <h3>Endereço</h3>
                         <p>Carauari, Amazonas – Brasil<br>Médio Juruá, Amazônia</p>
                     </div>
                 </div>
                 <div class="item">
                     <div class="ic">📧</div>
                     <div>
-                        <h4>E-mail</h4><a
+                        <h3>E-mail</h3><a
                             href="/cdn-cgi/l/email-protection#7e1d11100a1f0a113e1f0d0e0c111d50110c19501c0c"><span
                                 class="__cf_email__"
                                 data-cfemail="41222e2f3520352e01203231332e226f2e33266f2333">[email&#160;protected]</span></a>
@@ -1569,19 +1620,19 @@
                 <div class="item">
                     <div class="ic">🌐</div>
                     <div>
-                        <h4>Site</h4><a href="https://asproc.org.br" target="_blank">asproc.org.br</a>
+                        <h3>Site</h3><a href="https://asproc.org.br" target="_blank">asproc.org.br</a>
                     </div>
                 </div>
                 <div class="item">
                     <div class="ic">🛒</div>
                     <div>
-                        <h4>Loja Virtual</h4><a href="https://loja.asproc.org.br" target="_blank">loja.asproc.org.br</a>
+                        <h3>Loja Virtual</h3><a href="https://loja.asproc.org.br" target="_blank">loja.asproc.org.br</a>
                     </div>
                 </div>
                 <div class="item">
                     <div class="ic">📘</div>
                     <div>
-                        <h4>Redes Sociais</h4>
+                        <h3>Redes Sociais</h3>
                         <div style="display:flex;gap:.8rem;margin-top:.4rem">
                             <a href="https://facebook.com/asproc.jurua" target="_blank"
                                 style="color:var(--verde-neon);font-size:.88rem;text-decoration:none">Facebook</a>
@@ -1637,7 +1688,7 @@
                 </div>
             </div>
             <div class="fc">
-                <h4>Navegação</h4>
+                <h3>Navegação</h3>
                 <ul>
                     <li><a href="index.html">Início</a></li>
                     <li><a href="sobre.html">A ASPROC</a></li>
@@ -1646,7 +1697,7 @@
                 </ul>
             </div>
             <div class="fc">
-                <h4>Projetos</h4>
+                <h3>Projetos</h3>
                 <ul>
                     <li><a href="www.asproc.com.br/projeto-manejo-pirarucu.html" target="_blank">Manejo do
                             Pirarucu</a></li>
@@ -1660,7 +1711,7 @@
                 </ul>
             </div>
             <div class="fc">
-                <h4>Contato</h4>
+                <h3>Contato</h3>
                 <ul>
                     <li><a href="/cdn-cgi/l/email-protection#ff9c90918b9e8b90bf9e8c8f8d909cd1908d98d19d8d"><span
                                 class="__cf_email__"
@@ -1718,7 +1769,23 @@
             const h = document.documentElement;
             document.getElementById('pb').style.width = (window.scrollY / (h.scrollHeight - h.clientHeight) * 100) + '%';
         });
-        function toggleMenu() { document.getElementById('navLinks').classList.toggle('open') }
+        function toggleMenu() {
+            const menu    = document.getElementById('navLinks');
+            const btn     = document.querySelector('.hamburger');
+            const overlay = document.getElementById('navOverlay');
+            const isOpen  = menu.classList.toggle('open');
+            btn.setAttribute('aria-expanded', isOpen);
+            if (overlay) overlay.classList.toggle('open', isOpen);
+        }
+        function closeMenu() {
+            const menu    = document.getElementById('navLinks');
+            const btn     = document.querySelector('.hamburger');
+            const overlay = document.getElementById('navOverlay');
+            menu.classList.remove('open');
+            btn && btn.setAttribute('aria-expanded', 'false');
+            overlay && overlay.classList.remove('open');
+        }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
 
         /* REVEAL */
         const ro = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible') })

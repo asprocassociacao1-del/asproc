@@ -1161,7 +1161,57 @@
                 align-items: center;
             }
         }
-    </style>
+    
+        /* ── Mobile nav improvements ── */
+        .nav-cta {
+            white-space: nowrap;
+        }
+        .nav-links.open .nav-cta {
+            display: inline-block;
+            align-self: flex-start;
+            margin-top: .25rem;
+        }
+        /* Lang switcher inside mobile menu */
+        .nav-links.open .nav-lang-mobile {
+            display: flex;
+            gap: 6px;
+            padding-top: .5rem;
+            border-top: 1px solid rgba(123,201,92,.12);
+            margin-top: .25rem;
+        }
+        .nav-lang-mobile {
+            display: none;
+        }
+        /* Overlay backdrop */
+        .nav-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            top: 70px;
+            z-index: 999;
+            background: transparent;
+        }
+        .nav-overlay.open {
+            display: block;
+        }
+        @media (max-width: 900px) {
+            .hamburger {
+                display: flex;
+            }
+            .hamburger[aria-expanded="true"] span:nth-child(1) {
+                transform: translateY(7px) rotate(45deg);
+            }
+            .hamburger[aria-expanded="true"] span:nth-child(2) {
+                opacity: 0;
+            }
+            .hamburger[aria-expanded="true"] span:nth-child(3) {
+                transform: translateY(-7px) rotate(-45deg);
+            }
+            .hamburger span {
+                transition: transform .25s, opacity .2s;
+            }
+        }
+        </style>
 </head>
 
 <body>
@@ -1183,6 +1233,7 @@
         <button id="mob-toggle" aria-label="Menu">
             <span></span><span></span><span></span>
         </button>
+        <div id="navOverlay" class="nav-overlay" onclick="closeMenu()"></div>
     </nav>
 
     <!-- ── HERO ── -->

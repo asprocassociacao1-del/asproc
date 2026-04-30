@@ -1870,7 +1870,57 @@
                 padding: 11px 14px;
             }
         }
-    </style>
+    
+        /* ── Mobile nav improvements ── */
+        .nav-cta {
+            white-space: nowrap;
+        }
+        .nav-links.open .nav-cta {
+            display: inline-block;
+            align-self: flex-start;
+            margin-top: .25rem;
+        }
+        /* Lang switcher inside mobile menu */
+        .nav-links.open .nav-lang-mobile {
+            display: flex;
+            gap: 6px;
+            padding-top: .5rem;
+            border-top: 1px solid rgba(123,201,92,.12);
+            margin-top: .25rem;
+        }
+        .nav-lang-mobile {
+            display: none;
+        }
+        /* Overlay backdrop */
+        .nav-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            top: 70px;
+            z-index: 999;
+            background: transparent;
+        }
+        .nav-overlay.open {
+            display: block;
+        }
+        @media (max-width: 900px) {
+            .hamburger {
+                display: flex;
+            }
+            .hamburger[aria-expanded="true"] span:nth-child(1) {
+                transform: translateY(7px) rotate(45deg);
+            }
+            .hamburger[aria-expanded="true"] span:nth-child(2) {
+                opacity: 0;
+            }
+            .hamburger[aria-expanded="true"] span:nth-child(3) {
+                transform: translateY(-7px) rotate(-45deg);
+            }
+            .hamburger span {
+                transition: transform .25s, opacity .2s;
+            }
+        }
+        </style>
 </head>
 
 <body>
@@ -1882,7 +1932,7 @@
 
     <!-- NAVBAR -->
     <nav id="navbar">
-        <img src="" alt="" class="nav-logo">
+        <img src="" alt="ASPROC" class="nav-logo">
         <ul class="nav-links" id="navLinks">
             <li><a href="index.html" class="ativo" data-i18n="nav_inicio">Início</a></li>
             <li><a href="sobre.html" data-i18n="nav_sobre">Sobre</a></li>
@@ -1890,8 +1940,7 @@
             <li><a href="noticias.html" data-i18n="nav_noticias">Notícias</a></li>
             <li><a href="avisos.html" data-i18n="nav_avisos">Avisos</a></li>
             <li><a href="trabalhe-conosco.html" data-i18n="nav_trabalhe">Trabalhe Conosco</a></li>
-            <li><a href="https://loja.asproc.org.br/" class="nav-cta" target="_blank" data-i18n="nav_loja">Loja
-                    Virtual</a></li>
+            <li><a href="https://loja.asproc.org.br/" class="nav-cta" target="_blank" data-i18n="nav_loja">Loja</a></li>
         </ul>
         <div class="nav-right">
             <div class="lang-switcher">
@@ -1899,10 +1948,10 @@
                 <button class="lang-btn" onclick="setLang('en')">EN</button>
                 <button class="lang-btn" onclick="setLang('es')">ES</button>
             </div>
-            <div class="hamburger" onclick="toggleMenu()">
-                <span></span><span></span><span></span>
-            </div>
+            <button class="hamburger" aria-label="Abrir menu" aria-expanded="false" aria-controls="navLinks" onclick="toggleMenu()">
+                <span></span><span></span><span></span></button>
         </div>
+        <div id="navOverlay" class="nav-overlay" onclick="closeMenu()"></div>
     </nav>
 
     <!-- HERO SLIDER -->
@@ -1923,7 +1972,7 @@
             <div class="slide-overlay"></div>
             <div class="slide-content">
                 <div class="slide-tag" data-i18n="slide2_tag">Meio Ambiente</div>
-                <h1 data-i18n="slide2_h1">Sanear Amazônia,<br>proteger a vida</h1>
+                <h2 data-i18n="slide2_h1">Sanear Amazônia,<br>proteger a vida</h1>
                 <p data-i18n="slide2_p">Levando saneamento básico às comunidades e preservando o ecossistema amazônico.
                 </p>
                 <a href="https://www.asproc.com.br/projeto-sanear.html" class="slide-btn" target="_blank"
@@ -1935,7 +1984,7 @@
             <div class="slide-overlay"></div>
             <div class="slide-content">
                 <div class="slide-tag" data-i18n="slide3_tag">Pesca Sustentável</div>
-                <h1 data-i18n="slide3_h1">Manejo do Pirarucu<br>no Médio Juruá</h1>
+                <h2 data-i18n="slide3_h1">Manejo do Pirarucu<br>no Médio Juruá</h1>
                 <p data-i18n="slide3_p">Referência nacional em manejo sustentável do maior peixe de escamas da Amazônia.
                 </p>
                 <a href="https://asproc.com.br/projeto-manejo-pirarucu" class="slide-btn" target="_blank"
@@ -2411,7 +2460,7 @@
                 </div>
             </div>
             <div class="footer-col">
-                <h4 data-i18n="footer_nav">Navegação</h4>
+                <h3 data-i18n="footer_nav">Navegação</h3>
                 <ul>
                     <li><a href="sobre.html" data-i18n="nav_sobre">Sobre nós</a></li>
                     <li><a href="#acoes" data-i18n="footer_acoes">Nossas Ações</a></li>
@@ -2420,7 +2469,7 @@
                 </ul>
             </div>
             <div class="footer-col">
-                <h4 data-i18n="footer_projetos">Projetos</h4>
+                <h3 data-i18n="footer_projetos">Projetos</h3>
                 <ul>
                     <li><a href="http://www.asproc.com.br/projeto-manejo-pirarucu.html" target="_blank">Manejo do
                             Pirarucu</a></li>
@@ -2434,7 +2483,7 @@
                 </ul>
             </div>
             <div class="footer-col">
-                <h4 data-i18n="footer_contato">Contato</h4>
+                <h3 data-i18n="footer_contato">Contato</h3>
                 <ul>
                     <li><a href="/cdn-cgi/l/email-protection#d1b2bebfa5b0a5be91b0a2a1a3beb2ffbea3b6ffb3a3"><span
                                 class="__cf_email__"
@@ -2553,8 +2602,22 @@
             navbar.classList.toggle('scrolled', window.scrollY > 50);
         });
         function toggleMenu() {
-            document.getElementById('navLinks').classList.toggle('open');
+            const menu    = document.getElementById('navLinks');
+            const btn     = document.querySelector('.hamburger');
+            const overlay = document.getElementById('navOverlay');
+            const isOpen  = menu.classList.toggle('open');
+            btn.setAttribute('aria-expanded', isOpen);
+            if (overlay) overlay.classList.toggle('open', isOpen);
         }
+        function closeMenu() {
+            const menu    = document.getElementById('navLinks');
+            const btn     = document.querySelector('.hamburger');
+            const overlay = document.getElementById('navOverlay');
+            menu.classList.remove('open');
+            btn && btn.setAttribute('aria-expanded', 'false');
+            overlay && overlay.classList.remove('open');
+        }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
 
         /* ==============================
            SLIDER

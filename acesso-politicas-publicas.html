@@ -193,7 +193,57 @@
             .fg { grid-template-columns: 1fr }
             .intro-img-wrap img, .desafios-img img { height: 300px }
         }
-    </style>
+    
+        /* ── Mobile nav improvements ── */
+        .nav-cta {
+            white-space: nowrap;
+        }
+        .nav-links.open .nav-cta {
+            display: inline-block;
+            align-self: flex-start;
+            margin-top: .25rem;
+        }
+        /* Lang switcher inside mobile menu */
+        .nav-links.open .nav-lang-mobile {
+            display: flex;
+            gap: 6px;
+            padding-top: .5rem;
+            border-top: 1px solid rgba(123,201,92,.12);
+            margin-top: .25rem;
+        }
+        .nav-lang-mobile {
+            display: none;
+        }
+        /* Overlay backdrop */
+        .nav-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            top: 70px;
+            z-index: 999;
+            background: transparent;
+        }
+        .nav-overlay.open {
+            display: block;
+        }
+        @media (max-width: 900px) {
+            .hamburger {
+                display: flex;
+            }
+            .hamburger[aria-expanded="true"] span:nth-child(1) {
+                transform: translateY(7px) rotate(45deg);
+            }
+            .hamburger[aria-expanded="true"] span:nth-child(2) {
+                opacity: 0;
+            }
+            .hamburger[aria-expanded="true"] span:nth-child(3) {
+                transform: translateY(-7px) rotate(-45deg);
+            }
+            .hamburger span {
+                transition: transform .25s, opacity .2s;
+            }
+        }
+        </style>
     <script src="asproc-logo.js"></script>
 </head>
 <body>
@@ -213,7 +263,7 @@
         <li><a href="avisos.html">Avisos</a></li>
         <li><a href="programas-projetos.html" class="ativo">Projetos</a></li>
         <li><a href="trabalhe-conosco.html">Trabalhe Conosco</a></li>
-        <li><a href="https://loja.asproc.org.br/" class="nav-cta" target="_blank">Loja Virtual</a></li>
+        <li><a href="https://loja.asproc.org.br/" class="nav-cta" target="_blank">Loja</a></li>
     </ul>
     <div class="nav-right">
         <div class="lang-switcher">
@@ -221,9 +271,10 @@
             <button class="lang-btn">EN</button>
             <button class="lang-btn">ES</button>
         </div>
-        <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+        <button class="hamburger" aria-label="Abrir menu" aria-expanded="false" aria-controls="navLinks" onclick="toggleMenu()"><span></span><span></span><span></span></button>
     </div>
-</nav>
+    <div id="navOverlay" class="nav-overlay" onclick="closeMenu()"></div>
+    </nav>
 
 <!-- HERO -->
 <header class="page-hero">
@@ -299,28 +350,28 @@
         <div class="contrato-card">
             <div class="contrato-icon">🏛️</div>
             <div class="contrato-body">
-                <h4>Conab-AM</h4>
+                <h3>Conab-AM</h3>
                 <p>Contrato de fornecimento de farinha d'água no âmbito do Programa de Aquisição de Alimentos (PAA), garantindo escoamento da produção das famílias extrativistas do Médio Juruá.</p>
             </div>
         </div>
         <div class="contrato-card">
             <div class="contrato-icon">📚</div>
             <div class="contrato-body">
-                <h4>SEDUC-AM</h4>
+                <h3>SEDUC-AM</h3>
                 <p>Fornecimento de produtos da sociobiodiversidade para o Programa Nacional de Alimentação Escolar (PNAE), unindo educação, alimentação saudável e geração de renda comunitária.</p>
             </div>
         </div>
         <div class="contrato-card">
             <div class="contrato-icon">🌱</div>
             <div class="contrato-body">
-                <h4>Subvenções ao Extrativismo</h4>
+                <h3>Subvenções ao Extrativismo</h3>
                 <p>Gestão de recursos de incentivos financeiros por meio de subvenções voltadas ao extrativismo sustentável, ampliando a capacidade produtiva das comunidades da floresta.</p>
             </div>
         </div>
         <div class="contrato-card">
             <div class="contrato-icon">🤝</div>
             <div class="contrato-body">
-                <h4>Mercados Justos e Solidários</h4>
+                <h3>Mercados Justos e Solidários</h3>
                 <p>Articulação com organizações de povos e comunidades tradicionais para garantir o acesso a mercados justos, conectando os produtos da floresta a redes de consumo consciente.</p>
             </div>
         </div>
@@ -361,28 +412,28 @@
             <div class="desafio-item">
                 <div class="desafio-num">01</div>
                 <div class="desafio-body">
-                    <h4>Formação Técnica</h4>
+                    <h3>Formação Técnica</h3>
                     <p>Capacitação das organizações comunitárias para o acesso pleno e qualificado às políticas públicas, superando barreiras burocráticas e institucionais.</p>
                 </div>
             </div>
             <div class="desafio-item">
                 <div class="desafio-num">02</div>
                 <div class="desafio-body">
-                    <h4>Participação Ampliada</h4>
+                    <h3>Participação Ampliada</h3>
                     <p>Fortalecimento da participação das comunidades amazônicas na formulação e execução de políticas voltadas ao extrativismo e à sociobiodiversidade.</p>
                 </div>
             </div>
             <div class="desafio-item">
                 <div class="desafio-num">03</div>
                 <div class="desafio-body">
-                    <h4>Inovação em Gestão</h4>
+                    <h3>Inovação em Gestão</h3>
                     <p>Desenvolvimento de tecnologias sociais em coleta, processamento e comercialização para aumento da eficiência e da renda sustentável no território.</p>
                 </div>
             </div>
             <div class="desafio-item">
                 <div class="desafio-num">04</div>
                 <div class="desafio-body">
-                    <h4>Acesso a Mercados</h4>
+                    <h3>Acesso a Mercados</h3>
                     <p>Ampliação das redes de comercialização para produtos da floresta, conectando comunidades ribeirinhas a mercados institucionais e solidários.</p>
                 </div>
             </div>
@@ -418,7 +469,7 @@
             </div>
         </div>
         <div class="fc">
-            <h4>Navegação</h4>
+            <h3>Navegação</h3>
             <ul>
                 <li><a href="index.html">Início</a></li>
                 <li><a href="sobre.html">A ASPROC</a></li>
@@ -427,7 +478,7 @@
             </ul>
         </div>
         <div class="fc">
-            <h4>Projetos</h4>
+            <h3>Projetos</h3>
             <ul>
                 <li><a href="programas-projetos.html">Todos os Projetos</a></li>
                 <li><a href="#">Manejo do Pirarucu</a></li>
@@ -437,7 +488,7 @@
             </ul>
         </div>
         <div class="fc">
-            <h4>Contato</h4>
+            <h3>Contato</h3>
             <ul>
                 <li><a href="mailto:contato@asproc.org.br">contato@asproc.org.br</a></li>
                 <li><a href="https://loja.asproc.org.br" target="_blank">Loja Virtual</a></li>
@@ -473,7 +524,23 @@
         const h = document.documentElement;
         document.getElementById('pb').style.width = (window.scrollY / (h.scrollHeight - h.clientHeight) * 100) + '%';
     });
-    function toggleMenu() { document.getElementById('navLinks').classList.toggle('open') }
+    function toggleMenu() {
+            const menu    = document.getElementById('navLinks');
+            const btn     = document.querySelector('.hamburger');
+            const overlay = document.getElementById('navOverlay');
+            const isOpen  = menu.classList.toggle('open');
+            btn.setAttribute('aria-expanded', isOpen);
+            if (overlay) overlay.classList.toggle('open', isOpen);
+        }
+        function closeMenu() {
+            const menu    = document.getElementById('navLinks');
+            const btn     = document.querySelector('.hamburger');
+            const overlay = document.getElementById('navOverlay');
+            menu.classList.remove('open');
+            btn && btn.setAttribute('aria-expanded', 'false');
+            overlay && overlay.classList.remove('open');
+        }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
 
     /* REVEAL */
     const ro = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible') }), { threshold: .1 });

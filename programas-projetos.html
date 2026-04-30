@@ -1746,7 +1746,57 @@
     .pesca-justa-bar-fill.animated {
       width: 94%;
     }
-  </style>
+  
+        /* ── Mobile nav improvements ── */
+        .nav-cta {
+            white-space: nowrap;
+        }
+        .nav-links.open .nav-cta {
+            display: inline-block;
+            align-self: flex-start;
+            margin-top: .25rem;
+        }
+        /* Lang switcher inside mobile menu */
+        .nav-links.open .nav-lang-mobile {
+            display: flex;
+            gap: 6px;
+            padding-top: .5rem;
+            border-top: 1px solid rgba(123,201,92,.12);
+            margin-top: .25rem;
+        }
+        .nav-lang-mobile {
+            display: none;
+        }
+        /* Overlay backdrop */
+        .nav-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            top: 70px;
+            z-index: 999;
+            background: transparent;
+        }
+        .nav-overlay.open {
+            display: block;
+        }
+        @media (max-width: 900px) {
+            .hamburger {
+                display: flex;
+            }
+            .hamburger[aria-expanded="true"] span:nth-child(1) {
+                transform: translateY(7px) rotate(45deg);
+            }
+            .hamburger[aria-expanded="true"] span:nth-child(2) {
+                opacity: 0;
+            }
+            .hamburger[aria-expanded="true"] span:nth-child(3) {
+                transform: translateY(-7px) rotate(-45deg);
+            }
+            .hamburger span {
+                transition: transform .25s, opacity .2s;
+            }
+        }
+        </style>
   <script src="asproc-logo.js"></script>
 </head>
 
@@ -1769,7 +1819,7 @@
       <li><a href="programas-projetos.html" class="ativo">Projetos</a></li>
       <li><a href="avisos.html">Avisos</a></li>
       <li><a href="trabalhe-conosco.html">Trabalhe Conosco</a></li>
-      <li><a href="https://loja.asproc.org.br/" class="nav-cta" target="_blank">Loja Virtual</a></li>
+      <li><a href="https://loja.asproc.org.br/" class="nav-cta" target="_blank">Loja</a></li>
     </ul>
     <div class="nav-right">
       <div class="lang-switcher">
@@ -1777,9 +1827,10 @@
         <button class="lang-btn" onclick="setLang('en')">EN</button>
         <button class="lang-btn" onclick="setLang('es')">ES</button>
       </div>
-      <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+      <button class="hamburger" aria-label="Abrir menu" aria-expanded="false" aria-controls="navLinks" onclick="toggleMenu()"><span></span><span></span><span></span></button>
     </div>
-  </nav>
+      <div id="navOverlay" class="nav-overlay" onclick="closeMenu()"></div>
+    </nav>
 
   <!-- ── MOBILE DRAWER ── -->
 
@@ -3324,7 +3375,23 @@
 
 
 
-    function toggleMenu() { document.getElementById('navLinks').classList.toggle('open') }
+    function toggleMenu() {
+            const menu    = document.getElementById('navLinks');
+            const btn     = document.querySelector('.hamburger');
+            const overlay = document.getElementById('navOverlay');
+            const isOpen  = menu.classList.toggle('open');
+            btn.setAttribute('aria-expanded', isOpen);
+            if (overlay) overlay.classList.toggle('open', isOpen);
+        }
+        function closeMenu() {
+            const menu    = document.getElementById('navLinks');
+            const btn     = document.querySelector('.hamburger');
+            const overlay = document.getElementById('navOverlay');
+            menu.classList.remove('open');
+            btn && btn.setAttribute('aria-expanded', 'false');
+            overlay && overlay.classList.remove('open');
+        }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
     function setLang(lang) { document.querySelectorAll('.lang-btn').forEach((b, i) => b.classList.toggle('active', ['pt', 'en', 'es'][i] === lang)) }
     // Close on escape
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && menuOpen) closeMobMenu(); });

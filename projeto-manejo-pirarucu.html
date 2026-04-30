@@ -203,6 +203,7 @@
       border-radius: 2px;
       text-decoration: none;
       transition: background .25s;
+        white-space: nowrap;
     }
 
     .nav-cta:hover {
@@ -1417,6 +1418,26 @@
         padding: 2rem;
       }
     }
+  
+    .nav-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      top: 60px;
+      z-index: 999;
+      background: transparent;
+    }
+    .nav-overlay.open { display: block; }
+    @media (max-width: 768px) {
+      .nav-hamburger[aria-expanded="true"] span:nth-child(1) {
+        transform: translateY(6.5px) rotate(45deg);
+      }
+      .nav-hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+      .nav-hamburger[aria-expanded="true"] span:nth-child(3) {
+        transform: translateY(-6.5px) rotate(-45deg);
+      }
+      .nav-hamburger span { transition: transform .25s, opacity .2s; }
+    }
   </style>
 </head>
 
@@ -1429,7 +1450,7 @@
   <!-- NAV -->
   <nav id="navbar">
     <a href="https://rastreabilidadedopirarucu.asproc.org.br" class="nav-logo">ASPROC<em>.</em></a>
-    <ul class="nav-links">
+    <ul class="nav-links" id="piranav">
       <li><a href="#origem">Origem</a></li>
       <li><a href="#qualidade">Qualidade</a></li>
       <li><a href="#processo">Processo</a></li>
@@ -1438,7 +1459,7 @@
       <li><a href="#contato">Contato</a></li>
     </ul>
     <a href="https://gostodaamazonia.com.br" target="_blank" class="nav-cta">Gosto da Amazônia</a>
-    <div class="nav-hamburger" onclick="document.querySelector('.nav-links').style.display='flex'">
+    <button class="nav-hamburger" aria-label="Abrir menu" aria-expanded="false" aria-controls="piranav" onclick="togglePiraNav(this)">
       <span></span><span></span><span></span>
     </div>
   </nav>
@@ -1878,7 +1899,26 @@
     });
 
     // Nav scroll
-    const nav = document.getElementById('navbar');
+    
+    function togglePiraNav(btn) {
+      const menu    = document.getElementById('piranav');
+      const overlay = document.getElementById('navOverlay');
+      const isOpen  = menu.style.display === 'flex';
+      menu.style.display = isOpen ? '' : 'flex';
+      btn.setAttribute('aria-expanded', !isOpen);
+      overlay && overlay.classList.toggle('open', !isOpen);
+    }
+    function closePiraNav() {
+      const menu    = document.getElementById('piranav');
+      const btn     = document.querySelector('.nav-hamburger');
+      const overlay = document.getElementById('navOverlay');
+      if (menu) menu.style.display = '';
+      btn  && btn.setAttribute('aria-expanded', 'false');
+      overlay && overlay.classList.remove('open');
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closePiraNav(); });
+    document.querySelectorAll('#piranav a').forEach(a => a.addEventListener('click', closePiraNav));
+      const nav = document.getElementById('navbar');
     window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 60));
 
     // Hero parallax

@@ -1505,7 +1505,57 @@
             border: none;
             cursor: pointer
         }
-    </style>
+    
+        /* ── Mobile nav improvements ── */
+        .nav-cta {
+            white-space: nowrap;
+        }
+        .nav-links.open .nav-cta {
+            display: inline-block;
+            align-self: flex-start;
+            margin-top: .25rem;
+        }
+        /* Lang switcher inside mobile menu */
+        .nav-links.open .nav-lang-mobile {
+            display: flex;
+            gap: 6px;
+            padding-top: .5rem;
+            border-top: 1px solid rgba(123,201,92,.12);
+            margin-top: .25rem;
+        }
+        .nav-lang-mobile {
+            display: none;
+        }
+        /* Overlay backdrop */
+        .nav-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            top: 70px;
+            z-index: 999;
+            background: transparent;
+        }
+        .nav-overlay.open {
+            display: block;
+        }
+        @media (max-width: 900px) {
+            .hamburger {
+                display: flex;
+            }
+            .hamburger[aria-expanded="true"] span:nth-child(1) {
+                transform: translateY(7px) rotate(45deg);
+            }
+            .hamburger[aria-expanded="true"] span:nth-child(2) {
+                opacity: 0;
+            }
+            .hamburger[aria-expanded="true"] span:nth-child(3) {
+                transform: translateY(-7px) rotate(-45deg);
+            }
+            .hamburger span {
+                transition: transform .25s, opacity .2s;
+            }
+        }
+        </style>
 </head>
 
 <body>
@@ -1524,7 +1574,7 @@
             <li><a href="noticias.html">Not&#237;cias</a></li>
             <li><a href="avisos.html">Avisos</a></li>
             <li><a href="trabalhe-conosco.html" class="ativo">Trabalhe Conosco</a></li>
-            <li><a href="https://loja.asproc.org.br/" class="nav-cta" target="_blank">Loja Virtual</a></li>
+            <li><a href="https://loja.asproc.org.br/" class="nav-cta" target="_blank">Loja</a></li>
         </ul>
         <div class="nav-right">
             <div class="lang-switcher">
@@ -1532,8 +1582,9 @@
                 <button class="lang-btn" onclick="setLang('en')">EN</button>
                 <button class="lang-btn" onclick="setLang('es')">ES</button>
             </div>
-            <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+            <button class="hamburger" aria-label="Abrir menu" aria-expanded="false" aria-controls="navLinks" onclick="toggleMenu()"><span></span><span></span><span></span></button>
         </div>
+        <div id="navOverlay" class="nav-overlay" onclick="closeMenu()"></div>
     </nav>
 
     <!-- ── HERO ── -->
@@ -1719,7 +1770,7 @@
                 </div>
             </div>
             <div class="fc">
-                <h4>Navegação</h4>
+                <h3>Navegação</h3>
                 <ul>
                     <li><a href="index.html">Início</a></li>
                     <li><a href="sobre.html">A ASPROC</a></li>
@@ -1728,7 +1779,7 @@
                 </ul>
             </div>
             <div class="fc">
-                <h4>Projetos</h4>
+                <h3>Projetos</h3>
                 <ul>
                     <li><a href="#">Manejo do Pirarucu</a></li>
                     <li><a href="#">Sanear Amazônia</a></li>
@@ -1737,7 +1788,7 @@
                 </ul>
             </div>
             <div class="fc">
-                <h4>Contato</h4>
+                <h3>Contato</h3>
                 <ul>
                     <li><a href="/cdn-cgi/l/email-protection#91f2fefcf4e3f2f8f0fdd1f0e2e1e3fef2bffee3f6bff3e3"><span
                                 class="__cf_email__"
@@ -1772,7 +1823,23 @@
             const h = document.documentElement, pb = document.getElementById("pb");
             if (pb) pb.style.width = (window.scrollY / (h.scrollHeight - h.clientHeight) * 100) + "%";
         });
-        function toggleMenu() { document.getElementById("navLinks").classList.toggle("open") }
+        function toggleMenu() {
+            const menu    = document.getElementById('navLinks');
+            const btn     = document.querySelector('.hamburger');
+            const overlay = document.getElementById('navOverlay');
+            const isOpen  = menu.classList.toggle('open');
+            btn.setAttribute('aria-expanded', isOpen);
+            if (overlay) overlay.classList.toggle('open', isOpen);
+        }
+        function closeMenu() {
+            const menu    = document.getElementById('navLinks');
+            const btn     = document.querySelector('.hamburger');
+            const overlay = document.getElementById('navOverlay');
+            menu.classList.remove('open');
+            btn && btn.setAttribute('aria-expanded', 'false');
+            overlay && overlay.classList.remove('open');
+        }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
         new IntersectionObserver(entries => {
             entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("visible") })
         }, { threshold: .1 }).observe ||
@@ -2036,7 +2103,7 @@
 
             <!-- Cabeçalho com foto -->
             <div class="vp-header">
-                <img id="vp-img" src="" alt="">
+                <img id="vp-img" src="" alt="Imagem da vaga selecionada">
                 <div class="vp-header-overlay"></div>
                 <div class="vp-header-info">
                     <div id="vp-sbadge" style="margin-bottom:.35rem"></div>

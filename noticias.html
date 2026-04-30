@@ -989,7 +989,57 @@
                 grid-template-columns: 1fr
             }
         }
-    </style>
+    
+        /* ── Mobile nav improvements ── */
+        .nav-cta {
+            white-space: nowrap;
+        }
+        .nav-links.open .nav-cta {
+            display: inline-block;
+            align-self: flex-start;
+            margin-top: .25rem;
+        }
+        /* Lang switcher inside mobile menu */
+        .nav-links.open .nav-lang-mobile {
+            display: flex;
+            gap: 6px;
+            padding-top: .5rem;
+            border-top: 1px solid rgba(123,201,92,.12);
+            margin-top: .25rem;
+        }
+        .nav-lang-mobile {
+            display: none;
+        }
+        /* Overlay backdrop */
+        .nav-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            top: 70px;
+            z-index: 999;
+            background: transparent;
+        }
+        .nav-overlay.open {
+            display: block;
+        }
+        @media (max-width: 900px) {
+            .hamburger {
+                display: flex;
+            }
+            .hamburger[aria-expanded="true"] span:nth-child(1) {
+                transform: translateY(7px) rotate(45deg);
+            }
+            .hamburger[aria-expanded="true"] span:nth-child(2) {
+                opacity: 0;
+            }
+            .hamburger[aria-expanded="true"] span:nth-child(3) {
+                transform: translateY(-7px) rotate(-45deg);
+            }
+            .hamburger span {
+                transition: transform .25s, opacity .2s;
+            }
+        }
+        </style>
     <script src="asproc-logo.js"></script>
 </head>
 
@@ -1001,7 +1051,7 @@
 
     <!-- NAV -->
     <nav id="navbar">
-        <img src="" alt="" class="nav-logo">
+        <img src="" alt="ASPROC" class="nav-logo">
         <ul class="nav-links" id="navLinks">
             <li><a href="index.html">Início</a></li>
             <li><a href="sobre.html">Sobre</a></li>
@@ -1009,7 +1059,7 @@
             <li><a href="programas-projetos.html">Projetos</a></li>
             <li><a href="avisos.html">Avisos</a></li>
             <li><a href="trabalhe-conosco.html">Trabalhe Conosco</a></li>
-            <li><a href="https://loja.asproc.org.br/" class="nav-cta" target="_blank">Loja Virtual</a></li>
+            <li><a href="https://loja.asproc.org.br/" class="nav-cta" target="_blank">Loja</a></li>
         </ul>
         <div class="nav-right">
             <div class="lang-switcher">
@@ -1017,8 +1067,9 @@
                 <button class="lang-btn" onclick="setLang('en')">EN</button>
                 <button class="lang-btn" onclick="setLang('es')">ES</button>
             </div>
-            <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+            <button class="hamburger" aria-label="Abrir menu" aria-expanded="false" aria-controls="navLinks" onclick="toggleMenu()"><span></span><span></span><span></span></button>
         </div>
+        <div id="navOverlay" class="nav-overlay" onclick="closeMenu()"></div>
     </nav>
 
     <!-- HERO -->
@@ -1241,7 +1292,7 @@
                 </div>
             </div>
             <div class="fc">
-                <h4>Navegação</h4>
+                <h3>Navegação</h3>
                 <ul>
                     <li><a href="index.html">Início</a></li>
                     <li><a href="sobre.html">A ASPROC</a></li>
@@ -1250,7 +1301,7 @@
                 </ul>
             </div>
             <div class="fc">
-                <h4>Projetos</h4>
+                <h3>Projetos</h3>
                 <ul>
                     <li><a href="https://asproc.org.br/manejo-do-pirarucu-no-medio-jurua/" target="_blank">Manejo do
                             Pirarucu</a></li>
@@ -1263,7 +1314,7 @@
                 </ul>
             </div>
             <div class="fc">
-                <h4>Contato</h4>
+                <h3>Contato</h3>
                 <ul>
                     <li><a href="/cdn-cgi/l/email-protection#bad9d5d4cedbced5fadbc9cac8d5d994d5c8dd94d8c8"><span
                                 class="__cf_email__"
@@ -1308,7 +1359,23 @@
             const h = document.documentElement;
             document.getElementById('pb').style.width = (window.scrollY / (h.scrollHeight - h.clientHeight) * 100) + '%';
         });
-        function toggleMenu() { document.getElementById('navLinks').classList.toggle('open') }
+        function toggleMenu() {
+            const menu    = document.getElementById('navLinks');
+            const btn     = document.querySelector('.hamburger');
+            const overlay = document.getElementById('navOverlay');
+            const isOpen  = menu.classList.toggle('open');
+            btn.setAttribute('aria-expanded', isOpen);
+            if (overlay) overlay.classList.toggle('open', isOpen);
+        }
+        function closeMenu() {
+            const menu    = document.getElementById('navLinks');
+            const btn     = document.querySelector('.hamburger');
+            const overlay = document.getElementById('navOverlay');
+            menu.classList.remove('open');
+            btn && btn.setAttribute('aria-expanded', 'false');
+            overlay && overlay.classList.remove('open');
+        }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
 
         /* REVEAL */
         const ro = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible') })
@@ -1605,7 +1672,7 @@
                                     ? `https://www.asproc.com.br/noticias/${n.slug}.html`
                                     : 'noticias.html';
                             const img = n.imagem_url
-                                ? `<img src="${n.imagem_url}" alt="" loading="lazy">`
+                                ? `<img src="${n.imagem_url}" alt="${n.titulo || 'Notícia ASPROC'}" loading="lazy">`
                                 : '<div style="width:100%;height:100%;background:var(--verde);display:flex;align-items:center;justify-content:center;font-size:1.2rem">🌿</div>';
                             return `
                             <a class="sni" href="${href}" target="_blank" rel="noopener" style="display:flex;text-decoration:none;cursor:pointer">
