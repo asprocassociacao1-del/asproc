@@ -1335,11 +1335,41 @@
 
 
         /* NEWSLETTER */
-        function subNL() {
-            const v = document.getElementById('nl-mail').value;
-            if (!v || !v.includes('@')) { showToast('⚠️ Digite um e-mail válido.'); return; }
-            document.getElementById('nl-ok').style.display = 'block';
-            showToast('✅ <strong>Cadastrado!</strong> Você receberá novidades da ASPROC.');
+        async function subNL() {
+            const input = document.getElementById('nl-mail');
+            const email = input.value.trim();
+            if (!email || !email.includes('@')) { showToast('⚠️ Digite um e-mail válido.'); return; }
+
+            const btn = document.querySelector('.nl-btn');
+            if (btn) { btn.disabled = true; btn.textContent = 'Cadastrando...'; }
+
+            try {
+                const res = await fetch(SUPABASE_URL + '/rest/v1/newsletters', {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': 'Bearer ' + SUPABASE_KEY,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify({ email })
+                });
+
+                if (res.status === 409) {
+                    showToast('\u2139\uFE0F Este e-mail já está cadastrado!');
+                } else if (res.ok) {
+                    document.getElementById('nl-ok').style.display = 'block';
+                    input.value = '';
+                    showToast('\u2705 <strong>Cadastrado!</strong> Você receberá as próximas notícias da ASPROC.');
+                } else {
+                    throw new Error('status ' + res.status);
+                }
+            } catch (e) {
+                console.error(e);
+                showToast('\u274C Erro ao cadastrar. Tente novamente.');
+            } finally {
+                if (btn) { btn.disabled = false; btn.textContent = 'Inscrever-se'; }
+            }
         }
 
         /* TOAST */
@@ -1530,14 +1560,6 @@
         function setPag(btn) {
             const page = parseInt(btn.textContent);
             if (!isNaN(page)) goToPage(page);
-        }
-
-        /* NEWSLETTER */
-        function subNL() {
-            const v = document.getElementById('nl-mail').value;
-            if (!v || !v.includes('@')) { showToast('⚠️ Digite um e-mail válido.'); return; }
-            document.getElementById('nl-ok').style.display = 'block';
-            showToast('✅ <strong>Cadastrado!</strong> Você receberá novidades da ASPROC.');
         }
 
         /* TOAST */
