@@ -3404,35 +3404,46 @@
     document.addEventListener('DOMContentLoaded', function () {
       /* ══════════════════════════════════════════
          CONFIG & SUPABASE
+         ─────────────────────────────────────────
+         SEGURANÇA: Nenhuma credencial é armazenada
+         neste arquivo. O admin deve configurar URL
+         e chave anon na tela de Configurações.
+         Os valores ficam apenas no localStorage
+         do próprio navegador do administrador.
       ══════════════════════════════════════════ */
-      // Limpa configs antigas de projetos anteriores
-      localStorage.removeItem('asproc_config_v2');
-      localStorage.removeItem('asproc_token');
-      localStorage.removeItem('asproc_user');
-      localStorage.removeItem('asproc_refresh_token');
+
+      // Migração: limpa chaves de versões antigas SEM tocar nos tokens de sessão
+      // (remover esse bloco após todos os admins terem migrado para v3)
+      if (!localStorage.getItem('asproc_config_v3')) {
+        localStorage.removeItem('asproc_config_v2');
+      }
+
       const CONFIG_KEY = 'asproc_config_v3';
-      const DEFAULT_SUPABASE_URL = 'https://wiatqtiyiznscjyoxxww.supabase.co';
-      const DEFAULT_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpYXRxdGl5aXpuc2NqeW94eHd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1Njc0MDEsImV4cCI6MjA5MTE0MzQwMX0.xgaaZWX5kG3XowDtpR9Xd8S2S0nV-JTnv4ZwnP33PY8';
 
       function getConfig() {
         try { return JSON.parse(localStorage.getItem(CONFIG_KEY)) || {}; } catch { return {}; }
       }
+
       function getSupabase() {
         const c = getConfig();
-        return { url: c.url || DEFAULT_SUPABASE_URL, key: c.key || DEFAULT_SUPABASE_KEY };
+        // Sem fallback hardcoded — retorna vazio se não configurado
+        return { url: (c.url || '').trim(), key: (c.key || '').trim() };
       }
 
-      const integrationSnippet = `<script>
-  const SUPABASE_URL = '${DEFAULT_SUPABASE_URL}';
-  const SUPABASE_KEY = '${DEFAULT_SUPABASE_KEY}';
-  async function fetchSupabase(table, params = '') {
-    const r = await fetch(SUPABASE_URL + '/rest/v1/' + table + '?' + params, {
-      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
-    });
-    return r.json();
-  }
-<\/script>`;
-      document.getElementById('integration-snippet').textContent = integrationSnippet;
+      function isSupabaseConfigured() {
+        const { url, key } = getSupabase();
+        return url.startsWith('https://') && key.length > 20;
+      }
+
+      // Snippet de integração usa os valores salvos pelo próprio admin
+      function updateIntegrationSnippet() {
+        const { url, key } = getSupabase();
+        const snip = isSupabaseConfigured()
+          ? `<script>\n  const SUPABASE_URL = '${url}';\n  const SUPABASE_KEY = '${key}';\n  async function fetchSupabase(table, params = '') {\n    const r = await fetch(SUPABASE_URL + '/rest/v1/' + table + '?' + params, {\n      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }\n    });\n    return r.json();\n  }\n<\/script>`
+          : '// Configure o Supabase em Configurações para gerar este snippet.';
+        const el = document.getElementById('integration-snippet');
+        if (el) el.textContent = snip;
+      }
 
       async function sbFetch(table, params = '', opts = {}) {
         const { url, key } = getSupabase();
@@ -3480,11 +3491,13 @@
         const pass = document.getElementById('login-pass').value;
         const btn = document.getElementById('login-btn');
         const err = document.getElementById('login-error');
-        const { url, key } = getSupabase();
         err.classList.remove('show');
         btn.disabled = true; btn.textContent = 'Entrando…';
         try {
-          if (!url || !key) throw new Error('Credenciais Supabase não encontradas.');
+          if (!isSupabaseConfigured()) {
+            throw new Error('Supabase não configurado. Clique em "⚙ Configurar Supabase" abaixo.');
+          }
+          const { url, key } = getSupabase();
           const res = await fetch(`${url}/auth/v1/token?grant_type=password`, {
             method: 'POST',
             headers: { 'apikey': key, 'Content-Type': 'application/json' },
@@ -3547,6 +3560,12 @@
       }
 
       async function checkSession() {
+        // Se Supabase não está configurado, mostra tela de setup antes do login
+        if (!isSupabaseConfigured()) {
+          document.getElementById('login-screen').style.display = 'flex';
+          showSetupBanner();
+          return;
+        }
         const token = localStorage.getItem('asproc_token');
         const userStr = localStorage.getItem('asproc_user');
         if (token && userStr) {
@@ -3560,6 +3579,43 @@
         }
         document.getElementById('login-screen').style.display = 'flex';
       }
+
+      function showSetupBanner() {
+        const existing = document.getElementById('setup-banner');
+        if (existing) return;
+        const banner = document.createElement('div');
+        banner.id = 'setup-banner';
+        banner.style.cssText = 'margin:1.2rem auto 0;max-width:400px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);border-radius:10px;padding:.9rem 1rem;font-size:.82rem;color:#f59e0b;line-height:1.6;';
+        banner.innerHTML = `
+          <strong style="display:block;margin-bottom:.4rem;">⚙ Primeira configuração necessária</strong>
+          Insira a URL e a chave anon do seu projeto Supabase abaixo para começar.
+          Esses dados ficam apenas neste navegador — nunca no código-fonte.
+          <div style="margin-top:.9rem;display:flex;flex-direction:column;gap:.5rem;">
+            <input id="setup-url" type="url" placeholder="https://xxxx.supabase.co"
+              style="width:100%;padding:.6rem .8rem;background:#1c2333;border:1px solid rgba(255,255,255,.12);border-radius:7px;color:#e2e8f0;font-size:.85rem;font-family:Inter,sans-serif;outline:none;">
+            <input id="setup-key" type="text" placeholder="eyJhbGciOiJIUz... (anon key)"
+              style="width:100%;padding:.6rem .8rem;background:#1c2333;border:1px solid rgba(255,255,255,.12);border-radius:7px;color:#e2e8f0;font-size:.85rem;font-family:Inter,sans-serif;outline:none;">
+            <button onclick="applySetupConfig()"
+              style="padding:.6rem;background:#3b82f6;border:none;border-radius:7px;color:#fff;font-weight:600;font-size:.85rem;cursor:pointer;font-family:Inter,sans-serif;">
+              Salvar e continuar
+            </button>
+          </div>`;
+        const loginBox = document.querySelector('.login-box');
+        if (loginBox) loginBox.appendChild(banner);
+      }
+
+      function applySetupConfig() {
+        const url = (document.getElementById('setup-url')?.value || '').trim();
+        const key = (document.getElementById('setup-key')?.value || '').trim();
+        if (!url.startsWith('https://') || key.length < 20) {
+          alert('URL inválida ou chave muito curta. Verifique os dados do Supabase.');
+          return;
+        }
+        localStorage.setItem(CONFIG_KEY, JSON.stringify({ url, key }));
+        document.getElementById('setup-banner')?.remove();
+        toast('✅ Supabase configurado! Faça login.', 'success');
+      }
+      window.applySetupConfig = applySetupConfig;
 
       document.getElementById('login-pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
       document.getElementById('login-email').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
@@ -3613,17 +3669,23 @@
 
       function loadConfigFields() {
         const cfg = getConfig();
-        document.getElementById('cfg-url').value = cfg.url || DEFAULT_SUPABASE_URL;
-        document.getElementById('cfg-key').value = cfg.key || DEFAULT_SUPABASE_KEY;
+        document.getElementById('cfg-url').value = cfg.url || '';
+        document.getElementById('cfg-key').value = cfg.key || '';
         const tok = document.getElementById('cfg-gh-token');
         if (tok) { tok.value = getGhToken(); }
+        updateIntegrationSnippet();
       }
 
       function saveConfig() {
         const url = document.getElementById('cfg-url').value.trim();
         const key = document.getElementById('cfg-key').value.trim();
+        if (!url.startsWith('https://') || key.length < 20) {
+          toast('⚠ URL inválida ou chave muito curta.', 'error');
+          return;
+        }
         localStorage.setItem(CONFIG_KEY, JSON.stringify({ url, key }));
-        toast('Configuração salva!', 'success');
+        updateIntegrationSnippet();
+        toast('✅ Configuração salva!', 'success');
       }
 
       async function testConnection() {
@@ -5264,6 +5326,8 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
       }
 
       function buildNoticiaPageHTML(data) {
+        // Injeta credenciais do Supabase configuradas pelo admin (nunca hardcoded)
+        const { url: cfg_url, key: cfg_key } = getSupabase();
         const catLbl = catLabel(data.categoria);
         const dateFmt = formatDateBR(data.data_pub);
         const autorTag = data._autor ? data._autor : '';
@@ -5834,8 +5898,9 @@ footer{background:var(--superficie);border-top:1px solid var(--borda);padding:3.
 
 <script>
 // ── CONFIG SUPABASE ──
-const SB_URL='https://wiatqtiyiznscjyoxxww.supabase.co';
-const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpYXRxdGl5aXpuc2NqeW94eHd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1Njc0MDEsImV4cCI6MjA5MTE0MzQwMX0.xgaaZWX5kG3XowDtpR9Xd8S2S0nV-JTnv4ZwnP33PY8';
+// Credenciais injetadas dinamicamente pelo admin durante publicação
+const SB_URL='${cfg_url}';
+const SB_KEY='${cfg_key}';
 const CAT_ICONS={pirarucu:'🐟',olea:'🌿',sanear:'💧',comercio:'🛒',vagas:'📋',geral:'📌'};
 const CAT_LABEL={pirarucu:'Pirarucu',olea:'Oleaginosas',sanear:'Saneamento',comercio:'Comércio',vagas:'Vagas',geral:'Geral'};
 
