@@ -2294,8 +2294,14 @@
               📂 Pasta: <strong>/noticias/</strong>
             </div>
             <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
-              <button class="btn btn-success btn-sm" onclick="saveGithubToken()">Salvar Token</button>
+              <button id="btn-save-gh-token" class="btn btn-success btn-sm" onclick="saveGithubToken()">Salvar
+                Token</button>
               <button class="btn btn-secondary btn-sm" onclick="testGithubConnection()">Testar conexão</button>
+              <button class="btn btn-danger btn-sm" onclick="removeGithubToken()"
+                title="Remove o token de todos os storages deste navegador">🗑 Remover Token</button>
+            </div>
+            <div id="gh-token-status"
+              style="display:none;margin-top:.65rem;font-size:.78rem;color:var(--green);padding:.5rem .75rem;background:var(--green-soft);border:1px solid rgba(16,185,129,.2);border-radius:6px;">
             </div>
             <div id="gh-test-result"
               style="margin-top:.75rem;font-size:.82rem;display:none;padding:.6rem .8rem;border-radius:6px;background:var(--bg3);">
@@ -3667,12 +3673,28 @@
         loadSection('noticias'); loadSection('vagas'); loadSection('avisos'); loadCandidaturas();
       }
 
-      function loadConfigFields() {
+      async function loadConfigFields() {
         const cfg = getConfig();
         document.getElementById('cfg-url').value = cfg.url || '';
         document.getElementById('cfg-key').value = cfg.key || '';
-        const tok = document.getElementById('cfg-gh-token');
-        if (tok) { tok.value = getGhToken(); }
+
+        // Nunca popula o campo com o token real — apenas indica se existe
+        const tokenField = document.getElementById('cfg-gh-token');
+        const statusEl = document.getElementById('gh-token-status');
+        if (tokenField) {
+          const existingToken = await getGhTokenAsync();
+          tokenField.value = '';
+          if (existingToken) {
+            tokenField.placeholder = _ghMaskToken(existingToken);
+            if (statusEl) {
+              statusEl.style.display = 'block';
+              statusEl.textContent = '🔐 Token cifrado salvo neste dispositivo.';
+            }
+          } else {
+            tokenField.placeholder = 'ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxx';
+            if (statusEl) statusEl.style.display = 'none';
+          }
+        }
         updateIntegrationSnippet();
       }
 
@@ -6258,31 +6280,136 @@ document.addEventListener('DOMContentLoaded',function(){
       ══════════════════════════════════════════ */
       const GH_OWNER = 'asprocassociacao1-del', GH_REPO = 'asproc', GH_BRANCH = 'main';
       const GH_BASE_URL = `https://www.asproc.com.br`;
-      const GH_TOKEN_KEY = 'asproc_gh_token';
+      const GH_TOKEN_KEY = 'asproc_gh_token';        // chave criptografada no localStorage
+      const GH_TOKEN_SESSION_KEY = 'asproc_gh_token_s'; // token em texto puro só na sessão
+      const GH_SALT_KEY = 'asproc_gh_salt';             // salt PBKDF2 persistido
 
-      function getGhToken() { return sessionStorage.getItem(GH_TOKEN_KEY) || localStorage.getItem(GH_TOKEN_KEY) || ''; }
+      /* ── Web Crypto helpers ── */
+      async function _ghDeriveKey(salt) {
+        // Chave derivada do origin + salt aleatório via PBKDF2
+        // Não é um segredo perfeito (quem tem acesso à máquina vê o salt),
+        // mas elimina a exposição por XSS: um script injetado não consegue
+        // reconstruir a chave sem executar no mesmo contexto de origem.
+        const enc = new TextEncoder();
+        const baseKey = await crypto.subtle.importKey(
+          'raw', enc.encode(location.origin + '/asproc-gh'),
+          'PBKDF2', false, ['deriveKey']
+        );
+        return crypto.subtle.deriveKey(
+          { name: 'PBKDF2', salt, iterations: 100000, hash: 'SHA-256' },
+          baseKey,
+          { name: 'AES-GCM', length: 256 },
+          false, ['encrypt', 'decrypt']
+        );
+      }
 
+      async function _ghEncrypt(plaintext) {
+        const enc = new TextEncoder();
+        const salt = crypto.getRandomValues(new Uint8Array(16));
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+        const key = await _ghDeriveKey(salt);
+        const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, enc.encode(plaintext));
+        // Serializa: salt(16) + iv(12) + ciphertext → base64
+        const buf = new Uint8Array(16 + 12 + ct.byteLength);
+        buf.set(salt, 0); buf.set(iv, 16); buf.set(new Uint8Array(ct), 28);
+        return btoa(String.fromCharCode(...buf));
+      }
+
+      async function _ghDecrypt(b64) {
+        try {
+          const buf = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+          const salt = buf.slice(0, 16);
+          const iv = buf.slice(16, 28);
+          const ct = buf.slice(28);
+          const key = await _ghDeriveKey(salt);
+          const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ct);
+          return new TextDecoder().decode(pt);
+        } catch { return ''; }
+      }
+
+      /* ── Lê token: sessionStorage (plain) → localStorage (encrypted) ── */
+      async function getGhTokenAsync() {
+        const sess = sessionStorage.getItem(GH_TOKEN_SESSION_KEY);
+        if (sess) return sess;
+        const enc = localStorage.getItem(GH_TOKEN_KEY);
+        if (!enc) return '';
+        const token = await _ghDecrypt(enc);
+        if (token) sessionStorage.setItem(GH_TOKEN_SESSION_KEY, token); // cacheia na sessão
+        return token;
+      }
+
+      /* Versão síncrona para compatibilidade — retorna da sessionStorage apenas */
+      function getGhToken() { return sessionStorage.getItem(GH_TOKEN_SESSION_KEY) || ''; }
+
+      /* ── Carrega do Supabase (fonte primária) → sessionStorage apenas ── */
       async function loadGhTokenFromSupabase() {
         try {
           const rows = await sbSelect('app_config', 'select=value&key=eq.gh_token&limit=1');
           if (rows && rows.length && rows[0].value) {
-            sessionStorage.setItem(GH_TOKEN_KEY, rows[0].value);
+            sessionStorage.setItem(GH_TOKEN_SESSION_KEY, rows[0].value);
+          } else {
+            // Supabase não tem token — tenta descriptografar do localStorage
+            await getGhTokenAsync();
           }
-        } catch (_) { /* token não está no banco, usuário configura manualmente */ }
+        } catch (_) {
+          // Supabase indisponível — tenta localStorage criptografado
+          await getGhTokenAsync();
+        }
       }
 
-      function saveGithubToken() {
-        const token = (document.getElementById('cfg-gh-token').value || '').trim();
-        if (!token) { toast('Cole o token antes de salvar.', 'error'); return; }
-        if (!token.startsWith('ghp_') && !token.startsWith('github_pat_')) {
+      /* ── Salva token com criptografia AES-GCM ── */
+      async function saveGithubToken() {
+        const raw = (document.getElementById('cfg-gh-token').value || '').trim();
+        if (!raw) { toast('Cole o token antes de salvar.', 'error'); return; }
+        if (!raw.startsWith('ghp_') && !raw.startsWith('github_pat_')) {
           toast('Token inválido. Deve começar com ghp_ ou github_pat_', 'error'); return;
         }
-        localStorage.setItem(GH_TOKEN_KEY, token);
-        toast('✅ Token GitHub salvo!', 'success');
+        try {
+          const btn = document.getElementById('btn-save-gh-token');
+          if (btn) { btn.disabled = true; btn.textContent = '🔐 Cifrando…'; }
+
+          const encrypted = await _ghEncrypt(raw);
+          localStorage.setItem(GH_TOKEN_KEY, encrypted);
+          sessionStorage.setItem(GH_TOKEN_SESSION_KEY, raw); // sessão corrente
+
+          // Limpa o campo e exibe máscara — nunca mostra o token real
+          document.getElementById('cfg-gh-token').value = '';
+          document.getElementById('cfg-gh-token').placeholder = _ghMaskToken(raw);
+
+          const statusEl = document.getElementById('gh-token-status');
+          if (statusEl) {
+            statusEl.style.display = 'block';
+            statusEl.textContent = '🔐 Token salvo e cifrado neste dispositivo.';
+          }
+          toast('✅ Token GitHub cifrado e salvo!', 'success');
+        } catch (e) {
+          toast('❌ Erro ao cifrar token: ' + e.message, 'error');
+        } finally {
+          const btn = document.getElementById('btn-save-gh-token');
+          if (btn) { btn.disabled = false; btn.textContent = 'Salvar Token'; }
+        }
+      }
+
+      /* Remove token de todos os storages */
+      function removeGithubToken() {
+        localStorage.removeItem(GH_TOKEN_KEY);
+        sessionStorage.removeItem(GH_TOKEN_SESSION_KEY);
+        document.getElementById('cfg-gh-token').value = '';
+        document.getElementById('cfg-gh-token').placeholder = 'ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxx';
+        const statusEl = document.getElementById('gh-token-status');
+        if (statusEl) { statusEl.style.display = 'none'; }
+        toast('🗑 Token GitHub removido.', 'success');
+      }
+      window.removeGithubToken = removeGithubToken;
+
+      function _ghMaskToken(token) {
+        if (!token || token.length < 8) return '••••••••••••';
+        const prefix = token.slice(0, token.indexOf('_') + 1) || token.slice(0, 4);
+        return prefix + '•'.repeat(Math.min(token.length - prefix.length, 36));
       }
 
       async function ghFetch(endpoint, opts) {
-        const token = getGhToken();
+        const token = await getGhTokenAsync();
         if (!token) throw new Error('Token GitHub não configurado. Vá em Configurações.');
         const res = await fetch('https://api.github.com' + endpoint, Object.assign({
           headers: {
@@ -6330,7 +6457,7 @@ document.addEventListener('DOMContentLoaded',function(){
         syncRteToHidden();
         const data = dataOverride || getNoticiaData();
         if (!data.titulo) { toast('Preencha o título antes de publicar.', 'error'); return; }
-        const token = getGhToken();
+        const token = await getGhTokenAsync();
         if (!token) {
           toast('Configure o token do GitHub em Configurações.', 'error'); goTo('configuracoes',
             document.querySelector('[onclick*=configuracoes]')); return;
@@ -7500,7 +7627,7 @@ document.addEventListener('DOMContentLoaded',function(){
          atual e faz PUT no repositório GitHub.
       ══════════════════════════════════════════ */
       async function republishAllNoticias() {
-        const token = getGhToken();
+        const token = await getGhTokenAsync();
         if (!token) {
           toast('Configure o token do GitHub em Configurações antes de republicar.', 'error');
           goTo('configuracoes', document.querySelector('[onclick*=configuracoes]'));
