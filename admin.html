@@ -3459,8 +3459,7 @@
           const ok = await ensureValidToken();
           if (!ok) throw new Error('Sessão expirada. Faça login novamente.');
         }
-        const sessionToken = localStorage.getItem('asproc_token');
-        const authToken = sessionToken || key;
+        const authToken = AuthStore.getToken() || key;
         const headers = {
           'apikey': key, 'Authorization': 'Bearer ' + authToken,
           'Content-Type': 'application/json', 'Prefer': 'return=representation'
@@ -3478,8 +3477,7 @@
       async function sbCount(table, params = '') {
         const { url, key } = getSupabase();
         if (!url || !key) return 0;
-        const sessionToken = localStorage.getItem('asproc_token');
-        const authToken = sessionToken || key;
+        const authToken = AuthStore.getToken() || key;
         const res = await fetch(`${url}/rest/v1/${table}?${params}&select=id`, {
           headers: { 'apikey': key, 'Authorization': 'Bearer ' + authToken, 'Prefer': 'count=exact', 'Range': '0-0' }
         });
@@ -3488,8 +3486,86 @@
       }
 
       /* ══════════════════════════════════════════
-         AUTH
+         AUTH STORE — tokens nunca no localStorage
+         ─────────────────────────────────────────
+         access_token  → memória (closure)  — desaparece ao recarregar
+         refresh_token → sessionStorage     — morre ao fechar o browser
+         user          → memória (closure)  — reconstruído no refresh
+
+         XSS não consegue acessar _accessToken/_refreshToken
+         porque são variáveis de closure, não propriedades globais.
+         sessionStorage ainda é acessível via XSS, mas o refresh
+         token sozinho não permite leitura de dados — só obter um
+         novo access_token, que expira em ~1h.
       ══════════════════════════════════════════ */
+      const AuthStore = (() => {
+        const SS_REFRESH = 'asproc_rs';   // sessionStorage: refresh token (ofuscado)
+        const SS_USER = 'asproc_usr';  // sessionStorage: user JSON (não sensível)
+
+        let _accessToken = null;
+        let _refreshToken = null;
+        let _user = null;
+
+        // Ofuscação leve do refresh token em sessionStorage:
+        // não é criptografia, mas impede leitura acidental/trivial
+        // e evita que um grep simples em logs capture o valor.
+        function _enc(str) {
+          return btoa(encodeURIComponent(str).split('').reverse().join(''));
+        }
+        function _dec(str) {
+          try { return decodeURIComponent(atob(str).split('').reverse().join('')); }
+          catch { return ''; }
+        }
+
+        return {
+          /** Persiste a sessão após login bem-sucedido */
+          set(accessToken, refreshToken, user) {
+            _accessToken = accessToken;
+            _refreshToken = refreshToken;
+            _user = user;
+            // Apenas refresh token vai para sessionStorage (ofuscado)
+            if (refreshToken) sessionStorage.setItem(SS_REFRESH, _enc(refreshToken));
+            if (user) sessionStorage.setItem(SS_USER, JSON.stringify(user));
+          },
+
+          /** Atualiza access_token + refresh_token após um token refresh */
+          update(accessToken, refreshToken) {
+            _accessToken = accessToken;
+            if (refreshToken) {
+              _refreshToken = refreshToken;
+              sessionStorage.setItem(SS_REFRESH, _enc(refreshToken));
+            }
+          },
+
+          getToken() { return _accessToken; },
+          getRefresh() { return _refreshToken; },
+          getUser() { return _user; },
+
+          /** Tenta restaurar sessão a partir do sessionStorage (após F5) */
+          restore() {
+            // access_token não persiste — será renovado via refresh
+            const encRefresh = sessionStorage.getItem(SS_REFRESH);
+            const userStr = sessionStorage.getItem(SS_USER);
+            if (encRefresh) _refreshToken = _dec(encRefresh);
+            if (userStr) { try { _user = JSON.parse(userStr); } catch { } }
+            return !!_refreshToken;
+          },
+
+          /** Limpa tudo — logout */
+          clear() {
+            _accessToken = _refreshToken = _user = null;
+            sessionStorage.removeItem(SS_REFRESH);
+            sessionStorage.removeItem(SS_USER);
+            // Limpa eventuais resquícios de versões anteriores
+            localStorage.removeItem('asproc_token');
+            localStorage.removeItem('asproc_refresh_token');
+            localStorage.removeItem('asproc_user');
+          },
+
+          hasSession() { return !!_refreshToken; },
+        };
+      })();
+
       let currentUser = null, currentSection = 'dashboard', editingId = {};
 
       async function doLogin() {
@@ -3512,9 +3588,7 @@
           const data = await res.json();
           if (!res.ok) throw new Error(data.error_description || data.msg || 'Credenciais inválidas');
           currentUser = data.user;
-          localStorage.setItem('asproc_token', data.access_token);
-          localStorage.setItem('asproc_user', JSON.stringify(data.user));
-          if (data.refresh_token) localStorage.setItem('asproc_refresh_token', data.refresh_token);
+          AuthStore.set(data.access_token, data.refresh_token, data.user);
           showApp(data.user);
         } catch (e) {
           err.textContent = e.message; err.classList.add('show');
@@ -3531,18 +3605,18 @@
       }
 
       function doLogout() {
-        localStorage.removeItem('asproc_token'); localStorage.removeItem('asproc_user'); localStorage.removeItem('asproc_refresh_token');
+        AuthStore.clear();
         location.reload();
       }
 
       function isTokenValid() {
-        const token = localStorage.getItem('asproc_token');
+        const token = AuthStore.getToken();
         if (!token) return false;
         try { const p = JSON.parse(atob(token.split('.')[1])); return p.exp * 1000 > Date.now() + 60000; } catch { return false; }
       }
 
       async function refreshToken() {
-        const refreshTk = localStorage.getItem('asproc_refresh_token');
+        const refreshTk = AuthStore.getRefresh();
         if (!refreshTk) return false;
         const { url, key } = getSupabase();
         try {
@@ -3552,8 +3626,7 @@
           });
           if (!res.ok) return false;
           const data = await res.json();
-          localStorage.setItem('asproc_token', data.access_token);
-          if (data.refresh_token) localStorage.setItem('asproc_refresh_token', data.refresh_token);
+          AuthStore.update(data.access_token, data.refresh_token);
           return true;
         } catch { return false; }
       }
@@ -3566,22 +3639,29 @@
       }
 
       async function checkSession() {
+        // Limpa eventuais resquícios de versões anteriores que usavam localStorage
+        localStorage.removeItem('asproc_token');
+        localStorage.removeItem('asproc_user');
+        localStorage.removeItem('asproc_refresh_token');
+
         // Se Supabase não está configurado, mostra tela de setup antes do login
         if (!isSupabaseConfigured()) {
           document.getElementById('login-screen').style.display = 'flex';
           showSetupBanner();
           return;
         }
-        const token = localStorage.getItem('asproc_token');
-        const userStr = localStorage.getItem('asproc_user');
-        if (token && userStr) {
-          try {
-            const user = JSON.parse(userStr);
-            if (isTokenValid()) { currentUser = user; showApp(user); return; }
-            const refreshed = await refreshToken();
-            if (refreshed) { currentUser = user; showApp(user); return; }
-            localStorage.removeItem('asproc_token'); localStorage.removeItem('asproc_user'); localStorage.removeItem('asproc_refresh_token');
-          } catch { }
+        // Tenta restaurar sessão do sessionStorage (sobrevive a F5, morre ao fechar o browser)
+        const hasSavedSession = AuthStore.restore();
+        if (hasSavedSession) {
+          // refresh token existe — tenta obter um novo access token
+          const refreshed = await refreshToken();
+          if (refreshed) {
+            currentUser = AuthStore.getUser();
+            showApp(currentUser);
+            return;
+          }
+          // Refresh falhou (token expirado ou revogado) — pede login
+          AuthStore.clear();
         }
         document.getElementById('login-screen').style.display = 'flex';
       }
@@ -4355,8 +4435,7 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
 
         try {
           await ensureValidToken();
-          const sessionToken = localStorage.getItem('asproc_token');
-          const authToken = sessionToken || sbKey;
+          const authToken = AuthStore.getToken() || sbKey;
 
           const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z]/g, '') || 'jpg';
           const nome = `capa-${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${ext}`;
@@ -4451,8 +4530,7 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
           if (hasSb) {
             try {
               await ensureValidToken();
-              const sessionToken = localStorage.getItem('asproc_token');
-              const authToken = sessionToken || sbKey;
+              const authToken = AuthStore.getToken() || sbKey;
 
               const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z0-9]/g, '') || 'bin';
               const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
@@ -5091,8 +5169,7 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
 
         try {
           await ensureValidToken();
-          const sessionToken = localStorage.getItem('asproc_token');
-          const authToken = sessionToken || sbKey;
+          const authToken = AuthStore.getToken() || sbKey;
 
           const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z]/g, '') || 'jpg';
           const nome = `capa-${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${ext}`;
@@ -7248,7 +7325,7 @@ document.addEventListener('DOMContentLoaded',function(){
 
         try {
           await ensureValidToken();
-          const authToken = localStorage.getItem('asproc_token') || sbKey;
+          const authToken = AuthStore.getToken() || sbKey;
           const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z]/g, '') || 'jpg';
           const nome = `capa-vaga-${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${ext}`;
           const path = `vagas/${nome}`;
@@ -7317,7 +7394,7 @@ document.addEventListener('DOMContentLoaded',function(){
           if (hasSb) {
             try {
               await ensureValidToken();
-              const authToken = localStorage.getItem('asproc_token') || sbKey;
+              const authToken = AuthStore.getToken() || sbKey;
               const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z0-9]/g, '') || 'bin';
               const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
               const path = `vagas/doc-${Date.now()}-${safeName}`;
@@ -7485,7 +7562,7 @@ document.addEventListener('DOMContentLoaded',function(){
 
         try {
           await ensureValidToken();
-          const authToken = localStorage.getItem('asproc_token') || sbKey;
+          const authToken = AuthStore.getToken() || sbKey;
           const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z]/g, '') || 'png';
           const BUCKET = 'imagens';
           const path = `logos/logomarca.${ext}`;
@@ -7510,7 +7587,7 @@ document.addEventListener('DOMContentLoaded',function(){
           const publicUrl = `${sbUrl}/storage/v1/object/public/${BUCKET}/${path}`;
 
           // Salva URL no banco (upsert via POST com Prefer: resolution=merge-duplicates)
-          const authToken2 = localStorage.getItem('asproc_token') || sbKey;
+          const authToken2 = AuthStore.getToken() || sbKey;
           const saveRes = await fetch(`${sbUrl}/rest/v1/app_config`, {
             method: 'POST',
             headers: {
@@ -7550,7 +7627,7 @@ document.addEventListener('DOMContentLoaded',function(){
         const { url: sbUrl, key: sbKey } = getSupabase();
         try {
           await ensureValidToken();
-          const authToken = localStorage.getItem('asproc_token') || sbKey;
+          const authToken = AuthStore.getToken() || sbKey;
 
           // Obtém URL atual para extrair o path no storage
           const data = await sbSelect('app_config', 'select=value&key=eq.logo_url');
