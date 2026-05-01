@@ -1328,6 +1328,69 @@
       color: var(--amber);
     }
 
+    .toast.loading {
+      background: #0d1b2e;
+      border: 1px solid rgba(59, 130, 246, .3);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+    }
+
+    .toast-spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(59, 130, 246, .25);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      flex-shrink: 0;
+      animation: spin .7s linear infinite;
+    }
+
+    /* Modal de confirmação customizado */
+    #confirm-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .65);
+      backdrop-filter: blur(4px);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      animation: fadeSlide .15s ease;
+    }
+
+    #confirm-box {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, .6);
+    }
+
+    #confirm-box h4 {
+      font-size: .95rem;
+      font-weight: 600;
+      margin-bottom: .5rem;
+      color: var(--text);
+    }
+
+    #confirm-box p {
+      font-size: .84rem;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+      line-height: 1.55;
+    }
+
+    #confirm-box .confirm-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: .5rem;
+    }
+
     /* ── MOBILE ── */
     @media (max-width: 900px) {
       .sidebar {
@@ -2381,7 +2444,8 @@
                 </div>
               </div>
               <div style="display:flex;gap:.5rem;">
-                <button class="btn btn-success btn-sm" onclick="uploadLogo()">⬆ Enviar logomarca</button>
+                <button class="btn btn-success btn-sm" id="btn-upload-logo" onclick="uploadLogo()">⬆ Enviar
+                  logomarca</button>
                 <button class="btn btn-secondary btn-sm" onclick="logoCancelSelection()">Cancelar</button>
               </div>
             </div>
@@ -2462,7 +2526,7 @@
         title="Formata o conteúdo automaticamente com IA">✨ Auto-formatar</button>
       <button class="btn btn-success btn-sm" id="btn-gh-publish" onclick="publishToGithub()">🚀 Publicar no
         site</button>
-      <button class="btn btn-primary btn-sm" onclick="saveNoticia()">💾 Salvar</button>
+      <button class="btn btn-primary btn-sm" id="btn-save-noticia" onclick="saveNoticia()">💾 Salvar</button>
     </div>
 
     <div class="ne-body">
@@ -2747,8 +2811,9 @@
     <div class="ne-topbar">
       <button class="btn btn-secondary btn-sm" onclick="closeVagaEditor()">← Voltar</button>
       <span class="ne-topbar-title" id="ve-topbar-title">Nova Vaga</span>
-      <button class="btn btn-secondary btn-sm" onclick="saveVaga(false)">💾 Salvar rascunho</button>
-      <button class="btn btn-primary btn-sm" onclick="saveVaga(true)">🌐 Publicar</button>
+      <button class="btn btn-secondary btn-sm" id="btn-save-vaga-draft" onclick="saveVaga(false)">💾 Salvar
+        rascunho</button>
+      <button class="btn btn-primary btn-sm" id="btn-save-vaga-pub" onclick="saveVaga(true)">🌐 Publicar</button>
     </div>
 
     <div class="ne-body">
@@ -3057,8 +3122,9 @@
     <div class="ne-topbar">
       <button class="btn btn-secondary btn-sm" onclick="closeAvisoEditor()">← Voltar</button>
       <span class="ne-topbar-title" id="ae-topbar-title">Novo Aviso</span>
-      <button class="btn btn-secondary btn-sm" onclick="saveAviso(false)">💾 Salvar rascunho</button>
-      <button class="btn btn-primary btn-sm" onclick="saveAviso(true)">🌐 Publicar</button>
+      <button class="btn btn-secondary btn-sm" id="btn-save-aviso-draft" onclick="saveAviso(false)">💾 Salvar
+        rascunho</button>
+      <button class="btn btn-primary btn-sm" id="btn-save-aviso-pub" onclick="saveAviso(true)">🌐 Publicar</button>
     </div>
 
     <div class="ne-body">
@@ -3791,8 +3857,13 @@
       }
 
       async function testConnection() {
-        try { await sbSelect('noticias', 'select=id&limit=1'); toast('✅ Conexão com Supabase OK!', 'success'); }
-        catch (e) { toast('❌ Falha: ' + e.message, 'error'); }
+        const btn = document.querySelector('[onclick="testConnection()"]');
+        await withBtn(btn, '⏳ Testando…', async () => {
+          try {
+            await sbSelect('noticias', 'select=id&limit=1');
+            toast('✅ Conexão com Supabase OK!', 'success');
+          } catch (e) { toast('❌ Falha: ' + e.message, 'error'); }
+        });
       }
 
       /* ══════════════════════════════════════════
@@ -3931,11 +4002,15 @@
         const urlExterna = document.getElementById('n-url').value.trim() || null;
         const dbPayload = Object.assign({}, data._dbData, { url_externa: urlExterna });
         if (!dbPayload.titulo || !dbPayload.resumo) { toast('Preencha título e resumo.', 'error'); return; }
-        try {
-          if (editingId.noticias) { await sbUpdate('noticias', editingId.noticias, dbPayload); toast('Notícia atualizada!', 'success'); }
-          else { await sbInsert('noticias', dbPayload); toast('Notícia salva!', 'success'); }
-          closeNewsEditor(); loadNoticias(); loadDashboard();
-        } catch (e) { toast('Erro: ' + e.message, 'error'); }
+        await withBtn('btn-save-noticia', '⏳ Salvando…', async () => {
+          try {
+            const isEdit = !!editingId.noticias;
+            if (isEdit) { await sbUpdate('noticias', editingId.noticias, dbPayload); }
+            else { await sbInsert('noticias', dbPayload); }
+            toast(isEdit ? '✅ Notícia atualizada!' : '✅ Notícia salva!', 'success');
+            closeNewsEditor(); loadNoticias(); loadDashboard();
+          } catch (e) { toast('❌ Erro ao salvar: ' + e.message, 'error'); }
+        });
       }
 
       /* ══════════════════════════════════════════
@@ -4010,57 +4085,61 @@
         const titulo = document.getElementById('v-titulo').value.trim();
         const descricao = document.getElementById('ve-rte-body').innerHTML.trim();
         if (!titulo) { toast('Preencha o título da vaga.', 'error'); return; }
+        const btnId = forcePublish ? 'btn-save-vaga-pub' : 'btn-save-vaga-draft';
+        const btnLabel = forcePublish ? '⏳ Publicando…' : '⏳ Salvando…';
+        await withBtn(btnId, btnLabel, async () => {
 
-        const listaAnexos = veAnexos.length
-          ? veAnexos.map(ax => ({ nome: ax.nome, url: ax.url, tipo: ax.tipo || null }))
-          : null;
+          const listaAnexos = veAnexos.length
+            ? veAnexos.map(ax => ({ nome: ax.nome, url: ax.url, tipo: ax.tipo || null }))
+            : null;
 
-        // URL do edital: primeiro anexo ou campo legado
-        const editalUrl = listaAnexos ? listaAnexos[0].url : (document.getElementById('v-edital').value.trim() || null);
+          // URL do edital: primeiro anexo ou campo legado
+          const editalUrl = listaAnexos ? listaAnexos[0].url : (document.getElementById('v-edital').value.trim() || null);
 
-        const payloadFull = {
-          titulo,
-          descricao,
-          resumo: document.getElementById('v-resumo').value.trim() || null,
-          local: document.getElementById('v-local').value.trim() || 'Carauari/AM',
-          regime: document.getElementById('v-regime').value,
-          carga_horaria: document.getElementById('v-carga').value,
-          escolaridade: document.getElementById('v-escolaridade').value,
-          prazo: document.getElementById('v-prazo').value || null,
-          status: document.getElementById('v-status').value,
-          edital_url: editalUrl,
-          imagem_url: document.getElementById('v-imagem-url').value.trim() || null,
-          anexos: listaAnexos,
-        };
+          const payloadFull = {
+            titulo,
+            descricao,
+            resumo: document.getElementById('v-resumo').value.trim() || null,
+            local: document.getElementById('v-local').value.trim() || 'Carauari/AM',
+            regime: document.getElementById('v-regime').value,
+            carga_horaria: document.getElementById('v-carga').value,
+            escolaridade: document.getElementById('v-escolaridade').value,
+            prazo: document.getElementById('v-prazo').value || null,
+            status: document.getElementById('v-status').value,
+            edital_url: editalUrl,
+            imagem_url: document.getElementById('v-imagem-url').value.trim() || null,
+            anexos: listaAnexos,
+          };
 
-        const payloadSemAnexos = { ...payloadFull }; delete payloadSemAnexos.anexos;
-        const payloadSemImagem = { ...payloadSemAnexos }; delete payloadSemImagem.imagem_url; delete payloadSemImagem.resumo;
+          const payloadSemAnexos = { ...payloadFull }; delete payloadSemAnexos.anexos;
+          const payloadSemImagem = { ...payloadSemAnexos }; delete payloadSemImagem.imagem_url; delete payloadSemImagem.resumo;
 
-        const exec = async (payload) => {
-          if (editingId.vagas) return sbUpdate('vagas', editingId.vagas, payload);
-          return sbInsert('vagas', payload);
-        };
+          const exec = async (payload) => {
+            if (editingId.vagas) return sbUpdate('vagas', editingId.vagas, payload);
+            return sbInsert('vagas', payload);
+          };
 
-        const isSchemaErr = (msg) => msg && (msg.includes('column') || msg.includes('schema') || msg.includes('relation') || msg.includes('does not exist'));
-        const successMsg = editingId.vagas ? 'Vaga atualizada!' : (forcePublish ? 'Vaga publicada!' : 'Vaga salva como rascunho!');
+          const isSchemaErr = (msg) => msg && (msg.includes('column') || msg.includes('schema') || msg.includes('relation') || msg.includes('does not exist'));
+          const successMsg = editingId.vagas ? 'Vaga atualizada!' : (forcePublish ? 'Vaga publicada!' : 'Vaga salva como rascunho!');
 
-        try {
-          await exec(payloadFull);
-          toast('✅ ' + successMsg, 'success');
-          closeVagaEditor(); loadVagas(); loadDashboard(); return;
-        } catch (e1) { if (!isSchemaErr(e1.message)) { toast('❌ Erro: ' + e1.message, 'error'); return; } }
+          try {
+            await exec(payloadFull);
+            toast('✅ ' + successMsg, 'success');
+            closeVagaEditor(); loadVagas(); loadDashboard(); return;
+          } catch (e1) { if (!isSchemaErr(e1.message)) { toast('❌ Erro: ' + e1.message, 'error'); return; } }
 
-        try {
-          await exec(payloadSemAnexos);
-          toast('✅ ' + successMsg + ' (colunas extras não encontradas — execute o SQL de migração).', 'info');
-          closeVagaEditor(); loadVagas(); loadDashboard(); return;
-        } catch (e2) { if (!isSchemaErr(e2.message)) { toast('❌ Erro: ' + e2.message, 'error'); return; } }
+          try {
+            await exec(payloadSemAnexos);
+            toast('✅ ' + successMsg + ' (colunas extras não encontradas — execute o SQL de migração).', 'info');
+            closeVagaEditor(); loadVagas(); loadDashboard(); return;
+          } catch (e2) { if (!isSchemaErr(e2.message)) { toast('❌ Erro: ' + e2.message, 'error'); return; } }
 
-        try {
-          await exec(payloadSemImagem);
-          toast('✅ Vaga salva (modo básico). Execute o SQL de migração para habilitar todas as funcionalidades.', 'info');
-          closeVagaEditor(); loadVagas(); loadDashboard();
-        } catch (e3) { toast('❌ Erro ao salvar: ' + e3.message, 'error'); }
+          try {
+            await exec(payloadSemImagem);
+            toast('✅ Vaga salva (modo básico). Execute o SQL de migração para habilitar todas as funcionalidades.', 'info');
+            closeVagaEditor(); loadVagas(); loadDashboard();
+          } catch (e3) { toast('❌ Erro ao salvar: ' + e3.message, 'error'); }
+        }); // fim withBtn
       }
 
       /* ══════════════════════════════════════════
@@ -4164,100 +4243,104 @@
         const titulo = document.getElementById('a-titulo').value.trim();
         const descricao = document.getElementById('ae-rte-body').innerHTML.trim();
         if (!titulo || !descricao) { toast('Preencha título e conteúdo.', 'error'); return; }
+        const btnId = forcePublish ? 'btn-save-aviso-pub' : 'btn-save-aviso-draft';
+        const btnLabel = forcePublish ? '⏳ Publicando…' : '⏳ Salvando…';
+        await withBtn(btnId, btnLabel, async () => {
 
-        const base = {
-          titulo,
-          descricao,
-          tipo: document.getElementById('a-tipo').value,
-          data_pub: document.getElementById('a-data').value || new Date().toISOString().split('T')[0],
-          publicado: forcePublish === true ? true : document.getElementById('a-publicado').checked,
-        };
+          const base = {
+            titulo,
+            descricao,
+            tipo: document.getElementById('a-tipo').value,
+            data_pub: document.getElementById('a-data').value || new Date().toISOString().split('T')[0],
+            publicado: forcePublish === true ? true : document.getElementById('a-publicado').checked,
+          };
 
-        // Monta lista de anexos para salvar
-        const listaAnexos = aeAnexos.length
-          ? aeAnexos.map(ax => ({ nome: ax.nome, url: ax.url, tipo: ax.tipo || null }))
-          : null;
+          // Monta lista de anexos para salvar
+          const listaAnexos = aeAnexos.length
+            ? aeAnexos.map(ax => ({ nome: ax.nome, url: ax.url, tipo: ax.tipo || null }))
+            : null;
 
-        // Payload completo (todas as colunas opcionais)
-        const payloadFull = {
-          ...base,
-          resumo: document.getElementById('a-resumo').value.trim() || null,
-          capa_url: document.getElementById('a-capa-url').value.trim() || null,
-          destaque: document.getElementById('a-destaque').checked,
-          anexos: listaAnexos,                           // coluna jsonb  [{nome,url,tipo}]
-          doc_url: listaAnexos ? listaAnexos[0].url : null, // retrocompat
-        };
+          // Payload completo (todas as colunas opcionais)
+          const payloadFull = {
+            ...base,
+            resumo: document.getElementById('a-resumo').value.trim() || null,
+            capa_url: document.getElementById('a-capa-url').value.trim() || null,
+            destaque: document.getElementById('a-destaque').checked,
+            anexos: listaAnexos,                           // coluna jsonb  [{nome,url,tipo}]
+            doc_url: listaAnexos ? listaAnexos[0].url : null, // retrocompat
+          };
 
-        // Payload sem a coluna "anexos" (caso ela não exista ainda no banco)
-        const payloadSemAnexos = { ...payloadFull };
-        delete payloadSemAnexos.anexos;
+          // Payload sem a coluna "anexos" (caso ela não exista ainda no banco)
+          const payloadSemAnexos = { ...payloadFull };
+          delete payloadSemAnexos.anexos;
 
-        // Payload mínimo absoluto (só colunas obrigatórias)
-        const payloadMin = { ...base };
+          // Payload mínimo absoluto (só colunas obrigatórias)
+          const payloadMin = { ...base };
 
-        const exec = async (payload) => {
-          if (editingId.avisos) return sbUpdate('avisos', editingId.avisos, payload);
-          return sbInsert('avisos', payload);
-        };
+          const exec = async (payload) => {
+            if (editingId.avisos) return sbUpdate('avisos', editingId.avisos, payload);
+            return sbInsert('avisos', payload);
+          };
 
-        const isSchemaErr = (msg) => msg && (
-          msg.includes('column') || msg.includes('schema') ||
-          msg.includes('relation') || msg.includes('does not exist')
-        );
+          const isSchemaErr = (msg) => msg && (
+            msg.includes('column') || msg.includes('schema') ||
+            msg.includes('relation') || msg.includes('does not exist')
+          );
 
-        const successMsg = forcePublish ? 'Aviso publicado!'
-          : (editingId.avisos ? 'Aviso atualizado!' : 'Aviso salvo!');
+          const successMsg = forcePublish ? 'Aviso publicado!'
+            : (editingId.avisos ? 'Aviso atualizado!' : 'Aviso salvo!');
 
-        // Tentativa 1 — payload completo (com coluna "anexos")
-        try {
-          await exec(payloadFull);
-          toast('✅ ' + successMsg, 'success');
-          closeAvisoEditor(); loadAvisos(); loadDashboard();
-          return;
-        } catch (e1) {
-          if (!isSchemaErr(e1.message)) {
-            toast('❌ Erro: ' + e1.message, 'error');
+          // Tentativa 1 — payload completo (com coluna "anexos")
+          try {
+            await exec(payloadFull);
+            toast('✅ ' + successMsg, 'success');
+            closeAvisoEditor(); loadAvisos(); loadDashboard();
             return;
-          }
-        }
-
-        // Tentativa 2 — sem coluna "anexos" (coluna pode não existir no banco)
-        // Neste caso guardamos os anexos somente em doc_url (primeiro arquivo)
-        try {
-          await exec(payloadSemAnexos);
-          const aviso = listaAnexos
-            ? '⚠️ Aviso salvo, mas a coluna "anexos" não existe no banco. Execute o SQL:\n\nALTER TABLE avisos ADD COLUMN IF NOT EXISTS anexos jsonb;\n\nAssim todos os arquivos serão salvos corretamente.'
-            : '✅ ' + successMsg;
-          toast(aviso, listaAnexos ? 'info' : 'success');
-
-          // Mostra instrução SQL em destaque se houver anexos perdidos
-          if (listaAnexos) {
-            const sqlHint = document.getElementById('ae-sql-hint');
-            if (sqlHint) {
-              sqlHint.style.display = 'block';
-              sqlHint.innerHTML = `<strong>⚠️ Coluna "anexos" não encontrada no banco.</strong><br>
-Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
-<code style="display:block;margin-top:.4rem;padding:.5rem;background:rgba(0,0,0,.3);border-radius:4px;font-size:.75rem;user-select:all">ALTER TABLE avisos ADD COLUMN IF NOT EXISTS anexos jsonb;</code>`;
+          } catch (e1) {
+            if (!isSchemaErr(e1.message)) {
+              toast('❌ Erro: ' + e1.message, 'error');
+              return;
             }
           }
 
-          closeAvisoEditor(); loadAvisos(); loadDashboard();
-          return;
-        } catch (e2) {
-          if (!isSchemaErr(e2.message)) {
-            toast('❌ Erro: ' + e2.message, 'error');
-            return;
-          }
-        }
+          // Tentativa 2 — sem coluna "anexos" (coluna pode não existir no banco)
+          // Neste caso guardamos os anexos somente em doc_url (primeiro arquivo)
+          try {
+            await exec(payloadSemAnexos);
+            const aviso = listaAnexos
+              ? '⚠️ Aviso salvo, mas a coluna "anexos" não existe no banco. Execute o SQL:\n\nALTER TABLE avisos ADD COLUMN IF NOT EXISTS anexos jsonb;\n\nAssim todos os arquivos serão salvos corretamente.'
+              : '✅ ' + successMsg;
+            toast(aviso, listaAnexos ? 'info' : 'success');
 
-        // Tentativa 3 — payload mínimo absoluto
-        try {
-          await exec(payloadMin);
-          toast('✅ Aviso salvo (modo básico). Algumas colunas opcionais não existem no banco.', 'info');
-          closeAvisoEditor(); loadAvisos(); loadDashboard();
-        } catch (e3) {
-          toast('❌ Erro ao salvar: ' + e3.message, 'error');
-        }
+            // Mostra instrução SQL em destaque se houver anexos perdidos
+            if (listaAnexos) {
+              const sqlHint = document.getElementById('ae-sql-hint');
+              if (sqlHint) {
+                sqlHint.style.display = 'block';
+                sqlHint.innerHTML = `<strong>⚠️ Coluna "anexos" não encontrada no banco.</strong><br>
+Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
+<code style="display:block;margin-top:.4rem;padding:.5rem;background:rgba(0,0,0,.3);border-radius:4px;font-size:.75rem;user-select:all">ALTER TABLE avisos ADD COLUMN IF NOT EXISTS anexos jsonb;</code>`;
+              }
+            }
+
+            closeAvisoEditor(); loadAvisos(); loadDashboard();
+            return;
+          } catch (e2) {
+            if (!isSchemaErr(e2.message)) {
+              toast('❌ Erro: ' + e2.message, 'error');
+              return;
+            }
+          }
+
+          // Tentativa 3 — payload mínimo absoluto
+          try {
+            await exec(payloadMin);
+            toast('✅ Aviso salvo (modo básico). Algumas colunas opcionais não existem no banco.', 'info');
+            closeAvisoEditor(); loadAvisos(); loadDashboard();
+          } catch (e3) {
+            toast('❌ Erro ao salvar: ' + e3.message, 'error');
+          }
+        }); // fim withBtn
       }
 
       // RTE helpers para o editor de avisos
@@ -4880,45 +4963,72 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
       const _origCloseModal = window.closeModal;
 
       async function updateCandStatus(id, novoStatus) {
-        try {
-          await sbUpdate('candidaturas', id, { status: novoStatus });
-
-          // Atualiza array local
-          const idx = allCandidaturas.findIndex(x => String(x.id) === String(id));
-          if (idx !== -1) allCandidaturas[idx].status = novoStatus;
-
-          atualizarBadgeCand();
-
-          const msgs = { aprovado: '✅ Candidatura aprovada!', reprovado: '❌ Candidatura reprovada.', em_analise: '🔍 Em análise.' };
-          const types = { aprovado: 'success', reprovado: 'info', em_analise: 'info' };
-          toast(msgs[novoStatus] || 'Status atualizado.', types[novoStatus] || 'success');
-
-          fecharModalCand();
-          applyCandFilters();   // re-renderiza cards com nova cor/badge
-          loadDashboard();
-        } catch (e) { toast('Erro ao atualizar: ' + e.message, 'error'); }
+        const btnMap = { aprovado: 'cand-aprovar-btn', reprovado: 'cand-reprovar-btn', em_analise: 'cand-em-analise-btn' };
+        const labelMap = { aprovado: '⏳ Aprovando…', reprovado: '⏳ Reprovando…', em_analise: '⏳ Atualizando…' };
+        await withBtn(btnMap[novoStatus], labelMap[novoStatus] || '⏳ Atualizando…', async () => {
+          try {
+            await sbUpdate('candidaturas', id, { status: novoStatus });
+            const idx = allCandidaturas.findIndex(x => String(x.id) === String(id));
+            if (idx !== -1) allCandidaturas[idx].status = novoStatus;
+            atualizarBadgeCand();
+            const msgs = { aprovado: '✅ Candidatura aprovada!', reprovado: '❌ Candidatura reprovada.', em_analise: '🔍 Marcada como em análise.' };
+            const types = { aprovado: 'success', reprovado: 'info', em_analise: 'info' };
+            toast(msgs[novoStatus] || 'Status atualizado.', types[novoStatus] || 'success');
+            fecharModalCand();
+            applyCandFilters();
+            loadDashboard();
+          } catch (e) { toast('❌ Erro ao atualizar: ' + e.message, 'error'); }
+        });
       }
 
       async function deleteCandidatura(id) {
-        if (!confirm('Excluir esta candidatura permanentemente?')) return;
+        const ok = await confirmDialog({
+          title: 'Excluir candidatura?',
+          message: 'A candidatura e todos os dados do candidato serão removidos permanentemente.',
+          confirmText: 'Sim, excluir',
+          confirmClass: 'btn-danger',
+        });
+        if (!ok) return;
+        const dismiss = toastLoading('Excluindo candidatura…');
         try {
           await sbDelete('candidaturas', id);
           allCandidaturas = allCandidaturas.filter(c => String(c.id) !== String(id));
-          toast('Candidatura excluída.', 'info');
+          dismiss();
+          toast('✅ Candidatura excluída.', 'success');
           fecharModalCand();
           atualizarBadgeCand();
           applyCandFilters();
           loadDashboard();
-        } catch (e) { toast('Erro ao excluir: ' + e.message, 'error'); }
+        } catch (e) {
+          dismiss();
+          toast('❌ Erro ao excluir: ' + e.message, 'error');
+        }
       }
 
       /* ══════════════════════════════════════════
          DELETE
       ══════════════════════════════════════════ */
       async function deleteItem(table, id, reloadFn) {
-        if (!confirm('Excluir este item? Esta ação não pode ser desfeita.')) return;
-        try { await sbDelete(table, id); toast('Item excluído.', 'info'); reloadFn(); loadDashboard(); }
-        catch (e) { toast('Erro ao excluir: ' + e.message, 'error'); }
+        const labels = { noticias: 'notícia', vagas: 'vaga', avisos: 'aviso' };
+        const label = labels[table] || 'item';
+        const ok = await confirmDialog({
+          title: `Excluir ${label}?`,
+          message: 'Esta ação não pode ser desfeita. O conteúdo será removido permanentemente do banco de dados.',
+          confirmText: 'Sim, excluir',
+          confirmClass: 'btn-danger',
+        });
+        if (!ok) return;
+        const dismiss = toastLoading(`Excluindo ${label}…`);
+        try {
+          await sbDelete(table, id);
+          dismiss();
+          toast(`✅ ${label.charAt(0).toUpperCase() + label.slice(1)} excluída.`, 'success');
+          reloadFn();
+          loadDashboard();
+        } catch (e) {
+          dismiss();
+          toast('❌ Erro ao excluir: ' + e.message, 'error');
+        }
       }
 
       /* ══════════════════════════════════════════
@@ -4999,12 +5109,80 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
       /* ══════════════════════════════════════════
          TOAST
       ══════════════════════════════════════════ */
-      function toast(msg, type = 'info') {
+      function toast(msg, type = 'info', duration = 3500) {
         const el = document.createElement('div');
         el.className = `toast ${type}`;
         el.textContent = msg;
         document.getElementById('toast-container').appendChild(el);
-        setTimeout(() => el.remove(), 3500);
+        if (duration > 0) setTimeout(() => el.remove(), duration);
+        return el; // permite remover manualmente (ex: toasts de loading)
+      }
+
+      /** Toast com spinner animado — retorna função para fechar */
+      function toastLoading(msg) {
+        const el = document.createElement('div');
+        el.className = 'toast loading';
+        el.innerHTML = `<div class="toast-spinner"></div><span>${msg}</span>`;
+        document.getElementById('toast-container').appendChild(el);
+        return () => el.remove();
+      }
+
+      /**
+       * Trava um botão durante uma operação async e o restaura no final.
+       * @param {HTMLElement|string} btnOrId  — botão ou id do botão
+       * @param {string}             loadingText — texto exibido durante a operação
+       * @param {Function}           fn          — função async a executar
+       */
+      async function withBtn(btnOrId, loadingText, fn) {
+        const btn = typeof btnOrId === 'string'
+          ? document.getElementById(btnOrId)
+          : btnOrId;
+        if (!btn) return fn();
+        const original = btn.textContent;
+        const wasDisabled = btn.disabled;
+        btn.disabled = true;
+        btn.textContent = loadingText;
+        try {
+          return await fn();
+        } finally {
+          btn.disabled = wasDisabled;
+          btn.textContent = original;
+        }
+      }
+
+      /**
+       * Modal de confirmação customizado (substitui window.confirm).
+       * Retorna Promise<boolean>.
+       * @param {object} opts  — { title, message, confirmText, confirmClass }
+       */
+      function confirmDialog({ title = 'Confirmar', message = '', confirmText = 'Confirmar', confirmClass = 'btn-danger' } = {}) {
+        return new Promise(resolve => {
+          // Remove overlay anterior se existir
+          document.getElementById('confirm-overlay')?.remove();
+
+          const overlay = document.createElement('div');
+          overlay.id = 'confirm-overlay';
+          overlay.innerHTML = `
+            <div id="confirm-box">
+              <h4>${escHtml(title)}</h4>
+              <p>${escHtml(message)}</p>
+              <div class="confirm-actions">
+                <button class="btn btn-secondary btn-sm" id="confirm-cancel">Cancelar</button>
+                <button class="btn ${confirmClass} btn-sm" id="confirm-ok">${escHtml(confirmText)}</button>
+              </div>
+            </div>`;
+          document.body.appendChild(overlay);
+
+          const cleanup = (result) => {
+            overlay.remove();
+            resolve(result);
+          };
+
+          document.getElementById('confirm-ok').onclick = () => cleanup(true);
+          document.getElementById('confirm-cancel').onclick = () => cleanup(false);
+          overlay.addEventListener('click', e => { if (e.target === overlay) cleanup(false); });
+          document.getElementById('confirm-ok').focus();
+        });
       }
 
       /* ══════════════════════════════════════════
@@ -6539,53 +6717,55 @@ document.addEventListener('DOMContentLoaded',function(){
           toast('Configure o token do GitHub em Configurações.', 'error'); goTo('configuracoes',
             document.querySelector('[onclick*=configuracoes]')); return;
         }
+        await withBtn('btn-gh-publish', '⏳ Publicando…', async () => {
 
-        const slug = data._slug || slugify(data.titulo) || ('noticia-' + Date.now());
-        const filePath = `noticias/${slug}.html`;
-        const publicUrl = `${GH_BASE_URL}/${filePath}`;
-        const html = buildNoticiaPageHTML(data);
-        const b64 = btoa(unescape(encodeURIComponent(html)));
+          const slug = data._slug || slugify(data.titulo) || ('noticia-' + Date.now());
+          const filePath = `noticias/${slug}.html`;
+          const publicUrl = `${GH_BASE_URL}/${filePath}`;
+          const html = buildNoticiaPageHTML(data);
+          const b64 = btoa(unescape(encodeURIComponent(html)));
 
-        setDeployStatus('⏳', 'Verificando arquivo no repositório…', null);
+          setDeployStatus('⏳', 'Verificando arquivo no repositório…', null);
 
-        try {
-          let existingSha = null;
           try {
-            const existing = await ghFetch(`/repos/${GH_OWNER}/${GH_REPO}/contents/${filePath}?ref=${GH_BRANCH}`);
-            existingSha = existing.sha;
-          } catch (e) { if (!e.message.includes('404') && !e.message.includes('Not Found')) throw e; }
-
-          setDeployStatus('⏳', existingSha ? 'Atualizando página…' : 'Publicando nova página…', null);
-
-          const body = {
-            message: (existingSha ? 'Atualiza' : 'Publica') + ' notícia: ' + data.titulo, content: b64, branch:
-              GH_BRANCH
-          };
-          if (existingSha) body.sha = existingSha;
-
-          await ghFetch(`/repos/${GH_OWNER}/${GH_REPO}/contents/${filePath}`, { method: 'PUT', body: JSON.stringify(body) });
-
-          setDeployStatus('✅', existingSha ? 'Página atualizada!' : 'Página publicada!', publicUrl);
-          document.getElementById('n-url').value = publicUrl;
-          toast(`✅ Publicado em ${publicUrl}`, 'success');
-
-          if (editingId.noticias) {
-            try { await sbUpdate('noticias', editingId.noticias, { url_externa: publicUrl }); } catch { }
-          }
-          if (!editingId.noticias && data._dbData && data._dbData.titulo) {
+            let existingSha = null;
             try {
-              const dbPayload = Object.assign({}, data._dbData, { url_externa: publicUrl });
-              const inserted = await sbInsert('noticias', dbPayload);
-              if (inserted && inserted[0]) { editingId.noticias = inserted[0].id; loadNoticias(); loadDashboard(); }
-            } catch { }
+              const existing = await ghFetch(`/repos/${GH_OWNER}/${GH_REPO}/contents/${filePath}?ref=${GH_BRANCH}`);
+              existingSha = existing.sha;
+            } catch (e) { if (!e.message.includes('404') && !e.message.includes('Not Found')) throw e; }
+
+            setDeployStatus('⏳', existingSha ? 'Atualizando página…' : 'Publicando nova página…', null);
+
+            const body = {
+              message: (existingSha ? 'Atualiza' : 'Publica') + ' notícia: ' + data.titulo, content: b64, branch:
+                GH_BRANCH
+            };
+            if (existingSha) body.sha = existingSha;
+
+            await ghFetch(`/repos/${GH_OWNER}/${GH_REPO}/contents/${filePath}`, { method: 'PUT', body: JSON.stringify(body) });
+
+            setDeployStatus('✅', existingSha ? 'Página atualizada!' : 'Página publicada!', publicUrl);
+            document.getElementById('n-url').value = publicUrl;
+            toast(`✅ Publicado em ${publicUrl}`, 'success');
+
+            if (editingId.noticias) {
+              try { await sbUpdate('noticias', editingId.noticias, { url_externa: publicUrl }); } catch { }
+            }
+            if (!editingId.noticias && data._dbData && data._dbData.titulo) {
+              try {
+                const dbPayload = Object.assign({}, data._dbData, { url_externa: publicUrl });
+                const inserted = await sbInsert('noticias', dbPayload);
+                if (inserted && inserted[0]) { editingId.noticias = inserted[0].id; loadNoticias(); loadDashboard(); }
+              } catch { }
+            }
+            setTimeout(() => toast('ℹ️ GitHub Pages leva ~1 min para atualizar. A URL já está salva!', 'info'), 3000);
+            return publicUrl;
+          } catch (e) {
+            setDeployStatus('❌', 'Erro: ' + e.message, null);
+            toast('❌ Erro ao publicar: ' + e.message, 'error');
+            return null;
           }
-          setTimeout(() => toast('ℹ️ GitHub Pages leva ~1 min para atualizar. A URL já está salva!', 'info'), 3000);
-          return publicUrl;
-        } catch (e) {
-          setDeployStatus('❌', 'Erro: ' + e.message, null);
-          toast('❌ Erro ao publicar: ' + e.message, 'error');
-          return null;
-        }
+        }); // fim withBtn
       }
 
 
@@ -6988,13 +7168,17 @@ document.addEventListener('DOMContentLoaded',function(){
         }
       }
 
-      function resetarTextos() {
-        if (!confirm(`Restaurar TODOS os textos do idioma "${textosLangAtual.toUpperCase()}" para os valores padrão? Isso
-  sobrescreverá suas edições atuais neste idioma.`)) return;
+      async function resetarTextos() {
+        const ok = await confirmDialog({
+          title: `Restaurar textos (${textosLangAtual.toUpperCase()})?`,
+          message: `Todos os textos do idioma ${textosLangAtual.toUpperCase()} voltarão aos valores padrão. As edições atuais neste idioma serão perdidas.`,
+          confirmText: 'Sim, restaurar',
+          confirmClass: 'btn-danger',
+        });
+        if (!ok) return;
         textosCarregados[textosLangAtual] = Object.assign({}, TEXTOS_DEFAULT[textosLangAtual]);
         renderTextosEditor();
-        toast(`↺ Textos (${textosLangAtual.toUpperCase()}) restaurados para os padrões. Clique em Salvar para confirmar.`,
-          'info');
+        toast(`↺ Textos (${textosLangAtual.toUpperCase()}) restaurados. Clique em Salvar para confirmar.`, 'info');
       }
 
 
@@ -7497,12 +7681,17 @@ document.addEventListener('DOMContentLoaded',function(){
          LOGOMARCA
       ═══════════════════════════════════════ */
       async function loadLogomarca() {
+        const previewWrap = document.getElementById('logo-preview-img')?.closest('.config-block');
+        if (previewWrap) previewWrap.style.opacity = '.55';
         try {
           const data = await sbSelect('app_config', 'select=value&key=eq.logo_url');
           const url = data && data.length > 0 ? data[0].value : null;
           logoUpdatePreview(url);
         } catch (e) {
           logoUpdatePreview(null);
+          toast('⚠️ Não foi possível carregar a logomarca: ' + e.message, 'warning');
+        } finally {
+          if (previewWrap) previewWrap.style.opacity = '1';
         }
       }
 
@@ -7553,12 +7742,14 @@ document.addEventListener('DOMContentLoaded',function(){
         const bar = document.getElementById('logo-progress-bar');
         const msg = document.getElementById('logo-progress-msg');
         const wrap = document.getElementById('logo-progress-wrap');
+        const uploadBtn = document.getElementById('btn-upload-logo');
 
         wrap.style.display = '';
         bar.style.width = '20%';
         bar.style.background = 'var(--accent)';
         msg.style.color = 'var(--text-muted)';
         msg.textContent = 'Enviando imagem…';
+        if (uploadBtn) { uploadBtn.disabled = true; uploadBtn.textContent = '⏳ Enviando…'; }
 
         try {
           await ensureValidToken();
@@ -7618,12 +7809,21 @@ document.addEventListener('DOMContentLoaded',function(){
           msg.textContent = '❌ ' + e.message;
           toast('❌ Erro: ' + e.message, 'error');
           setTimeout(() => { wrap.style.display = 'none'; bar.style.width = '0%'; bar.style.background = 'var(--accent)'; }, 7000);
+        } finally {
+          const uploadBtnEl = document.getElementById('btn-upload-logo');
+          if (uploadBtnEl) { uploadBtnEl.disabled = false; uploadBtnEl.textContent = '⬆ Enviar logomarca'; }
         }
         input.value = '';
       }
 
       async function deleteLogo() {
-        if (!confirm('Excluir a logomarca atual? Essa ação não pode ser desfeita.')) return;
+        const ok = await confirmDialog({
+          title: 'Excluir logomarca?',
+          message: 'A imagem será removida do storage e do banco. Esta ação não pode ser desfeita.',
+          confirmText: 'Sim, excluir',
+          confirmClass: 'btn-danger',
+        });
+        if (!ok) return;
         const { url: sbUrl, key: sbKey } = getSupabase();
         try {
           await ensureValidToken();
@@ -7711,13 +7911,12 @@ document.addEventListener('DOMContentLoaded',function(){
           return;
         }
 
-        const confirmed = confirm(
-          '🔄 Republicar TODAS as notícias?\n\n' +
-          'Isso vai reger o HTML de cada notícia com o template atual e ' +
-          'atualizar os arquivos no GitHub.\n\n' +
-          'Notícias sem slug ou sem conteúdo serão ignoradas.\n\n' +
-          'Continuar?'
-        );
+        const confirmed = await confirmDialog({
+          title: 'Republicar todas as notícias?',
+          message: 'O HTML de cada notícia será regerado com o template atual e enviado ao GitHub. Notícias sem slug ou conteúdo serão ignoradas. O processo pode levar vários minutos.',
+          confirmText: '🔄 Republicar tudo',
+          confirmClass: 'btn-amber',
+        });
         if (!confirmed) return;
 
         // UI setup
