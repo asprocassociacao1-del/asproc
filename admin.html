@@ -1623,19 +1623,20 @@
 
     .rte-body {
       min-height: 400px;
-      padding: 1.25rem max(1.5rem, calc((100% - 56ch) / 2));
+      padding: 1.25rem 1.5rem;
       color: var(--text);
       font-size: .95rem;
       line-height: 1.8;
       outline: none;
       background: var(--bg2);
+      /* Evita que texto longo empurre o layout */
       overflow-wrap: break-word;
       word-break: break-word;
       overflow-x: hidden;
+      /* Largura máxima alinhada com o site publicado (~720px de conteúdo) */
       max-width: 720px;
       margin: 0 auto;
       box-sizing: border-box;
-      text-align: center;
     }
 
     .rte-body:empty::before {
