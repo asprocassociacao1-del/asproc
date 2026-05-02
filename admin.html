@@ -1476,25 +1476,23 @@
       text-overflow: ellipsis;
     }
 
-    /* Editor principal */
+    .ne-body {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 0;
+      height: calc(100vh - 56px);
+      overflow: hidden;
+    }
+
+    /* Editor principal — scroll aqui, não no rte-body */
     .ne-editor-panel {
       padding: 1.75rem 2rem;
       border-right: 1px solid var(--border);
       display: flex;
       flex-direction: column;
       gap: 1rem;
-      /* CRÍTICO: permite que o RTE cresça para preencher o espaço */
-      overflow: hidden;
-      min-height: 0;
-    }
-
-    .ne-body {
-      display: grid;
-      grid-template-columns: 1fr 300px;
-      gap: 0;
-      /* CRÍTICO: altura fixa para o body para que o scroll interno funcione */
-      height: calc(100vh - 56px);
-      overflow: hidden;
+      overflow-y: auto;
+      overflow-x: hidden;
     }
 
     /* O painel deve ser scrollável internamente */
@@ -1561,13 +1559,15 @@
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       overflow: hidden;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      min-height: 0;
-      /* CRÍTICO: impede que conteúdo interno vaze */
-      max-width: 100%;
+      /* Cresce com o conteúdo */
       width: 100%;
+      max-width: 100%;
+      transition: border-color var(--transition);
+    }
+
+    .rte-wrap:focus-within {
+      border-color: rgba(59, 130, 246, .4);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, .06);
     }
 
     .rte-toolbar {
@@ -1701,29 +1701,32 @@
     }
 
     .rte-body {
-      min-height: 500px;
-      max-height: 65vh;
-      overflow-y: auto;
-      padding: 1.5rem 2rem;
+      min-height: 420px;
+      /* Sem max-height nem overflow-y: auto — cresce dinamicamente com o conteúdo */
+      padding: 1.75rem 2.25rem;
       color: var(--text);
       font-size: 1rem;
-      line-height: 1.85;
+      line-height: 1.9;
       outline: none;
       background: var(--bg2);
-      /* CRÍTICO: impede qualquer texto de vazar para fora do container */
+      /* CRÍTICO: impede overflow horizontal */
       overflow-wrap: break-word;
       word-break: break-word;
       word-wrap: break-word;
       overflow-x: hidden;
-      white-space: pre-wrap;
-      /* Limitar largura como no site publicado */
       width: 100%;
       max-width: 100%;
       box-sizing: border-box;
+      /* Cursor de texto explícito */
+      cursor: text;
+      /* Transição suave no foco */
+      transition: background var(--transition);
     }
 
-    /* Quando o usuário usa contenteditable, pre-wrap pode causar problemas.
-       Usamos normal para o texto mas mantemos o break em palavras longas */
+    .rte-body:focus {
+      background: #111827;
+    }
+
     .rte-body[contenteditable] {
       white-space: normal;
     }
@@ -1733,6 +1736,8 @@
       color: var(--text-muted);
       pointer-events: none;
       display: block;
+      font-style: italic;
+      opacity: .5;
     }
 
     .rte-body h1,
@@ -1802,12 +1807,54 @@
       height: auto;
       border-radius: 8px;
       cursor: pointer;
-      transition: outline .15s;
+      transition: outline .15s, box-shadow .15s;
+      display: block;
+      margin: .75rem auto;
     }
 
     .rte-body img.rte-img-selected {
       outline: 2px solid var(--accent);
-      outline-offset: 2px;
+      outline-offset: 3px;
+      box-shadow: 0 0 0 5px rgba(59, 130, 246, .15);
+    }
+
+    /* Feedback visual ao arrastar imagem sobre o editor */
+    .rte-body.drag-over {
+      background: rgba(59, 130, 246, .05);
+      outline: 2px dashed var(--accent);
+      outline-offset: -4px;
+    }
+
+    /* Barra de status do editor */
+    .rte-status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .3rem .85rem;
+      background: var(--bg3);
+      border-top: 1px solid var(--border);
+      font-size: .7rem;
+      color: var(--text-muted);
+      flex-shrink: 0;
+      user-select: none;
+    }
+
+    .rte-status-bar .rte-shortcuts {
+      opacity: .55;
+      display: flex;
+      gap: .8rem;
+    }
+
+    .rte-status-bar kbd {
+      display: inline-flex;
+      align-items: center;
+      padding: .05rem .3rem;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      font-size: .65rem;
+      font-family: 'Inter', sans-serif;
+      color: var(--text-dim);
     }
 
     /* Imagens no editor */
@@ -2850,14 +2897,20 @@
           </div>
           <div id="n-rte-body" class="rte-body" contenteditable="true"
             oninput="syncRteToHidden(); updatePreview(); updateWordCount();" oncontextmenu="nContextMenu(event)"
-            onpaste="rteHandlePaste(event,'n')" ondrop="rteHandleDrop(event,'n')" ondragover="event.preventDefault()"
-            onkeyup="updateRteToolbarState(); updateWordCount();" onmouseup="updateRteToolbarState();">
+            onpaste="rteHandlePaste(event,'n')" ondrop="this.classList.remove('drag-over'); rteHandleDrop(event,'n')"
+            ondragover="event.preventDefault(); this.classList.add('drag-over')"
+            ondragleave="this.classList.remove('drag-over')" onkeyup="updateRteToolbarState(); updateWordCount();"
+            onmouseup="updateRteToolbarState();">
           </div>
           <!-- Barra de status do editor -->
-          <div
-            style="display:flex;align-items:center;justify-content:space-between;padding:.35rem .85rem;background:var(--bg3);border-top:1px solid var(--border);font-size:.72rem;color:var(--text-muted);flex-shrink:0;">
+          <div class="rte-status-bar">
             <span id="rte-word-count">0 palavras · 0 caracteres</span>
-            <span style="opacity:.6;">Ctrl+B negrito · Ctrl+I itálico · Ctrl+Z desfazer</span>
+            <span class="rte-shortcuts">
+              <span><kbd>Ctrl+B</kbd> negrito</span>
+              <span><kbd>Ctrl+I</kbd> itálico</span>
+              <span><kbd>Ctrl+Z</kbd> desfazer</span>
+              <span><kbd>Ctrl+V</kbd> cola imagem</span>
+            </span>
           </div>
         </div>
         <textarea id="n-conteudo" style="display:none;"></textarea>
@@ -5655,7 +5708,10 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
       function openNewsEditor() {
         document.getElementById('news-editor-overlay').style.display = 'flex';
         document.body.style.overflow = 'hidden';
-        setTimeout(() => document.getElementById('n-titulo').focus(), 100);
+        setTimeout(() => {
+          document.getElementById('n-titulo').focus();
+          rteSetupSelectionTracking();
+        }, 100);
       }
 
       function closeNewsEditor() {
@@ -5829,11 +5885,45 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
       }
 
       /* ── RTE ── */
+      // ══════════════════════════════════════════
+      //  GERENCIAMENTO DE SELEÇÃO — EDITOR PRINCIPAL (n)
+      //  Problema: ao clicar em botão/select da toolbar,
+      //  o foco sai do editor e a seleção é perdida.
+      //  Solução: salvar o Range antes do blur e restaurar
+      //  antes de executar qualquer comando.
+      // ══════════════════════════════════════════
       let savedRange = null;
+      let _rteHasFocus = false;
+
+      // Monitora quando o editor perde foco para salvar a seleção
+      function rteSetupSelectionTracking() {
+        const body = document.getElementById('n-rte-body');
+        if (!body) return;
+
+        // Salva seleção toda vez que muda (mouseup, keyup, selectionchange)
+        document.addEventListener('selectionchange', () => {
+          const sel = window.getSelection();
+          if (!sel || sel.rangeCount === 0) return;
+          const range = sel.getRangeAt(0);
+          // Só salva se a seleção está dentro do editor
+          if (body.contains(range.commonAncestorContainer)) {
+            savedRange = range.cloneRange();
+          }
+        });
+
+        body.addEventListener('focus', () => { _rteHasFocus = true; });
+        body.addEventListener('blur', () => { _rteHasFocus = false; });
+      }
 
       function rteSaveSelection() {
         const sel = window.getSelection();
-        if (sel && sel.rangeCount > 0) savedRange = sel.getRangeAt(0).cloneRange();
+        if (sel && sel.rangeCount > 0) {
+          const body = document.getElementById('n-rte-body');
+          const range = sel.getRangeAt(0);
+          if (body && body.contains(range.commonAncestorContainer)) {
+            savedRange = range.cloneRange();
+          }
+        }
       }
 
       function rteRestoreSelection() {
@@ -5850,6 +5940,7 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         rteRestoreSelection();
         document.execCommand(cmd, false, val || null);
         syncRteToHidden();
+        updateWordCount();
       }
 
       function rteBlock(tag) {
@@ -5865,9 +5956,20 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         rteRestoreSelection();
         const sel = window.getSelection();
         if (sel && sel.rangeCount > 0 && !sel.isCollapsed) {
-          const span = document.createElement('span');
-          span.style.fontSize = px + 'px';
-          sel.getRangeAt(0).surroundContents(span);
+          const range = sel.getRangeAt(0);
+          try {
+            const span = document.createElement('span');
+            span.style.fontSize = px + 'px';
+            range.surroundContents(span);
+          } catch (e) {
+            // surroundContents falha se seleção cruza nós — usa execCommand como fallback
+            document.execCommand('fontSize', false, '7');
+            const body = document.getElementById('n-rte-body');
+            body.querySelectorAll('font[size="7"]').forEach(f => {
+              f.removeAttribute('size');
+              f.style.fontSize = px + 'px';
+            });
+          }
         }
         syncRteToHidden();
       }
@@ -5956,48 +6058,84 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
 
       /** Handler de paste — captura imagens coladas da área de transferência */
       async function rteHandlePaste(event, editorId) {
-        const items = event.clipboardData && event.clipboardData.items;
-        if (!items) return;
-        for (const item of items) {
-          if (item.type.startsWith('image/')) {
-            event.preventDefault();
-            const file = item.getAsFile();
-            if (!file) continue;
-            const validation = await validateImageFile(file, 5);
-            if (!validation.ok) { toast('❌ ' + validation.error, 'error'); return; }
-            const blob = await resizeImageFile(file, 1200, 0.88);
-            const reader = new FileReader();
-            reader.onload = e => {
-              rteInjectImage(editorId, e.target.result, 'imagem-colada');
-              toast('🖼️ Imagem colada no editor!', 'success');
-            };
-            reader.readAsDataURL(blob);
-            return; // só a primeira imagem
+        const cd = event.clipboardData;
+        if (!cd) return;
+        const items = cd.items;
+
+        // 1) Imagem como arquivo binário (print screen, copiar arquivo)
+        if (items) {
+          for (const item of items) {
+            if (item.type.startsWith('image/')) {
+              event.preventDefault();
+              const file = item.getAsFile();
+              if (!file) continue;
+              const validation = await validateImageFile(file, 5);
+              if (!validation.ok) { toast('❌ ' + validation.error, 'error'); return; }
+              const blob = await resizeImageFile(file, 1200, 0.88);
+              const reader = new FileReader();
+              reader.onload = e => {
+                rteInjectImage(editorId, e.target.result, 'imagem-colada');
+                toast('🖼️ Imagem colada no editor!', 'success');
+              };
+              reader.readAsDataURL(blob);
+              return;
+            }
           }
         }
-        // Para texto HTML colado, limpar estilos problemáticos (white-space, etc.)
-        const htmlData = event.clipboardData.getData('text/html');
+
+        // 2) Imagem copiada da internet (vem como text/html com <img src="...">)
+        const htmlData = cd.getData('text/html');
         if (htmlData) {
-          event.preventDefault();
-          // Cria um elemento temporário para sanitizar o HTML
           const tmp = document.createElement('div');
           tmp.innerHTML = htmlData;
-          // Remove atributos style que causam overflow
+          const imgs = tmp.querySelectorAll('img');
+
+          // Se o HTML colado contém APENAS imagem(ns) e nenhum texto relevante
+          const textContent = tmp.innerText || tmp.textContent || '';
+          if (imgs.length > 0 && textContent.trim().length < 10) {
+            event.preventDefault();
+            for (const img of imgs) {
+              const src = img.src || img.getAttribute('src');
+              if (!src) continue;
+
+              // Tenta carregar a imagem como blob para fazer proxy local (evita CORS no editor)
+              try {
+                const res = await fetch(src, { mode: 'no-cors' });
+                // no-cors não deixa ler o body, mas pelo menos tenta
+              } catch (_) { }
+
+              // Insere direto via URL (funciona na maioria dos casos)
+              rteInjectImage(editorId, src, img.alt || 'imagem');
+              toast('🖼️ Imagem da internet inserida!', 'success');
+            }
+            return;
+          }
+
+          // 3) HTML misto (texto + formatação) — limpa estilos problemáticos
+          event.preventDefault();
           tmp.querySelectorAll('[style]').forEach(el => {
             const style = el.getAttribute('style');
-            // Remove apenas as propriedades problemáticas
             const cleaned = style
               .replace(/white-space\s*:[^;]+;?/gi, '')
               .replace(/overflow\s*:[^;]+;?/gi, '')
-              .replace(/width\s*:\s*\d+px[^;]*;?/gi, '');
+              .replace(/width\s*:\s*\d+px[^;]*;?/gi, '')
+              .replace(/font-size\s*:\s*(?:x-small|small|large|x-large|xx-large|smaller|larger)[^;]*;?/gi, '');
             if (cleaned.trim()) el.setAttribute('style', cleaned);
             else el.removeAttribute('style');
           });
-          // Insere o HTML limpo
-          document.execCommand('insertHTML', false, tmp.innerHTML);
+          // Remove tags problemáticas mas mantém conteúdo
+          tmp.querySelectorAll('meta, script, style, link').forEach(el => el.remove());
+
+          const map = RTE_MAP[editorId];
+          if (map) {
+            map.focus();
+            document.execCommand('insertHTML', false, tmp.innerHTML);
+            map.sync();
+          }
           return;
         }
-        // Não é imagem nem HTML — deixa o paste normal acontecer (texto simples)
+
+        // 4) Texto puro — deixa o comportamento padrão
       }
       window.rteHandlePaste = rteHandlePaste;
 
@@ -6222,8 +6360,41 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
       }
 
       function updateRteToolbarState() {
-        const cmds = { bold: 'bold', italic: 'italic', underline: 'underline' };
-        // Minimal toolbar state update
+        // Atualiza estado visual dos botões com base nos comandos ativos
+        const toolbar = document.getElementById('rte-toolbar');
+        if (!toolbar) return;
+
+        const commands = [
+          { cmd: 'bold', selector: '[onclick="rteExec(\'bold\')"]' },
+          { cmd: 'italic', selector: '[onclick="rteExec(\'italic\')"]' },
+          { cmd: 'underline', selector: '[onclick="rteExec(\'underline\')"]' },
+          { cmd: 'strikeThrough', selector: '[onclick="rteExec(\'strikeThrough\')"]' },
+          { cmd: 'justifyLeft', selector: '[onclick="rteExec(\'justifyLeft\')"]' },
+          { cmd: 'justifyCenter', selector: '[onclick="rteExec(\'justifyCenter\')"]' },
+          { cmd: 'justifyRight', selector: '[onclick="rteExec(\'justifyRight\')"]' },
+          { cmd: 'justifyFull', selector: '[onclick="rteExec(\'justifyFull\')"]' },
+          { cmd: 'insertUnorderedList', selector: '[onclick="rteExec(\'insertUnorderedList\')"]' },
+          { cmd: 'insertOrderedList', selector: '[onclick="rteExec(\'insertOrderedList\')"]' },
+        ];
+
+        commands.forEach(({ cmd, selector }) => {
+          try {
+            const btn = toolbar.querySelector(selector);
+            if (!btn) return;
+            const active = document.queryCommandState(cmd);
+            btn.classList.toggle('active', active);
+          } catch (_) { }
+        });
+
+        // Atualiza o select de bloco com base no nó atual
+        try {
+          const blockSel = document.getElementById('rte-block');
+          if (blockSel) {
+            const val = document.queryCommandValue('formatBlock').toLowerCase().replace(/^<|>$/g, '');
+            const map = { h1: 'h1', h2: 'h2', h3: 'h3', h4: 'h4', blockquote: 'blockquote', pre: 'pre', p: 'p', div: 'p', '': 'p' };
+            blockSel.value = map[val] || 'p';
+          }
+        } catch (_) { }
       }
 
       /* ══════════════════════════════════════════
@@ -8779,6 +8950,7 @@ document.addEventListener('DOMContentLoaded',function(){
       window.copySnippet = copySnippet;
       window.rteExec = rteExec;
       window.updateWordCount = updateWordCount;
+      window.rteSetupSelectionTracking = rteSetupSelectionTracking;
       window.rteInsertLink = rteInsertLink;
       window.rteConfirmLink = rteConfirmLink;
       window.rteClearFormat = rteClearFormat;
@@ -8793,6 +8965,10 @@ document.addEventListener('DOMContentLoaded',function(){
       window.aiAutoFormat = aiAutoFormat;
       window.uploadCapaImagem = uploadCapaImagem;
       window.removerCapaImagem = removerCapaImagem;
+
+      // Inicializa rastreamento de seleção imediatamente
+      // (o editor pode ser aberto sem passar por openNewsEditor em alguns fluxos)
+      rteSetupSelectionTracking();
 
     }); // DOMContentLoaded
   </script>
