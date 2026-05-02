@@ -1328,85 +1328,6 @@
       color: var(--amber);
     }
 
-    /* ── RBAC — elementos ocultos por permissão ── */
-    .rbac-hidden {
-      display: none !important;
-    }
-
-    .rbac-disabled {
-      opacity: .38;
-      pointer-events: none;
-      cursor: not-allowed;
-    }
-
-    .role-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: .3rem;
-      font-size: .68rem;
-      font-weight: 700;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      padding: .18rem .55rem;
-      border-radius: 99px;
-      margin-top: .15rem;
-    }
-
-    .role-badge.admin {
-      background: rgba(139, 92, 246, .18);
-      color: #a78bfa;
-      border: 1px solid rgba(139, 92, 246, .25);
-    }
-
-    .role-badge.editor {
-      background: rgba(59, 130, 246, .15);
-      color: #60a5fa;
-      border: 1px solid rgba(59, 130, 246, .22);
-    }
-
-    .role-badge.viewer {
-      background: rgba(107, 114, 128, .15);
-      color: #9ca3af;
-      border: 1px solid rgba(107, 114, 128, .2);
-    }
-
-    .access-denied-banner {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, .72);
-      backdrop-filter: blur(6px);
-      z-index: 9998;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .access-denied-box {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 2rem;
-      max-width: 380px;
-      text-align: center;
-    }
-
-    .access-denied-box .ad-icon {
-      font-size: 2rem;
-      margin-bottom: .75rem;
-    }
-
-    .access-denied-box h3 {
-      font-size: 1rem;
-      font-weight: 600;
-      margin-bottom: .5rem;
-    }
-
-    .access-denied-box p {
-      font-size: .84rem;
-      color: var(--text-muted);
-      line-height: 1.55;
-    }
-
     .toast.loading {
       background: #0d1b2e;
       border: 1px solid rgba(59, 130, 246, .3);
@@ -2129,21 +2050,21 @@
         </div>
 
         <div class="nav-group-label">Candidatos</div>
-        <div class="nav-item" id="nav-candidaturas" data-min-role="editor" onclick="goTo('candidaturas',this)">
+        <div class="nav-item" onclick="goTo('candidaturas',this)">
           <span class="nav-icon">📋</span> Candidaturas
           <span class="nav-badge alert" id="badge-cand">–</span>
         </div>
 
         <div class="nav-group-label">Personalização</div>
-        <div class="nav-item" id="nav-logomarca" data-min-role="admin" onclick="goTo('logomarca',this)">
+        <div class="nav-item" onclick="goTo('logomarca',this)">
           <span class="nav-icon">🖼️</span> Logomarca
         </div>
-        <div class="nav-item" id="nav-textos" data-min-role="admin" onclick="goTo('textos',this)">
+        <div class="nav-item" onclick="goTo('textos',this)">
           <span class="nav-icon">✏️</span> Textos do Site
         </div>
 
         <div class="nav-group-label">Sistema</div>
-        <div class="nav-item" id="nav-configuracoes" data-min-role="admin" onclick="goTo('configuracoes',this)">
+        <div class="nav-item" onclick="goTo('configuracoes',this)">
           <span class="nav-icon">⚙️</span> Configurações
         </div>
       </nav>
@@ -2153,7 +2074,7 @@
           <div class="user-avatar" id="user-avatar">A</div>
           <div class="user-info">
             <strong id="user-name">Admin</strong>
-            <span id="user-role-label">–</span>
+            <span>Administrador</span>
           </div>
         </div>
         <button class="btn-logout" onclick="doLogout()">Sair da conta</button>
@@ -2169,8 +2090,7 @@
           <p id="topbar-sub">Visão geral do conteúdo publicado</p>
         </div>
         <div class="topbar-actions">
-          <button class="btn btn-primary btn-sm" id="topbar-action-btn" data-rbac-write="editor" style="display:none;">+
-            Novo</button>
+          <button class="btn btn-primary btn-sm" id="topbar-action-btn" style="display:none;">+ Novo</button>
           <a href="index.html" target="_blank" class="btn btn-secondary btn-sm">↗ Ver Site</a>
         </div>
       </div>
@@ -2262,8 +2182,7 @@
                 <option value="geral">Geral</option>
               </select>
               <button class="btn btn-primary btn-sm" onclick="openNewsEditorNew()">+ Nova notícia</button>
-              <button class="btn btn-amber btn-sm" data-rbac-write="admin" onclick="republishAllNoticias()"
-                id="btn-republish-all"
+              <button class="btn btn-amber btn-sm" onclick="republishAllNoticias()" id="btn-republish-all"
                 title="Regera e republica TODAS as páginas de notícias no GitHub com o template atual">🔄 Republicar
                 Todas</button>
             </div>
@@ -2438,8 +2357,7 @@
               📂 Pasta: <strong>/noticias/</strong>
             </div>
             <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
-              <button id="btn-save-gh-token" class="btn btn-success btn-sm" data-rbac-write="admin"
-                onclick="saveGithubToken()">Salvar
+              <button id="btn-save-gh-token" class="btn btn-success btn-sm" onclick="saveGithubToken()">Salvar
                 Token</button>
               <button class="btn btn-secondary btn-sm" onclick="testGithubConnection()">Testar conexão</button>
               <button class="btn btn-danger btn-sm" onclick="removeGithubToken()"
@@ -2462,8 +2380,7 @@
                   placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."></div>
             </div>
             <div style="display:flex;gap:.5rem;margin-top:.75rem;">
-              <button class="btn btn-primary btn-sm" data-rbac-write="admin" onclick="saveConfig()">Salvar
-                configuração</button>
+              <button class="btn btn-primary btn-sm" onclick="saveConfig()">Salvar configuração</button>
               <button class="btn btn-secondary btn-sm" onclick="testConnection()">Testar conexão</button>
             </div>
           </div>
@@ -2527,8 +2444,7 @@
                 </div>
               </div>
               <div style="display:flex;gap:.5rem;">
-                <button class="btn btn-success btn-sm" id="btn-upload-logo" data-rbac-write="admin"
-                  onclick="uploadLogo()">⬆ Enviar
+                <button class="btn btn-success btn-sm" id="btn-upload-logo" onclick="uploadLogo()">⬆ Enviar
                   logomarca</button>
                 <button class="btn btn-secondary btn-sm" onclick="logoCancelSelection()">Cancelar</button>
               </div>
@@ -2572,8 +2488,7 @@
                   <button class="btn btn-secondary btn-sm textos-lang-tab"
                     onclick="switchTextosLang('es',this)">&#x1F1EA;&#x1F1F8; ES</button>
                 </div>
-                <button class="btn btn-primary btn-sm" data-rbac-write="admin" onclick="salvarTextos()"
-                  id="btn-salvar-textos">&#x1F4BE; Salvar
+                <button class="btn btn-primary btn-sm" onclick="salvarTextos()" id="btn-salvar-textos">&#x1F4BE; Salvar
                   tudo</button>
                 <button class="btn btn-secondary btn-sm" onclick="resetarTextos()"
                   title="Restaurar padroes deste idioma">&#x21BA; Restaurar</button>
@@ -2609,11 +2524,9 @@
       <button class="btn btn-secondary btn-sm" onclick="downloadNoticiaPage()">⬇ Baixar</button>
       <button class="btn btn-amber btn-sm" id="btn-ai-format" onclick="aiAutoFormat()"
         title="Formata o conteúdo automaticamente com IA">✨ Auto-formatar</button>
-      <button class="btn btn-success btn-sm" id="btn-gh-publish" data-rbac-write="admin" onclick="publishToGithub()">🚀
-        Publicar no
+      <button class="btn btn-success btn-sm" id="btn-gh-publish" onclick="publishToGithub()">🚀 Publicar no
         site</button>
-      <button class="btn btn-primary btn-sm" id="btn-save-noticia" data-rbac-write="editor" onclick="saveNoticia()">💾
-        Salvar</button>
+      <button class="btn btn-primary btn-sm" id="btn-save-noticia" onclick="saveNoticia()">💾 Salvar</button>
     </div>
 
     <div class="ne-body">
@@ -2898,11 +2811,9 @@
     <div class="ne-topbar">
       <button class="btn btn-secondary btn-sm" onclick="closeVagaEditor()">← Voltar</button>
       <span class="ne-topbar-title" id="ve-topbar-title">Nova Vaga</span>
-      <button class="btn btn-secondary btn-sm" id="btn-save-vaga-draft" onclick="saveVaga(false)"
-        data-rbac-write="editor">💾 Salvar
+      <button class="btn btn-secondary btn-sm" id="btn-save-vaga-draft" onclick="saveVaga(false)">💾 Salvar
         rascunho</button>
-      <button class="btn btn-primary btn-sm" id="btn-save-vaga-pub" onclick="saveVaga(true)" data-rbac-write="editor">🌐
-        Publicar</button>
+      <button class="btn btn-primary btn-sm" id="btn-save-vaga-pub" onclick="saveVaga(true)">🌐 Publicar</button>
     </div>
 
     <div class="ne-body">
@@ -3211,11 +3122,9 @@
     <div class="ne-topbar">
       <button class="btn btn-secondary btn-sm" onclick="closeAvisoEditor()">← Voltar</button>
       <span class="ne-topbar-title" id="ae-topbar-title">Novo Aviso</span>
-      <button class="btn btn-secondary btn-sm" id="btn-save-aviso-draft" onclick="saveAviso(false)"
-        data-rbac-write="editor">💾 Salvar
+      <button class="btn btn-secondary btn-sm" id="btn-save-aviso-draft" onclick="saveAviso(false)">💾 Salvar
         rascunho</button>
-      <button class="btn btn-primary btn-sm" id="btn-save-aviso-pub" onclick="saveAviso(true)"
-        data-rbac-write="editor">🌐 Publicar</button>
+      <button class="btn btn-primary btn-sm" id="btn-save-aviso-pub" onclick="saveAviso(true)">🌐 Publicar</button>
     </div>
 
     <div class="ne-body">
@@ -3551,15 +3460,13 @@
       <div class="modal-body" id="cand-detail-body" style="padding:0;overflow-y:auto;max-height:65vh"></div>
       <div class="modal-footer" style="justify-content:space-between;flex-wrap:wrap;gap:.5rem">
         <div style="display:flex;gap:.5rem">
-          <button class="btn btn-secondary btn-sm" id="cand-em-analise-btn" data-rbac-write="editor">🔍 Em
-            análise</button>
-          <button class="btn btn-danger btn-sm" id="cand-excluir-btn" data-rbac-write="editor"
-            style="border-color:rgba(239,68,68,.4)">🗑
+          <button class="btn btn-secondary btn-sm" id="cand-em-analise-btn">🔍 Em análise</button>
+          <button class="btn btn-danger btn-sm" id="cand-excluir-btn" style="border-color:rgba(239,68,68,.4)">🗑
             Excluir</button>
         </div>
         <div style="display:flex;gap:.5rem">
-          <button class="btn btn-danger btn-sm" id="cand-reprovar-btn" data-rbac-write="editor">❌ Reprovar</button>
-          <button class="btn btn-success btn-sm" id="cand-aprovar-btn" data-rbac-write="editor">✅ Aprovar</button>
+          <button class="btn btn-danger btn-sm" id="cand-reprovar-btn">❌ Reprovar</button>
+          <button class="btn btn-success btn-sm" id="cand-aprovar-btn">✅ Aprovar</button>
         </div>
       </div>
     </div>
@@ -3725,91 +3632,6 @@
         };
       })();
 
-      /* ══════════════════════════════════════════
-         RBAC — Role-Based Access Control
-         ─────────────────────────────────────────
-         Role é lido de user_metadata.role no JWT
-         do Supabase Auth. Para definir o role de
-         um usuário: Supabase Dashboard →
-         Authentication → Users → editar usuário
-         → Raw user meta data → { "role": "editor" }
-
-         Hierarquia: admin > editor > viewer
-         Sem role definido = viewer (mais seguro)
-      ══════════════════════════════════════════ */
-      const ROLES = { admin: 3, editor: 2, viewer: 1 };
-      const ROLE_LABELS = {
-        admin: { label: 'Administrador', css: 'admin' },
-        editor: { label: 'Editor', css: 'editor' },
-        viewer: { label: 'Visualizador', css: 'viewer' },
-      };
-
-      // Seções permitidas por role mínimo
-      const SECTION_MIN_ROLE = {
-        dashboard: 'viewer',
-        noticias: 'viewer',
-        vagas: 'viewer',
-        avisos: 'viewer',
-        candidaturas: 'editor',
-        logomarca: 'admin',
-        textos: 'admin',
-        configuracoes: 'admin',
-      };
-
-      const RBACManager = (() => {
-        let _role = 'viewer'; // default mais restritivo
-
-        return {
-          /** Inicializa com o objeto user retornado pelo Supabase */
-          init(user) {
-            const raw = user?.user_metadata?.role
-              || user?.app_metadata?.role
-              || 'viewer';
-            _role = ROLES[raw] ? raw : 'viewer';
-          },
-
-          getRole() { return _role; },
-
-          /** Verifica se o role atual tem permissão mínima */
-          can(minRole) {
-            return (ROLES[_role] || 0) >= (ROLES[minRole] || 99);
-          },
-
-          /** Exibe o badge de role no sidebar */
-          renderBadge() {
-            const el = document.getElementById('user-role-label');
-            if (!el) return;
-            const info = ROLE_LABELS[_role] || ROLE_LABELS.viewer;
-            el.innerHTML = `<span class="role-badge ${info.css}">${info.label}</span>`;
-          },
-
-          /** Oculta/exibe itens de nav e botões por data-min-role */
-          applyToDOM() {
-            // Nav items
-            document.querySelectorAll('[data-min-role]').forEach(el => {
-              const min = el.getAttribute('data-min-role');
-              el.classList.toggle('rbac-hidden', !RBACManager.can(min));
-            });
-
-            // Botões de escrita (data-rbac-write)
-            document.querySelectorAll('[data-rbac-write]').forEach(el => {
-              const min = el.getAttribute('data-rbac-write') || 'editor';
-              if (!RBACManager.can(min)) {
-                el.classList.add('rbac-hidden');
-              }
-            });
-          },
-
-          /** Guard para funções write — lança erro se não autorizado */
-          guard(minRole = 'editor', label = 'esta ação') {
-            if (!RBACManager.can(minRole)) {
-              toast(`🔒 Sem permissão para ${label}. Role necessário: ${minRole}.`, 'error');
-              throw new Error(`RBAC: role '${_role}' não tem permissão para '${label}' (mínimo: ${minRole})`);
-            }
-          },
-        };
-      })();
-
       let currentUser = null, currentSection = 'dashboard', editingId = {};
 
       async function doLogin() {
@@ -3833,7 +3655,6 @@
           if (!res.ok) throw new Error(data.error_description || data.msg || 'Credenciais inválidas');
           currentUser = data.user;
           AuthStore.set(data.access_token, data.refresh_token, data.user);
-          RBACManager.init(data.user);
           showApp(data.user);
         } catch (e) {
           err.textContent = e.message; err.classList.add('show');
@@ -3846,9 +3667,6 @@
         const name = user.email.split('@')[0];
         document.getElementById('user-name').textContent = name;
         document.getElementById('user-avatar').textContent = name[0].toUpperCase();
-        // Aplica role badge e restrições de DOM antes de carregar o app
-        RBACManager.renderBadge();
-        RBACManager.applyToDOM();
         initApp();
       }
 
@@ -3905,7 +3723,6 @@
           const refreshed = await refreshToken();
           if (refreshed) {
             currentUser = AuthStore.getUser();
-            RBACManager.init(currentUser);
             showApp(currentUser);
             return;
           }
@@ -3969,28 +3786,6 @@
       };
 
       function goTo(section, el) {
-        // Guard RBAC: verifica se o role atual pode acessar esta seção
-        const minRole = SECTION_MIN_ROLE[section] || 'viewer';
-        if (!RBACManager.can(minRole)) {
-          // Mostra banner de acesso negado ao invés de navegar
-          const existing = document.getElementById('access-denied-banner');
-          if (existing) existing.remove();
-          const banner = document.createElement('div');
-          banner.id = 'access-denied-banner';
-          banner.className = 'access-denied-banner';
-          banner.innerHTML = `
-            <div class="access-denied-box">
-              <div class="ad-icon">🔒</div>
-              <h3>Acesso restrito</h3>
-              <p>A seção <strong>${section}</strong> requer o perfil <strong>${minRole}</strong>.<br>
-                 Seu perfil atual é <strong>${RBACManager.getRole()}</strong>.<br>
-                 Solicite ao administrador que altere suas permissões no Supabase.</p>
-              <button class="btn btn-secondary btn-sm" style="margin-top:1rem;"
-                onclick="document.getElementById('access-denied-banner').remove()">Fechar</button>
-            </div>`;
-          document.body.appendChild(banner);
-          return; // não navega
-        }
         if (section === 'textos') {
           const camposEl = document.getElementById('textos-campos');
           if (!camposEl || !camposEl.innerHTML.trim()) setTimeout(loadTextos, 80);
@@ -4050,7 +3845,6 @@
       }
 
       function saveConfig() {
-        RBACManager.guard('admin', 'salvar configurações');
         const url = document.getElementById('cfg-url').value.trim();
         const key = document.getElementById('cfg-key').value.trim();
         if (!url.startsWith('https://') || key.length < 20) {
@@ -4152,8 +3946,8 @@
         <td>${n.destaque ? '<span class="badge badge-amber">Destaque</span>' : '<span style="color:var(--text-muted);font-size:.8rem">—</span>'}</td>
         <td class="td-actions">
           ${n.url_externa ? `<a href="${escHtml(n.url_externa)}" target="_blank" class="btn btn-secondary btn-xs">↗</a>` : ''}
-          ${RBACManager.can('editor') ? `<button class="btn btn-secondary btn-xs" data-idx="${idx}" data-action="edit">Editar</button>` : ''}
-          ${RBACManager.can('editor') ? `<button class="btn btn-danger btn-xs" data-idx="${idx}" data-action="delete">Excluir</button>` : ''}
+          <button class="btn btn-secondary btn-xs" data-idx="${idx}" data-action="edit">Editar</button>
+          <button class="btn btn-danger btn-xs" data-idx="${idx}" data-action="delete">Excluir</button>
         </td>
       </tr>`).join('');
 
@@ -4203,7 +3997,6 @@
       }
 
       async function saveNoticia() {
-        RBACManager.guard('editor', 'salvar notícias');
         syncRteToHidden();
         const data = getNoticiaData();
         const urlExterna = document.getElementById('n-url').value.trim() || null;
@@ -4246,8 +4039,8 @@
         <td style="white-space:nowrap;font-size:.8rem;">${v.prazo ? fmtDate(v.prazo) : '—'}</td>
         <td>${statusBadge(v.status)}</td>
         <td class="td-actions">
-          ${RBACManager.can('editor') ? `<button class="btn btn-secondary btn-xs" data-idx="${idx}" data-action="edit">Editar</button>` : ''}
-          ${RBACManager.can('editor') ? `<button class="btn btn-danger btn-xs" data-idx="${idx}" data-action="delete">Excluir</button>` : ''}
+          <button class="btn btn-secondary btn-xs" data-idx="${idx}" data-action="edit">Editar</button>
+          <button class="btn btn-danger btn-xs" data-idx="${idx}" data-action="delete">Excluir</button>
         </td>
       </tr>`).join('');
         tbody._renderedList = list;
@@ -4289,7 +4082,6 @@
       }
 
       async function saveVaga(forcePublish) {
-        RBACManager.guard('editor', 'salvar vagas');
         const titulo = document.getElementById('v-titulo').value.trim();
         const descricao = document.getElementById('ve-rte-body').innerHTML.trim();
         if (!titulo) { toast('Preencha o título da vaga.', 'error'); return; }
@@ -4376,8 +4168,8 @@
         <td>${a.publicado ? '<span class="badge badge-green">Publicado</span>' : '<span class="badge badge-muted">Oculto</span>'}</td>
         <td class="td-actions">
           ${a.doc_url ? `<a href="${escHtml(a.doc_url)}" target="_blank" class="btn btn-secondary btn-xs">📄</a>` : ''}
-          ${RBACManager.can('editor') ? `<button class="btn btn-secondary btn-xs" data-idx="${idx}" data-action="edit">Editar</button>` : ''}
-          ${RBACManager.can('editor') ? `<button class="btn btn-danger btn-xs" data-idx="${idx}" data-action="delete">Excluir</button>` : ''}
+          <button class="btn btn-secondary btn-xs" data-idx="${idx}" data-action="edit">Editar</button>
+          <button class="btn btn-danger btn-xs" data-idx="${idx}" data-action="delete">Excluir</button>
         </td>
       </tr>`).join('');
         tbody._renderedList = list;
@@ -4448,7 +4240,6 @@
       }
 
       async function saveAviso(forcePublish) {
-        RBACManager.guard('editor', 'salvar avisos');
         const titulo = document.getElementById('a-titulo').value.trim();
         const descricao = document.getElementById('ae-rte-body').innerHTML.trim();
         if (!titulo || !descricao) { toast('Preencha título e conteúdo.', 'error'); return; }
@@ -4706,10 +4497,8 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         const file = input.files && input.files[0];
         if (!file) return;
 
-        const MAX = 10 * 1024 * 1024;
-        if (file.size > MAX) { toast('Imagem muito grande. Máximo 10 MB.', 'error'); input.value = ''; return; }
-        const TIPOS = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-        if (!TIPOS.includes(file.type)) { toast('Formato inválido. Use JPG, PNG ou WebP.', 'error'); input.value = ''; return; }
+        const validation = await validateImageFile(file, 5);
+        if (!validation.ok) { toast('❌ ' + validation.error, 'error'); input.value = ''; return; }
 
         const { url: sbUrl, key: sbKey } = getSupabase();
         if (!sbUrl || !sbKey) { toast('Supabase não configurado.', 'error'); return; }
@@ -4719,17 +4508,22 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         const msg = document.getElementById('ae-upload-progress-msg');
         const lbl = document.querySelector('label[for="a-capa-file"]');
         wrap.style.display = 'block';
-        bar.style.width = '15%';
+        bar.style.width = '10%';
         bar.style.background = 'var(--accent)';
         msg.style.color = 'var(--text-muted)';
-        msg.textContent = 'Enviando imagem…';
+        msg.textContent = 'Redimensionando…';
         if (lbl) { lbl.style.pointerEvents = 'none'; lbl.style.opacity = '.5'; }
 
         try {
+          const blob = await resizeImageFile(file, 1920, 0.88);
+          msg.textContent = 'Enviando imagem…';
+
           await ensureValidToken();
           const authToken = AuthStore.getToken() || sbKey;
 
-          const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z]/g, '') || 'jpg';
+          const outMime = blob.type || validation.detectedMime || 'image/webp';
+          const extMap = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' };
+          const ext = extMap[outMime] || 'webp';
           const nome = `capa-${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${ext}`;
           const path = `avisos/${nome}`;
           const BUCKET = 'imagens';
@@ -4741,10 +4535,10 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
             headers: {
               'apikey': sbKey,
               'Authorization': `Bearer ${authToken}`,
-              'Content-Type': file.type,
+              'Content-Type': outMime,
               'x-upsert': 'true'
             },
-            body: file
+            body: blob
           });
 
           bar.style.width = '90%';
@@ -4816,50 +4610,48 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         if (!files.length) return;
 
         const { url: sbUrl, key: sbKey } = getSupabase();
-        const hasSb = !!(sbUrl && sbKey);
+        if (!sbUrl || !sbKey) { toast('Configure o Supabase para enviar documentos.', 'error'); return; }
 
         for (const file of files) {
-          if (hasSb) {
-            try {
-              await ensureValidToken();
-              const authToken = AuthStore.getToken() || sbKey;
+          // Validação: extensão permitida + tamanho máximo 20 MB
+          const docVal = validateDocFile(file, 20);
+          if (!docVal.ok) { toast('❌ ' + docVal.error, 'error'); continue; }
 
-              const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z0-9]/g, '') || 'bin';
-              const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-              const path = `avisos/doc-${Date.now()}-${safeName}`;
-              const BUCKET = 'imagens';
+          try {
+            await ensureValidToken();
+            const authToken = AuthStore.getToken() || sbKey;
 
-              const res = await fetch(`${sbUrl}/storage/v1/object/${BUCKET}/${path}`, {
-                method: 'POST',
-                headers: {
-                  'apikey': sbKey,
-                  'Authorization': `Bearer ${authToken}`,
-                  'Content-Type': file.type || 'application/octet-stream',
-                  'x-upsert': 'true'
-                },
-                body: file
-              });
+            const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+            const path = `avisos/doc-${Date.now()}-${safeName}`;
+            const BUCKET = 'imagens';
+            const mimeType = DOC_ALLOWED[docVal.ext] || 'application/octet-stream';
 
-              if (!res.ok) {
-                const err = await res.json().catch(() => ({}));
-                const errMsg = err.message || err.error || `HTTP ${res.status}`;
-                if (res.status === 400 || res.status === 403) {
-                  throw new Error('Sem permissão para upload. Configure a política RLS do bucket "imagens" no Supabase: Storage → Policies → authenticated → ALL → true.');
-                }
-                throw new Error(errMsg);
+            const res = await fetch(`${sbUrl}/storage/v1/object/${BUCKET}/${path}`, {
+              method: 'POST',
+              headers: {
+                'apikey': sbKey,
+                'Authorization': `Bearer ${authToken}`,
+                'Content-Type': mimeType,
+                'x-upsert': 'true'
+              },
+              body: file
+            });
+
+            if (!res.ok) {
+              const err = await res.json().catch(() => ({}));
+              const errMsg = err.message || err.error || `HTTP ${res.status}`;
+              if (res.status === 400 || res.status === 403) {
+                throw new Error('Sem permissão para upload. Verifique as políticas RLS do bucket "imagens".');
               }
-
-              const publicUrl = `${sbUrl}/storage/v1/object/public/${BUCKET}/${path}`;
-              aeAnexos.push({ nome: file.name, url: publicUrl, tipo: ext });
-              toast(`📎 "${file.name}" enviado com sucesso!`, 'success');
-
-            } catch (e) {
-              toast(`❌ Erro ao enviar "${file.name}": ${e.message}`, 'error');
+              throw new Error(errMsg);
             }
-          } else {
-            // Sem Supabase configurado: avisa usuário
-            toast('Configure o Supabase para enviar documentos.', 'error');
-            break;
+
+            const publicUrl = `${sbUrl}/storage/v1/object/public/${BUCKET}/${path}`;
+            aeAnexos.push({ nome: file.name, url: publicUrl, tipo: docVal.ext });
+            toast(`📎 "${file.name}" enviado com sucesso!`, 'success');
+
+          } catch (e) {
+            toast(`❌ Erro ao enviar "${file.name}": ${e.message}`, 'error');
           }
         }
         aeRenderAnexos();
@@ -5172,7 +4964,6 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
       const _origCloseModal = window.closeModal;
 
       async function updateCandStatus(id, novoStatus) {
-        RBACManager.guard('editor', 'atualizar candidaturas');
         const btnMap = { aprovado: 'cand-aprovar-btn', reprovado: 'cand-reprovar-btn', em_analise: 'cand-em-analise-btn' };
         const labelMap = { aprovado: '⏳ Aprovando…', reprovado: '⏳ Reprovando…', em_analise: '⏳ Atualizando…' };
         await withBtn(btnMap[novoStatus], labelMap[novoStatus] || '⏳ Atualizando…', async () => {
@@ -5192,7 +4983,6 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
       }
 
       async function deleteCandidatura(id) {
-        RBACManager.guard('editor', 'excluir candidaturas');
         const ok = await confirmDialog({
           title: 'Excluir candidatura?',
           message: 'A candidatura e todos os dados do candidato serão removidos permanentemente.',
@@ -5220,7 +5010,6 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
          DELETE
       ══════════════════════════════════════════ */
       async function deleteItem(table, id, reloadFn) {
-        RBACManager.guard('editor', 'excluir itens');
         const labels = { noticias: 'notícia', vagas: 'vaga', avisos: 'aviso' };
         const label = labels[table] || 'item';
         const ok = await confirmDialog({
@@ -5398,6 +5187,154 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
       }
 
       /* ══════════════════════════════════════════
+         UPLOAD — VALIDAÇÃO E REDIMENSIONAMENTO
+         ─────────────────────────────────────────
+         validateFile(file, opts) → Promise<{ok, error}>
+           Verifica magic bytes reais (não só file.type),
+           MIME permitido e tamanho máximo.
+
+         resizeImageFile(file, maxPx, quality)
+           → Promise<Blob>
+           Redimensiona via canvas mantendo aspect ratio.
+           Máximo: 1920px no lado maior, qualidade 0.88.
+      ══════════════════════════════════════════ */
+
+      // Assinaturas de magic bytes dos tipos de imagem permitidos
+      const IMAGE_MAGIC = [
+        { mime: 'image/jpeg', bytes: [[0xFF, 0xD8, 0xFF]] },
+        { mime: 'image/png', bytes: [[0x89, 0x50, 0x4E, 0x47]] },
+        { mime: 'image/webp', bytes: [[0x52, 0x49, 0x46, 0x46]], extra: { offset: 8, seq: [0x57, 0x45, 0x42, 0x50] } },
+        { mime: 'image/gif', bytes: [[0x47, 0x49, 0x46, 0x38]] },
+      ];
+
+      // Extensões e MIMEs permitidos para documentos
+      const DOC_ALLOWED = {
+        'pdf': 'application/pdf',
+        'doc': 'application/msword',
+        'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'xls': 'application/vnd.ms-excel',
+        'xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'ppt': 'application/vnd.ms-powerpoint',
+        'pptx': 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      };
+
+      /**
+       * Lê os primeiros N bytes de um File via FileReader.
+       * @returns {Promise<Uint8Array>}
+       */
+      function readFileHeader(file, bytes = 12) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = e => resolve(new Uint8Array(e.target.result));
+          reader.onerror = () => reject(new Error('Não foi possível ler o arquivo'));
+          reader.readAsArrayBuffer(file.slice(0, bytes));
+        });
+      }
+
+      /**
+       * Verifica se o header real do arquivo corresponde a um MIME de imagem permitido.
+       * Retorna o MIME detectado ou null.
+       */
+      async function detectImageMime(file) {
+        const header = await readFileHeader(file, 12);
+        for (const sig of IMAGE_MAGIC) {
+          for (const pattern of sig.bytes) {
+            if (pattern.every((b, i) => header[i] === b)) {
+              // WebP precisa de verificação extra no offset 8
+              if (sig.extra) {
+                const { offset, seq } = sig.extra;
+                if (!seq.every((b, i) => header[offset + i] === b)) continue;
+              }
+              return sig.mime;
+            }
+          }
+        }
+        return null;
+      }
+
+      /**
+       * Valida um arquivo de imagem: magic bytes + tamanho.
+       * @param {File}   file
+       * @param {number} maxMB   Limite em MB (padrão: 5)
+       * @returns {Promise<{ok:boolean, error:string|null, detectedMime:string|null}>}
+       */
+      async function validateImageFile(file, maxMB = 5) {
+        const maxBytes = maxMB * 1024 * 1024;
+        if (file.size > maxBytes) {
+          return { ok: false, error: `Imagem muito grande. Máximo ${maxMB} MB (arquivo: ${(file.size / 1024 / 1024).toFixed(1)} MB).`, detectedMime: null };
+        }
+        const detectedMime = await detectImageMime(file);
+        if (!detectedMime) {
+          return { ok: false, error: 'Formato inválido. Envie uma imagem JPG, PNG, WebP ou GIF.', detectedMime: null };
+        }
+        return { ok: true, error: null, detectedMime };
+      }
+
+      /**
+       * Valida um arquivo de documento: extensão + tamanho.
+       * Documentos não têm verificação de magic bytes pois os formatos
+       * Office modernos (.docx/.xlsx) são ZIPs e a verificação seria ambígua.
+       * @param {File}   file
+       * @param {number} maxMB   Limite em MB (padrão: 20)
+       * @returns {{ok:boolean, error:string|null, ext:string|null}}
+       */
+      function validateDocFile(file, maxMB = 20) {
+        const maxBytes = maxMB * 1024 * 1024;
+        if (file.size > maxBytes) {
+          return { ok: false, error: `"${file.name}" excede o limite de ${maxMB} MB (${(file.size / 1024 / 1024).toFixed(1)} MB).`, ext: null };
+        }
+        const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z0-9]/g, '');
+        if (!DOC_ALLOWED[ext]) {
+          return { ok: false, error: `"${file.name}": formato não permitido (.${ext}). Use PDF, Word, Excel ou PowerPoint.`, ext: null };
+        }
+        return { ok: true, error: null, ext };
+      }
+
+      /**
+       * Redimensiona uma imagem via canvas, respeitando aspect ratio.
+       * Não amplia imagens menores que maxPx.
+       * @param {File}   file
+       * @param {number} maxPx    Lado máximo em pixels (padrão: 1920)
+       * @param {number} quality  Qualidade JPEG/WebP 0–1 (padrão: 0.88)
+       * @returns {Promise<Blob>}
+       */
+      function resizeImageFile(file, maxPx = 1920, quality = 0.88) {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          const url = URL.createObjectURL(file);
+          img.onload = () => {
+            URL.revokeObjectURL(url);
+            let { width: w, height: h } = img;
+            // Não amplia imagens já menores que o limite
+            if (w <= maxPx && h <= maxPx) {
+              // Retorna como blob sem recomprimir se já é PNG pequeno
+              if (file.type === 'image/png' && file.size < 200 * 1024) {
+                resolve(file);
+                return;
+              }
+            } else {
+              // Escala proporcional
+              if (w > h) { h = Math.round(h * maxPx / w); w = maxPx; }
+              else { w = Math.round(w * maxPx / h); h = maxPx; }
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = w; canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, w, h);
+            // GIF não tem suporte de animação em canvas — retorna original
+            if (file.type === 'image/gif') { resolve(file); return; }
+            const outMime = file.type === 'image/png' ? 'image/png' : 'image/webp';
+            canvas.toBlob(blob => {
+              if (!blob) { resolve(file); return; } // fallback para original
+              resolve(blob);
+            }, outMime, quality);
+          };
+          img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Não foi possível carregar a imagem para redimensionar')); };
+          img.src = url;
+        });
+      }
+
+      /* ══════════════════════════════════════════
          HELPERS UI
       ══════════════════════════════════════════ */
       function showLoading(section) {
@@ -5533,16 +5470,13 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         const file = input.files && input.files[0];
         if (!file) return;
 
-        // Validações
-        const MAX = 10 * 1024 * 1024;
-        if (file.size > MAX) { toast('Imagem muito grande. Máximo 10 MB.', 'error'); input.value = ''; return; }
-        const TIPOS = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-        if (!TIPOS.includes(file.type)) { toast('Formato inválido. Use JPG, PNG ou WebP.', 'error'); input.value = ''; return; }
+        // Validação com magic bytes + tamanho (máx 5 MB)
+        const validation = await validateImageFile(file, 5);
+        if (!validation.ok) { toast('❌ ' + validation.error, 'error'); input.value = ''; return; }
 
         const { url: sbUrl, key: sbKey } = getSupabase();
         if (!sbUrl || !sbKey) { toast('Supabase não configurado.', 'error'); return; }
 
-        // UI
         const wrap = document.getElementById('upload-progress-wrap');
         const bar = document.getElementById('upload-progress-bar');
         const msg = document.getElementById('upload-progress-msg');
@@ -5550,18 +5484,24 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         const aviso = document.getElementById('upload-bucket-aviso');
         if (aviso) aviso.style.display = 'none';
         wrap.style.display = 'block';
-        bar.style.width = '15%';
+        bar.style.width = '10%';
         bar.style.background = 'var(--accent)';
         msg.style.color = 'var(--text-muted)';
-        msg.textContent = 'Enviando imagem…';
+        msg.textContent = 'Redimensionando…';
         lbl.style.pointerEvents = 'none';
         lbl.style.opacity = '.5';
 
         try {
+          // Redimensiona antes de enviar (máx 1920px, qualidade 0.88)
+          const blob = await resizeImageFile(file, 1920, 0.88);
+          msg.textContent = 'Enviando imagem…';
+
           await ensureValidToken();
           const authToken = AuthStore.getToken() || sbKey;
 
-          const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z]/g, '') || 'jpg';
+          const outMime = blob.type || validation.detectedMime || 'image/webp';
+          const extMap = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' };
+          const ext = extMap[outMime] || 'webp';
           const nome = `capa-${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${ext}`;
           const path = `noticias/${nome}`;
           const BUCKET = 'imagens';
@@ -5573,10 +5513,10 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
             headers: {
               'apikey': sbKey,
               'Authorization': `Bearer ${authToken}`,
-              'Content-Type': file.type,
+              'Content-Type': outMime,
               'x-upsert': 'true'
             },
-            body: file
+            body: blob
           });
 
           bar.style.width = '90%';
@@ -6826,7 +6766,6 @@ document.addEventListener('DOMContentLoaded',function(){
 
       /* ── Salva token com criptografia AES-GCM ── */
       async function saveGithubToken() {
-        RBACManager.guard('admin', 'salvar token do GitHub');
         const raw = (document.getElementById('cfg-gh-token').value || '').trim();
         if (!raw) { toast('Cole o token antes de salvar.', 'error'); return; }
         if (!raw.startsWith('ghp_') && !raw.startsWith('github_pat_')) {
@@ -6922,7 +6861,6 @@ document.addEventListener('DOMContentLoaded',function(){
       }
 
       async function publishToGithub(dataOverride) {
-        RBACManager.guard('admin', 'publicar no GitHub');
         syncRteToHidden();
         const data = dataOverride || getNoticiaData();
         if (!data.titulo) { toast('Preencha o título antes de publicar.', 'error'); return; }
@@ -7339,7 +7277,6 @@ document.addEventListener('DOMContentLoaded',function(){
       }
 
       async function salvarTextos() {
-        RBACManager.guard('admin', 'salvar textos do site');
         const btn = document.getElementById('btn-salvar-textos');
         btn.disabled = true;
         btn.textContent = '⏳ Salvando…';
@@ -7401,7 +7338,6 @@ document.addEventListener('DOMContentLoaded',function(){
       AUTO-FORMATAÇÃO COM IA
       ══════════════════════════════════════════ */
       async function aiAutoFormat() {
-        RBACManager.guard('editor', 'formatar conteúdo com IA');
         const titulo = document.getElementById('n-titulo').value.trim();
         const resumo = document.getElementById('n-resumo').value.trim();
         const conteudoRaw = document.getElementById('n-rte-body').innerText.trim() ||
@@ -7704,13 +7640,9 @@ document.addEventListener('DOMContentLoaded',function(){
       async function veUploadCapa(input) {
         const file = input.files && input.files[0];
         if (!file) return;
-        const MAX = 10 * 1024 * 1024;
-        if (file.size > MAX) { toast('Imagem muito grande. Máximo 10 MB.', 'error'); input.value = ''; return; }
-        const TIPOS = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-        if (!TIPOS.includes(file.type)) {
-          toast('Formato inválido. Use JPG, PNG ou WebP.', 'error'); input.value =
-            ''; return;
-        }
+
+        const validation = await validateImageFile(file, 5);
+        if (!validation.ok) { toast('❌ ' + validation.error, 'error'); input.value = ''; return; }
 
         const { url: sbUrl, key: sbKey } = getSupabase();
         if (!sbUrl || !sbKey) { toast('Supabase não configurado.', 'error'); return; }
@@ -7719,14 +7651,19 @@ document.addEventListener('DOMContentLoaded',function(){
         const bar = document.getElementById('ve-upload-progress-bar');
         const msg = document.getElementById('ve-upload-progress-msg');
         const lbl = document.querySelector('label[for="v-capa-file"]');
-        wrap.style.display = 'block'; bar.style.width = '15%'; bar.style.background = 'var(--accent)';
-        msg.style.color = 'var(--text-muted)'; msg.textContent = 'Enviando imagem…';
+        wrap.style.display = 'block'; bar.style.width = '10%'; bar.style.background = 'var(--accent)';
+        msg.style.color = 'var(--text-muted)'; msg.textContent = 'Redimensionando…';
         if (lbl) { lbl.style.pointerEvents = 'none'; lbl.style.opacity = '.5'; }
 
         try {
+          const blob = await resizeImageFile(file, 1920, 0.88);
+          msg.textContent = 'Enviando imagem…';
+
           await ensureValidToken();
           const authToken = AuthStore.getToken() || sbKey;
-          const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z]/g, '') || 'jpg';
+          const outMime = blob.type || validation.detectedMime || 'image/webp';
+          const extMap = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' };
+          const ext = extMap[outMime] || 'webp';
           const nome = `capa-vaga-${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${ext}`;
           const path = `vagas/${nome}`;
           const BUCKET = 'imagens';
@@ -7734,10 +7671,10 @@ document.addEventListener('DOMContentLoaded',function(){
           const res = await fetch(`${sbUrl}/storage/v1/object/${BUCKET}/${path}`, {
             method: 'POST',
             headers: {
-              'apikey': sbKey, 'Authorization': `Bearer ${authToken}`, 'Content-Type': file.type, 'x-upsert':
-                'true'
+              'apikey': sbKey, 'Authorization': `Bearer ${authToken}`,
+              'Content-Type': outMime, 'x-upsert': 'true'
             },
-            body: file
+            body: blob
           });
           bar.style.width = '90%';
           if (!res.ok) {
@@ -7788,36 +7725,38 @@ document.addEventListener('DOMContentLoaded',function(){
         const files = Array.from(input.files);
         if (!files.length) return;
         const { url: sbUrl, key: sbKey } = getSupabase();
-        const hasSb = !!(sbUrl && sbKey);
+        if (!sbUrl || !sbKey) { toast('Configure o Supabase para enviar documentos.', 'error'); return; }
 
         for (const file of files) {
-          if (hasSb) {
-            try {
-              await ensureValidToken();
-              const authToken = AuthStore.getToken() || sbKey;
-              const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z0-9]/g, '') || 'bin';
-              const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-              const path = `vagas/doc-${Date.now()}-${safeName}`;
-              const BUCKET = 'imagens';
-              const res = await fetch(`${sbUrl}/storage/v1/object/${BUCKET}/${path}`, {
-                method: 'POST',
-                headers: {
-                  'apikey': sbKey, 'Authorization': `Bearer ${authToken}`, 'Content-Type': file.type ||
-                    'application/octet-stream', 'x-upsert': 'true'
-                },
-                body: file
-              });
-              if (!res.ok) {
-                const err = await res.json().catch(() => ({})); throw new Error(err.message || `HTTP
-              ${res.status}`);
-              }
-              const publicUrl = `${sbUrl}/storage/v1/object/public/${BUCKET}/${path}`;
-              veAnexos.push({ nome: file.name, url: publicUrl, tipo: ext });
-              toast(`📎 "${file.name}" enviado!`, 'success');
-              // Atualiza campo legado de edital_url com o primeiro arquivo
-              if (veAnexos.length === 1) document.getElementById('v-edital').value = publicUrl;
-            } catch (e) { toast(`❌ Erro ao enviar "${file.name}": ${e.message}`, 'error'); }
-          } else { toast('Configure o Supabase para enviar documentos.', 'error'); break; }
+          // Validação: extensão permitida + tamanho máximo 20 MB
+          const docVal = validateDocFile(file, 20);
+          if (!docVal.ok) { toast('❌ ' + docVal.error, 'error'); continue; }
+
+          try {
+            await ensureValidToken();
+            const authToken = AuthStore.getToken() || sbKey;
+            const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+            const path = `vagas/doc-${Date.now()}-${safeName}`;
+            const BUCKET = 'imagens';
+            const mimeType = DOC_ALLOWED[docVal.ext] || 'application/octet-stream';
+
+            const res = await fetch(`${sbUrl}/storage/v1/object/${BUCKET}/${path}`, {
+              method: 'POST',
+              headers: {
+                'apikey': sbKey, 'Authorization': `Bearer ${authToken}`,
+                'Content-Type': mimeType, 'x-upsert': 'true'
+              },
+              body: file
+            });
+            if (!res.ok) {
+              const err = await res.json().catch(() => ({}));
+              throw new Error(err.message || `HTTP ${res.status}`);
+            }
+            const publicUrl = `${sbUrl}/storage/v1/object/public/${BUCKET}/${path}`;
+            veAnexos.push({ nome: file.name, url: publicUrl, tipo: docVal.ext });
+            toast(`📎 "${file.name}" enviado!`, 'success');
+            if (veAnexos.length === 1) document.getElementById('v-edital').value = publicUrl;
+          } catch (e) { toast(`❌ Erro ao enviar "${file.name}": ${e.message}`, 'error'); }
         }
         veRenderAnexos(); input.value = '';
       }
@@ -7936,12 +7875,26 @@ document.addEventListener('DOMContentLoaded',function(){
       function logoFileSelected(input) {
         const file = input.files[0];
         if (!file) return;
-        document.getElementById('logo-file-name').textContent = file.name;
-        document.getElementById('logo-file-size').textContent = (file.size / 1024).toFixed(1) + ' KB';
-        const reader = new FileReader();
-        reader.onload = e => { document.getElementById('logo-file-preview').src = e.target.result; };
-        reader.readAsDataURL(file);
-        document.getElementById('logo-file-info').style.display = '';
+
+        // Valida na seleção para feedback imediato (antes de clicar "Enviar")
+        validateImageFile(file, 2).then(v => {
+          if (!v.ok) {
+            toast('❌ ' + v.error, 'error');
+            input.value = '';
+            document.getElementById('logo-file-info').style.display = 'none';
+            return;
+          }
+          const sizeKB = (file.size / 1024).toFixed(1);
+          const sizeLabel = file.size >= 1024 * 1024
+            ? (file.size / 1024 / 1024).toFixed(1) + ' MB'
+            : sizeKB + ' KB';
+          document.getElementById('logo-file-name').textContent = file.name;
+          document.getElementById('logo-file-size').textContent = sizeLabel + ' → será redimensionada para ≤800px';
+          const reader = new FileReader();
+          reader.onload = e => { document.getElementById('logo-file-preview').src = e.target.result; };
+          reader.readAsDataURL(file);
+          document.getElementById('logo-file-info').style.display = '';
+        });
       }
 
       function logoCancelSelection() {
@@ -7951,10 +7904,14 @@ document.addEventListener('DOMContentLoaded',function(){
       }
 
       async function uploadLogo() {
-        RBACManager.guard('admin', 'alterar logomarca');
         const input = document.getElementById('logo-file-input');
         const file = input.files[0];
         if (!file) return;
+
+        // Validação: magic bytes + tamanho máx 2 MB (logo deve ser leve)
+        const validation = await validateImageFile(file, 2);
+        if (!validation.ok) { toast('❌ ' + validation.error, 'error'); input.value = ''; return; }
+
         const { url: sbUrl, key: sbKey } = getSupabase();
         const bar = document.getElementById('logo-progress-bar');
         const msg = document.getElementById('logo-progress-msg');
@@ -7962,16 +7919,22 @@ document.addEventListener('DOMContentLoaded',function(){
         const uploadBtn = document.getElementById('btn-upload-logo');
 
         wrap.style.display = '';
-        bar.style.width = '20%';
+        bar.style.width = '10%';
         bar.style.background = 'var(--accent)';
         msg.style.color = 'var(--text-muted)';
-        msg.textContent = 'Enviando imagem…';
-        if (uploadBtn) { uploadBtn.disabled = true; uploadBtn.textContent = '⏳ Enviando…'; }
+        msg.textContent = 'Redimensionando…';
+        if (uploadBtn) { uploadBtn.disabled = true; uploadBtn.textContent = '⏳ Processando…'; }
 
         try {
+          // Logo: máx 800px, alta qualidade (92%)
+          const blob = await resizeImageFile(file, 800, 0.92);
+          msg.textContent = 'Enviando imagem…';
+
           await ensureValidToken();
           const authToken = AuthStore.getToken() || sbKey;
-          const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z]/g, '') || 'png';
+          const outMime = blob.type || validation.detectedMime || 'image/png';
+          const extMap = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' };
+          const ext = extMap[outMime] || 'png';
           const BUCKET = 'imagens';
           const path = `logos/logomarca.${ext}`;
 
@@ -7981,10 +7944,10 @@ document.addEventListener('DOMContentLoaded',function(){
             headers: {
               'apikey': sbKey,
               'Authorization': `Bearer ${authToken}`,
-              'Content-Type': file.type,
+              'Content-Type': outMime,
               'x-upsert': 'true'
             },
-            body: file
+            body: blob
           });
           bar.style.width = '80%';
           if (!res.ok) {
@@ -8034,7 +7997,6 @@ document.addEventListener('DOMContentLoaded',function(){
       }
 
       async function deleteLogo() {
-        RBACManager.guard('admin', 'excluir logomarca');
         const ok = await confirmDialog({
           title: 'Excluir logomarca?',
           message: 'A imagem será removida do storage e do banco. Esta ação não pode ser desfeita.',
@@ -8122,7 +8084,6 @@ document.addEventListener('DOMContentLoaded',function(){
          atual e faz PUT no repositório GitHub.
       ══════════════════════════════════════════ */
       async function republishAllNoticias() {
-        RBACManager.guard('admin', 'republicar todas as notícias');
         const token = await getGhTokenAsync();
         if (!token) {
           toast('Configure o token do GitHub em Configurações antes de republicar.', 'error');
