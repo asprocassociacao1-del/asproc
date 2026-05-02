@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
@@ -1426,15 +1426,58 @@
       }
     }
   
-    .nav-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      top: 60px;
-      z-index: 999;
-      background: transparent;
-    }
-    .nav-overlay.open { display: block; }
+        /* Overlay backdrop */
+        .nav-overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1999;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(2px);
+            cursor: pointer;
+        }
+        .nav-overlay.open {
+            display: block;
+        }
+        /* â”€â”€ Drawer link styling â”€â”€ */
+        @media (max-width: 900px) {
+            .nav-links li {
+                border-bottom: 1px solid rgba(123, 201, 92, .07);
+            }
+
+            .nav-links li:last-child {
+                border-bottom: none;
+            }
+
+            .nav-links a {
+                font-size: 1rem !important;
+                padding: 0.7rem 0 !important;
+                display: block;
+                color: rgba(245, 240, 232, 0.88) !important;
+            }
+
+            .nav-links .nav-cta {
+                margin-top: 0.75rem;
+                border-bottom: none !important;
+            }
+
+            .nav-links::before {
+                content: 'Menu';
+                display: block;
+                font-size: 0.65rem;
+                letter-spacing: 0.18em;
+                text-transform: uppercase;
+                color: rgba(123, 201, 92, 0.5);
+                font-weight: 700;
+                padding-bottom: 1.2rem;
+                border-bottom: 1px solid rgba(123, 201, 92, .1);
+                margin-bottom: 0.4rem;
+                font-family: 'DM Sans', sans-serif;
+            }
+        }
     @media (max-width: 768px) {
       .nav-hamburger[aria-expanded="true"] span:nth-child(1) {
         transform: translateY(6.5px) rotate(45deg);

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
@@ -308,20 +308,32 @@
             background: rgba(123, 201, 92, 0.08);
         }
 
-        .hamburger {
+                .hamburger {
             display: none;
             flex-direction: column;
             gap: 5px;
             cursor: pointer;
-            padding: 4px;
+            padding: 8px 10px;
+            background: var(--verde);
+            border: 1.5px solid rgba(123, 201, 92, 0.45);
+            border-radius: 7px;
+            transition: background .2s, border-color .2s;
+        }
+
+        .hamburger:hover,
+        .hamburger:focus-visible {
+            background: var(--verde-claro);
+            border-color: var(--verde-neon);
+            outline: none;
         }
 
         .hamburger span {
-            width: 26px;
+            width: 22px;
             height: 2px;
-            background: var(--branco);
+            background: var(--verde-neon);
             border-radius: 2px;
-            transition: all .3s;
+            transition: transform .3s, opacity .2s;
+            display: block;
         }
 
         /* ====== HERO ====== */
@@ -1715,21 +1727,29 @@
 
         /* ====== RESPONSIVE ====== */
         @media (max-width: 900px) {
-            .nav-links {
-                display: none;
+                        .nav-links {
+                position: absolute;
+                top: 0;
+                right: 0;
+                width: 55vw;
+                min-width: 260px;
+                max-width: 340px;
+                height: 100vh;
+                background: rgba(8, 15, 8, 0.98);
+                border-left: 1px solid rgba(123, 201, 92, .15);
+                flex-direction: column;
+                padding: 5.5rem 1.8rem 2rem;
+                gap: 0.4rem;
+                z-index: 2000;
+                transform: translateX(110%);
+                transition: transform .35s cubic-bezier(.4, 0, .2, 1);
+                overflow-y: auto;
+                display: flex;
+                box-shadow: -8px 0 40px rgba(0, 0, 0, .55);
             }
 
             .nav-links.open {
-                display: flex;
-                flex-direction: column;
-                position: absolute;
-                top: 70px;
-                left: 0;
-                right: 0;
-                background: rgba(8, 15, 8, .97);
-                padding: 1.5rem;
-                gap: 1.2rem;
-                border-bottom: 1px solid rgba(123, 201, 92, .15);
+                transform: translateX(0);
             }
 
             .hamburger {
@@ -1905,18 +1925,58 @@
             display: none;
         }
 
-        /* Overlay backdrop */
+                /* Overlay backdrop */
         .nav-overlay {
             display: none;
-            position: fixed;
-            inset: 0;
-            top: 70px;
-            z-index: 999;
-            background: transparent;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1999;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(2px);
+            cursor: pointer;
         }
 
         .nav-overlay.open {
             display: block;
+        }
+        /* â”€â”€ Drawer link styling â”€â”€ */
+        @media (max-width: 900px) {
+            .nav-links li {
+                border-bottom: 1px solid rgba(123, 201, 92, .07);
+            }
+
+            .nav-links li:last-child {
+                border-bottom: none;
+            }
+
+            .nav-links a {
+                font-size: 1rem !important;
+                padding: 0.7rem 0 !important;
+                display: block;
+                color: rgba(245, 240, 232, 0.88) !important;
+            }
+
+            .nav-links .nav-cta {
+                margin-top: 0.75rem;
+                border-bottom: none !important;
+            }
+
+            .nav-links::before {
+                content: 'Menu';
+                display: block;
+                font-size: 0.65rem;
+                letter-spacing: 0.18em;
+                text-transform: uppercase;
+                color: rgba(123, 201, 92, 0.5);
+                font-weight: 700;
+                padding-bottom: 1.2rem;
+                border-bottom: 1px solid rgba(123, 201, 92, .1);
+                margin-bottom: 0.4rem;
+                font-family: 'DM Sans', sans-serif;
+            }
         }
 
         @media (max-width: 900px) {

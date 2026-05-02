@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
@@ -221,22 +221,31 @@
             background: rgba(123, 201, 92, .07);
         }
 
-        .hamburger {
+                .hamburger {
             display: none;
             flex-direction: column;
-            gap: 4px;
+            gap: 5px;
             cursor: pointer;
-            padding: 4px;
-            background: none;
-            border: none;
+            padding: 8px 10px;
+            background: var(--verde);
+            border: 1.5px solid rgba(123, 201, 92, 0.45);
+            border-radius: 7px;
+            transition: background .2s, border-color .2s;
+        }
+
+        .hamburger:hover,
+        .hamburger:focus-visible {
+            background: var(--verde-claro);
+            border-color: var(--verde-neon);
+            outline: none;
         }
 
         .hamburger span {
             width: 22px;
-            height: 1.5px;
-            background: var(--branco);
+            height: 2px;
+            background: var(--verde-neon);
             border-radius: 2px;
-            transition: all .3s;
+            transition: transform .3s, opacity .2s;
             display: block;
         }
 
