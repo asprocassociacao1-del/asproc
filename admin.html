@@ -1328,69 +1328,6 @@
       color: var(--amber);
     }
 
-    .toast.loading {
-      background: #0d1b2e;
-      border: 1px solid rgba(59, 130, 246, .3);
-      color: var(--accent);
-      display: flex;
-      align-items: center;
-      gap: .6rem;
-    }
-
-    .toast-spinner {
-      width: 14px;
-      height: 14px;
-      border: 2px solid rgba(59, 130, 246, .25);
-      border-top-color: var(--accent);
-      border-radius: 50%;
-      flex-shrink: 0;
-      animation: spin .7s linear infinite;
-    }
-
-    /* Modal de confirmação customizado */
-    #confirm-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, .65);
-      backdrop-filter: blur(4px);
-      z-index: 10000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-      animation: fadeSlide .15s ease;
-    }
-
-    #confirm-box {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 1.5rem;
-      max-width: 400px;
-      width: 100%;
-      box-shadow: 0 24px 64px rgba(0, 0, 0, .6);
-    }
-
-    #confirm-box h4 {
-      font-size: .95rem;
-      font-weight: 600;
-      margin-bottom: .5rem;
-      color: var(--text);
-    }
-
-    #confirm-box p {
-      font-size: .84rem;
-      color: var(--text-muted);
-      margin-bottom: 1.25rem;
-      line-height: 1.55;
-    }
-
-    #confirm-box .confirm-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: .5rem;
-    }
-
     /* ── MOBILE ── */
     @media (max-width: 900px) {
       .sidebar {
@@ -1629,13 +1566,6 @@
       line-height: 1.8;
       outline: none;
       background: var(--bg2);
-      overflow-wrap: break-word;
-      word-break: break-word;
-      overflow-x: hidden;
-      max-width: 56ch;
-      margin: 0 auto;
-      box-sizing: border-box;
-      text-align: center;
     }
 
     .rte-body:empty::before {
@@ -1671,97 +1601,7 @@
 
     .rte-body img {
       max-width: 100%;
-      height: auto;
       border-radius: 8px;
-      cursor: pointer;
-      transition: outline .15s;
-    }
-
-    .rte-body img.rte-img-selected {
-      outline: 2px solid var(--accent);
-      outline-offset: 2px;
-    }
-
-    /* Wrapper do editor com scroll horizontal prevenido */
-    .rte-wrap {
-      overflow: hidden;
-    }
-
-    /* Context menu de imagem inserida */
-    .rte-img-menu {
-      position: fixed;
-      z-index: 9999;
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, .5);
-      padding: .4rem;
-      min-width: 210px;
-    }
-
-    .rte-img-menu-title {
-      padding: .3rem .6rem;
-      font-size: .68rem;
-      font-weight: 700;
-      color: var(--text-muted);
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      margin-bottom: .2rem;
-    }
-
-    .rte-img-menu-item {
-      padding: .45rem .75rem;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: .83rem;
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      gap: .55rem;
-      transition: background .12s;
-    }
-
-    .rte-img-menu-item:hover {
-      background: var(--border);
-    }
-
-    .rte-img-menu-item.danger {
-      color: #f87171;
-    }
-
-    .rte-img-size-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: .3rem;
-      padding: .2rem .6rem .45rem;
-    }
-
-    .rte-img-size-btn {
-      padding: .2rem .55rem;
-      font-size: .72rem;
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: 5px;
-      color: var(--text-dim);
-      cursor: pointer;
-    }
-
-    .rte-img-size-btn:hover {
-      background: var(--accent-soft);
-      color: var(--accent);
-    }
-
-    /* Botão de inserir imagem no toolbar */
-    .rte-btn-img-upload {
-      position: relative;
-    }
-
-    .rte-btn-img-upload input[type=file] {
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      cursor: pointer;
-      font-size: 0;
     }
 
     .rte-body table {
@@ -2454,14 +2294,8 @@
               📂 Pasta: <strong>/noticias/</strong>
             </div>
             <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
-              <button id="btn-save-gh-token" class="btn btn-success btn-sm" onclick="saveGithubToken()">Salvar
-                Token</button>
+              <button class="btn btn-success btn-sm" onclick="saveGithubToken()">Salvar Token</button>
               <button class="btn btn-secondary btn-sm" onclick="testGithubConnection()">Testar conexão</button>
-              <button class="btn btn-danger btn-sm" onclick="removeGithubToken()"
-                title="Remove o token de todos os storages deste navegador">🗑 Remover Token</button>
-            </div>
-            <div id="gh-token-status"
-              style="display:none;margin-top:.65rem;font-size:.78rem;color:var(--green);padding:.5rem .75rem;background:var(--green-soft);border:1px solid rgba(16,185,129,.2);border-radius:6px;">
             </div>
             <div id="gh-test-result"
               style="margin-top:.75rem;font-size:.82rem;display:none;padding:.6rem .8rem;border-radius:6px;background:var(--bg3);">
@@ -2541,8 +2375,7 @@
                 </div>
               </div>
               <div style="display:flex;gap:.5rem;">
-                <button class="btn btn-success btn-sm" id="btn-upload-logo" onclick="uploadLogo()">⬆ Enviar
-                  logomarca</button>
+                <button class="btn btn-success btn-sm" onclick="uploadLogo()">⬆ Enviar logomarca</button>
                 <button class="btn btn-secondary btn-sm" onclick="logoCancelSelection()">Cancelar</button>
               </div>
             </div>
@@ -2623,7 +2456,7 @@
         title="Formata o conteúdo automaticamente com IA">✨ Auto-formatar</button>
       <button class="btn btn-success btn-sm" id="btn-gh-publish" onclick="publishToGithub()">🚀 Publicar no
         site</button>
-      <button class="btn btn-primary btn-sm" id="btn-save-noticia" onclick="saveNoticia()">💾 Salvar</button>
+      <button class="btn btn-primary btn-sm" onclick="saveNoticia()">💾 Salvar</button>
     </div>
 
     <div class="ne-body">
@@ -2714,18 +2547,9 @@
               title="Refazer">↪</button>
             <button class="rte-btn" onmousedown="event.preventDefault()" onclick="rteClearFormat()"
               title="Limpar formatação">✕A</button>
-            <div class="rte-sep"></div>
-            <div class="rte-btn rte-btn-img-upload" title="Inserir imagem (arquivo)">
-              🖼️<input type="file" accept="image/jpeg,image/png,image/webp,image/gif"
-                onchange="rteInsertImageFile(this,'n')">
-            </div>
-            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="rteInsertImageUrl('n')"
-              title="Inserir imagem por URL">🔗🖼️</button>
           </div>
           <div id="n-rte-body" class="rte-body" contenteditable="true" oninput="syncRteToHidden(); updatePreview();"
-            oncontextmenu="nContextMenu(event)" onpaste="rteHandlePaste(event,'n')" ondrop="rteHandleDrop(event,'n')"
-            ondragover="event.preventDefault()""
-            onkeyup=" updateRteToolbarState();" onmouseup="updateRteToolbarState();">
+            onkeyup="updateRteToolbarState();" onmouseup="updateRteToolbarState();">
           </div>
         </div>
         <textarea id="n-conteudo" style="display:none;"></textarea>
@@ -2746,15 +2570,6 @@
           <input type="date" class="ne-panel-input" id="n-data">
           <input type="text" class="ne-panel-input" id="n-autor" placeholder="Autor (opcional)">
           <input type="text" class="ne-panel-input" id="n-tags" placeholder="Tags: borracha, amazônia…">
-          <label
-            style="font-size:.7rem;color:var(--text-muted);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-top:.5rem;display:block;">📌
-            Leia Também (slugs fixados)</label>
-          <textarea class="ne-panel-input" id="n-related" rows="3"
-            placeholder="Um slug por linha:&#10;justica-social-na-pratica-como-o-crcs...&#10;asproc-supera-desafios-logisticos..."
-            style="font-size:.75rem;resize:vertical;min-height:72px;font-family:monospace;"></textarea>
-          <small style="color:var(--text-muted);font-size:.68rem;line-height:1.4;display:block;margin-top:.2rem;">Cole
-            aqui os slugs (um por linha) das notícias que devem aparecer fixas na sidebar "Leia Também" desta
-            página.</small>
         </div>
 
         <div class="ne-divider"></div>
@@ -2917,9 +2732,8 @@
     <div class="ne-topbar">
       <button class="btn btn-secondary btn-sm" onclick="closeVagaEditor()">← Voltar</button>
       <span class="ne-topbar-title" id="ve-topbar-title">Nova Vaga</span>
-      <button class="btn btn-secondary btn-sm" id="btn-save-vaga-draft" onclick="saveVaga(false)">💾 Salvar
-        rascunho</button>
-      <button class="btn btn-primary btn-sm" id="btn-save-vaga-pub" onclick="saveVaga(true)">🌐 Publicar</button>
+      <button class="btn btn-secondary btn-sm" onclick="saveVaga(false)">💾 Salvar rascunho</button>
+      <button class="btn btn-primary btn-sm" onclick="saveVaga(true)">🌐 Publicar</button>
     </div>
 
     <div class="ne-body">
@@ -3000,17 +2814,9 @@
               title="Refazer">↪</button>
             <button class="rte-btn" onmousedown="event.preventDefault()" onclick="veRteClearFormat()"
               title="Limpar formatação">✕A</button>
-            <div class="rte-sep"></div>
-            <div class="rte-btn rte-btn-img-upload" title="Inserir imagem (arquivo)">
-              🖼️<input type="file" accept="image/jpeg,image/png,image/webp,image/gif"
-                onchange="rteInsertImageFile(this,'ve')">
-            </div>
-            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="rteInsertImageUrl('ve')"
-              title="Inserir imagem por URL">🔗🖼️</button>
           </div>
           <div id="ve-rte-body" class="rte-body" contenteditable="true" oninput="veSync()"
-            oncontextmenu="veContextMenu(event)" onpaste="rteHandlePaste(event,'ve')" ondrop="rteHandleDrop(event,'ve')"
-            ondragover="event.preventDefault()" style="min-height:320px;">
+            oncontextmenu="veContextMenu(event)" style="min-height:320px;">
           </div>
         </div>
         <textarea id="v-descricao" style="display:none;"></textarea>
@@ -3148,111 +2954,6 @@
   </div>
 
   <!-- ════ MENU DE CONTEXTO DO EDITOR DE VAGAS ════ -->
-  <!-- Context menu NOTÍCIAS -->
-  <div id="n-context-menu"
-    style="display:none;position:fixed;z-index:9999;background:var(--bg2);border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.5);padding:.4rem;min-width:230px;">
-    <div
-      style="padding:.3rem .6rem;font-size:.68rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.2rem;">
-      Formatação</div>
-    <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="rteExec('bold');nHideCtx()"><b
-        style="margin-right:.5rem;">B</b> Negrito</div>
-    <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="rteExec('italic');nHideCtx()"><i
-        style="margin-right:.5rem;">I</i> Itálico</div>
-    <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="rteExec('underline');nHideCtx()"><u
-        style="margin-right:.5rem;">U</u> Sublinhado</div>
-    <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="rteExec('strikeThrough');nHideCtx()"><s
-        style="margin-right:.5rem;">S</s> Tachado</div>
-    <div style="height:1px;background:var(--border);margin:.35rem 0;"></div>
-    <div
-      style="padding:.3rem .6rem;font-size:.68rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.2rem;">
-      Alinhamento</div>
-    <div style="display:flex;gap:.3rem;padding:.2rem .6rem .4rem;">
-      <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
-        onclick="rteExec('justifyLeft');nHideCtx()">⬅</button>
-      <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
-        onclick="rteExec('justifyCenter');nHideCtx()">☰</button>
-      <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
-        onclick="rteExec('justifyRight');nHideCtx()">➡</button>
-      <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
-        onclick="rteExec('justifyFull');nHideCtx()">☷</button>
-    </div>
-    <div style="height:1px;background:var(--border);margin:.35rem 0;"></div>
-    <div
-      style="padding:.3rem .6rem;font-size:.68rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.2rem;">
-      Fonte</div>
-    <div style="display:flex;flex-wrap:wrap;gap:.3rem;padding:.2rem .6rem .4rem;">
-      <button class="ae-ctx-font-btn" onmousedown="event.preventDefault()"
-        onclick="rteExec('fontName','Inter,sans-serif');nHideCtx()">Inter</button>
-      <button class="ae-ctx-font-btn" onmousedown="event.preventDefault()"
-        onclick="rteExec('fontName','Georgia,serif');nHideCtx()">Georgia</button>
-      <button class="ae-ctx-font-btn" onmousedown="event.preventDefault()"
-        onclick="rteExec('fontName','Arial,sans-serif');nHideCtx()">Arial</button>
-      <button class="ae-ctx-font-btn" onmousedown="event.preventDefault()"
-        onclick="rteExec('fontName','Courier New,monospace');nHideCtx()">Courier</button>
-      <button class="ae-ctx-font-btn" onmousedown="event.preventDefault()"
-        onclick="rteExec('fontName','Playfair Display,serif');nHideCtx()">Playfair</button>
-    </div>
-    <div style="padding:.2rem .6rem .4rem;display:flex;align-items:center;gap:.5rem;">
-      <span style="font-size:.75rem;color:var(--text-muted);">Tamanho:</span>
-      <div style="display:flex;flex-wrap:wrap;gap:.25rem;">
-        <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
-          onclick="rteFontSize(12);nHideCtx()">12</button>
-        <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
-          onclick="rteFontSize(14);nHideCtx()">14</button>
-        <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
-          onclick="rteFontSize(16);nHideCtx()">16</button>
-        <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
-          onclick="rteFontSize(18);nHideCtx()">18</button>
-        <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
-          onclick="rteFontSize(20);nHideCtx()">20</button>
-        <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
-          onclick="rteFontSize(24);nHideCtx()">24</button>
-        <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
-          onclick="rteFontSize(32);nHideCtx()">32</button>
-      </div>
-    </div>
-    <div style="height:1px;background:var(--border);margin:.35rem 0;"></div>
-    <div
-      style="padding:.3rem .6rem;font-size:.68rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.2rem;">
-      Cor</div>
-    <div style="display:flex;align-items:center;gap:.5rem;padding:.2rem .6rem .4rem;">
-      <span style="font-size:.75rem;color:var(--text-muted);">Texto:</span>
-      <div style="display:flex;gap:.3rem;">
-        <div onmousedown="event.preventDefault()" onclick="rteExec('foreColor','#e2e8f0');nHideCtx()" title="Padrão"
-          style="width:20px;height:20px;border-radius:4px;background:#e2e8f0;cursor:pointer;border:2px solid var(--border);">
-        </div>
-        <div onmousedown="event.preventDefault()" onclick="rteExec('foreColor','#3b82f6');nHideCtx()" title="Azul"
-          style="width:20px;height:20px;border-radius:4px;background:#3b82f6;cursor:pointer;"></div>
-        <div onmousedown="event.preventDefault()" onclick="rteExec('foreColor','#10b981');nHideCtx()" title="Verde"
-          style="width:20px;height:20px;border-radius:4px;background:#10b981;cursor:pointer;"></div>
-        <div onmousedown="event.preventDefault()" onclick="rteExec('foreColor','#ef4444');nHideCtx()" title="Vermelho"
-          style="width:20px;height:20px;border-radius:4px;background:#ef4444;cursor:pointer;"></div>
-        <div onmousedown="event.preventDefault()" onclick="rteExec('foreColor','#f59e0b');nHideCtx()" title="Âmbar"
-          style="width:20px;height:20px;border-radius:4px;background:#f59e0b;cursor:pointer;"></div>
-        <label title="Cor personalizada"
-          style="width:20px;height:20px;border-radius:4px;background:conic-gradient(red,yellow,lime,aqua,blue,magenta,red);cursor:pointer;overflow:hidden;position:relative;">
-          <input type="color" style="opacity:0;position:absolute;inset:0;cursor:pointer;"
-            onchange="rteExec('foreColor',this.value);nHideCtx()">
-        </label>
-      </div>
-    </div>
-    <div style="height:1px;background:var(--border);margin:.35rem 0;"></div>
-    <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="rteInsertImageUrl('n');nHideCtx()">🔗🖼️
-      Inserir imagem (URL)</div>
-    <div class="ae-ctx-item rte-btn-img-upload" onmousedown="event.preventDefault()"
-      style="position:relative;overflow:hidden;">
-      🖼️ Inserir imagem (arquivo)<input type="file" accept="image/*"
-        style="position:absolute;inset:0;opacity:0;cursor:pointer;" onchange="rteInsertImageFile(this,'n');nHideCtx()">
-    </div>
-    <div style="height:1px;background:var(--border);margin:.35rem 0;"></div>
-    <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="rteInsertLink();nHideCtx()">🔗 Criar link
-    </div>
-    <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="rteExec('unlink');nHideCtx()">🚫 Remover link
-    </div>
-    <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="rteClearFormat();nHideCtx()">✕A Limpar
-      formatação</div>
-  </div>
-
   <div id="ve-context-menu"
     style="display:none;position:fixed;z-index:9999;background:var(--bg2);border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.5);padding:.4rem;min-width:220px;">
     <div
@@ -3331,16 +3032,6 @@
     </div>
     <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="veRteExec('unlink');veHideCtx()">🚫 Remover
       link</div>
-    <div style="height:1px;background:var(--border);margin:.35rem 0;"></div>
-    <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="rteInsertImageUrl('ve');veHideCtx()">🔗🖼️
-      Inserir imagem (URL)</div>
-    <div class="ae-ctx-item rte-btn-img-upload" onmousedown="event.preventDefault()"
-      style="position:relative;overflow:hidden;">
-      🖼️ Inserir imagem (arquivo)<input type="file" accept="image/*"
-        style="position:absolute;inset:0;opacity:0;cursor:pointer;"
-        onchange="rteInsertImageFile(this,'ve');veHideCtx()">
-    </div>
-    <div style="height:1px;background:var(--border);margin:.35rem 0;"></div>
     <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="veRteClearFormat();veHideCtx()">✕A Limpar
       formatação</div>
   </div>
@@ -3351,9 +3042,8 @@
     <div class="ne-topbar">
       <button class="btn btn-secondary btn-sm" onclick="closeAvisoEditor()">← Voltar</button>
       <span class="ne-topbar-title" id="ae-topbar-title">Novo Aviso</span>
-      <button class="btn btn-secondary btn-sm" id="btn-save-aviso-draft" onclick="saveAviso(false)">💾 Salvar
-        rascunho</button>
-      <button class="btn btn-primary btn-sm" id="btn-save-aviso-pub" onclick="saveAviso(true)">🌐 Publicar</button>
+      <button class="btn btn-secondary btn-sm" onclick="saveAviso(false)">💾 Salvar rascunho</button>
+      <button class="btn btn-primary btn-sm" onclick="saveAviso(true)">🌐 Publicar</button>
     </div>
 
     <div class="ne-body">
@@ -3434,17 +3124,9 @@
               title="Refazer">↪</button>
             <button class="rte-btn" onmousedown="event.preventDefault()" onclick="aeRteClearFormat()"
               title="Limpar formatação">✕A</button>
-            <div class="rte-sep"></div>
-            <div class="rte-btn rte-btn-img-upload" title="Inserir imagem (arquivo)">
-              🖼️<input type="file" accept="image/jpeg,image/png,image/webp,image/gif"
-                onchange="rteInsertImageFile(this,'ae')">
-            </div>
-            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="rteInsertImageUrl('ae')"
-              title="Inserir imagem por URL">🔗🖼️</button>
           </div>
           <div id="ae-rte-body" class="rte-body" contenteditable="true" oninput="aeSync()"
-            oncontextmenu="aeContextMenu(event)" onpaste="rteHandlePaste(event,'ae')" ondrop="rteHandleDrop(event,'ae')"
-            ondragover="event.preventDefault()" style="min-height:320px;">
+            oncontextmenu="aeContextMenu(event)" style="min-height:320px;">
           </div>
         </div>
         <textarea id="a-descricao" style="display:none;"></textarea>
@@ -3683,16 +3365,6 @@
     </div>
     <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="aeRteExec('unlink');aeHideCtx()">🚫 Remover
       link</div>
-    <div style="height:1px;background:var(--border);margin:.35rem 0;"></div>
-    <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="rteInsertImageUrl('ae');aeHideCtx()">🔗🖼️
-      Inserir imagem (URL)</div>
-    <div class="ae-ctx-item rte-btn-img-upload" onmousedown="event.preventDefault()"
-      style="position:relative;overflow:hidden;">
-      🖼️ Inserir imagem (arquivo)<input type="file" accept="image/*"
-        style="position:absolute;inset:0;opacity:0;cursor:pointer;"
-        onchange="rteInsertImageFile(this,'ae');aeHideCtx()">
-    </div>
-    <div style="height:1px;background:var(--border);margin:.35rem 0;"></div>
     <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="aeRteClearFormat();aeHideCtx()">✕A Limpar
       formatação</div>
   </div>
@@ -3723,46 +3395,35 @@
     document.addEventListener('DOMContentLoaded', function () {
       /* ══════════════════════════════════════════
          CONFIG & SUPABASE
-         ─────────────────────────────────────────
-         SEGURANÇA: Nenhuma credencial é armazenada
-         neste arquivo. O admin deve configurar URL
-         e chave anon na tela de Configurações.
-         Os valores ficam apenas no localStorage
-         do próprio navegador do administrador.
       ══════════════════════════════════════════ */
-
-      // Migração: limpa chaves de versões antigas SEM tocar nos tokens de sessão
-      // (remover esse bloco após todos os admins terem migrado para v3)
-      if (!localStorage.getItem('asproc_config_v3')) {
-        localStorage.removeItem('asproc_config_v2');
-      }
-
+      // Limpa configs antigas de projetos anteriores
+      localStorage.removeItem('asproc_config_v2');
+      localStorage.removeItem('asproc_token');
+      localStorage.removeItem('asproc_user');
+      localStorage.removeItem('asproc_refresh_token');
       const CONFIG_KEY = 'asproc_config_v3';
+      const DEFAULT_SUPABASE_URL = 'https://wiatqtiyiznscjyoxxww.supabase.co';
+      const DEFAULT_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpYXRxdGl5aXpuc2NqeW94eHd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1Njc0MDEsImV4cCI6MjA5MTE0MzQwMX0.xgaaZWX5kG3XowDtpR9Xd8S2S0nV-JTnv4ZwnP33PY8';
 
       function getConfig() {
         try { return JSON.parse(localStorage.getItem(CONFIG_KEY)) || {}; } catch { return {}; }
       }
-
       function getSupabase() {
         const c = getConfig();
-        // Sem fallback hardcoded — retorna vazio se não configurado
-        return { url: (c.url || '').trim(), key: (c.key || '').trim() };
+        return { url: c.url || DEFAULT_SUPABASE_URL, key: c.key || DEFAULT_SUPABASE_KEY };
       }
 
-      function isSupabaseConfigured() {
-        const { url, key } = getSupabase();
-        return url.startsWith('https://') && key.length > 20;
-      }
-
-      // Snippet de integração usa os valores salvos pelo próprio admin
-      function updateIntegrationSnippet() {
-        const { url, key } = getSupabase();
-        const snip = isSupabaseConfigured()
-          ? `<script>\n  const SUPABASE_URL = '${url}';\n  const SUPABASE_KEY = '${key}';\n  async function fetchSupabase(table, params = '') {\n    const r = await fetch(SUPABASE_URL + '/rest/v1/' + table + '?' + params, {\n      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }\n    });\n    return r.json();\n  }\n<\/script>`
-          : '// Configure o Supabase em Configurações para gerar este snippet.';
-        const el = document.getElementById('integration-snippet');
-        if (el) el.textContent = snip;
-      }
+      const integrationSnippet = `<script>
+  const SUPABASE_URL = '${DEFAULT_SUPABASE_URL}';
+  const SUPABASE_KEY = '${DEFAULT_SUPABASE_KEY}';
+  async function fetchSupabase(table, params = '') {
+    const r = await fetch(SUPABASE_URL + '/rest/v1/' + table + '?' + params, {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+    });
+    return r.json();
+  }
+<\/script>`;
+      document.getElementById('integration-snippet').textContent = integrationSnippet;
 
       async function sbFetch(table, params = '', opts = {}) {
         const { url, key } = getSupabase();
@@ -3772,7 +3433,8 @@
           const ok = await ensureValidToken();
           if (!ok) throw new Error('Sessão expirada. Faça login novamente.');
         }
-        const authToken = AuthStore.getToken() || key;
+        const sessionToken = localStorage.getItem('asproc_token');
+        const authToken = sessionToken || key;
         const headers = {
           'apikey': key, 'Authorization': 'Bearer ' + authToken,
           'Content-Type': 'application/json', 'Prefer': 'return=representation'
@@ -3790,7 +3452,8 @@
       async function sbCount(table, params = '') {
         const { url, key } = getSupabase();
         if (!url || !key) return 0;
-        const authToken = AuthStore.getToken() || key;
+        const sessionToken = localStorage.getItem('asproc_token');
+        const authToken = sessionToken || key;
         const res = await fetch(`${url}/rest/v1/${table}?${params}&select=id`, {
           headers: { 'apikey': key, 'Authorization': 'Bearer ' + authToken, 'Prefer': 'count=exact', 'Range': '0-0' }
         });
@@ -3799,86 +3462,8 @@
       }
 
       /* ══════════════════════════════════════════
-         AUTH STORE — tokens nunca no localStorage
-         ─────────────────────────────────────────
-         access_token  → memória (closure)  — desaparece ao recarregar
-         refresh_token → sessionStorage     — morre ao fechar o browser
-         user          → memória (closure)  — reconstruído no refresh
-
-         XSS não consegue acessar _accessToken/_refreshToken
-         porque são variáveis de closure, não propriedades globais.
-         sessionStorage ainda é acessível via XSS, mas o refresh
-         token sozinho não permite leitura de dados — só obter um
-         novo access_token, que expira em ~1h.
+         AUTH
       ══════════════════════════════════════════ */
-      const AuthStore = (() => {
-        const SS_REFRESH = 'asproc_rs';   // sessionStorage: refresh token (ofuscado)
-        const SS_USER = 'asproc_usr';  // sessionStorage: user JSON (não sensível)
-
-        let _accessToken = null;
-        let _refreshToken = null;
-        let _user = null;
-
-        // Ofuscação leve do refresh token em sessionStorage:
-        // não é criptografia, mas impede leitura acidental/trivial
-        // e evita que um grep simples em logs capture o valor.
-        function _enc(str) {
-          return btoa(encodeURIComponent(str).split('').reverse().join(''));
-        }
-        function _dec(str) {
-          try { return decodeURIComponent(atob(str).split('').reverse().join('')); }
-          catch { return ''; }
-        }
-
-        return {
-          /** Persiste a sessão após login bem-sucedido */
-          set(accessToken, refreshToken, user) {
-            _accessToken = accessToken;
-            _refreshToken = refreshToken;
-            _user = user;
-            // Apenas refresh token vai para sessionStorage (ofuscado)
-            if (refreshToken) sessionStorage.setItem(SS_REFRESH, _enc(refreshToken));
-            if (user) sessionStorage.setItem(SS_USER, JSON.stringify(user));
-          },
-
-          /** Atualiza access_token + refresh_token após um token refresh */
-          update(accessToken, refreshToken) {
-            _accessToken = accessToken;
-            if (refreshToken) {
-              _refreshToken = refreshToken;
-              sessionStorage.setItem(SS_REFRESH, _enc(refreshToken));
-            }
-          },
-
-          getToken() { return _accessToken; },
-          getRefresh() { return _refreshToken; },
-          getUser() { return _user; },
-
-          /** Tenta restaurar sessão a partir do sessionStorage (após F5) */
-          restore() {
-            // access_token não persiste — será renovado via refresh
-            const encRefresh = sessionStorage.getItem(SS_REFRESH);
-            const userStr = sessionStorage.getItem(SS_USER);
-            if (encRefresh) _refreshToken = _dec(encRefresh);
-            if (userStr) { try { _user = JSON.parse(userStr); } catch { } }
-            return !!_refreshToken;
-          },
-
-          /** Limpa tudo — logout */
-          clear() {
-            _accessToken = _refreshToken = _user = null;
-            sessionStorage.removeItem(SS_REFRESH);
-            sessionStorage.removeItem(SS_USER);
-            // Limpa eventuais resquícios de versões anteriores
-            localStorage.removeItem('asproc_token');
-            localStorage.removeItem('asproc_refresh_token');
-            localStorage.removeItem('asproc_user');
-          },
-
-          hasSession() { return !!_refreshToken; },
-        };
-      })();
-
       let currentUser = null, currentSection = 'dashboard', editingId = {};
 
       async function doLogin() {
@@ -3886,13 +3471,11 @@
         const pass = document.getElementById('login-pass').value;
         const btn = document.getElementById('login-btn');
         const err = document.getElementById('login-error');
+        const { url, key } = getSupabase();
         err.classList.remove('show');
         btn.disabled = true; btn.textContent = 'Entrando…';
         try {
-          if (!isSupabaseConfigured()) {
-            throw new Error('Supabase não configurado. Clique em "⚙ Configurar Supabase" abaixo.');
-          }
-          const { url, key } = getSupabase();
+          if (!url || !key) throw new Error('Credenciais Supabase não encontradas.');
           const res = await fetch(`${url}/auth/v1/token?grant_type=password`, {
             method: 'POST',
             headers: { 'apikey': key, 'Content-Type': 'application/json' },
@@ -3901,7 +3484,9 @@
           const data = await res.json();
           if (!res.ok) throw new Error(data.error_description || data.msg || 'Credenciais inválidas');
           currentUser = data.user;
-          AuthStore.set(data.access_token, data.refresh_token, data.user);
+          localStorage.setItem('asproc_token', data.access_token);
+          localStorage.setItem('asproc_user', JSON.stringify(data.user));
+          if (data.refresh_token) localStorage.setItem('asproc_refresh_token', data.refresh_token);
           showApp(data.user);
         } catch (e) {
           err.textContent = e.message; err.classList.add('show');
@@ -3918,18 +3503,18 @@
       }
 
       function doLogout() {
-        AuthStore.clear();
+        localStorage.removeItem('asproc_token'); localStorage.removeItem('asproc_user'); localStorage.removeItem('asproc_refresh_token');
         location.reload();
       }
 
       function isTokenValid() {
-        const token = AuthStore.getToken();
+        const token = localStorage.getItem('asproc_token');
         if (!token) return false;
         try { const p = JSON.parse(atob(token.split('.')[1])); return p.exp * 1000 > Date.now() + 60000; } catch { return false; }
       }
 
       async function refreshToken() {
-        const refreshTk = AuthStore.getRefresh();
+        const refreshTk = localStorage.getItem('asproc_refresh_token');
         if (!refreshTk) return false;
         const { url, key } = getSupabase();
         try {
@@ -3939,7 +3524,8 @@
           });
           if (!res.ok) return false;
           const data = await res.json();
-          AuthStore.update(data.access_token, data.refresh_token);
+          localStorage.setItem('asproc_token', data.access_token);
+          if (data.refresh_token) localStorage.setItem('asproc_refresh_token', data.refresh_token);
           return true;
         } catch { return false; }
       }
@@ -3952,69 +3538,19 @@
       }
 
       async function checkSession() {
-        // Limpa eventuais resquícios de versões anteriores que usavam localStorage
-        localStorage.removeItem('asproc_token');
-        localStorage.removeItem('asproc_user');
-        localStorage.removeItem('asproc_refresh_token');
-
-        // Se Supabase não está configurado, mostra tela de setup antes do login
-        if (!isSupabaseConfigured()) {
-          document.getElementById('login-screen').style.display = 'flex';
-          showSetupBanner();
-          return;
-        }
-        // Tenta restaurar sessão do sessionStorage (sobrevive a F5, morre ao fechar o browser)
-        const hasSavedSession = AuthStore.restore();
-        if (hasSavedSession) {
-          // refresh token existe — tenta obter um novo access token
-          const refreshed = await refreshToken();
-          if (refreshed) {
-            currentUser = AuthStore.getUser();
-            showApp(currentUser);
-            return;
-          }
-          // Refresh falhou (token expirado ou revogado) — pede login
-          AuthStore.clear();
+        const token = localStorage.getItem('asproc_token');
+        const userStr = localStorage.getItem('asproc_user');
+        if (token && userStr) {
+          try {
+            const user = JSON.parse(userStr);
+            if (isTokenValid()) { currentUser = user; showApp(user); return; }
+            const refreshed = await refreshToken();
+            if (refreshed) { currentUser = user; showApp(user); return; }
+            localStorage.removeItem('asproc_token'); localStorage.removeItem('asproc_user'); localStorage.removeItem('asproc_refresh_token');
+          } catch { }
         }
         document.getElementById('login-screen').style.display = 'flex';
       }
-
-      function showSetupBanner() {
-        const existing = document.getElementById('setup-banner');
-        if (existing) return;
-        const banner = document.createElement('div');
-        banner.id = 'setup-banner';
-        banner.style.cssText = 'margin:1.2rem auto 0;max-width:400px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);border-radius:10px;padding:.9rem 1rem;font-size:.82rem;color:#f59e0b;line-height:1.6;';
-        banner.innerHTML = `
-          <strong style="display:block;margin-bottom:.4rem;">⚙ Primeira configuração necessária</strong>
-          Insira a URL e a chave anon do seu projeto Supabase abaixo para começar.
-          Esses dados ficam apenas neste navegador — nunca no código-fonte.
-          <div style="margin-top:.9rem;display:flex;flex-direction:column;gap:.5rem;">
-            <input id="setup-url" type="url" placeholder="https://xxxx.supabase.co"
-              style="width:100%;padding:.6rem .8rem;background:#1c2333;border:1px solid rgba(255,255,255,.12);border-radius:7px;color:#e2e8f0;font-size:.85rem;font-family:Inter,sans-serif;outline:none;">
-            <input id="setup-key" type="text" placeholder="eyJhbGciOiJIUz... (anon key)"
-              style="width:100%;padding:.6rem .8rem;background:#1c2333;border:1px solid rgba(255,255,255,.12);border-radius:7px;color:#e2e8f0;font-size:.85rem;font-family:Inter,sans-serif;outline:none;">
-            <button onclick="applySetupConfig()"
-              style="padding:.6rem;background:#3b82f6;border:none;border-radius:7px;color:#fff;font-weight:600;font-size:.85rem;cursor:pointer;font-family:Inter,sans-serif;">
-              Salvar e continuar
-            </button>
-          </div>`;
-        const loginBox = document.querySelector('.login-box');
-        if (loginBox) loginBox.appendChild(banner);
-      }
-
-      function applySetupConfig() {
-        const url = (document.getElementById('setup-url')?.value || '').trim();
-        const key = (document.getElementById('setup-key')?.value || '').trim();
-        if (!url.startsWith('https://') || key.length < 20) {
-          alert('URL inválida ou chave muito curta. Verifique os dados do Supabase.');
-          return;
-        }
-        localStorage.setItem(CONFIG_KEY, JSON.stringify({ url, key }));
-        document.getElementById('setup-banner')?.remove();
-        toast('✅ Supabase configurado! Faça login.', 'success');
-      }
-      window.applySetupConfig = applySetupConfig;
 
       document.getElementById('login-pass').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
       document.getElementById('login-email').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
@@ -4066,51 +3602,24 @@
         loadSection('noticias'); loadSection('vagas'); loadSection('avisos'); loadCandidaturas();
       }
 
-      async function loadConfigFields() {
+      function loadConfigFields() {
         const cfg = getConfig();
-        document.getElementById('cfg-url').value = cfg.url || '';
-        document.getElementById('cfg-key').value = cfg.key || '';
-
-        // Nunca popula o campo com o token real — apenas indica se existe
-        const tokenField = document.getElementById('cfg-gh-token');
-        const statusEl = document.getElementById('gh-token-status');
-        if (tokenField) {
-          const existingToken = await getGhTokenAsync();
-          tokenField.value = '';
-          if (existingToken) {
-            tokenField.placeholder = _ghMaskToken(existingToken);
-            if (statusEl) {
-              statusEl.style.display = 'block';
-              statusEl.textContent = '🔐 Token cifrado salvo neste dispositivo.';
-            }
-          } else {
-            tokenField.placeholder = 'ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxx';
-            if (statusEl) statusEl.style.display = 'none';
-          }
-        }
-        updateIntegrationSnippet();
+        document.getElementById('cfg-url').value = cfg.url || DEFAULT_SUPABASE_URL;
+        document.getElementById('cfg-key').value = cfg.key || DEFAULT_SUPABASE_KEY;
+        const tok = document.getElementById('cfg-gh-token');
+        if (tok) { tok.value = getGhToken(); }
       }
 
       function saveConfig() {
         const url = document.getElementById('cfg-url').value.trim();
         const key = document.getElementById('cfg-key').value.trim();
-        if (!url.startsWith('https://') || key.length < 20) {
-          toast('⚠ URL inválida ou chave muito curta.', 'error');
-          return;
-        }
         localStorage.setItem(CONFIG_KEY, JSON.stringify({ url, key }));
-        updateIntegrationSnippet();
-        toast('✅ Configuração salva!', 'success');
+        toast('Configuração salva!', 'success');
       }
 
       async function testConnection() {
-        const btn = document.querySelector('[onclick="testConnection()"]');
-        await withBtn(btn, '⏳ Testando…', async () => {
-          try {
-            await sbSelect('noticias', 'select=id&limit=1');
-            toast('✅ Conexão com Supabase OK!', 'success');
-          } catch (e) { toast('❌ Falha: ' + e.message, 'error'); }
-        });
+        try { await sbSelect('noticias', 'select=id&limit=1'); toast('✅ Conexão com Supabase OK!', 'success'); }
+        catch (e) { toast('❌ Falha: ' + e.message, 'error'); }
       }
 
       /* ══════════════════════════════════════════
@@ -4227,7 +3736,6 @@
         document.getElementById('n-resumo').value = n.resumo || '';
         document.getElementById('n-conteudo').value = n.conteudo || '';
         document.getElementById('n-rte-body').innerHTML = n.conteudo || '';
-        setTimeout(() => rteBindImgClicks('n'), 100);
         document.getElementById('n-categoria').value = n.categoria || 'geral';
         document.getElementById('n-data').value = n.data_pub || '';
         document.getElementById('n-url').value = n.url_externa || '';
@@ -4237,7 +3745,6 @@
         document.getElementById('n-slug').value = n.slug || slugify(n.titulo || '');
         document.getElementById('n-autor').value = n.autor || '';
         document.getElementById('n-tags').value = n.tags || '';
-        document.getElementById('n-related').value = n.related_slugs || '';
         updateImgPreview(); updatePreview();
         if (n.url_externa) { document.getElementById('n-url').value = n.url_externa; setDeployStatus('✅', 'Já publicada no site', n.url_externa); }
         else { const ds = document.getElementById('ne-deploy-status'); if (ds) ds.style.display = 'none'; }
@@ -4250,15 +3757,11 @@
         const urlExterna = document.getElementById('n-url').value.trim() || null;
         const dbPayload = Object.assign({}, data._dbData, { url_externa: urlExterna });
         if (!dbPayload.titulo || !dbPayload.resumo) { toast('Preencha título e resumo.', 'error'); return; }
-        await withBtn('btn-save-noticia', '⏳ Salvando…', async () => {
-          try {
-            const isEdit = !!editingId.noticias;
-            if (isEdit) { await sbUpdate('noticias', editingId.noticias, dbPayload); }
-            else { await sbInsert('noticias', dbPayload); }
-            toast(isEdit ? '✅ Notícia atualizada!' : '✅ Notícia salva!', 'success');
-            closeNewsEditor(); loadNoticias(); loadDashboard();
-          } catch (e) { toast('❌ Erro ao salvar: ' + e.message, 'error'); }
-        });
+        try {
+          if (editingId.noticias) { await sbUpdate('noticias', editingId.noticias, dbPayload); toast('Notícia atualizada!', 'success'); }
+          else { await sbInsert('noticias', dbPayload); toast('Notícia salva!', 'success'); }
+          closeNewsEditor(); loadNoticias(); loadDashboard();
+        } catch (e) { toast('Erro: ' + e.message, 'error'); }
       }
 
       /* ══════════════════════════════════════════
@@ -4314,7 +3817,6 @@
         document.getElementById('v-titulo').value = v.titulo || '';
         document.getElementById('v-resumo').value = v.resumo || '';
         document.getElementById('ve-rte-body').innerHTML = v.descricao || '';
-        setTimeout(() => rteBindImgClicks('ve'), 100);
         document.getElementById('v-descricao').value = v.descricao || '';
         document.getElementById('v-local').value = v.local || 'Carauari/AM';
         document.getElementById('v-regime').value = v.regime || 'CLT';
@@ -4334,61 +3836,57 @@
         const titulo = document.getElementById('v-titulo').value.trim();
         const descricao = document.getElementById('ve-rte-body').innerHTML.trim();
         if (!titulo) { toast('Preencha o título da vaga.', 'error'); return; }
-        const btnId = forcePublish ? 'btn-save-vaga-pub' : 'btn-save-vaga-draft';
-        const btnLabel = forcePublish ? '⏳ Publicando…' : '⏳ Salvando…';
-        await withBtn(btnId, btnLabel, async () => {
 
-          const listaAnexos = veAnexos.length
-            ? veAnexos.map(ax => ({ nome: ax.nome, url: ax.url, tipo: ax.tipo || null }))
-            : null;
+        const listaAnexos = veAnexos.length
+          ? veAnexos.map(ax => ({ nome: ax.nome, url: ax.url, tipo: ax.tipo || null }))
+          : null;
 
-          // URL do edital: primeiro anexo ou campo legado
-          const editalUrl = listaAnexos ? listaAnexos[0].url : (document.getElementById('v-edital').value.trim() || null);
+        // URL do edital: primeiro anexo ou campo legado
+        const editalUrl = listaAnexos ? listaAnexos[0].url : (document.getElementById('v-edital').value.trim() || null);
 
-          const payloadFull = {
-            titulo,
-            descricao,
-            resumo: document.getElementById('v-resumo').value.trim() || null,
-            local: document.getElementById('v-local').value.trim() || 'Carauari/AM',
-            regime: document.getElementById('v-regime').value,
-            carga_horaria: document.getElementById('v-carga').value,
-            escolaridade: document.getElementById('v-escolaridade').value,
-            prazo: document.getElementById('v-prazo').value || null,
-            status: document.getElementById('v-status').value,
-            edital_url: editalUrl,
-            imagem_url: document.getElementById('v-imagem-url').value.trim() || null,
-            anexos: listaAnexos,
-          };
+        const payloadFull = {
+          titulo,
+          descricao,
+          resumo: document.getElementById('v-resumo').value.trim() || null,
+          local: document.getElementById('v-local').value.trim() || 'Carauari/AM',
+          regime: document.getElementById('v-regime').value,
+          carga_horaria: document.getElementById('v-carga').value,
+          escolaridade: document.getElementById('v-escolaridade').value,
+          prazo: document.getElementById('v-prazo').value || null,
+          status: document.getElementById('v-status').value,
+          edital_url: editalUrl,
+          imagem_url: document.getElementById('v-imagem-url').value.trim() || null,
+          anexos: listaAnexos,
+        };
 
-          const payloadSemAnexos = { ...payloadFull }; delete payloadSemAnexos.anexos;
-          const payloadSemImagem = { ...payloadSemAnexos }; delete payloadSemImagem.imagem_url; delete payloadSemImagem.resumo;
+        const payloadSemAnexos = { ...payloadFull }; delete payloadSemAnexos.anexos;
+        const payloadSemImagem = { ...payloadSemAnexos }; delete payloadSemImagem.imagem_url; delete payloadSemImagem.resumo;
 
-          const exec = async (payload) => {
-            if (editingId.vagas) return sbUpdate('vagas', editingId.vagas, payload);
-            return sbInsert('vagas', payload);
-          };
+        const exec = async (payload) => {
+          if (editingId.vagas) return sbUpdate('vagas', editingId.vagas, payload);
+          return sbInsert('vagas', payload);
+        };
 
-          const isSchemaErr = (msg) => msg && (msg.includes('column') || msg.includes('schema') || msg.includes('relation') || msg.includes('does not exist'));
-          const successMsg = editingId.vagas ? 'Vaga atualizada!' : (forcePublish ? 'Vaga publicada!' : 'Vaga salva como rascunho!');
+        const isSchemaErr = (msg) => msg && (msg.includes('column') || msg.includes('schema') || msg.includes('relation') || msg.includes('does not exist'));
+        const successMsg = editingId.vagas ? 'Vaga atualizada!' : (forcePublish ? 'Vaga publicada!' : 'Vaga salva como rascunho!');
 
-          try {
-            await exec(payloadFull);
-            toast('✅ ' + successMsg, 'success');
-            closeVagaEditor(); loadVagas(); loadDashboard(); return;
-          } catch (e1) { if (!isSchemaErr(e1.message)) { toast('❌ Erro: ' + e1.message, 'error'); return; } }
+        try {
+          await exec(payloadFull);
+          toast('✅ ' + successMsg, 'success');
+          closeVagaEditor(); loadVagas(); loadDashboard(); return;
+        } catch (e1) { if (!isSchemaErr(e1.message)) { toast('❌ Erro: ' + e1.message, 'error'); return; } }
 
-          try {
-            await exec(payloadSemAnexos);
-            toast('✅ ' + successMsg + ' (colunas extras não encontradas — execute o SQL de migração).', 'info');
-            closeVagaEditor(); loadVagas(); loadDashboard(); return;
-          } catch (e2) { if (!isSchemaErr(e2.message)) { toast('❌ Erro: ' + e2.message, 'error'); return; } }
+        try {
+          await exec(payloadSemAnexos);
+          toast('✅ ' + successMsg + ' (colunas extras não encontradas — execute o SQL de migração).', 'info');
+          closeVagaEditor(); loadVagas(); loadDashboard(); return;
+        } catch (e2) { if (!isSchemaErr(e2.message)) { toast('❌ Erro: ' + e2.message, 'error'); return; } }
 
-          try {
-            await exec(payloadSemImagem);
-            toast('✅ Vaga salva (modo básico). Execute o SQL de migração para habilitar todas as funcionalidades.', 'info');
-            closeVagaEditor(); loadVagas(); loadDashboard();
-          } catch (e3) { toast('❌ Erro ao salvar: ' + e3.message, 'error'); }
-        }); // fim withBtn
+        try {
+          await exec(payloadSemImagem);
+          toast('✅ Vaga salva (modo básico). Execute o SQL de migração para habilitar todas as funcionalidades.', 'info');
+          closeVagaEditor(); loadVagas(); loadDashboard();
+        } catch (e3) { toast('❌ Erro ao salvar: ' + e3.message, 'error'); }
       }
 
       /* ══════════════════════════════════════════
@@ -4476,7 +3974,6 @@
         document.getElementById('a-titulo').value = a.titulo || '';
         document.getElementById('a-resumo').value = a.resumo || '';
         document.getElementById('ae-rte-body').innerHTML = a.descricao || '';
-        setTimeout(() => rteBindImgClicks('ae'), 100);
         document.getElementById('a-descricao').value = a.descricao || '';
         document.getElementById('a-tipo').value = a.tipo || 'info';
         document.getElementById('a-data').value = a.data_pub || '';
@@ -4493,104 +3990,100 @@
         const titulo = document.getElementById('a-titulo').value.trim();
         const descricao = document.getElementById('ae-rte-body').innerHTML.trim();
         if (!titulo || !descricao) { toast('Preencha título e conteúdo.', 'error'); return; }
-        const btnId = forcePublish ? 'btn-save-aviso-pub' : 'btn-save-aviso-draft';
-        const btnLabel = forcePublish ? '⏳ Publicando…' : '⏳ Salvando…';
-        await withBtn(btnId, btnLabel, async () => {
 
-          const base = {
-            titulo,
-            descricao,
-            tipo: document.getElementById('a-tipo').value,
-            data_pub: document.getElementById('a-data').value || new Date().toISOString().split('T')[0],
-            publicado: forcePublish === true ? true : document.getElementById('a-publicado').checked,
-          };
+        const base = {
+          titulo,
+          descricao,
+          tipo: document.getElementById('a-tipo').value,
+          data_pub: document.getElementById('a-data').value || new Date().toISOString().split('T')[0],
+          publicado: forcePublish === true ? true : document.getElementById('a-publicado').checked,
+        };
 
-          // Monta lista de anexos para salvar
-          const listaAnexos = aeAnexos.length
-            ? aeAnexos.map(ax => ({ nome: ax.nome, url: ax.url, tipo: ax.tipo || null }))
-            : null;
+        // Monta lista de anexos para salvar
+        const listaAnexos = aeAnexos.length
+          ? aeAnexos.map(ax => ({ nome: ax.nome, url: ax.url, tipo: ax.tipo || null }))
+          : null;
 
-          // Payload completo (todas as colunas opcionais)
-          const payloadFull = {
-            ...base,
-            resumo: document.getElementById('a-resumo').value.trim() || null,
-            capa_url: document.getElementById('a-capa-url').value.trim() || null,
-            destaque: document.getElementById('a-destaque').checked,
-            anexos: listaAnexos,                           // coluna jsonb  [{nome,url,tipo}]
-            doc_url: listaAnexos ? listaAnexos[0].url : null, // retrocompat
-          };
+        // Payload completo (todas as colunas opcionais)
+        const payloadFull = {
+          ...base,
+          resumo: document.getElementById('a-resumo').value.trim() || null,
+          capa_url: document.getElementById('a-capa-url').value.trim() || null,
+          destaque: document.getElementById('a-destaque').checked,
+          anexos: listaAnexos,                           // coluna jsonb  [{nome,url,tipo}]
+          doc_url: listaAnexos ? listaAnexos[0].url : null, // retrocompat
+        };
 
-          // Payload sem a coluna "anexos" (caso ela não exista ainda no banco)
-          const payloadSemAnexos = { ...payloadFull };
-          delete payloadSemAnexos.anexos;
+        // Payload sem a coluna "anexos" (caso ela não exista ainda no banco)
+        const payloadSemAnexos = { ...payloadFull };
+        delete payloadSemAnexos.anexos;
 
-          // Payload mínimo absoluto (só colunas obrigatórias)
-          const payloadMin = { ...base };
+        // Payload mínimo absoluto (só colunas obrigatórias)
+        const payloadMin = { ...base };
 
-          const exec = async (payload) => {
-            if (editingId.avisos) return sbUpdate('avisos', editingId.avisos, payload);
-            return sbInsert('avisos', payload);
-          };
+        const exec = async (payload) => {
+          if (editingId.avisos) return sbUpdate('avisos', editingId.avisos, payload);
+          return sbInsert('avisos', payload);
+        };
 
-          const isSchemaErr = (msg) => msg && (
-            msg.includes('column') || msg.includes('schema') ||
-            msg.includes('relation') || msg.includes('does not exist')
-          );
+        const isSchemaErr = (msg) => msg && (
+          msg.includes('column') || msg.includes('schema') ||
+          msg.includes('relation') || msg.includes('does not exist')
+        );
 
-          const successMsg = forcePublish ? 'Aviso publicado!'
-            : (editingId.avisos ? 'Aviso atualizado!' : 'Aviso salvo!');
+        const successMsg = forcePublish ? 'Aviso publicado!'
+          : (editingId.avisos ? 'Aviso atualizado!' : 'Aviso salvo!');
 
-          // Tentativa 1 — payload completo (com coluna "anexos")
-          try {
-            await exec(payloadFull);
-            toast('✅ ' + successMsg, 'success');
-            closeAvisoEditor(); loadAvisos(); loadDashboard();
+        // Tentativa 1 — payload completo (com coluna "anexos")
+        try {
+          await exec(payloadFull);
+          toast('✅ ' + successMsg, 'success');
+          closeAvisoEditor(); loadAvisos(); loadDashboard();
+          return;
+        } catch (e1) {
+          if (!isSchemaErr(e1.message)) {
+            toast('❌ Erro: ' + e1.message, 'error');
             return;
-          } catch (e1) {
-            if (!isSchemaErr(e1.message)) {
-              toast('❌ Erro: ' + e1.message, 'error');
-              return;
-            }
           }
+        }
 
-          // Tentativa 2 — sem coluna "anexos" (coluna pode não existir no banco)
-          // Neste caso guardamos os anexos somente em doc_url (primeiro arquivo)
-          try {
-            await exec(payloadSemAnexos);
-            const aviso = listaAnexos
-              ? '⚠️ Aviso salvo, mas a coluna "anexos" não existe no banco. Execute o SQL:\n\nALTER TABLE avisos ADD COLUMN IF NOT EXISTS anexos jsonb;\n\nAssim todos os arquivos serão salvos corretamente.'
-              : '✅ ' + successMsg;
-            toast(aviso, listaAnexos ? 'info' : 'success');
+        // Tentativa 2 — sem coluna "anexos" (coluna pode não existir no banco)
+        // Neste caso guardamos os anexos somente em doc_url (primeiro arquivo)
+        try {
+          await exec(payloadSemAnexos);
+          const aviso = listaAnexos
+            ? '⚠️ Aviso salvo, mas a coluna "anexos" não existe no banco. Execute o SQL:\n\nALTER TABLE avisos ADD COLUMN IF NOT EXISTS anexos jsonb;\n\nAssim todos os arquivos serão salvos corretamente.'
+            : '✅ ' + successMsg;
+          toast(aviso, listaAnexos ? 'info' : 'success');
 
-            // Mostra instrução SQL em destaque se houver anexos perdidos
-            if (listaAnexos) {
-              const sqlHint = document.getElementById('ae-sql-hint');
-              if (sqlHint) {
-                sqlHint.style.display = 'block';
-                sqlHint.innerHTML = `<strong>⚠️ Coluna "anexos" não encontrada no banco.</strong><br>
+          // Mostra instrução SQL em destaque se houver anexos perdidos
+          if (listaAnexos) {
+            const sqlHint = document.getElementById('ae-sql-hint');
+            if (sqlHint) {
+              sqlHint.style.display = 'block';
+              sqlHint.innerHTML = `<strong>⚠️ Coluna "anexos" não encontrada no banco.</strong><br>
 Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
 <code style="display:block;margin-top:.4rem;padding:.5rem;background:rgba(0,0,0,.3);border-radius:4px;font-size:.75rem;user-select:all">ALTER TABLE avisos ADD COLUMN IF NOT EXISTS anexos jsonb;</code>`;
-              }
             }
+          }
 
-            closeAvisoEditor(); loadAvisos(); loadDashboard();
+          closeAvisoEditor(); loadAvisos(); loadDashboard();
+          return;
+        } catch (e2) {
+          if (!isSchemaErr(e2.message)) {
+            toast('❌ Erro: ' + e2.message, 'error');
             return;
-          } catch (e2) {
-            if (!isSchemaErr(e2.message)) {
-              toast('❌ Erro: ' + e2.message, 'error');
-              return;
-            }
           }
+        }
 
-          // Tentativa 3 — payload mínimo absoluto
-          try {
-            await exec(payloadMin);
-            toast('✅ Aviso salvo (modo básico). Algumas colunas opcionais não existem no banco.', 'info');
-            closeAvisoEditor(); loadAvisos(); loadDashboard();
-          } catch (e3) {
-            toast('❌ Erro ao salvar: ' + e3.message, 'error');
-          }
-        }); // fim withBtn
+        // Tentativa 3 — payload mínimo absoluto
+        try {
+          await exec(payloadMin);
+          toast('✅ Aviso salvo (modo básico). Algumas colunas opcionais não existem no banco.', 'info');
+          closeAvisoEditor(); loadAvisos(); loadDashboard();
+        } catch (e3) {
+          toast('❌ Erro ao salvar: ' + e3.message, 'error');
+        }
       }
 
       // RTE helpers para o editor de avisos
@@ -4706,7 +4199,6 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
 
       // Context menu
       function aeContextMenu(e) {
-        if (e.target.tagName === 'IMG') { e.preventDefault(); rteShowImgMenu(e, e.target, 'ae'); return; }
         const sel = window.getSelection();
         if (!sel || sel.isCollapsed) return;
         e.preventDefault();
@@ -4769,7 +4261,8 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
 
         try {
           await ensureValidToken();
-          const authToken = AuthStore.getToken() || sbKey;
+          const sessionToken = localStorage.getItem('asproc_token');
+          const authToken = sessionToken || sbKey;
 
           const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z]/g, '') || 'jpg';
           const nome = `capa-${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${ext}`;
@@ -4864,7 +4357,8 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
           if (hasSb) {
             try {
               await ensureValidToken();
-              const authToken = AuthStore.getToken() || sbKey;
+              const sessionToken = localStorage.getItem('asproc_token');
+              const authToken = sessionToken || sbKey;
 
               const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z0-9]/g, '') || 'bin';
               const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
@@ -5214,72 +4708,45 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
       const _origCloseModal = window.closeModal;
 
       async function updateCandStatus(id, novoStatus) {
-        const btnMap = { aprovado: 'cand-aprovar-btn', reprovado: 'cand-reprovar-btn', em_analise: 'cand-em-analise-btn' };
-        const labelMap = { aprovado: '⏳ Aprovando…', reprovado: '⏳ Reprovando…', em_analise: '⏳ Atualizando…' };
-        await withBtn(btnMap[novoStatus], labelMap[novoStatus] || '⏳ Atualizando…', async () => {
-          try {
-            await sbUpdate('candidaturas', id, { status: novoStatus });
-            const idx = allCandidaturas.findIndex(x => String(x.id) === String(id));
-            if (idx !== -1) allCandidaturas[idx].status = novoStatus;
-            atualizarBadgeCand();
-            const msgs = { aprovado: '✅ Candidatura aprovada!', reprovado: '❌ Candidatura reprovada.', em_analise: '🔍 Marcada como em análise.' };
-            const types = { aprovado: 'success', reprovado: 'info', em_analise: 'info' };
-            toast(msgs[novoStatus] || 'Status atualizado.', types[novoStatus] || 'success');
-            fecharModalCand();
-            applyCandFilters();
-            loadDashboard();
-          } catch (e) { toast('❌ Erro ao atualizar: ' + e.message, 'error'); }
-        });
+        try {
+          await sbUpdate('candidaturas', id, { status: novoStatus });
+
+          // Atualiza array local
+          const idx = allCandidaturas.findIndex(x => String(x.id) === String(id));
+          if (idx !== -1) allCandidaturas[idx].status = novoStatus;
+
+          atualizarBadgeCand();
+
+          const msgs = { aprovado: '✅ Candidatura aprovada!', reprovado: '❌ Candidatura reprovada.', em_analise: '🔍 Em análise.' };
+          const types = { aprovado: 'success', reprovado: 'info', em_analise: 'info' };
+          toast(msgs[novoStatus] || 'Status atualizado.', types[novoStatus] || 'success');
+
+          fecharModalCand();
+          applyCandFilters();   // re-renderiza cards com nova cor/badge
+          loadDashboard();
+        } catch (e) { toast('Erro ao atualizar: ' + e.message, 'error'); }
       }
 
       async function deleteCandidatura(id) {
-        const ok = await confirmDialog({
-          title: 'Excluir candidatura?',
-          message: 'A candidatura e todos os dados do candidato serão removidos permanentemente.',
-          confirmText: 'Sim, excluir',
-          confirmClass: 'btn-danger',
-        });
-        if (!ok) return;
-        const dismiss = toastLoading('Excluindo candidatura…');
+        if (!confirm('Excluir esta candidatura permanentemente?')) return;
         try {
           await sbDelete('candidaturas', id);
           allCandidaturas = allCandidaturas.filter(c => String(c.id) !== String(id));
-          dismiss();
-          toast('✅ Candidatura excluída.', 'success');
+          toast('Candidatura excluída.', 'info');
           fecharModalCand();
           atualizarBadgeCand();
           applyCandFilters();
           loadDashboard();
-        } catch (e) {
-          dismiss();
-          toast('❌ Erro ao excluir: ' + e.message, 'error');
-        }
+        } catch (e) { toast('Erro ao excluir: ' + e.message, 'error'); }
       }
 
       /* ══════════════════════════════════════════
          DELETE
       ══════════════════════════════════════════ */
       async function deleteItem(table, id, reloadFn) {
-        const labels = { noticias: 'notícia', vagas: 'vaga', avisos: 'aviso' };
-        const label = labels[table] || 'item';
-        const ok = await confirmDialog({
-          title: `Excluir ${label}?`,
-          message: 'Esta ação não pode ser desfeita. O conteúdo será removido permanentemente do banco de dados.',
-          confirmText: 'Sim, excluir',
-          confirmClass: 'btn-danger',
-        });
-        if (!ok) return;
-        const dismiss = toastLoading(`Excluindo ${label}…`);
-        try {
-          await sbDelete(table, id);
-          dismiss();
-          toast(`✅ ${label.charAt(0).toUpperCase() + label.slice(1)} excluída.`, 'success');
-          reloadFn();
-          loadDashboard();
-        } catch (e) {
-          dismiss();
-          toast('❌ Erro ao excluir: ' + e.message, 'error');
-        }
+        if (!confirm('Excluir este item? Esta ação não pode ser desfeita.')) return;
+        try { await sbDelete(table, id); toast('Item excluído.', 'info'); reloadFn(); loadDashboard(); }
+        catch (e) { toast('Erro ao excluir: ' + e.message, 'error'); }
       }
 
       /* ══════════════════════════════════════════
@@ -5360,80 +4827,12 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
       /* ══════════════════════════════════════════
          TOAST
       ══════════════════════════════════════════ */
-      function toast(msg, type = 'info', duration = 3500) {
+      function toast(msg, type = 'info') {
         const el = document.createElement('div');
         el.className = `toast ${type}`;
         el.textContent = msg;
         document.getElementById('toast-container').appendChild(el);
-        if (duration > 0) setTimeout(() => el.remove(), duration);
-        return el; // permite remover manualmente (ex: toasts de loading)
-      }
-
-      /** Toast com spinner animado — retorna função para fechar */
-      function toastLoading(msg) {
-        const el = document.createElement('div');
-        el.className = 'toast loading';
-        el.innerHTML = `<div class="toast-spinner"></div><span>${msg}</span>`;
-        document.getElementById('toast-container').appendChild(el);
-        return () => el.remove();
-      }
-
-      /**
-       * Trava um botão durante uma operação async e o restaura no final.
-       * @param {HTMLElement|string} btnOrId  — botão ou id do botão
-       * @param {string}             loadingText — texto exibido durante a operação
-       * @param {Function}           fn          — função async a executar
-       */
-      async function withBtn(btnOrId, loadingText, fn) {
-        const btn = typeof btnOrId === 'string'
-          ? document.getElementById(btnOrId)
-          : btnOrId;
-        if (!btn) return fn();
-        const original = btn.textContent;
-        const wasDisabled = btn.disabled;
-        btn.disabled = true;
-        btn.textContent = loadingText;
-        try {
-          return await fn();
-        } finally {
-          btn.disabled = wasDisabled;
-          btn.textContent = original;
-        }
-      }
-
-      /**
-       * Modal de confirmação customizado (substitui window.confirm).
-       * Retorna Promise<boolean>.
-       * @param {object} opts  — { title, message, confirmText, confirmClass }
-       */
-      function confirmDialog({ title = 'Confirmar', message = '', confirmText = 'Confirmar', confirmClass = 'btn-danger' } = {}) {
-        return new Promise(resolve => {
-          // Remove overlay anterior se existir
-          document.getElementById('confirm-overlay')?.remove();
-
-          const overlay = document.createElement('div');
-          overlay.id = 'confirm-overlay';
-          overlay.innerHTML = `
-            <div id="confirm-box">
-              <h4>${escHtml(title)}</h4>
-              <p>${escHtml(message)}</p>
-              <div class="confirm-actions">
-                <button class="btn btn-secondary btn-sm" id="confirm-cancel">Cancelar</button>
-                <button class="btn ${confirmClass} btn-sm" id="confirm-ok">${escHtml(confirmText)}</button>
-              </div>
-            </div>`;
-          document.body.appendChild(overlay);
-
-          const cleanup = (result) => {
-            overlay.remove();
-            resolve(result);
-          };
-
-          document.getElementById('confirm-ok').onclick = () => cleanup(true);
-          document.getElementById('confirm-cancel').onclick = () => cleanup(false);
-          overlay.addEventListener('click', e => { if (e.target === overlay) cleanup(false); });
-          document.getElementById('confirm-ok').focus();
-        });
+        setTimeout(() => el.remove(), 3500);
       }
 
       /* ══════════════════════════════════════════
@@ -5505,7 +4904,7 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
       function openNewsEditorNew() {
         editingId.noticias = null;
         document.getElementById('ne-topbar-title').textContent = 'Nova Notícia';
-        ['n-titulo', 'n-resumo', 'n-conteudo', 'n-url', 'n-imagem', 'n-autor', 'n-tags', 'n-slug', 'n-related'].forEach(id => document.getElementById(id).value = '');
+        ['n-titulo', 'n-resumo', 'n-conteudo', 'n-url', 'n-imagem', 'n-autor', 'n-tags', 'n-slug'].forEach(id => document.getElementById(id).value = '');
         document.getElementById('n-rte-body').innerHTML = '';
         document.getElementById('n-categoria').value = 'geral';
         document.getElementById('n-data').value = new Date().toISOString().split('T')[0];
@@ -5598,7 +4997,8 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
 
         try {
           await ensureValidToken();
-          const authToken = AuthStore.getToken() || sbKey;
+          const sessionToken = localStorage.getItem('asproc_token');
+          const authToken = sessionToken || sbKey;
 
           const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z]/g, '') || 'jpg';
           const nome = `capa-${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${ext}`;
@@ -5737,252 +5137,6 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         syncRteToHidden();
       }
 
-      /* ══════════════════════════════════════════
-         RTE IMAGE — Funções compartilhadas pelos
-         3 editores (n, ve, ae)
-      ══════════════════════════════════════════ */
-
-      // Mapa de editor → funções de sync e foco
-      const RTE_MAP = {
-        n: { bodyId: 'n-rte-body', sync: () => syncRteToHidden(), focus: () => document.getElementById('n-rte-body').focus() },
-        ve: { bodyId: 've-rte-body', sync: () => { if (typeof veSync === 'function') veSync(); }, focus: () => document.getElementById('ve-rte-body').focus() },
-        ae: { bodyId: 'ae-rte-body', sync: () => { if (typeof aeSync === 'function') aeSync(); }, focus: () => document.getElementById('ae-rte-body').focus() },
-      };
-
-      /** Insere um elemento <img> no editor identificado por editorId */
-      function rteInjectImage(editorId, src, alt) {
-        const map = RTE_MAP[editorId];
-        if (!map) return;
-        map.focus();
-        const img = document.createElement('img');
-        img.src = src;
-        img.alt = alt || '';
-        img.style.cssText = 'max-width:100%;height:auto;border-radius:8px;margin:1rem 0;display:block;';
-        img.onclick = () => rteImgClick(img, editorId);
-
-        // Tenta inserir na posição do cursor; senão append no fim
-        const sel = window.getSelection();
-        if (sel && sel.rangeCount > 0) {
-          const range = sel.getRangeAt(0);
-          const body = document.getElementById(map.bodyId);
-          if (body.contains(range.commonAncestorContainer)) {
-            range.deleteContents();
-            range.insertNode(img);
-            range.setStartAfter(img);
-            range.collapse(true);
-            sel.removeAllRanges();
-            sel.addRange(range);
-          } else {
-            body.appendChild(img);
-          }
-        } else {
-          document.getElementById(map.bodyId).appendChild(img);
-        }
-        map.sync();
-        rteBindImgClicks(editorId);
-      }
-
-      /** Abre prompt de URL e insere imagem */
-      function rteInsertImageUrl(editorId) {
-        const url = prompt('Cole a URL da imagem:');
-        if (!url || !url.trim()) return;
-        rteInjectImage(editorId, url.trim(), '');
-      }
-      window.rteInsertImageUrl = rteInsertImageUrl;
-
-      /** Upload de arquivo → lê como base64 → insere no editor */
-      async function rteInsertImageFile(input, editorId) {
-        const file = input.files && input.files[0];
-        if (!file) return;
-
-        // Validação com magic bytes (reutiliza validateImageFile do módulo de upload)
-        const validation = await validateImageFile(file, 5);
-        if (!validation.ok) { toast('❌ ' + validation.error, 'error'); input.value = ''; return; }
-
-        // Redimensiona antes de inserir (máx 1200px para conteúdo inline)
-        const blob = await resizeImageFile(file, 1200, 0.88);
-        const reader = new FileReader();
-        reader.onload = e => {
-          rteInjectImage(editorId, e.target.result, file.name.replace(/\.[^.]+$/, ''));
-          toast('🖼️ Imagem inserida no editor!', 'success');
-        };
-        reader.readAsDataURL(blob);
-        input.value = '';
-      }
-      window.rteInsertImageFile = rteInsertImageFile;
-
-      /** Handler de paste — captura imagens coladas da área de transferência */
-      async function rteHandlePaste(event, editorId) {
-        const items = event.clipboardData && event.clipboardData.items;
-        if (!items) return;
-        for (const item of items) {
-          if (item.type.startsWith('image/')) {
-            event.preventDefault();
-            const file = item.getAsFile();
-            if (!file) continue;
-            const validation = await validateImageFile(file, 5);
-            if (!validation.ok) { toast('❌ ' + validation.error, 'error'); return; }
-            const blob = await resizeImageFile(file, 1200, 0.88);
-            const reader = new FileReader();
-            reader.onload = e => {
-              rteInjectImage(editorId, e.target.result, 'imagem-colada');
-              toast('🖼️ Imagem colada no editor!', 'success');
-            };
-            reader.readAsDataURL(blob);
-            return; // só a primeira imagem
-          }
-        }
-        // Não é imagem — deixa o paste normal acontecer
-      }
-      window.rteHandlePaste = rteHandlePaste;
-
-      /** Handler de drag & drop — arquivos e imagens da web */
-      async function rteHandleDrop(event, editorId) {
-        event.preventDefault();
-        const dt = event.dataTransfer;
-
-        // 1) Arquivo local arrastado
-        if (dt.files && dt.files.length) {
-          const file = dt.files[0];
-          if (!file.type.startsWith('image/')) {
-            toast('❌ Somente imagens podem ser arrastadas para o editor.', 'error');
-            return;
-          }
-          const validation = await validateImageFile(file, 5);
-          if (!validation.ok) { toast('❌ ' + validation.error, 'error'); return; }
-          const blob = await resizeImageFile(file, 1200, 0.88);
-          const reader = new FileReader();
-          reader.onload = e => {
-            rteInjectImage(editorId, e.target.result, file.name);
-            toast('🖼️ Imagem arrastada inserida!', 'success');
-          };
-          reader.readAsDataURL(blob);
-          return;
-        }
-
-        // 2) URL de imagem arrastada da web
-        const url = dt.getData('text/uri-list') || dt.getData('text/plain');
-        if (url && /\.(jpg|jpeg|png|webp|gif|svg)(\?|$)/i.test(url)) {
-          rteInjectImage(editorId, url, 'imagem');
-          toast('🖼️ Imagem da web inserida!', 'success');
-        }
-      }
-      window.rteHandleDrop = rteHandleDrop;
-
-      /** Menu de contexto de imagem clicada dentro do editor */
-      let _rteImgMenuTarget = null;
-
-      function rteImgClick(img, editorId) {
-        // Remove seleção anterior
-        document.querySelectorAll('.rte-img-selected').forEach(i => i.classList.remove('rte-img-selected'));
-        img.classList.add('rte-img-selected');
-        _rteImgMenuTarget = { img, editorId };
-      }
-
-      function rteBindImgClicks(editorId) {
-        const body = document.getElementById(RTE_MAP[editorId]?.bodyId);
-        if (!body) return;
-        body.querySelectorAll('img').forEach(img => {
-          img.onclick = () => rteImgClick(img, editorId);
-          // Duplo clique → abre menu de tamanho
-          img.ondblclick = (e) => { e.preventDefault(); rteShowImgMenu(e, img, editorId); };
-        });
-      }
-
-      function rteShowImgMenu(e, img, editorId) {
-        e.preventDefault();
-        _rteImgMenuTarget = { img, editorId };
-        let menu = document.getElementById('rte-img-ctx-menu');
-        if (!menu) {
-          menu = document.createElement('div');
-          menu.id = 'rte-img-ctx-menu';
-          menu.className = 'rte-img-menu';
-          menu.innerHTML = `
-            <div class="rte-img-menu-title">Imagem</div>
-            <div class="rte-img-size-row">
-              <button class="rte-img-size-btn" onclick="rteImgResize('25%')">25%</button>
-              <button class="rte-img-size-btn" onclick="rteImgResize('50%')">50%</button>
-              <button class="rte-img-size-btn" onclick="rteImgResize('75%')">75%</button>
-              <button class="rte-img-size-btn" onclick="rteImgResize('100%')">100%</button>
-            </div>
-            <div class="rte-img-menu-title" style="margin-top:.3rem;">Alinhamento</div>
-            <div class="rte-img-size-row">
-              <button class="rte-img-size-btn" onclick="rteImgAlign('left')">⬅ Esq</button>
-              <button class="rte-img-size-btn" onclick="rteImgAlign('center')">☰ Centro</button>
-              <button class="rte-img-size-btn" onclick="rteImgAlign('right')">➡ Dir</button>
-            </div>
-            <div class="rte-img-menu-item danger" onclick="rteImgDelete()">🗑 Remover imagem</div>`;
-          document.body.appendChild(menu);
-          document.addEventListener('click', (ev) => {
-            if (!menu.contains(ev.target)) menu.style.display = 'none';
-          }, { once: false });
-        }
-        menu.style.display = 'block';
-        const x = Math.min(e.clientX, window.innerWidth - 230);
-        const y = Math.min(e.clientY, window.innerHeight - 220);
-        menu.style.left = x + 'px';
-        menu.style.top = y + 'px';
-      }
-      window.rteShowImgMenu = rteShowImgMenu;
-
-      function rteImgResize(pct) {
-        if (!_rteImgMenuTarget) return;
-        const { img, editorId } = _rteImgMenuTarget;
-        img.style.width = pct;
-        img.style.maxWidth = '100%';
-        RTE_MAP[editorId]?.sync();
-        document.getElementById('rte-img-ctx-menu').style.display = 'none';
-      }
-      window.rteImgResize = rteImgResize;
-
-      function rteImgAlign(align) {
-        if (!_rteImgMenuTarget) return;
-        const { img, editorId } = _rteImgMenuTarget;
-        img.style.display = 'block';
-        img.style.margin = align === 'center' ? '1rem auto'
-          : align === 'right' ? '1rem 0 1rem auto'
-            : '1rem auto 1rem 0';
-        RTE_MAP[editorId]?.sync();
-        document.getElementById('rte-img-ctx-menu').style.display = 'none';
-      }
-      window.rteImgAlign = rteImgAlign;
-
-      function rteImgDelete() {
-        if (!_rteImgMenuTarget) return;
-        const { img, editorId } = _rteImgMenuTarget;
-        img.remove();
-        RTE_MAP[editorId]?.sync();
-        document.getElementById('rte-img-ctx-menu').style.display = 'none';
-        _rteImgMenuTarget = null;
-      }
-      window.rteImgDelete = rteImgDelete;
-
-      /** Context menu de NOTÍCIAS (equivalente ao ve/ae que já existiam) */
-      function nContextMenu(e) {
-        // Se clicou numa imagem → mostra menu de imagem
-        if (e.target.tagName === 'IMG') {
-          e.preventDefault();
-          rteShowImgMenu(e, e.target, 'n');
-          return;
-        }
-        e.preventDefault();
-        rteSaveSelection();
-        const menu = document.getElementById('n-context-menu');
-        menu.style.display = 'block';
-        const x = Math.min(e.clientX, window.innerWidth - 250);
-        const y = Math.min(e.clientY, window.innerHeight - 400);
-        menu.style.left = x + 'px';
-        menu.style.top = y + 'px';
-        const hideOnClick = (ev) => { if (!menu.contains(ev.target)) nHideCtx(); document.removeEventListener('click', hideOnClick); };
-        setTimeout(() => document.addEventListener('click', hideOnClick), 0);
-      }
-      window.nContextMenu = nContextMenu;
-
-      function nHideCtx() {
-        document.getElementById('n-context-menu').style.display = 'none';
-      }
-      window.nHideCtx = nHideCtx;
-
       function rteInsertYouTube() {
         const input = prompt('Cole a URL ou ID do vídeo do YouTube:');
         if (!input) return;
@@ -6077,13 +5231,11 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
           destaque: document.getElementById('n-destaque').checked,
           publicado: document.getElementById('n-publicado').checked,
           slug: slugVal,
-          related_slugs: document.getElementById('n-related').value.trim() || null,
         };
         return Object.assign({}, dbData, {
           _slug: slugVal,
           _autor: document.getElementById('n-autor').value.trim() || null,
           _tags: document.getElementById('n-tags').value.trim() || null,
-          _related: document.getElementById('n-related').value.trim() || null,
           _dbData: dbData,
         });
       }
@@ -6100,8 +5252,6 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
       }
 
       function buildNoticiaPageHTML(data) {
-        // Injeta credenciais do Supabase configuradas pelo admin (nunca hardcoded)
-        const { url: cfg_url, key: cfg_key } = getSupabase();
         const catLbl = catLabel(data.categoria);
         const dateFmt = formatDateBR(data.data_pub);
         const autorTag = data._autor ? data._autor : '';
@@ -6122,84 +5272,6 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         const catIconMap = { pirarucu: '🐟', olea: '🌿', sanear: '💧', comercio: '🛒', vagas: '📋', geral: '📌' };
         const catIcon = catIconMap[data.categoria] || '📌';
         const year = new Date().getFullYear();
-
-        // ── NOTÍCIAS FIXADAS ("Leia Também" estático) ──
-        // Se _related tiver slugs, geramos HTML estático para a sidebar
-        // caso contrário, o JS em runtime busca dinamicamente do Supabase
-        let fixedRelatedSidebarHTML = '';
-        let fixedRelatedMobileHTML = '';
-        let relatedSidebarContent = `
-        <div id="related-list">
-          <div class="skel"><div class="skel-img"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
-          <div class="skel"><div class="skel-img"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
-          <div class="skel"><div class="skel-img"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
-        </div>`;
-        let relatedMobileContent = `
-          <div class="skel"><div class="skel-img"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
-          <div class="skel"><div class="skel-img"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
-          <div class="skel"><div class="skel-img"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line s"></div></div></div>`;
-
-        const relatedRaw = (data._related || '').trim();
-        if (relatedRaw) {
-          const relSlugs = relatedRaw.split(/[\n,]+/).map(s => s.trim()).filter(Boolean).slice(0, 4);
-          const catIconMap2 = { pirarucu: '🐟', olea: '🌿', sanear: '💧', comercio: '🛒', vagas: '📋', geral: '📌' };
-          const catLabelMap2 = { pirarucu: 'Pirarucu', olea: 'Oleaginosas', sanear: 'Saneamento', comercio: 'Comércio', vagas: 'Vagas', geral: 'Geral' };
-
-          // Tenta encontrar dados reais da notícia no allNoticias (carregado no admin)
-          function findRelated(sl) {
-            const pool = (typeof allNoticias !== 'undefined' && Array.isArray(allNoticias)) ? allNoticias : [];
-            const sl2 = sl.toLowerCase();
-            return pool.find(n => {
-              if (n.slug && n.slug.trim().toLowerCase() === sl2) return true;
-              if (n.titulo && slugify(n.titulo) === sl2) return true;
-              if (n.url_externa) {
-                const ext = n.url_externa.split('/').pop().replace(/\.html$/i, '').toLowerCase();
-                if (ext === sl2 || ext.startsWith(sl2) || sl2.startsWith(ext)) return true;
-              }
-              return false;
-            });
-          }
-
-          function buildRelatedCardHTML(sl, side) {
-            const n = findRelated(sl);
-            const url = n ? (n.url_externa || `https://www.asproc.com.br/noticias/${sl}.html`) : `https://www.asproc.com.br/noticias/${sl}.html`;
-            const titulo = n ? n.titulo : sl.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-            const cat = n ? (n.categoria || 'geral') : 'geral';
-            const lbl = catLabelMap2[cat] || 'Geral';
-            const icon = catIconMap2[cat] || '📌';
-            const imgUrl = n ? (n.imagem_url || '') : '';
-            const dateStr = n ? formatDateBR(n.data_pub) : '';
-
-            if (side === 'sidebar') {
-              const imgHtml = imgUrl
-                ? `<img class="rel-img" src="${imgUrl}" alt="${titulo.replace(/"/g, '&quot;')}" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">`
-                + `<div class="rel-ph" style="display:none">${icon}</div>`
-                : `<div class="rel-ph">${icon}</div>`;
-              return `<a class="rel-card" href="${url}" data-fixed-slug="${sl}">`
-                + imgHtml
-                + `<div class="rel-info"><div class="rel-cat-lbl">${lbl}</div>`
-                + `<div class="rel-title">${titulo}</div>`
-                + `<div class="rel-date">${dateStr}</div></div></a>`;
-            } else {
-              const imgHtml = imgUrl
-                ? `<img class="rel-mobile-img" src="${imgUrl}" alt="${titulo.replace(/"/g, '&quot;')}" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">`
-                + `<div class="rel-mobile-ph" style="display:none">${icon}</div>`
-                : `<div class="rel-mobile-ph">${icon}</div>`;
-              return `<a class="rel-mobile-card" href="${url}" data-fixed-slug="${sl}">`
-                + imgHtml
-                + `<div class="rel-mobile-info"><div class="rel-mobile-cat">${lbl}</div>`
-                + `<div class="rel-mobile-title">${titulo}</div>`
-                + `<div class="rel-mobile-date">${dateStr}</div></div></a>`;
-            }
-          }
-
-          const fixedCardsHTML = relSlugs.map(sl => buildRelatedCardHTML(sl, 'sidebar')).join('');
-          const fixedMobileCardsHTML = relSlugs.map(sl => buildRelatedCardHTML(sl, 'mobile')).join('');
-
-          // data-fixed-slugs mantido para que o JS runtime possa atualizar imagens se necessário
-          relatedSidebarContent = `<div id="related-list" data-fixed-slugs="${relSlugs.join(',')}">${fixedCardsHTML}</div>`;
-          relatedMobileContent = `<div class="rel-mobile-list" id="related-list-mobile" data-fixed-slugs="${relSlugs.join(',')}">${fixedMobileCardsHTML}</div>`;
-        }
 
         return `<!DOCTYPE html>
 <html lang="pt-BR">
@@ -6603,7 +5675,11 @@ footer{background:var(--superficie);border-top:1px solid var(--borda);padding:3.
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13"><path d="M2 4h12M2 8h8M2 12h10"/></svg>
         Leia também
       </div>
-      ${relatedSidebarContent}
+      <div id="related-list">
+        <div class="skel"><div class="skel-img"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
+        <div class="skel"><div class="skel-img"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
+        <div class="skel"><div class="skel-img"></div><div class="skel-lines"><div class="skel-line"></div><div class="skel-line s"></div></div></div>
+      </div>
     </div>
 
     <!-- VAGAS -->
@@ -6620,12 +5696,35 @@ footer{background:var(--superficie);border-top:1px solid var(--borda);padding:3.
 
 <!-- LEIA TAMBÉM MOBILE (visível apenas em ≤1024px) -->
 <section class="leia-mobile" id="leiaMobileSection">
-  <div class="leia-mobile-header">
-    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13"><path d="M2 4h12M2 8h8M2 12h10"/></svg>
-    📌 Leia também
-  </div>
-  ${relatedMobileContent}
-</section>
+  <div id="sidebar-recentes-list">
+                            <a class="sni" href="https://www.asproc.com.br/noticias/justica-social-na-pratica-como-o-crcs-transforma-a-realidade-ribeirinha-no-medio.html" target="_blank" rel="noopener" style="display:flex;text-decoration:none;cursor:pointer">
+                                <div class="sni-img"><img src="https://wiatqtiyiznscjyoxxww.supabase.co/storage/v1/object/public/imagens/noticias/capa-1776549593019-hzw52.jpeg" alt="" loading="lazy"></div>
+                                <div>
+                                    <div class="sni-t">Justiça Social na Prática: Como o CRCS transforma a realidade ribeirinha no Médio Juruá</div>
+                                    <div class="sni-d">Abril 2026</div>
+                                </div>
+                            </a>
+                            <a class="sni" href="https://www.asproc.com.br/noticias/cadeia-produtiva-da-borracha-nativa-no-medio-jurua-ganha-forca-com-o-trabalho-co.html" target="_blank" rel="noopener" style="display:flex;text-decoration:none;cursor:pointer">
+                                <div class="sni-img"><img src="https://asproc.org.br/wp-content/uploads/2026/03/image-2.jpeg" alt="" loading="lazy"></div>
+                                <div>
+                                    <div class="sni-t">Cadeia produtiva da borracha nativa no Médio Juruá ganha força com o trabalho coletivo da ASPROC no escoamento</div>
+                                    <div class="sni-d">Abril 2026</div>
+                                </div>
+                            </a>
+                            <a class="sni" href="https://www.asproc.com.br/noticias/asproc-supera-desafios-logisticos-e-realiza-capacitacoes-do-sanear-amazonia-em-2.html" target="_blank" rel="noopener" style="display:flex;text-decoration:none;cursor:pointer">
+                                <div class="sni-img"><img src="https://asproc.org.br/wp-content/uploads/2026/01/Capacitacao-Pedreiros-Jordao_Janeiro-2026-34-1024x768.jpeg" alt="" loading="lazy"></div>
+                                <div>
+                                    <div class="sni-t">ASPROC supera desafios logísticos e realiza capacitações do Sanear Amazônia em 2025</div>
+                                    <div class="sni-d">Abril 2026</div>
+                                </div>
+                            </a>
+                            <a class="sni" href="https://www.asproc.com.br/noticias/viagem-de-comercializacao-da-asproc-aos-polos-do-comercio-ribeirinho-fortalece-a.html" target="_blank" rel="noopener" style="display:flex;text-decoration:none;cursor:pointer">
+                                <div class="sni-img"><img src="https://wiatqtiyiznscjyoxxww.supabase.co/storage/v1/object/public/imagens/noticias/capa-1776371349930-nwptn.png" alt="" loading="lazy"></div>
+                                <div>
+                                    <div class="sni-t">Viagem de Comercialização da ASPROC aos polos do Comércio Ribeirinho fortalece a sociobiodiversidade com abastecimento, acesso a mercados e fomento agroflorestal</div>
+                                    <div class="sni-d">Abril 2026</div>
+                                </div>
+                            </a></div>
 
 <!-- MAIS NOTÍCIAS (grade no rodapé do artigo) -->
 <section class="more-news" id="moreNewsSection" style="display:none">
@@ -6672,9 +5771,8 @@ footer{background:var(--superficie);border-top:1px solid var(--borda);padding:3.
 
 <script>
 // ── CONFIG SUPABASE ──
-// Credenciais injetadas dinamicamente pelo admin durante publicação
-const SB_URL='${cfg_url}';
-const SB_KEY='${cfg_key}';
+const SB_URL='https://wiatqtiyiznscjyoxxww.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpYXRxdGl5aXpuc2NqeW94eHd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1Njc0MDEsImV4cCI6MjA5MTE0MzQwMX0.xgaaZWX5kG3XowDtpR9Xd8S2S0nV-JTnv4ZwnP33PY8';
 const CAT_ICONS={pirarucu:'🐟',olea:'🌿',sanear:'💧',comercio:'🛒',vagas:'📋',geral:'📌'};
 const CAT_LABEL={pirarucu:'Pirarucu',olea:'Oleaginosas',sanear:'Saneamento',comercio:'Comércio',vagas:'Vagas',geral:'Geral'};
 
@@ -6822,129 +5920,45 @@ async function loadRelated(){
   var list=document.getElementById('related-list');
   var listMobile=document.getElementById('related-list-mobile');
   if(!list&&!listMobile)return;
-
-  // Verifica se há slugs fixados pelo admin
-  var fixedSlugsRaw=(list&&list.dataset.fixedSlugs)||(listMobile&&listMobile.dataset&&listMobile.dataset.fixedSlugs)||'';
-  var fixedSlugs=fixedSlugsRaw?fixedSlugsRaw.split(',').map(function(s){return s.trim();}).filter(Boolean):[];
-
   var data;
   try{
-    data=await sbGet('noticias','select=titulo,categoria,data_pub,imagem_url,url_externa,slug&order=data_pub.desc&limit=60');
+    data=await sbGet('noticias','select=titulo,categoria,data_pub,imagem_url,url_externa,slug&order=data_pub.desc&limit=30');
     if(!Array.isArray(data)||!data.length)data=MOCK_NOTICIAS;
   }catch(e){
     data=MOCK_NOTICIAS;
   }
-
-  // Função de match robusta: tenta slug exato, slug gerado do título, e slug extraído da url_externa
-  function matchBySlug(d,sl){
-    if(!sl)return false;
-    var sl2=sl.toLowerCase();
-    if(d.slug&&d.slug.trim().toLowerCase()===sl2)return true;
-    if(d.titulo&&slugify(d.titulo)===sl2)return true;
-    if(d.url_externa){
-      var ext=d.url_externa.split('/').pop().replace(/\.html$/i,'').toLowerCase();
-      if(ext===sl2)return true;
-      // match parcial: o slug pode estar truncado em 80 chars
-      if(ext.startsWith(sl2)||sl2.startsWith(ext))return true;
-    }
-    return false;
+  var filtered=data.filter(function(n){
+    return n.titulo&&!isCurrent(n);
+  }).slice(0,4);
+  if(!filtered.length){
+    var empty='<p style="font-size:.8rem;color:rgba(245,240,232,.25);padding:.5rem 0;">Mais conteúdo em breve.</p>';
+    if(list)list.innerHTML=empty;
+    if(listMobile)listMobile.innerHTML=empty;
+    return;
   }
-
-  if(fixedSlugs.length){
-    // Modo FIXADO: reconstrói os cards com dados reais do banco
-    function buildFixedCard(sl,n,side){
+  /* ── SIDEBAR HTML ── */
+  if(list){
+    list.innerHTML=filtered.map(function(n){
       var icon=CAT_ICONS[n.categoria]||'📌';
       var lbl=CAT_LABEL[n.categoria]||n.categoria||'Geral';
       var url=noticiaUrl(n);
-      var date=fmtDate(n.data_pub);
-      if(side==='sidebar'){
-        var imgHtml=n.imagem_url
-          ?'<img class="rel-img" src="'+n.imagem_url+'" alt="'+n.titulo+'" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">'
-            +'<div class="rel-ph" style="display:none">'+icon+'</div>'
-          :'<div class="rel-ph">'+icon+'</div>';
-        return '<a class="rel-card" href="'+url+'" data-fixed-slug="'+sl+'">'
-          +imgHtml
-          +'<div class="rel-info">'
-          +'<div class="rel-cat-lbl">'+lbl+'</div>'
-          +'<div class="rel-title">'+n.titulo+'</div>'
-          +'<div class="rel-date">'+date+'</div>'
-          +'</div></a>';
-      } else {
-        var mimgHtml=n.imagem_url
-          ?'<img class="rel-mobile-img" src="'+n.imagem_url+'" alt="'+n.titulo+'" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">'
-            +'<div class="rel-mobile-ph" style="display:none">'+icon+'</div>'
-          :'<div class="rel-mobile-ph">'+icon+'</div>';
-        return '<a class="rel-mobile-card" href="'+url+'" data-fixed-slug="'+sl+'">'
-          +mimgHtml
-          +'<div class="rel-mobile-info">'
-          +'<div class="rel-mobile-cat">'+lbl+'</div>'
-          +'<div class="rel-mobile-title">'+n.titulo+'</div>'
-          +'<div class="rel-mobile-date">'+date+'</div>'
-          +'</div></a>';
-      }
-    }
-
-    var sidebarCards='', mobileCards='';
-    fixedSlugs.forEach(function(sl){
-      var n=data.find(function(d){return matchBySlug(d,sl);});
-      if(!n){
-        // Notícia não encontrada no banco: mostra card com slug como texto e link direto
-        var url='https://www.asproc.com.br/noticias/'+sl+'.html';
-        var titulo=sl.replace(/-/g,' ').replace(/\w/g,function(c){return c.toUpperCase();});
-        sidebarCards+='<a class="rel-card" href="'+url+'" data-fixed-slug="'+sl+'">'
-          +'<div class="rel-ph">📰</div>'
-          +'<div class="rel-info"><div class="rel-cat-lbl">Notícia</div>'
-          +'<div class="rel-title">'+titulo+'</div>'
-          +'<div class="rel-date"></div></div></a>';
-        mobileCards+='<a class="rel-mobile-card" href="'+url+'" data-fixed-slug="'+sl+'">'
-          +'<div class="rel-mobile-ph">📰</div>'
-          +'<div class="rel-mobile-info"><div class="rel-mobile-cat">Notícia</div>'
-          +'<div class="rel-mobile-title">'+titulo+'</div>'
-          +'<div class="rel-mobile-date"></div></div></a>';
-        return;
-      }
-      sidebarCards+=buildFixedCard(sl,n,'sidebar');
-      mobileCards+=buildFixedCard(sl,n,'mobile');
-    });
-
-    if(list)list.innerHTML=sidebarCards;
-    if(listMobile)listMobile.innerHTML=mobileCards;
-
-  } else {
-    // Modo DINÂMICO: exibe as 4 mais recentes exceto a atual
-    var filtered=data.filter(function(n){
-      return n.titulo&&!isCurrent(n);
-    }).slice(0,4);
-    if(!filtered.length){
-      var empty='<p style="font-size:.8rem;color:rgba(245,240,232,.25);padding:.5rem 0;">Mais conteúdo em breve.</p>';
-      if(list)list.innerHTML=empty;
-      if(listMobile)listMobile.innerHTML=empty;
-      return;
-    }
-    /* ── SIDEBAR HTML ── */
-    if(list){
-      list.innerHTML=filtered.map(function(n){
-        var icon=CAT_ICONS[n.categoria]||'📌';
-        var lbl=CAT_LABEL[n.categoria]||n.categoria||'Geral';
-        var url=noticiaUrl(n);
-        var img=n.imagem_url
-          ?'<img class="rel-img" src="'+n.imagem_url+'" alt="" loading="lazy" onerror="this.outerHTML=\'<div class=\\"rel-ph\\">'+icon+'</div>\'">'
-          :'<div class="rel-ph">'+icon+'</div>';
-        return '<a class="rel-card" href="'+url+'">'+img+'<div class="rel-info"><div class="rel-cat-lbl">'+lbl+'</div><div class="rel-title">'+n.titulo+'</div><div class="rel-date">'+fmtDate(n.data_pub)+'</div></div></a>';
-      }).join('');
-    }
-    /* ── MOBILE HTML ── */
-    if(listMobile){
-      listMobile.innerHTML=filtered.map(function(n){
-        var icon=CAT_ICONS[n.categoria]||'📌';
-        var lbl=CAT_LABEL[n.categoria]||n.categoria||'Geral';
-        var url=noticiaUrl(n);
-        var img=n.imagem_url
-          ?'<img class="rel-mobile-img" src="'+n.imagem_url+'" alt="" loading="lazy" onerror="this.outerHTML=\'<div class=\\"rel-mobile-ph\\">'+icon+'</div>\'">'
-          :'<div class="rel-mobile-ph">'+icon+'</div>';
-        return '<a class="rel-mobile-card" href="'+url+'">'+img+'<div class="rel-mobile-info"><div class="rel-mobile-cat">'+lbl+'</div><div class="rel-mobile-title">'+n.titulo+'</div><div class="rel-mobile-date">'+fmtDate(n.data_pub)+'</div></div></a>';
-      }).join('');
-    }
+      var img=n.imagem_url
+        ?'<img class="rel-img" src="'+n.imagem_url+'" alt="" loading="lazy" onerror="this.outerHTML=\'<div class=\\"rel-ph\\">'+icon+'</div>\'">'
+        :'<div class="rel-ph">'+icon+'</div>';
+      return '<a class="rel-card" href="'+url+'">'+img+'<div class="rel-info"><div class="rel-cat-lbl">'+lbl+'</div><div class="rel-title">'+n.titulo+'</div><div class="rel-date">'+fmtDate(n.data_pub)+'</div></div></a>';
+    }).join('');
+  }
+  /* ── MOBILE HTML ── */
+  if(listMobile){
+    listMobile.innerHTML=filtered.map(function(n){
+      var icon=CAT_ICONS[n.categoria]||'📌';
+      var lbl=CAT_LABEL[n.categoria]||n.categoria||'Geral';
+      var url=noticiaUrl(n);
+      var img=n.imagem_url
+        ?'<img class="rel-mobile-img" src="'+n.imagem_url+'" alt="" loading="lazy" onerror="this.outerHTML=\'<div class=\\"rel-mobile-ph\\">'+icon+'</div>\'">'
+        :'<div class="rel-mobile-ph">'+icon+'</div>';
+      return '<a class="rel-mobile-card" href="'+url+'">'+img+'<div class="rel-mobile-info"><div class="rel-mobile-cat">'+lbl+'</div><div class="rel-mobile-title">'+n.titulo+'</div><div class="rel-mobile-date">'+fmtDate(n.data_pub)+'</div></div></a>';
+    }).join('');
   }
 }
 
@@ -7032,136 +6046,31 @@ document.addEventListener('DOMContentLoaded',function(){
       ══════════════════════════════════════════ */
       const GH_OWNER = 'asprocassociacao1-del', GH_REPO = 'asproc', GH_BRANCH = 'main';
       const GH_BASE_URL = `https://www.asproc.com.br`;
-      const GH_TOKEN_KEY = 'asproc_gh_token';        // chave criptografada no localStorage
-      const GH_TOKEN_SESSION_KEY = 'asproc_gh_token_s'; // token em texto puro só na sessão
-      const GH_SALT_KEY = 'asproc_gh_salt';             // salt PBKDF2 persistido
+      const GH_TOKEN_KEY = 'asproc_gh_token';
 
-      /* ── Web Crypto helpers ── */
-      async function _ghDeriveKey(salt) {
-        // Chave derivada do origin + salt aleatório via PBKDF2
-        // Não é um segredo perfeito (quem tem acesso à máquina vê o salt),
-        // mas elimina a exposição por XSS: um script injetado não consegue
-        // reconstruir a chave sem executar no mesmo contexto de origem.
-        const enc = new TextEncoder();
-        const baseKey = await crypto.subtle.importKey(
-          'raw', enc.encode(location.origin + '/asproc-gh'),
-          'PBKDF2', false, ['deriveKey']
-        );
-        return crypto.subtle.deriveKey(
-          { name: 'PBKDF2', salt, iterations: 100000, hash: 'SHA-256' },
-          baseKey,
-          { name: 'AES-GCM', length: 256 },
-          false, ['encrypt', 'decrypt']
-        );
-      }
+      function getGhToken() { return sessionStorage.getItem(GH_TOKEN_KEY) || localStorage.getItem(GH_TOKEN_KEY) || ''; }
 
-      async function _ghEncrypt(plaintext) {
-        const enc = new TextEncoder();
-        const salt = crypto.getRandomValues(new Uint8Array(16));
-        const iv = crypto.getRandomValues(new Uint8Array(12));
-        const key = await _ghDeriveKey(salt);
-        const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, enc.encode(plaintext));
-        // Serializa: salt(16) + iv(12) + ciphertext → base64
-        const buf = new Uint8Array(16 + 12 + ct.byteLength);
-        buf.set(salt, 0); buf.set(iv, 16); buf.set(new Uint8Array(ct), 28);
-        return btoa(String.fromCharCode(...buf));
-      }
-
-      async function _ghDecrypt(b64) {
-        try {
-          const buf = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
-          const salt = buf.slice(0, 16);
-          const iv = buf.slice(16, 28);
-          const ct = buf.slice(28);
-          const key = await _ghDeriveKey(salt);
-          const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ct);
-          return new TextDecoder().decode(pt);
-        } catch { return ''; }
-      }
-
-      /* ── Lê token: sessionStorage (plain) → localStorage (encrypted) ── */
-      async function getGhTokenAsync() {
-        const sess = sessionStorage.getItem(GH_TOKEN_SESSION_KEY);
-        if (sess) return sess;
-        const enc = localStorage.getItem(GH_TOKEN_KEY);
-        if (!enc) return '';
-        const token = await _ghDecrypt(enc);
-        if (token) sessionStorage.setItem(GH_TOKEN_SESSION_KEY, token); // cacheia na sessão
-        return token;
-      }
-
-      /* Versão síncrona para compatibilidade — retorna da sessionStorage apenas */
-      function getGhToken() { return sessionStorage.getItem(GH_TOKEN_SESSION_KEY) || ''; }
-
-      /* ── Carrega do Supabase (fonte primária) → sessionStorage apenas ── */
       async function loadGhTokenFromSupabase() {
         try {
           const rows = await sbSelect('app_config', 'select=value&key=eq.gh_token&limit=1');
           if (rows && rows.length && rows[0].value) {
-            sessionStorage.setItem(GH_TOKEN_SESSION_KEY, rows[0].value);
-          } else {
-            // Supabase não tem token — tenta descriptografar do localStorage
-            await getGhTokenAsync();
+            sessionStorage.setItem(GH_TOKEN_KEY, rows[0].value);
           }
-        } catch (_) {
-          // Supabase indisponível — tenta localStorage criptografado
-          await getGhTokenAsync();
-        }
+        } catch (_) { /* token não está no banco, usuário configura manualmente */ }
       }
 
-      /* ── Salva token com criptografia AES-GCM ── */
-      async function saveGithubToken() {
-        const raw = (document.getElementById('cfg-gh-token').value || '').trim();
-        if (!raw) { toast('Cole o token antes de salvar.', 'error'); return; }
-        if (!raw.startsWith('ghp_') && !raw.startsWith('github_pat_')) {
+      function saveGithubToken() {
+        const token = (document.getElementById('cfg-gh-token').value || '').trim();
+        if (!token) { toast('Cole o token antes de salvar.', 'error'); return; }
+        if (!token.startsWith('ghp_') && !token.startsWith('github_pat_')) {
           toast('Token inválido. Deve começar com ghp_ ou github_pat_', 'error'); return;
         }
-        try {
-          const btn = document.getElementById('btn-save-gh-token');
-          if (btn) { btn.disabled = true; btn.textContent = '🔐 Cifrando…'; }
-
-          const encrypted = await _ghEncrypt(raw);
-          localStorage.setItem(GH_TOKEN_KEY, encrypted);
-          sessionStorage.setItem(GH_TOKEN_SESSION_KEY, raw); // sessão corrente
-
-          // Limpa o campo e exibe máscara — nunca mostra o token real
-          document.getElementById('cfg-gh-token').value = '';
-          document.getElementById('cfg-gh-token').placeholder = _ghMaskToken(raw);
-
-          const statusEl = document.getElementById('gh-token-status');
-          if (statusEl) {
-            statusEl.style.display = 'block';
-            statusEl.textContent = '🔐 Token salvo e cifrado neste dispositivo.';
-          }
-          toast('✅ Token GitHub cifrado e salvo!', 'success');
-        } catch (e) {
-          toast('❌ Erro ao cifrar token: ' + e.message, 'error');
-        } finally {
-          const btn = document.getElementById('btn-save-gh-token');
-          if (btn) { btn.disabled = false; btn.textContent = 'Salvar Token'; }
-        }
-      }
-
-      /* Remove token de todos os storages */
-      function removeGithubToken() {
-        localStorage.removeItem(GH_TOKEN_KEY);
-        sessionStorage.removeItem(GH_TOKEN_SESSION_KEY);
-        document.getElementById('cfg-gh-token').value = '';
-        document.getElementById('cfg-gh-token').placeholder = 'ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxx';
-        const statusEl = document.getElementById('gh-token-status');
-        if (statusEl) { statusEl.style.display = 'none'; }
-        toast('🗑 Token GitHub removido.', 'success');
-      }
-      window.removeGithubToken = removeGithubToken;
-
-      function _ghMaskToken(token) {
-        if (!token || token.length < 8) return '••••••••••••';
-        const prefix = token.slice(0, token.indexOf('_') + 1) || token.slice(0, 4);
-        return prefix + '•'.repeat(Math.min(token.length - prefix.length, 36));
+        localStorage.setItem(GH_TOKEN_KEY, token);
+        toast('✅ Token GitHub salvo!', 'success');
       }
 
       async function ghFetch(endpoint, opts) {
-        const token = await getGhTokenAsync();
+        const token = getGhToken();
         if (!token) throw new Error('Token GitHub não configurado. Vá em Configurações.');
         const res = await fetch('https://api.github.com' + endpoint, Object.assign({
           headers: {
@@ -7209,60 +6118,58 @@ document.addEventListener('DOMContentLoaded',function(){
         syncRteToHidden();
         const data = dataOverride || getNoticiaData();
         if (!data.titulo) { toast('Preencha o título antes de publicar.', 'error'); return; }
-        const token = await getGhTokenAsync();
+        const token = getGhToken();
         if (!token) {
           toast('Configure o token do GitHub em Configurações.', 'error'); goTo('configuracoes',
             document.querySelector('[onclick*=configuracoes]')); return;
         }
-        await withBtn('btn-gh-publish', '⏳ Publicando…', async () => {
 
-          const slug = data._slug || slugify(data.titulo) || ('noticia-' + Date.now());
-          const filePath = `noticias/${slug}.html`;
-          const publicUrl = `${GH_BASE_URL}/${filePath}`;
-          const html = buildNoticiaPageHTML(data);
-          const b64 = btoa(unescape(encodeURIComponent(html)));
+        const slug = data._slug || slugify(data.titulo) || ('noticia-' + Date.now());
+        const filePath = `noticias/${slug}.html`;
+        const publicUrl = `${GH_BASE_URL}/${filePath}`;
+        const html = buildNoticiaPageHTML(data);
+        const b64 = btoa(unescape(encodeURIComponent(html)));
 
-          setDeployStatus('⏳', 'Verificando arquivo no repositório…', null);
+        setDeployStatus('⏳', 'Verificando arquivo no repositório…', null);
 
+        try {
+          let existingSha = null;
           try {
-            let existingSha = null;
-            try {
-              const existing = await ghFetch(`/repos/${GH_OWNER}/${GH_REPO}/contents/${filePath}?ref=${GH_BRANCH}`);
-              existingSha = existing.sha;
-            } catch (e) { if (!e.message.includes('404') && !e.message.includes('Not Found')) throw e; }
+            const existing = await ghFetch(`/repos/${GH_OWNER}/${GH_REPO}/contents/${filePath}?ref=${GH_BRANCH}`);
+            existingSha = existing.sha;
+          } catch (e) { if (!e.message.includes('404') && !e.message.includes('Not Found')) throw e; }
 
-            setDeployStatus('⏳', existingSha ? 'Atualizando página…' : 'Publicando nova página…', null);
+          setDeployStatus('⏳', existingSha ? 'Atualizando página…' : 'Publicando nova página…', null);
 
-            const body = {
-              message: (existingSha ? 'Atualiza' : 'Publica') + ' notícia: ' + data.titulo, content: b64, branch:
-                GH_BRANCH
-            };
-            if (existingSha) body.sha = existingSha;
+          const body = {
+            message: (existingSha ? 'Atualiza' : 'Publica') + ' notícia: ' + data.titulo, content: b64, branch:
+              GH_BRANCH
+          };
+          if (existingSha) body.sha = existingSha;
 
-            await ghFetch(`/repos/${GH_OWNER}/${GH_REPO}/contents/${filePath}`, { method: 'PUT', body: JSON.stringify(body) });
+          await ghFetch(`/repos/${GH_OWNER}/${GH_REPO}/contents/${filePath}`, { method: 'PUT', body: JSON.stringify(body) });
 
-            setDeployStatus('✅', existingSha ? 'Página atualizada!' : 'Página publicada!', publicUrl);
-            document.getElementById('n-url').value = publicUrl;
-            toast(`✅ Publicado em ${publicUrl}`, 'success');
+          setDeployStatus('✅', existingSha ? 'Página atualizada!' : 'Página publicada!', publicUrl);
+          document.getElementById('n-url').value = publicUrl;
+          toast(`✅ Publicado em ${publicUrl}`, 'success');
 
-            if (editingId.noticias) {
-              try { await sbUpdate('noticias', editingId.noticias, { url_externa: publicUrl }); } catch { }
-            }
-            if (!editingId.noticias && data._dbData && data._dbData.titulo) {
-              try {
-                const dbPayload = Object.assign({}, data._dbData, { url_externa: publicUrl });
-                const inserted = await sbInsert('noticias', dbPayload);
-                if (inserted && inserted[0]) { editingId.noticias = inserted[0].id; loadNoticias(); loadDashboard(); }
-              } catch { }
-            }
-            setTimeout(() => toast('ℹ️ GitHub Pages leva ~1 min para atualizar. A URL já está salva!', 'info'), 3000);
-            return publicUrl;
-          } catch (e) {
-            setDeployStatus('❌', 'Erro: ' + e.message, null);
-            toast('❌ Erro ao publicar: ' + e.message, 'error');
-            return null;
+          if (editingId.noticias) {
+            try { await sbUpdate('noticias', editingId.noticias, { url_externa: publicUrl }); } catch { }
           }
-        }); // fim withBtn
+          if (!editingId.noticias && data._dbData && data._dbData.titulo) {
+            try {
+              const dbPayload = Object.assign({}, data._dbData, { url_externa: publicUrl });
+              const inserted = await sbInsert('noticias', dbPayload);
+              if (inserted && inserted[0]) { editingId.noticias = inserted[0].id; loadNoticias(); loadDashboard(); }
+            } catch { }
+          }
+          setTimeout(() => toast('ℹ️ GitHub Pages leva ~1 min para atualizar. A URL já está salva!', 'info'), 3000);
+          return publicUrl;
+        } catch (e) {
+          setDeployStatus('❌', 'Erro: ' + e.message, null);
+          toast('❌ Erro ao publicar: ' + e.message, 'error');
+          return null;
+        }
       }
 
 
@@ -7665,17 +6572,13 @@ document.addEventListener('DOMContentLoaded',function(){
         }
       }
 
-      async function resetarTextos() {
-        const ok = await confirmDialog({
-          title: `Restaurar textos (${textosLangAtual.toUpperCase()})?`,
-          message: `Todos os textos do idioma ${textosLangAtual.toUpperCase()} voltarão aos valores padrão. As edições atuais neste idioma serão perdidas.`,
-          confirmText: 'Sim, restaurar',
-          confirmClass: 'btn-danger',
-        });
-        if (!ok) return;
+      function resetarTextos() {
+        if (!confirm(`Restaurar TODOS os textos do idioma "${textosLangAtual.toUpperCase()}" para os valores padrão? Isso
+  sobrescreverá suas edições atuais neste idioma.`)) return;
         textosCarregados[textosLangAtual] = Object.assign({}, TEXTOS_DEFAULT[textosLangAtual]);
         renderTextosEditor();
-        toast(`↺ Textos (${textosLangAtual.toUpperCase()}) restaurados. Clique em Salvar para confirmar.`, 'info');
+        toast(`↺ Textos (${textosLangAtual.toUpperCase()}) restaurados para os padrões. Clique em Salvar para confirmar.`,
+          'info');
       }
 
 
@@ -7953,7 +6856,6 @@ document.addEventListener('DOMContentLoaded',function(){
 
       // Context menu do editor de vagas
       function veContextMenu(e) {
-        if (e.target.tagName === 'IMG') { e.preventDefault(); rteShowImgMenu(e, e.target, 've'); return; }
         const sel = window.getSelection();
         if (!sel || sel.isCollapsed) return;
         e.preventDefault();
@@ -8007,7 +6909,7 @@ document.addEventListener('DOMContentLoaded',function(){
 
         try {
           await ensureValidToken();
-          const authToken = AuthStore.getToken() || sbKey;
+          const authToken = localStorage.getItem('asproc_token') || sbKey;
           const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z]/g, '') || 'jpg';
           const nome = `capa-vaga-${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${ext}`;
           const path = `vagas/${nome}`;
@@ -8076,7 +6978,7 @@ document.addEventListener('DOMContentLoaded',function(){
           if (hasSb) {
             try {
               await ensureValidToken();
-              const authToken = AuthStore.getToken() || sbKey;
+              const authToken = localStorage.getItem('asproc_token') || sbKey;
               const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z0-9]/g, '') || 'bin';
               const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
               const path = `vagas/doc-${Date.now()}-${safeName}`;
@@ -8179,17 +7081,12 @@ document.addEventListener('DOMContentLoaded',function(){
          LOGOMARCA
       ═══════════════════════════════════════ */
       async function loadLogomarca() {
-        const previewWrap = document.getElementById('logo-preview-img')?.closest('.config-block');
-        if (previewWrap) previewWrap.style.opacity = '.55';
         try {
           const data = await sbSelect('app_config', 'select=value&key=eq.logo_url');
           const url = data && data.length > 0 ? data[0].value : null;
           logoUpdatePreview(url);
         } catch (e) {
           logoUpdatePreview(null);
-          toast('⚠️ Não foi possível carregar a logomarca: ' + e.message, 'warning');
-        } finally {
-          if (previewWrap) previewWrap.style.opacity = '1';
         }
       }
 
@@ -8240,18 +7137,16 @@ document.addEventListener('DOMContentLoaded',function(){
         const bar = document.getElementById('logo-progress-bar');
         const msg = document.getElementById('logo-progress-msg');
         const wrap = document.getElementById('logo-progress-wrap');
-        const uploadBtn = document.getElementById('btn-upload-logo');
 
         wrap.style.display = '';
         bar.style.width = '20%';
         bar.style.background = 'var(--accent)';
         msg.style.color = 'var(--text-muted)';
         msg.textContent = 'Enviando imagem…';
-        if (uploadBtn) { uploadBtn.disabled = true; uploadBtn.textContent = '⏳ Enviando…'; }
 
         try {
           await ensureValidToken();
-          const authToken = AuthStore.getToken() || sbKey;
+          const authToken = localStorage.getItem('asproc_token') || sbKey;
           const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z]/g, '') || 'png';
           const BUCKET = 'imagens';
           const path = `logos/logomarca.${ext}`;
@@ -8276,7 +7171,7 @@ document.addEventListener('DOMContentLoaded',function(){
           const publicUrl = `${sbUrl}/storage/v1/object/public/${BUCKET}/${path}`;
 
           // Salva URL no banco (upsert via POST com Prefer: resolution=merge-duplicates)
-          const authToken2 = AuthStore.getToken() || sbKey;
+          const authToken2 = localStorage.getItem('asproc_token') || sbKey;
           const saveRes = await fetch(`${sbUrl}/rest/v1/app_config`, {
             method: 'POST',
             headers: {
@@ -8307,25 +7202,16 @@ document.addEventListener('DOMContentLoaded',function(){
           msg.textContent = '❌ ' + e.message;
           toast('❌ Erro: ' + e.message, 'error');
           setTimeout(() => { wrap.style.display = 'none'; bar.style.width = '0%'; bar.style.background = 'var(--accent)'; }, 7000);
-        } finally {
-          const uploadBtnEl = document.getElementById('btn-upload-logo');
-          if (uploadBtnEl) { uploadBtnEl.disabled = false; uploadBtnEl.textContent = '⬆ Enviar logomarca'; }
         }
         input.value = '';
       }
 
       async function deleteLogo() {
-        const ok = await confirmDialog({
-          title: 'Excluir logomarca?',
-          message: 'A imagem será removida do storage e do banco. Esta ação não pode ser desfeita.',
-          confirmText: 'Sim, excluir',
-          confirmClass: 'btn-danger',
-        });
-        if (!ok) return;
+        if (!confirm('Excluir a logomarca atual? Essa ação não pode ser desfeita.')) return;
         const { url: sbUrl, key: sbKey } = getSupabase();
         try {
           await ensureValidToken();
-          const authToken = AuthStore.getToken() || sbKey;
+          const authToken = localStorage.getItem('asproc_token') || sbKey;
 
           // Obtém URL atual para extrair o path no storage
           const data = await sbSelect('app_config', 'select=value&key=eq.logo_url');
@@ -8402,19 +7288,20 @@ document.addEventListener('DOMContentLoaded',function(){
          atual e faz PUT no repositório GitHub.
       ══════════════════════════════════════════ */
       async function republishAllNoticias() {
-        const token = await getGhTokenAsync();
+        const token = getGhToken();
         if (!token) {
           toast('Configure o token do GitHub em Configurações antes de republicar.', 'error');
           goTo('configuracoes', document.querySelector('[onclick*=configuracoes]'));
           return;
         }
 
-        const confirmed = await confirmDialog({
-          title: 'Republicar todas as notícias?',
-          message: 'O HTML de cada notícia será regerado com o template atual e enviado ao GitHub. Notícias sem slug ou conteúdo serão ignoradas. O processo pode levar vários minutos.',
-          confirmText: '🔄 Republicar tudo',
-          confirmClass: 'btn-amber',
-        });
+        const confirmed = confirm(
+          '🔄 Republicar TODAS as notícias?\n\n' +
+          'Isso vai reger o HTML de cada notícia com o template atual e ' +
+          'atualizar os arquivos no GitHub.\n\n' +
+          'Notícias sem slug ou sem conteúdo serão ignoradas.\n\n' +
+          'Continuar?'
+        );
         if (!confirmed) return;
 
         // UI setup
@@ -8498,7 +7385,6 @@ document.addEventListener('DOMContentLoaded',function(){
               imagem_url: n.imagem_url || '',
               _autor: n.autor || n._autor || '',
               _tags: n.tags || n._tags || '',
-              _related: n.related_slugs || n._related || '',
               _slug: n.slug,
               _dbData: n,
             };
