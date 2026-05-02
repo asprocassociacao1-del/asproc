@@ -1629,6 +1629,14 @@
       line-height: 1.8;
       outline: none;
       background: var(--bg2);
+      /* Evita que texto longo empurre o layout */
+      overflow-wrap: break-word;
+      word-break: break-word;
+      overflow-x: hidden;
+      /* Largura máxima alinhada com o site publicado (~720px de conteúdo) */
+      max-width: 720px;
+      margin: 0 auto;
+      box-sizing: border-box;
     }
 
     .rte-body:empty::before {
@@ -1664,7 +1672,97 @@
 
     .rte-body img {
       max-width: 100%;
+      height: auto;
       border-radius: 8px;
+      cursor: pointer;
+      transition: outline .15s;
+    }
+
+    .rte-body img.rte-img-selected {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* Wrapper do editor com scroll horizontal prevenido */
+    .rte-wrap {
+      overflow: hidden;
+    }
+
+    /* Context menu de imagem inserida */
+    .rte-img-menu {
+      position: fixed;
+      z-index: 9999;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, .5);
+      padding: .4rem;
+      min-width: 210px;
+    }
+
+    .rte-img-menu-title {
+      padding: .3rem .6rem;
+      font-size: .68rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: .2rem;
+    }
+
+    .rte-img-menu-item {
+      padding: .45rem .75rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: .83rem;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: .55rem;
+      transition: background .12s;
+    }
+
+    .rte-img-menu-item:hover {
+      background: var(--border);
+    }
+
+    .rte-img-menu-item.danger {
+      color: #f87171;
+    }
+
+    .rte-img-size-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .3rem;
+      padding: .2rem .6rem .45rem;
+    }
+
+    .rte-img-size-btn {
+      padding: .2rem .55rem;
+      font-size: .72rem;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      color: var(--text-dim);
+      cursor: pointer;
+    }
+
+    .rte-img-size-btn:hover {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    /* Botão de inserir imagem no toolbar */
+    .rte-btn-img-upload {
+      position: relative;
+    }
+
+    .rte-btn-img-upload input[type=file] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      font-size: 0;
     }
 
     .rte-body table {
@@ -2617,9 +2715,18 @@
               title="Refazer">↪</button>
             <button class="rte-btn" onmousedown="event.preventDefault()" onclick="rteClearFormat()"
               title="Limpar formatação">✕A</button>
+            <div class="rte-sep"></div>
+            <div class="rte-btn rte-btn-img-upload" title="Inserir imagem (arquivo)">
+              🖼️<input type="file" accept="image/jpeg,image/png,image/webp,image/gif"
+                onchange="rteInsertImageFile(this,'n')">
+            </div>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="rteInsertImageUrl('n')"
+              title="Inserir imagem por URL">🔗🖼️</button>
           </div>
           <div id="n-rte-body" class="rte-body" contenteditable="true" oninput="syncRteToHidden(); updatePreview();"
-            onkeyup="updateRteToolbarState();" onmouseup="updateRteToolbarState();">
+            oncontextmenu="nContextMenu(event)" onpaste="rteHandlePaste(event,'n')" ondrop="rteHandleDrop(event,'n')"
+            ondragover="event.preventDefault()""
+            onkeyup=" updateRteToolbarState();" onmouseup="updateRteToolbarState();">
           </div>
         </div>
         <textarea id="n-conteudo" style="display:none;"></textarea>
@@ -2894,9 +3001,17 @@
               title="Refazer">↪</button>
             <button class="rte-btn" onmousedown="event.preventDefault()" onclick="veRteClearFormat()"
               title="Limpar formatação">✕A</button>
+            <div class="rte-sep"></div>
+            <div class="rte-btn rte-btn-img-upload" title="Inserir imagem (arquivo)">
+              🖼️<input type="file" accept="image/jpeg,image/png,image/webp,image/gif"
+                onchange="rteInsertImageFile(this,'ve')">
+            </div>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="rteInsertImageUrl('ve')"
+              title="Inserir imagem por URL">🔗🖼️</button>
           </div>
           <div id="ve-rte-body" class="rte-body" contenteditable="true" oninput="veSync()"
-            oncontextmenu="veContextMenu(event)" style="min-height:320px;">
+            oncontextmenu="veContextMenu(event)" onpaste="rteHandlePaste(event,'ve')" ondrop="rteHandleDrop(event,'ve')"
+            ondragover="event.preventDefault()" style="min-height:320px;">
           </div>
         </div>
         <textarea id="v-descricao" style="display:none;"></textarea>
@@ -3034,6 +3149,111 @@
   </div>
 
   <!-- ════ MENU DE CONTEXTO DO EDITOR DE VAGAS ════ -->
+  <!-- Context menu NOTÍCIAS -->
+  <div id="n-context-menu"
+    style="display:none;position:fixed;z-index:9999;background:var(--bg2);border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.5);padding:.4rem;min-width:230px;">
+    <div
+      style="padding:.3rem .6rem;font-size:.68rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.2rem;">
+      Formatação</div>
+    <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="rteExec('bold');nHideCtx()"><b
+        style="margin-right:.5rem;">B</b> Negrito</div>
+    <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="rteExec('italic');nHideCtx()"><i
+        style="margin-right:.5rem;">I</i> Itálico</div>
+    <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="rteExec('underline');nHideCtx()"><u
+        style="margin-right:.5rem;">U</u> Sublinhado</div>
+    <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="rteExec('strikeThrough');nHideCtx()"><s
+        style="margin-right:.5rem;">S</s> Tachado</div>
+    <div style="height:1px;background:var(--border);margin:.35rem 0;"></div>
+    <div
+      style="padding:.3rem .6rem;font-size:.68rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.2rem;">
+      Alinhamento</div>
+    <div style="display:flex;gap:.3rem;padding:.2rem .6rem .4rem;">
+      <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
+        onclick="rteExec('justifyLeft');nHideCtx()">⬅</button>
+      <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
+        onclick="rteExec('justifyCenter');nHideCtx()">☰</button>
+      <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
+        onclick="rteExec('justifyRight');nHideCtx()">➡</button>
+      <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
+        onclick="rteExec('justifyFull');nHideCtx()">☷</button>
+    </div>
+    <div style="height:1px;background:var(--border);margin:.35rem 0;"></div>
+    <div
+      style="padding:.3rem .6rem;font-size:.68rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.2rem;">
+      Fonte</div>
+    <div style="display:flex;flex-wrap:wrap;gap:.3rem;padding:.2rem .6rem .4rem;">
+      <button class="ae-ctx-font-btn" onmousedown="event.preventDefault()"
+        onclick="rteExec('fontName','Inter,sans-serif');nHideCtx()">Inter</button>
+      <button class="ae-ctx-font-btn" onmousedown="event.preventDefault()"
+        onclick="rteExec('fontName','Georgia,serif');nHideCtx()">Georgia</button>
+      <button class="ae-ctx-font-btn" onmousedown="event.preventDefault()"
+        onclick="rteExec('fontName','Arial,sans-serif');nHideCtx()">Arial</button>
+      <button class="ae-ctx-font-btn" onmousedown="event.preventDefault()"
+        onclick="rteExec('fontName','Courier New,monospace');nHideCtx()">Courier</button>
+      <button class="ae-ctx-font-btn" onmousedown="event.preventDefault()"
+        onclick="rteExec('fontName','Playfair Display,serif');nHideCtx()">Playfair</button>
+    </div>
+    <div style="padding:.2rem .6rem .4rem;display:flex;align-items:center;gap:.5rem;">
+      <span style="font-size:.75rem;color:var(--text-muted);">Tamanho:</span>
+      <div style="display:flex;flex-wrap:wrap;gap:.25rem;">
+        <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
+          onclick="rteFontSize(12);nHideCtx()">12</button>
+        <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
+          onclick="rteFontSize(14);nHideCtx()">14</button>
+        <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
+          onclick="rteFontSize(16);nHideCtx()">16</button>
+        <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
+          onclick="rteFontSize(18);nHideCtx()">18</button>
+        <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
+          onclick="rteFontSize(20);nHideCtx()">20</button>
+        <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
+          onclick="rteFontSize(24);nHideCtx()">24</button>
+        <button class="ae-ctx-size-btn" onmousedown="event.preventDefault()"
+          onclick="rteFontSize(32);nHideCtx()">32</button>
+      </div>
+    </div>
+    <div style="height:1px;background:var(--border);margin:.35rem 0;"></div>
+    <div
+      style="padding:.3rem .6rem;font-size:.68rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.2rem;">
+      Cor</div>
+    <div style="display:flex;align-items:center;gap:.5rem;padding:.2rem .6rem .4rem;">
+      <span style="font-size:.75rem;color:var(--text-muted);">Texto:</span>
+      <div style="display:flex;gap:.3rem;">
+        <div onmousedown="event.preventDefault()" onclick="rteExec('foreColor','#e2e8f0');nHideCtx()" title="Padrão"
+          style="width:20px;height:20px;border-radius:4px;background:#e2e8f0;cursor:pointer;border:2px solid var(--border);">
+        </div>
+        <div onmousedown="event.preventDefault()" onclick="rteExec('foreColor','#3b82f6');nHideCtx()" title="Azul"
+          style="width:20px;height:20px;border-radius:4px;background:#3b82f6;cursor:pointer;"></div>
+        <div onmousedown="event.preventDefault()" onclick="rteExec('foreColor','#10b981');nHideCtx()" title="Verde"
+          style="width:20px;height:20px;border-radius:4px;background:#10b981;cursor:pointer;"></div>
+        <div onmousedown="event.preventDefault()" onclick="rteExec('foreColor','#ef4444');nHideCtx()" title="Vermelho"
+          style="width:20px;height:20px;border-radius:4px;background:#ef4444;cursor:pointer;"></div>
+        <div onmousedown="event.preventDefault()" onclick="rteExec('foreColor','#f59e0b');nHideCtx()" title="Âmbar"
+          style="width:20px;height:20px;border-radius:4px;background:#f59e0b;cursor:pointer;"></div>
+        <label title="Cor personalizada"
+          style="width:20px;height:20px;border-radius:4px;background:conic-gradient(red,yellow,lime,aqua,blue,magenta,red);cursor:pointer;overflow:hidden;position:relative;">
+          <input type="color" style="opacity:0;position:absolute;inset:0;cursor:pointer;"
+            onchange="rteExec('foreColor',this.value);nHideCtx()">
+        </label>
+      </div>
+    </div>
+    <div style="height:1px;background:var(--border);margin:.35rem 0;"></div>
+    <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="rteInsertImageUrl('n');nHideCtx()">🔗🖼️
+      Inserir imagem (URL)</div>
+    <div class="ae-ctx-item rte-btn-img-upload" onmousedown="event.preventDefault()"
+      style="position:relative;overflow:hidden;">
+      🖼️ Inserir imagem (arquivo)<input type="file" accept="image/*"
+        style="position:absolute;inset:0;opacity:0;cursor:pointer;" onchange="rteInsertImageFile(this,'n');nHideCtx()">
+    </div>
+    <div style="height:1px;background:var(--border);margin:.35rem 0;"></div>
+    <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="rteInsertLink();nHideCtx()">🔗 Criar link
+    </div>
+    <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="rteExec('unlink');nHideCtx()">🚫 Remover link
+    </div>
+    <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="rteClearFormat();nHideCtx()">✕A Limpar
+      formatação</div>
+  </div>
+
   <div id="ve-context-menu"
     style="display:none;position:fixed;z-index:9999;background:var(--bg2);border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,.5);padding:.4rem;min-width:220px;">
     <div
@@ -3112,6 +3332,16 @@
     </div>
     <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="veRteExec('unlink');veHideCtx()">🚫 Remover
       link</div>
+    <div style="height:1px;background:var(--border);margin:.35rem 0;"></div>
+    <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="rteInsertImageUrl('ve');veHideCtx()">🔗🖼️
+      Inserir imagem (URL)</div>
+    <div class="ae-ctx-item rte-btn-img-upload" onmousedown="event.preventDefault()"
+      style="position:relative;overflow:hidden;">
+      🖼️ Inserir imagem (arquivo)<input type="file" accept="image/*"
+        style="position:absolute;inset:0;opacity:0;cursor:pointer;"
+        onchange="rteInsertImageFile(this,'ve');veHideCtx()">
+    </div>
+    <div style="height:1px;background:var(--border);margin:.35rem 0;"></div>
     <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="veRteClearFormat();veHideCtx()">✕A Limpar
       formatação</div>
   </div>
@@ -3205,9 +3435,17 @@
               title="Refazer">↪</button>
             <button class="rte-btn" onmousedown="event.preventDefault()" onclick="aeRteClearFormat()"
               title="Limpar formatação">✕A</button>
+            <div class="rte-sep"></div>
+            <div class="rte-btn rte-btn-img-upload" title="Inserir imagem (arquivo)">
+              🖼️<input type="file" accept="image/jpeg,image/png,image/webp,image/gif"
+                onchange="rteInsertImageFile(this,'ae')">
+            </div>
+            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="rteInsertImageUrl('ae')"
+              title="Inserir imagem por URL">🔗🖼️</button>
           </div>
           <div id="ae-rte-body" class="rte-body" contenteditable="true" oninput="aeSync()"
-            oncontextmenu="aeContextMenu(event)" style="min-height:320px;">
+            oncontextmenu="aeContextMenu(event)" onpaste="rteHandlePaste(event,'ae')" ondrop="rteHandleDrop(event,'ae')"
+            ondragover="event.preventDefault()" style="min-height:320px;">
           </div>
         </div>
         <textarea id="a-descricao" style="display:none;"></textarea>
@@ -3446,6 +3684,16 @@
     </div>
     <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="aeRteExec('unlink');aeHideCtx()">🚫 Remover
       link</div>
+    <div style="height:1px;background:var(--border);margin:.35rem 0;"></div>
+    <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="rteInsertImageUrl('ae');aeHideCtx()">🔗🖼️
+      Inserir imagem (URL)</div>
+    <div class="ae-ctx-item rte-btn-img-upload" onmousedown="event.preventDefault()"
+      style="position:relative;overflow:hidden;">
+      🖼️ Inserir imagem (arquivo)<input type="file" accept="image/*"
+        style="position:absolute;inset:0;opacity:0;cursor:pointer;"
+        onchange="rteInsertImageFile(this,'ae');aeHideCtx()">
+    </div>
+    <div style="height:1px;background:var(--border);margin:.35rem 0;"></div>
     <div class="ae-ctx-item" onmousedown="event.preventDefault()" onclick="aeRteClearFormat();aeHideCtx()">✕A Limpar
       formatação</div>
   </div>
@@ -3980,6 +4228,7 @@
         document.getElementById('n-resumo').value = n.resumo || '';
         document.getElementById('n-conteudo').value = n.conteudo || '';
         document.getElementById('n-rte-body').innerHTML = n.conteudo || '';
+        setTimeout(() => rteBindImgClicks('n'), 100);
         document.getElementById('n-categoria').value = n.categoria || 'geral';
         document.getElementById('n-data').value = n.data_pub || '';
         document.getElementById('n-url').value = n.url_externa || '';
@@ -4066,6 +4315,7 @@
         document.getElementById('v-titulo').value = v.titulo || '';
         document.getElementById('v-resumo').value = v.resumo || '';
         document.getElementById('ve-rte-body').innerHTML = v.descricao || '';
+        setTimeout(() => rteBindImgClicks('ve'), 100);
         document.getElementById('v-descricao').value = v.descricao || '';
         document.getElementById('v-local').value = v.local || 'Carauari/AM';
         document.getElementById('v-regime').value = v.regime || 'CLT';
@@ -4227,6 +4477,7 @@
         document.getElementById('a-titulo').value = a.titulo || '';
         document.getElementById('a-resumo').value = a.resumo || '';
         document.getElementById('ae-rte-body').innerHTML = a.descricao || '';
+        setTimeout(() => rteBindImgClicks('ae'), 100);
         document.getElementById('a-descricao').value = a.descricao || '';
         document.getElementById('a-tipo').value = a.tipo || 'info';
         document.getElementById('a-data').value = a.data_pub || '';
@@ -4456,6 +4707,7 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
 
       // Context menu
       function aeContextMenu(e) {
+        if (e.target.tagName === 'IMG') { e.preventDefault(); rteShowImgMenu(e, e.target, 'ae'); return; }
         const sel = window.getSelection();
         if (!sel || sel.isCollapsed) return;
         e.preventDefault();
@@ -4497,8 +4749,10 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         const file = input.files && input.files[0];
         if (!file) return;
 
-        const validation = await validateImageFile(file, 5);
-        if (!validation.ok) { toast('❌ ' + validation.error, 'error'); input.value = ''; return; }
+        const MAX = 10 * 1024 * 1024;
+        if (file.size > MAX) { toast('Imagem muito grande. Máximo 10 MB.', 'error'); input.value = ''; return; }
+        const TIPOS = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+        if (!TIPOS.includes(file.type)) { toast('Formato inválido. Use JPG, PNG ou WebP.', 'error'); input.value = ''; return; }
 
         const { url: sbUrl, key: sbKey } = getSupabase();
         if (!sbUrl || !sbKey) { toast('Supabase não configurado.', 'error'); return; }
@@ -4508,22 +4762,17 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         const msg = document.getElementById('ae-upload-progress-msg');
         const lbl = document.querySelector('label[for="a-capa-file"]');
         wrap.style.display = 'block';
-        bar.style.width = '10%';
+        bar.style.width = '15%';
         bar.style.background = 'var(--accent)';
         msg.style.color = 'var(--text-muted)';
-        msg.textContent = 'Redimensionando…';
+        msg.textContent = 'Enviando imagem…';
         if (lbl) { lbl.style.pointerEvents = 'none'; lbl.style.opacity = '.5'; }
 
         try {
-          const blob = await resizeImageFile(file, 1920, 0.88);
-          msg.textContent = 'Enviando imagem…';
-
           await ensureValidToken();
           const authToken = AuthStore.getToken() || sbKey;
 
-          const outMime = blob.type || validation.detectedMime || 'image/webp';
-          const extMap = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' };
-          const ext = extMap[outMime] || 'webp';
+          const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z]/g, '') || 'jpg';
           const nome = `capa-${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${ext}`;
           const path = `avisos/${nome}`;
           const BUCKET = 'imagens';
@@ -4535,10 +4784,10 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
             headers: {
               'apikey': sbKey,
               'Authorization': `Bearer ${authToken}`,
-              'Content-Type': outMime,
+              'Content-Type': file.type,
               'x-upsert': 'true'
             },
-            body: blob
+            body: file
           });
 
           bar.style.width = '90%';
@@ -4610,48 +4859,50 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         if (!files.length) return;
 
         const { url: sbUrl, key: sbKey } = getSupabase();
-        if (!sbUrl || !sbKey) { toast('Configure o Supabase para enviar documentos.', 'error'); return; }
+        const hasSb = !!(sbUrl && sbKey);
 
         for (const file of files) {
-          // Validação: extensão permitida + tamanho máximo 20 MB
-          const docVal = validateDocFile(file, 20);
-          if (!docVal.ok) { toast('❌ ' + docVal.error, 'error'); continue; }
+          if (hasSb) {
+            try {
+              await ensureValidToken();
+              const authToken = AuthStore.getToken() || sbKey;
 
-          try {
-            await ensureValidToken();
-            const authToken = AuthStore.getToken() || sbKey;
+              const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z0-9]/g, '') || 'bin';
+              const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+              const path = `avisos/doc-${Date.now()}-${safeName}`;
+              const BUCKET = 'imagens';
 
-            const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-            const path = `avisos/doc-${Date.now()}-${safeName}`;
-            const BUCKET = 'imagens';
-            const mimeType = DOC_ALLOWED[docVal.ext] || 'application/octet-stream';
+              const res = await fetch(`${sbUrl}/storage/v1/object/${BUCKET}/${path}`, {
+                method: 'POST',
+                headers: {
+                  'apikey': sbKey,
+                  'Authorization': `Bearer ${authToken}`,
+                  'Content-Type': file.type || 'application/octet-stream',
+                  'x-upsert': 'true'
+                },
+                body: file
+              });
 
-            const res = await fetch(`${sbUrl}/storage/v1/object/${BUCKET}/${path}`, {
-              method: 'POST',
-              headers: {
-                'apikey': sbKey,
-                'Authorization': `Bearer ${authToken}`,
-                'Content-Type': mimeType,
-                'x-upsert': 'true'
-              },
-              body: file
-            });
-
-            if (!res.ok) {
-              const err = await res.json().catch(() => ({}));
-              const errMsg = err.message || err.error || `HTTP ${res.status}`;
-              if (res.status === 400 || res.status === 403) {
-                throw new Error('Sem permissão para upload. Verifique as políticas RLS do bucket "imagens".');
+              if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                const errMsg = err.message || err.error || `HTTP ${res.status}`;
+                if (res.status === 400 || res.status === 403) {
+                  throw new Error('Sem permissão para upload. Configure a política RLS do bucket "imagens" no Supabase: Storage → Policies → authenticated → ALL → true.');
+                }
+                throw new Error(errMsg);
               }
-              throw new Error(errMsg);
+
+              const publicUrl = `${sbUrl}/storage/v1/object/public/${BUCKET}/${path}`;
+              aeAnexos.push({ nome: file.name, url: publicUrl, tipo: ext });
+              toast(`📎 "${file.name}" enviado com sucesso!`, 'success');
+
+            } catch (e) {
+              toast(`❌ Erro ao enviar "${file.name}": ${e.message}`, 'error');
             }
-
-            const publicUrl = `${sbUrl}/storage/v1/object/public/${BUCKET}/${path}`;
-            aeAnexos.push({ nome: file.name, url: publicUrl, tipo: docVal.ext });
-            toast(`📎 "${file.name}" enviado com sucesso!`, 'success');
-
-          } catch (e) {
-            toast(`❌ Erro ao enviar "${file.name}": ${e.message}`, 'error');
+          } else {
+            // Sem Supabase configurado: avisa usuário
+            toast('Configure o Supabase para enviar documentos.', 'error');
+            break;
           }
         }
         aeRenderAnexos();
@@ -5187,154 +5438,6 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
       }
 
       /* ══════════════════════════════════════════
-         UPLOAD — VALIDAÇÃO E REDIMENSIONAMENTO
-         ─────────────────────────────────────────
-         validateFile(file, opts) → Promise<{ok, error}>
-           Verifica magic bytes reais (não só file.type),
-           MIME permitido e tamanho máximo.
-
-         resizeImageFile(file, maxPx, quality)
-           → Promise<Blob>
-           Redimensiona via canvas mantendo aspect ratio.
-           Máximo: 1920px no lado maior, qualidade 0.88.
-      ══════════════════════════════════════════ */
-
-      // Assinaturas de magic bytes dos tipos de imagem permitidos
-      const IMAGE_MAGIC = [
-        { mime: 'image/jpeg', bytes: [[0xFF, 0xD8, 0xFF]] },
-        { mime: 'image/png', bytes: [[0x89, 0x50, 0x4E, 0x47]] },
-        { mime: 'image/webp', bytes: [[0x52, 0x49, 0x46, 0x46]], extra: { offset: 8, seq: [0x57, 0x45, 0x42, 0x50] } },
-        { mime: 'image/gif', bytes: [[0x47, 0x49, 0x46, 0x38]] },
-      ];
-
-      // Extensões e MIMEs permitidos para documentos
-      const DOC_ALLOWED = {
-        'pdf': 'application/pdf',
-        'doc': 'application/msword',
-        'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'xls': 'application/vnd.ms-excel',
-        'xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        'ppt': 'application/vnd.ms-powerpoint',
-        'pptx': 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-      };
-
-      /**
-       * Lê os primeiros N bytes de um File via FileReader.
-       * @returns {Promise<Uint8Array>}
-       */
-      function readFileHeader(file, bytes = 12) {
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = e => resolve(new Uint8Array(e.target.result));
-          reader.onerror = () => reject(new Error('Não foi possível ler o arquivo'));
-          reader.readAsArrayBuffer(file.slice(0, bytes));
-        });
-      }
-
-      /**
-       * Verifica se o header real do arquivo corresponde a um MIME de imagem permitido.
-       * Retorna o MIME detectado ou null.
-       */
-      async function detectImageMime(file) {
-        const header = await readFileHeader(file, 12);
-        for (const sig of IMAGE_MAGIC) {
-          for (const pattern of sig.bytes) {
-            if (pattern.every((b, i) => header[i] === b)) {
-              // WebP precisa de verificação extra no offset 8
-              if (sig.extra) {
-                const { offset, seq } = sig.extra;
-                if (!seq.every((b, i) => header[offset + i] === b)) continue;
-              }
-              return sig.mime;
-            }
-          }
-        }
-        return null;
-      }
-
-      /**
-       * Valida um arquivo de imagem: magic bytes + tamanho.
-       * @param {File}   file
-       * @param {number} maxMB   Limite em MB (padrão: 5)
-       * @returns {Promise<{ok:boolean, error:string|null, detectedMime:string|null}>}
-       */
-      async function validateImageFile(file, maxMB = 5) {
-        const maxBytes = maxMB * 1024 * 1024;
-        if (file.size > maxBytes) {
-          return { ok: false, error: `Imagem muito grande. Máximo ${maxMB} MB (arquivo: ${(file.size / 1024 / 1024).toFixed(1)} MB).`, detectedMime: null };
-        }
-        const detectedMime = await detectImageMime(file);
-        if (!detectedMime) {
-          return { ok: false, error: 'Formato inválido. Envie uma imagem JPG, PNG, WebP ou GIF.', detectedMime: null };
-        }
-        return { ok: true, error: null, detectedMime };
-      }
-
-      /**
-       * Valida um arquivo de documento: extensão + tamanho.
-       * Documentos não têm verificação de magic bytes pois os formatos
-       * Office modernos (.docx/.xlsx) são ZIPs e a verificação seria ambígua.
-       * @param {File}   file
-       * @param {number} maxMB   Limite em MB (padrão: 20)
-       * @returns {{ok:boolean, error:string|null, ext:string|null}}
-       */
-      function validateDocFile(file, maxMB = 20) {
-        const maxBytes = maxMB * 1024 * 1024;
-        if (file.size > maxBytes) {
-          return { ok: false, error: `"${file.name}" excede o limite de ${maxMB} MB (${(file.size / 1024 / 1024).toFixed(1)} MB).`, ext: null };
-        }
-        const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z0-9]/g, '');
-        if (!DOC_ALLOWED[ext]) {
-          return { ok: false, error: `"${file.name}": formato não permitido (.${ext}). Use PDF, Word, Excel ou PowerPoint.`, ext: null };
-        }
-        return { ok: true, error: null, ext };
-      }
-
-      /**
-       * Redimensiona uma imagem via canvas, respeitando aspect ratio.
-       * Não amplia imagens menores que maxPx.
-       * @param {File}   file
-       * @param {number} maxPx    Lado máximo em pixels (padrão: 1920)
-       * @param {number} quality  Qualidade JPEG/WebP 0–1 (padrão: 0.88)
-       * @returns {Promise<Blob>}
-       */
-      function resizeImageFile(file, maxPx = 1920, quality = 0.88) {
-        return new Promise((resolve, reject) => {
-          const img = new Image();
-          const url = URL.createObjectURL(file);
-          img.onload = () => {
-            URL.revokeObjectURL(url);
-            let { width: w, height: h } = img;
-            // Não amplia imagens já menores que o limite
-            if (w <= maxPx && h <= maxPx) {
-              // Retorna como blob sem recomprimir se já é PNG pequeno
-              if (file.type === 'image/png' && file.size < 200 * 1024) {
-                resolve(file);
-                return;
-              }
-            } else {
-              // Escala proporcional
-              if (w > h) { h = Math.round(h * maxPx / w); w = maxPx; }
-              else { w = Math.round(w * maxPx / h); h = maxPx; }
-            }
-            const canvas = document.createElement('canvas');
-            canvas.width = w; canvas.height = h;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, w, h);
-            // GIF não tem suporte de animação em canvas — retorna original
-            if (file.type === 'image/gif') { resolve(file); return; }
-            const outMime = file.type === 'image/png' ? 'image/png' : 'image/webp';
-            canvas.toBlob(blob => {
-              if (!blob) { resolve(file); return; } // fallback para original
-              resolve(blob);
-            }, outMime, quality);
-          };
-          img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Não foi possível carregar a imagem para redimensionar')); };
-          img.src = url;
-        });
-      }
-
-      /* ══════════════════════════════════════════
          HELPERS UI
       ══════════════════════════════════════════ */
       function showLoading(section) {
@@ -5470,13 +5573,16 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         const file = input.files && input.files[0];
         if (!file) return;
 
-        // Validação com magic bytes + tamanho (máx 5 MB)
-        const validation = await validateImageFile(file, 5);
-        if (!validation.ok) { toast('❌ ' + validation.error, 'error'); input.value = ''; return; }
+        // Validações
+        const MAX = 10 * 1024 * 1024;
+        if (file.size > MAX) { toast('Imagem muito grande. Máximo 10 MB.', 'error'); input.value = ''; return; }
+        const TIPOS = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+        if (!TIPOS.includes(file.type)) { toast('Formato inválido. Use JPG, PNG ou WebP.', 'error'); input.value = ''; return; }
 
         const { url: sbUrl, key: sbKey } = getSupabase();
         if (!sbUrl || !sbKey) { toast('Supabase não configurado.', 'error'); return; }
 
+        // UI
         const wrap = document.getElementById('upload-progress-wrap');
         const bar = document.getElementById('upload-progress-bar');
         const msg = document.getElementById('upload-progress-msg');
@@ -5484,24 +5590,18 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         const aviso = document.getElementById('upload-bucket-aviso');
         if (aviso) aviso.style.display = 'none';
         wrap.style.display = 'block';
-        bar.style.width = '10%';
+        bar.style.width = '15%';
         bar.style.background = 'var(--accent)';
         msg.style.color = 'var(--text-muted)';
-        msg.textContent = 'Redimensionando…';
+        msg.textContent = 'Enviando imagem…';
         lbl.style.pointerEvents = 'none';
         lbl.style.opacity = '.5';
 
         try {
-          // Redimensiona antes de enviar (máx 1920px, qualidade 0.88)
-          const blob = await resizeImageFile(file, 1920, 0.88);
-          msg.textContent = 'Enviando imagem…';
-
           await ensureValidToken();
           const authToken = AuthStore.getToken() || sbKey;
 
-          const outMime = blob.type || validation.detectedMime || 'image/webp';
-          const extMap = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' };
-          const ext = extMap[outMime] || 'webp';
+          const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z]/g, '') || 'jpg';
           const nome = `capa-${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${ext}`;
           const path = `noticias/${nome}`;
           const BUCKET = 'imagens';
@@ -5513,10 +5613,10 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
             headers: {
               'apikey': sbKey,
               'Authorization': `Bearer ${authToken}`,
-              'Content-Type': outMime,
+              'Content-Type': file.type,
               'x-upsert': 'true'
             },
-            body: blob
+            body: file
           });
 
           bar.style.width = '90%';
@@ -5637,6 +5737,252 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         document.execCommand('insertHTML', false, `<img src="${url}" style="max-width:100%;border-radius:8px;margin:1rem 0;">`);
         syncRteToHidden();
       }
+
+      /* ══════════════════════════════════════════
+         RTE IMAGE — Funções compartilhadas pelos
+         3 editores (n, ve, ae)
+      ══════════════════════════════════════════ */
+
+      // Mapa de editor → funções de sync e foco
+      const RTE_MAP = {
+        n: { bodyId: 'n-rte-body', sync: () => syncRteToHidden(), focus: () => document.getElementById('n-rte-body').focus() },
+        ve: { bodyId: 've-rte-body', sync: () => { if (typeof veSync === 'function') veSync(); }, focus: () => document.getElementById('ve-rte-body').focus() },
+        ae: { bodyId: 'ae-rte-body', sync: () => { if (typeof aeSync === 'function') aeSync(); }, focus: () => document.getElementById('ae-rte-body').focus() },
+      };
+
+      /** Insere um elemento <img> no editor identificado por editorId */
+      function rteInjectImage(editorId, src, alt) {
+        const map = RTE_MAP[editorId];
+        if (!map) return;
+        map.focus();
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = alt || '';
+        img.style.cssText = 'max-width:100%;height:auto;border-radius:8px;margin:1rem 0;display:block;';
+        img.onclick = () => rteImgClick(img, editorId);
+
+        // Tenta inserir na posição do cursor; senão append no fim
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount > 0) {
+          const range = sel.getRangeAt(0);
+          const body = document.getElementById(map.bodyId);
+          if (body.contains(range.commonAncestorContainer)) {
+            range.deleteContents();
+            range.insertNode(img);
+            range.setStartAfter(img);
+            range.collapse(true);
+            sel.removeAllRanges();
+            sel.addRange(range);
+          } else {
+            body.appendChild(img);
+          }
+        } else {
+          document.getElementById(map.bodyId).appendChild(img);
+        }
+        map.sync();
+        rteBindImgClicks(editorId);
+      }
+
+      /** Abre prompt de URL e insere imagem */
+      function rteInsertImageUrl(editorId) {
+        const url = prompt('Cole a URL da imagem:');
+        if (!url || !url.trim()) return;
+        rteInjectImage(editorId, url.trim(), '');
+      }
+      window.rteInsertImageUrl = rteInsertImageUrl;
+
+      /** Upload de arquivo → lê como base64 → insere no editor */
+      async function rteInsertImageFile(input, editorId) {
+        const file = input.files && input.files[0];
+        if (!file) return;
+
+        // Validação com magic bytes (reutiliza validateImageFile do módulo de upload)
+        const validation = await validateImageFile(file, 5);
+        if (!validation.ok) { toast('❌ ' + validation.error, 'error'); input.value = ''; return; }
+
+        // Redimensiona antes de inserir (máx 1200px para conteúdo inline)
+        const blob = await resizeImageFile(file, 1200, 0.88);
+        const reader = new FileReader();
+        reader.onload = e => {
+          rteInjectImage(editorId, e.target.result, file.name.replace(/\.[^.]+$/, ''));
+          toast('🖼️ Imagem inserida no editor!', 'success');
+        };
+        reader.readAsDataURL(blob);
+        input.value = '';
+      }
+      window.rteInsertImageFile = rteInsertImageFile;
+
+      /** Handler de paste — captura imagens coladas da área de transferência */
+      async function rteHandlePaste(event, editorId) {
+        const items = event.clipboardData && event.clipboardData.items;
+        if (!items) return;
+        for (const item of items) {
+          if (item.type.startsWith('image/')) {
+            event.preventDefault();
+            const file = item.getAsFile();
+            if (!file) continue;
+            const validation = await validateImageFile(file, 5);
+            if (!validation.ok) { toast('❌ ' + validation.error, 'error'); return; }
+            const blob = await resizeImageFile(file, 1200, 0.88);
+            const reader = new FileReader();
+            reader.onload = e => {
+              rteInjectImage(editorId, e.target.result, 'imagem-colada');
+              toast('🖼️ Imagem colada no editor!', 'success');
+            };
+            reader.readAsDataURL(blob);
+            return; // só a primeira imagem
+          }
+        }
+        // Não é imagem — deixa o paste normal acontecer
+      }
+      window.rteHandlePaste = rteHandlePaste;
+
+      /** Handler de drag & drop — arquivos e imagens da web */
+      async function rteHandleDrop(event, editorId) {
+        event.preventDefault();
+        const dt = event.dataTransfer;
+
+        // 1) Arquivo local arrastado
+        if (dt.files && dt.files.length) {
+          const file = dt.files[0];
+          if (!file.type.startsWith('image/')) {
+            toast('❌ Somente imagens podem ser arrastadas para o editor.', 'error');
+            return;
+          }
+          const validation = await validateImageFile(file, 5);
+          if (!validation.ok) { toast('❌ ' + validation.error, 'error'); return; }
+          const blob = await resizeImageFile(file, 1200, 0.88);
+          const reader = new FileReader();
+          reader.onload = e => {
+            rteInjectImage(editorId, e.target.result, file.name);
+            toast('🖼️ Imagem arrastada inserida!', 'success');
+          };
+          reader.readAsDataURL(blob);
+          return;
+        }
+
+        // 2) URL de imagem arrastada da web
+        const url = dt.getData('text/uri-list') || dt.getData('text/plain');
+        if (url && /\.(jpg|jpeg|png|webp|gif|svg)(\?|$)/i.test(url)) {
+          rteInjectImage(editorId, url, 'imagem');
+          toast('🖼️ Imagem da web inserida!', 'success');
+        }
+      }
+      window.rteHandleDrop = rteHandleDrop;
+
+      /** Menu de contexto de imagem clicada dentro do editor */
+      let _rteImgMenuTarget = null;
+
+      function rteImgClick(img, editorId) {
+        // Remove seleção anterior
+        document.querySelectorAll('.rte-img-selected').forEach(i => i.classList.remove('rte-img-selected'));
+        img.classList.add('rte-img-selected');
+        _rteImgMenuTarget = { img, editorId };
+      }
+
+      function rteBindImgClicks(editorId) {
+        const body = document.getElementById(RTE_MAP[editorId]?.bodyId);
+        if (!body) return;
+        body.querySelectorAll('img').forEach(img => {
+          img.onclick = () => rteImgClick(img, editorId);
+          // Duplo clique → abre menu de tamanho
+          img.ondblclick = (e) => { e.preventDefault(); rteShowImgMenu(e, img, editorId); };
+        });
+      }
+
+      function rteShowImgMenu(e, img, editorId) {
+        e.preventDefault();
+        _rteImgMenuTarget = { img, editorId };
+        let menu = document.getElementById('rte-img-ctx-menu');
+        if (!menu) {
+          menu = document.createElement('div');
+          menu.id = 'rte-img-ctx-menu';
+          menu.className = 'rte-img-menu';
+          menu.innerHTML = `
+            <div class="rte-img-menu-title">Imagem</div>
+            <div class="rte-img-size-row">
+              <button class="rte-img-size-btn" onclick="rteImgResize('25%')">25%</button>
+              <button class="rte-img-size-btn" onclick="rteImgResize('50%')">50%</button>
+              <button class="rte-img-size-btn" onclick="rteImgResize('75%')">75%</button>
+              <button class="rte-img-size-btn" onclick="rteImgResize('100%')">100%</button>
+            </div>
+            <div class="rte-img-menu-title" style="margin-top:.3rem;">Alinhamento</div>
+            <div class="rte-img-size-row">
+              <button class="rte-img-size-btn" onclick="rteImgAlign('left')">⬅ Esq</button>
+              <button class="rte-img-size-btn" onclick="rteImgAlign('center')">☰ Centro</button>
+              <button class="rte-img-size-btn" onclick="rteImgAlign('right')">➡ Dir</button>
+            </div>
+            <div class="rte-img-menu-item danger" onclick="rteImgDelete()">🗑 Remover imagem</div>`;
+          document.body.appendChild(menu);
+          document.addEventListener('click', (ev) => {
+            if (!menu.contains(ev.target)) menu.style.display = 'none';
+          }, { once: false });
+        }
+        menu.style.display = 'block';
+        const x = Math.min(e.clientX, window.innerWidth - 230);
+        const y = Math.min(e.clientY, window.innerHeight - 220);
+        menu.style.left = x + 'px';
+        menu.style.top = y + 'px';
+      }
+      window.rteShowImgMenu = rteShowImgMenu;
+
+      function rteImgResize(pct) {
+        if (!_rteImgMenuTarget) return;
+        const { img, editorId } = _rteImgMenuTarget;
+        img.style.width = pct;
+        img.style.maxWidth = '100%';
+        RTE_MAP[editorId]?.sync();
+        document.getElementById('rte-img-ctx-menu').style.display = 'none';
+      }
+      window.rteImgResize = rteImgResize;
+
+      function rteImgAlign(align) {
+        if (!_rteImgMenuTarget) return;
+        const { img, editorId } = _rteImgMenuTarget;
+        img.style.display = 'block';
+        img.style.margin = align === 'center' ? '1rem auto'
+          : align === 'right' ? '1rem 0 1rem auto'
+            : '1rem auto 1rem 0';
+        RTE_MAP[editorId]?.sync();
+        document.getElementById('rte-img-ctx-menu').style.display = 'none';
+      }
+      window.rteImgAlign = rteImgAlign;
+
+      function rteImgDelete() {
+        if (!_rteImgMenuTarget) return;
+        const { img, editorId } = _rteImgMenuTarget;
+        img.remove();
+        RTE_MAP[editorId]?.sync();
+        document.getElementById('rte-img-ctx-menu').style.display = 'none';
+        _rteImgMenuTarget = null;
+      }
+      window.rteImgDelete = rteImgDelete;
+
+      /** Context menu de NOTÍCIAS (equivalente ao ve/ae que já existiam) */
+      function nContextMenu(e) {
+        // Se clicou numa imagem → mostra menu de imagem
+        if (e.target.tagName === 'IMG') {
+          e.preventDefault();
+          rteShowImgMenu(e, e.target, 'n');
+          return;
+        }
+        e.preventDefault();
+        rteSaveSelection();
+        const menu = document.getElementById('n-context-menu');
+        menu.style.display = 'block';
+        const x = Math.min(e.clientX, window.innerWidth - 250);
+        const y = Math.min(e.clientY, window.innerHeight - 400);
+        menu.style.left = x + 'px';
+        menu.style.top = y + 'px';
+        const hideOnClick = (ev) => { if (!menu.contains(ev.target)) nHideCtx(); document.removeEventListener('click', hideOnClick); };
+        setTimeout(() => document.addEventListener('click', hideOnClick), 0);
+      }
+      window.nContextMenu = nContextMenu;
+
+      function nHideCtx() {
+        document.getElementById('n-context-menu').style.display = 'none';
+      }
+      window.nHideCtx = nHideCtx;
 
       function rteInsertYouTube() {
         const input = prompt('Cole a URL ou ID do vídeo do YouTube:');
@@ -7608,6 +7954,7 @@ document.addEventListener('DOMContentLoaded',function(){
 
       // Context menu do editor de vagas
       function veContextMenu(e) {
+        if (e.target.tagName === 'IMG') { e.preventDefault(); rteShowImgMenu(e, e.target, 've'); return; }
         const sel = window.getSelection();
         if (!sel || sel.isCollapsed) return;
         e.preventDefault();
@@ -7640,9 +7987,13 @@ document.addEventListener('DOMContentLoaded',function(){
       async function veUploadCapa(input) {
         const file = input.files && input.files[0];
         if (!file) return;
-
-        const validation = await validateImageFile(file, 5);
-        if (!validation.ok) { toast('❌ ' + validation.error, 'error'); input.value = ''; return; }
+        const MAX = 10 * 1024 * 1024;
+        if (file.size > MAX) { toast('Imagem muito grande. Máximo 10 MB.', 'error'); input.value = ''; return; }
+        const TIPOS = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+        if (!TIPOS.includes(file.type)) {
+          toast('Formato inválido. Use JPG, PNG ou WebP.', 'error'); input.value =
+            ''; return;
+        }
 
         const { url: sbUrl, key: sbKey } = getSupabase();
         if (!sbUrl || !sbKey) { toast('Supabase não configurado.', 'error'); return; }
@@ -7651,19 +8002,14 @@ document.addEventListener('DOMContentLoaded',function(){
         const bar = document.getElementById('ve-upload-progress-bar');
         const msg = document.getElementById('ve-upload-progress-msg');
         const lbl = document.querySelector('label[for="v-capa-file"]');
-        wrap.style.display = 'block'; bar.style.width = '10%'; bar.style.background = 'var(--accent)';
-        msg.style.color = 'var(--text-muted)'; msg.textContent = 'Redimensionando…';
+        wrap.style.display = 'block'; bar.style.width = '15%'; bar.style.background = 'var(--accent)';
+        msg.style.color = 'var(--text-muted)'; msg.textContent = 'Enviando imagem…';
         if (lbl) { lbl.style.pointerEvents = 'none'; lbl.style.opacity = '.5'; }
 
         try {
-          const blob = await resizeImageFile(file, 1920, 0.88);
-          msg.textContent = 'Enviando imagem…';
-
           await ensureValidToken();
           const authToken = AuthStore.getToken() || sbKey;
-          const outMime = blob.type || validation.detectedMime || 'image/webp';
-          const extMap = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' };
-          const ext = extMap[outMime] || 'webp';
+          const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z]/g, '') || 'jpg';
           const nome = `capa-vaga-${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${ext}`;
           const path = `vagas/${nome}`;
           const BUCKET = 'imagens';
@@ -7671,10 +8017,10 @@ document.addEventListener('DOMContentLoaded',function(){
           const res = await fetch(`${sbUrl}/storage/v1/object/${BUCKET}/${path}`, {
             method: 'POST',
             headers: {
-              'apikey': sbKey, 'Authorization': `Bearer ${authToken}`,
-              'Content-Type': outMime, 'x-upsert': 'true'
+              'apikey': sbKey, 'Authorization': `Bearer ${authToken}`, 'Content-Type': file.type, 'x-upsert':
+                'true'
             },
-            body: blob
+            body: file
           });
           bar.style.width = '90%';
           if (!res.ok) {
@@ -7725,38 +8071,36 @@ document.addEventListener('DOMContentLoaded',function(){
         const files = Array.from(input.files);
         if (!files.length) return;
         const { url: sbUrl, key: sbKey } = getSupabase();
-        if (!sbUrl || !sbKey) { toast('Configure o Supabase para enviar documentos.', 'error'); return; }
+        const hasSb = !!(sbUrl && sbKey);
 
         for (const file of files) {
-          // Validação: extensão permitida + tamanho máximo 20 MB
-          const docVal = validateDocFile(file, 20);
-          if (!docVal.ok) { toast('❌ ' + docVal.error, 'error'); continue; }
-
-          try {
-            await ensureValidToken();
-            const authToken = AuthStore.getToken() || sbKey;
-            const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
-            const path = `vagas/doc-${Date.now()}-${safeName}`;
-            const BUCKET = 'imagens';
-            const mimeType = DOC_ALLOWED[docVal.ext] || 'application/octet-stream';
-
-            const res = await fetch(`${sbUrl}/storage/v1/object/${BUCKET}/${path}`, {
-              method: 'POST',
-              headers: {
-                'apikey': sbKey, 'Authorization': `Bearer ${authToken}`,
-                'Content-Type': mimeType, 'x-upsert': 'true'
-              },
-              body: file
-            });
-            if (!res.ok) {
-              const err = await res.json().catch(() => ({}));
-              throw new Error(err.message || `HTTP ${res.status}`);
-            }
-            const publicUrl = `${sbUrl}/storage/v1/object/public/${BUCKET}/${path}`;
-            veAnexos.push({ nome: file.name, url: publicUrl, tipo: docVal.ext });
-            toast(`📎 "${file.name}" enviado!`, 'success');
-            if (veAnexos.length === 1) document.getElementById('v-edital').value = publicUrl;
-          } catch (e) { toast(`❌ Erro ao enviar "${file.name}": ${e.message}`, 'error'); }
+          if (hasSb) {
+            try {
+              await ensureValidToken();
+              const authToken = AuthStore.getToken() || sbKey;
+              const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z0-9]/g, '') || 'bin';
+              const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+              const path = `vagas/doc-${Date.now()}-${safeName}`;
+              const BUCKET = 'imagens';
+              const res = await fetch(`${sbUrl}/storage/v1/object/${BUCKET}/${path}`, {
+                method: 'POST',
+                headers: {
+                  'apikey': sbKey, 'Authorization': `Bearer ${authToken}`, 'Content-Type': file.type ||
+                    'application/octet-stream', 'x-upsert': 'true'
+                },
+                body: file
+              });
+              if (!res.ok) {
+                const err = await res.json().catch(() => ({})); throw new Error(err.message || `HTTP
+              ${res.status}`);
+              }
+              const publicUrl = `${sbUrl}/storage/v1/object/public/${BUCKET}/${path}`;
+              veAnexos.push({ nome: file.name, url: publicUrl, tipo: ext });
+              toast(`📎 "${file.name}" enviado!`, 'success');
+              // Atualiza campo legado de edital_url com o primeiro arquivo
+              if (veAnexos.length === 1) document.getElementById('v-edital').value = publicUrl;
+            } catch (e) { toast(`❌ Erro ao enviar "${file.name}": ${e.message}`, 'error'); }
+          } else { toast('Configure o Supabase para enviar documentos.', 'error'); break; }
         }
         veRenderAnexos(); input.value = '';
       }
@@ -7875,26 +8219,12 @@ document.addEventListener('DOMContentLoaded',function(){
       function logoFileSelected(input) {
         const file = input.files[0];
         if (!file) return;
-
-        // Valida na seleção para feedback imediato (antes de clicar "Enviar")
-        validateImageFile(file, 2).then(v => {
-          if (!v.ok) {
-            toast('❌ ' + v.error, 'error');
-            input.value = '';
-            document.getElementById('logo-file-info').style.display = 'none';
-            return;
-          }
-          const sizeKB = (file.size / 1024).toFixed(1);
-          const sizeLabel = file.size >= 1024 * 1024
-            ? (file.size / 1024 / 1024).toFixed(1) + ' MB'
-            : sizeKB + ' KB';
-          document.getElementById('logo-file-name').textContent = file.name;
-          document.getElementById('logo-file-size').textContent = sizeLabel + ' → será redimensionada para ≤800px';
-          const reader = new FileReader();
-          reader.onload = e => { document.getElementById('logo-file-preview').src = e.target.result; };
-          reader.readAsDataURL(file);
-          document.getElementById('logo-file-info').style.display = '';
-        });
+        document.getElementById('logo-file-name').textContent = file.name;
+        document.getElementById('logo-file-size').textContent = (file.size / 1024).toFixed(1) + ' KB';
+        const reader = new FileReader();
+        reader.onload = e => { document.getElementById('logo-file-preview').src = e.target.result; };
+        reader.readAsDataURL(file);
+        document.getElementById('logo-file-info').style.display = '';
       }
 
       function logoCancelSelection() {
@@ -7907,11 +8237,6 @@ document.addEventListener('DOMContentLoaded',function(){
         const input = document.getElementById('logo-file-input');
         const file = input.files[0];
         if (!file) return;
-
-        // Validação: magic bytes + tamanho máx 2 MB (logo deve ser leve)
-        const validation = await validateImageFile(file, 2);
-        if (!validation.ok) { toast('❌ ' + validation.error, 'error'); input.value = ''; return; }
-
         const { url: sbUrl, key: sbKey } = getSupabase();
         const bar = document.getElementById('logo-progress-bar');
         const msg = document.getElementById('logo-progress-msg');
@@ -7919,22 +8244,16 @@ document.addEventListener('DOMContentLoaded',function(){
         const uploadBtn = document.getElementById('btn-upload-logo');
 
         wrap.style.display = '';
-        bar.style.width = '10%';
+        bar.style.width = '20%';
         bar.style.background = 'var(--accent)';
         msg.style.color = 'var(--text-muted)';
-        msg.textContent = 'Redimensionando…';
-        if (uploadBtn) { uploadBtn.disabled = true; uploadBtn.textContent = '⏳ Processando…'; }
+        msg.textContent = 'Enviando imagem…';
+        if (uploadBtn) { uploadBtn.disabled = true; uploadBtn.textContent = '⏳ Enviando…'; }
 
         try {
-          // Logo: máx 800px, alta qualidade (92%)
-          const blob = await resizeImageFile(file, 800, 0.92);
-          msg.textContent = 'Enviando imagem…';
-
           await ensureValidToken();
           const authToken = AuthStore.getToken() || sbKey;
-          const outMime = blob.type || validation.detectedMime || 'image/png';
-          const extMap = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' };
-          const ext = extMap[outMime] || 'png';
+          const ext = file.name.split('.').pop().toLowerCase().replace(/[^a-z]/g, '') || 'png';
           const BUCKET = 'imagens';
           const path = `logos/logomarca.${ext}`;
 
@@ -7944,10 +8263,10 @@ document.addEventListener('DOMContentLoaded',function(){
             headers: {
               'apikey': sbKey,
               'Authorization': `Bearer ${authToken}`,
-              'Content-Type': outMime,
+              'Content-Type': file.type,
               'x-upsert': 'true'
             },
-            body: blob
+            body: file
           });
           bar.style.width = '80%';
           if (!res.ok) {
