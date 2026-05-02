@@ -2888,12 +2888,12 @@
             <button class="rte-btn" onmousedown="event.preventDefault()" onclick="rteClearFormat()"
               title="Limpar formatação">✕A</button>
             <div class="rte-sep"></div>
-            <div class="rte-btn rte-btn-img-upload" title="Inserir imagem (arquivo)">
-              🖼️<input type="file" accept="image/jpeg,image/png,image/webp,image/gif"
-                onchange="rteInsertImageFile(this,'n')">
-            </div>
-            <button class="rte-btn" onmousedown="event.preventDefault()" onclick="rteInsertImageUrl('n')"
-              title="Inserir imagem por URL">🔗🖼️</button>
+            <button class="rte-btn" id="btn-rte-img-picker" onmousedown="event.preventDefault()"
+              onclick="rteOpenImagePicker('n')"
+              title="Inserir imagem(ns) no cursor — clique aqui depois de posicionar o cursor"
+              style="gap:.3rem;padding:0 .6rem;">
+              🖼 <span style="font-size:.75rem;">Imagem</span>
+            </button>
           </div>
           <div id="n-rte-body" class="rte-body" contenteditable="true"
             oninput="syncRteToHidden(); updatePreview(); updateWordCount();" oncontextmenu="nContextMenu(event)"
@@ -8967,11 +8967,272 @@ document.addEventListener('DOMContentLoaded',function(){
       window.removerCapaImagem = removerCapaImagem;
 
       // Inicializa rastreamento de seleção imediatamente
-      // (o editor pode ser aberto sem passar por openNewsEditor em alguns fluxos)
       rteSetupSelectionTracking();
+
+      // ── IMAGE PICKER: múltiplas fotos no cursor ──
+      var _pEditorId = 'n', _pFiles = [], _pRange = null;
+
+      window.rteOpenImagePicker = function (editorId) {
+        _pEditorId = editorId || 'n';
+        _pFiles = [];
+        var sel = window.getSelection();
+        _pRange = (sel && sel.rangeCount > 0) ? sel.getRangeAt(0).cloneRange()
+          : (savedRange ? savedRange.cloneRange() : null);
+        document.getElementById('img-picker-thumbs').innerHTML = '';
+        document.getElementById('img-picker-grid').style.display = 'none';
+        document.getElementById('img-picker-opts').style.display = 'none';
+        document.getElementById('img-picker-file').value = '';
+        var b = document.getElementById('img-picker-insert-btn');
+        b.disabled = true; b.style.opacity = '.4'; b.style.cursor = 'not-allowed'; b.textContent = 'Inserir no texto';
+        document.getElementById('img-picker-overlay').style.display = 'flex';
+      };
+
+      window.rteCloseImagePicker = function () {
+        _pFiles.forEach(function (f) { try { URL.revokeObjectURL(f.ou); } catch (e) { } });
+        _pFiles = [];
+        document.getElementById('img-picker-overlay').style.display = 'none';
+      };
+
+      document.getElementById('img-picker-overlay').addEventListener('click', function (e) {
+        if (e.target === this) window.rteCloseImagePicker();
+      });
+
+      window.imgPickerHandleFiles = function (list) {
+        if (!list || !list.length) return;
+        var ok = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+        for (var i = 0; i < list.length; i++) {
+          var f = list[i];
+          if (ok.indexOf(f.type) < 0) { toast('Tipo inválido: ' + f.name, 'error'); continue; }
+          if (f.size > 8 * 1024 * 1024) { toast(f.name + ' maior que 8MB', 'error'); continue; }
+          var ou = URL.createObjectURL(f);
+          var entry = { f: f, ou: ou, alt: f.name.replace(/\.[^.]+$/, '') };
+          _pFiles.push(entry);
+          _pAddThumb(entry);
+        }
+        _pUpdateUI();
+      };
+
+      window.imgPickerHandleDrop = function (ev) { window.imgPickerHandleFiles(ev.dataTransfer.files); };
+
+      window.imgPickerClearAll = function () {
+        _pFiles.forEach(function (f) { try { URL.revokeObjectURL(f.ou); } catch (e) { } });
+        _pFiles = [];
+        document.getElementById('img-picker-thumbs').innerHTML = '';
+        _pUpdateUI();
+      };
+
+      function _pAddThumb(entry) {
+        var grid = document.getElementById('img-picker-thumbs');
+        var card = document.createElement('div');
+        card.style.cssText = 'position:relative;border-radius:8px;overflow:hidden;border:1px solid var(--border);background:var(--bg3);aspect-ratio:1;';
+        var img = document.createElement('img');
+        img.src = entry.ou;
+        img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;';
+        card.appendChild(img);
+        var ov = document.createElement('div');
+        ov.style.cssText = 'position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.8),transparent 55%);display:flex;flex-direction:column;justify-content:flex-end;padding:.4rem;opacity:0;transition:opacity .15s;';
+        card.addEventListener('mouseenter', function () { ov.style.opacity = '1'; });
+        card.addEventListener('mouseleave', function () { ov.style.opacity = '0'; });
+        var inp = document.createElement('input');
+        inp.type = 'text'; inp.value = entry.alt;
+        inp.style.cssText = 'width:100%;padding:.2rem .35rem;font-size:.65rem;background:rgba(0,0,0,.65);border:1px solid rgba(255,255,255,.2);border-radius:4px;color:#fff;outline:none;font-family:inherit;';
+        inp.addEventListener('input', function () { entry.alt = inp.value; });
+        inp.addEventListener('click', function (e) { e.stopPropagation(); });
+        ov.appendChild(inp); card.appendChild(ov);
+        var rm = document.createElement('button');
+        rm.textContent = 'x';
+        rm.style.cssText = 'position:absolute;top:.3rem;right:.3rem;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.75);border:1px solid rgba(255,255,255,.2);color:#fff;font-size:.75rem;font-weight:bold;cursor:pointer;font-family:inherit;padding:0;line-height:20px;text-align:center;';
+        rm.addEventListener('click', function (e) {
+          e.stopPropagation();
+          try { URL.revokeObjectURL(entry.ou); } catch (ex) { }
+          var i = _pFiles.indexOf(entry);
+          if (i >= 0) _pFiles.splice(i, 1);
+          card.remove(); _pUpdateUI();
+        });
+        card.appendChild(rm); grid.appendChild(card);
+      }
+
+      function _pUpdateUI() {
+        var n = _pFiles.length;
+        var g = document.getElementById('img-picker-grid');
+        var o = document.getElementById('img-picker-opts');
+        var b = document.getElementById('img-picker-insert-btn');
+        var c = document.getElementById('img-picker-count');
+        if (n === 0) {
+          g.style.display = 'none'; o.style.display = 'none';
+          b.disabled = true; b.style.opacity = '.4'; b.style.cursor = 'not-allowed'; b.textContent = 'Inserir no texto';
+        } else {
+          g.style.display = 'block'; o.style.display = 'block';
+          b.disabled = false; b.style.opacity = '1'; b.style.cursor = 'pointer';
+          c.textContent = n + ' imagem' + (n > 1 ? 's' : '') + ' selecionada' + (n > 1 ? 's' : '');
+          b.textContent = n === 1 ? 'Inserir no texto' : 'Inserir ' + n + ' imagens';
+        }
+      }
+
+      window.imgPickerInsertAll = async function () {
+        if (!_pFiles.length) return;
+        var btn = document.getElementById('img-picker-insert-btn');
+        btn.disabled = true; btn.textContent = 'Processando...';
+        var w = document.getElementById('img-picker-width').value;
+        var al = document.getElementById('img-picker-align').value;
+        var cap = document.getElementById('img-picker-caption').checked;
+        var done = [];
+        for (var i = 0; i < _pFiles.length; i++) {
+          try {
+            var blob = await _pResize(_pFiles[i].f, 1400);
+            var b64 = await _pToB64(blob);
+            done.push({ src: b64, alt: _pFiles[i].alt });
+          } catch (e) { console.warn(e); }
+        }
+        window.rteCloseImagePicker();
+        var el = document.getElementById('n-rte-body');
+        if (el) {
+          el.focus();
+          if (_pRange) { try { var s = window.getSelection(); s.removeAllRanges(); s.addRange(_pRange); } catch (e) { } }
+        }
+        var mm = { center: '1rem auto', left: '1rem auto 1rem 0', right: '1rem 0 1rem auto' };
+        for (var j = 0; j < done.length; j++) {
+          var it = done[j];
+          var ms = 'display:block;margin:' + (mm[al] || '1rem auto') + ';';
+          var h = '<img src="' + it.src + '" alt="' + escHtml(it.alt) + '" style="' + ms + 'max-width:' + w + ';height:auto;border-radius:8px;">';
+          if (cap) h += '<p style="text-align:center;font-size:.82rem;color:#6b7a99;margin:.15rem 0 1rem;font-style:italic;">' + escHtml(it.alt) + '</p>';
+          document.execCommand('insertHTML', false, h);
+        }
+        syncRteToHidden(); updateWordCount();
+        toast(done.length + ' imagem' + (done.length > 1 ? 's inseridas' : ' inserida') + ' no editor!', 'success');
+      };
+
+      function _pResize(file, maxPx) {
+        return new Promise(function (resolve) {
+          var img = new Image(), url = URL.createObjectURL(file);
+          img.onload = function () {
+            URL.revokeObjectURL(url);
+            if (img.width <= maxPx && img.height <= maxPx) { resolve(file); return; }
+            var r = Math.min(maxPx / img.width, maxPx / img.height);
+            var c = document.createElement('canvas');
+            c.width = Math.round(img.width * r); c.height = Math.round(img.height * r);
+            c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+            c.toBlob(function (b) { resolve(b || file); }, file.type === 'image/png' ? 'image/png' : 'image/jpeg', 0.88);
+          };
+          img.onerror = function () { URL.revokeObjectURL(url); resolve(file); };
+          img.src = url;
+        });
+      }
+
+      function _pToB64(blob) {
+        return new Promise(function (resolve, reject) {
+          var r = new FileReader();
+          r.onload = function () { resolve(r.result); };
+          r.onerror = reject;
+          r.readAsDataURL(blob);
+        });
+      }
 
     }); // DOMContentLoaded
   </script>
+
+  <!-- ════ IMAGE PICKER MODAL ════ -->
+  <div id="img-picker-overlay"
+    style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:1rem;">
+    <div id="img-picker-box"
+      style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;width:100%;max-width:560px;box-shadow:0 24px 80px rgba(0,0,0,.7);overflow:hidden;display:flex;flex-direction:column;max-height:88vh;">
+      <!-- Cabeçalho -->
+      <div
+        style="display:flex;align-items:center;gap:.75rem;padding:1rem 1.25rem;border-bottom:1px solid var(--border);flex-shrink:0;">
+        <div style="flex:1;">
+          <div style="font-size:.9rem;font-weight:600;color:var(--text);">📎 Inserir imagem no cursor</div>
+          <div style="font-size:.72rem;color:var(--text-muted);margin-top:.1rem;">Selecione uma ou mais fotos · elas
+            serão inseridas na posição atual do cursor</div>
+        </div>
+        <button onclick="rteCloseImagePicker()"
+          style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;width:28px;height:28px;color:var(--text-muted);cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;font-family:inherit;">✕</button>
+      </div>
+
+      <!-- Zona de drop -->
+      <div id="img-picker-drop"
+        style="margin:1rem 1.25rem;border:2px dashed var(--border);border-radius:12px;padding:2rem 1rem;text-align:center;cursor:pointer;transition:all .18s;background:var(--bg3);"
+        onclick="document.getElementById('img-picker-file').click()"
+        ondragover="event.preventDefault();this.style.borderColor='var(--accent)';this.style.background='rgba(59,130,246,.07)'"
+        ondragleave="this.style.borderColor='var(--border)';this.style.background='var(--bg3)'"
+        ondrop="event.preventDefault();this.style.borderColor='var(--border)';this.style.background='var(--bg3)';imgPickerHandleDrop(event)">
+        <div style="font-size:2.2rem;margin-bottom:.5rem;line-height:1;">🖼️</div>
+        <div style="font-size:.88rem;font-weight:600;color:var(--text);margin-bottom:.3rem;">Clique aqui ou arraste
+          fotos</div>
+        <div style="font-size:.75rem;color:var(--text-muted);">JPG, PNG, WEBP, GIF · até 8MB cada · pode selecionar
+          várias de uma vez</div>
+        <input type="file" id="img-picker-file" accept="image/jpeg,image/png,image/webp,image/gif" multiple
+          style="display:none;" onchange="imgPickerHandleFiles(this.files)">
+      </div>
+
+      <!-- Grade de previews (oculta até ter imagens) -->
+      <div id="img-picker-grid" style="display:none;padding:0 1.25rem;overflow-y:auto;flex:1;min-height:0;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;">
+          <span id="img-picker-count"
+            style="font-size:.72rem;font-weight:600;color:var(--text-muted);letter-spacing:.07em;text-transform:uppercase;"></span>
+          <button onclick="imgPickerClearAll()"
+            style="background:none;border:none;color:var(--text-muted);font-size:.75rem;cursor:pointer;font-family:inherit;padding:.2rem .4rem;border-radius:4px;"
+            onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text-muted)'">✕ Limpar
+            tudo</button>
+        </div>
+        <div id="img-picker-thumbs"
+          style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:.6rem;margin-bottom:.75rem;">
+        </div>
+      </div>
+
+      <!-- Opções de inserção -->
+      <div id="img-picker-opts"
+        style="display:none;padding:.75rem 1.25rem;border-top:1px solid var(--border);background:rgba(0,0,0,.15);flex-shrink:0;">
+        <div
+          style="font-size:.7rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.55rem;">
+          ⚙️ Opções de inserção</div>
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center;">
+          <label style="font-size:.8rem;color:var(--text-dim);display:flex;align-items:center;gap:.35rem;">
+            <span>Largura:</span>
+            <select id="img-picker-width"
+              style="background:var(--bg2);border:1px solid var(--border);border-radius:5px;color:var(--text);font-size:.78rem;padding:.25rem .5rem;outline:none;cursor:pointer;">
+              <option value="100%">100% — largura total</option>
+              <option value="80%">80%</option>
+              <option value="60%">60%</option>
+              <option value="50%">50% — meia coluna</option>
+              <option value="300px">Pequena (300px)</option>
+            </select>
+          </label>
+          <label style="font-size:.8rem;color:var(--text-dim);display:flex;align-items:center;gap:.35rem;">
+            <span>Posição:</span>
+            <select id="img-picker-align"
+              style="background:var(--bg2);border:1px solid var(--border);border-radius:5px;color:var(--text);font-size:.78rem;padding:.25rem .5rem;outline:none;cursor:pointer;">
+              <option value="center">Centralizada</option>
+              <option value="left">Esquerda</option>
+              <option value="right">Direita</option>
+            </select>
+          </label>
+          <label
+            style="font-size:.8rem;color:var(--text-dim);display:flex;align-items:center;gap:.4rem;cursor:pointer;">
+            <input type="checkbox" id="img-picker-caption" style="accent-color:var(--accent);width:14px;height:14px;">
+            <span>Legenda vazia abaixo</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Rodapé -->
+      <div
+        style="display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.25rem;border-top:1px solid var(--border);flex-shrink:0;background:var(--bg2);">
+        <button onclick="document.getElementById('img-picker-file').click()"
+          style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);color:var(--text-dim);font-size:.8rem;padding:.42rem .85rem;cursor:pointer;font-family:inherit;transition:all .15s;"
+          onmouseover="this.style.borderColor='var(--border-hover)';this.style.color='var(--text)'"
+          onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-dim)'">+ Adicionar
+          mais</button>
+        <div style="display:flex;gap:.5rem;">
+          <button onclick="rteCloseImagePicker()"
+            style="background:transparent;border:1px solid var(--border);border-radius:var(--radius);color:var(--text-muted);font-size:.82rem;padding:.45rem .9rem;cursor:pointer;font-family:inherit;">Cancelar</button>
+          <button id="img-picker-insert-btn" onclick="imgPickerInsertAll()" disabled
+            style="background:var(--accent);border:none;border-radius:var(--radius);color:#fff;font-size:.82rem;font-weight:600;padding:.45rem 1.25rem;cursor:not-allowed;font-family:inherit;opacity:.4;transition:all .2s;">Inserir
+            no texto</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </body>
 
 </html>
