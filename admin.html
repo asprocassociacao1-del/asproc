@@ -45,6 +45,13 @@
       padding: 0;
     }
 
+    /* Proteção global contra overflow de texto sem espaço */
+    [contenteditable] {
+      overflow-wrap: break-word !important;
+      word-break: break-word !important;
+      overflow-x: hidden !important;
+    }
+
     html {
       scroll-behavior: smooth;
     }
@@ -1436,7 +1443,13 @@
       inset: 0;
       background: var(--bg);
       z-index: 1500;
-      overflow-y: auto;
+      /* Layout em coluna: topbar + body */
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #news-editor-overlay.open {
+      display: flex;
     }
 
     .ne-topbar {
@@ -1450,28 +1463,49 @@
       gap: .75rem;
       padding: .75rem 1.5rem;
       flex-wrap: wrap;
+      flex-shrink: 0;
     }
 
     .ne-topbar-title {
       font-size: .9rem;
       font-weight: 600;
       flex: 1;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Editor principal */
+    .ne-editor-panel {
+      padding: 1.75rem 2rem;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      /* CRÍTICO: permite que o RTE cresça para preencher o espaço */
+      overflow: hidden;
+      min-height: 0;
     }
 
     .ne-body {
       display: grid;
       grid-template-columns: 1fr 300px;
       gap: 0;
-      min-height: calc(100vh - 56px);
+      /* CRÍTICO: altura fixa para o body para que o scroll interno funcione */
+      height: calc(100vh - 56px);
+      overflow: hidden;
     }
 
-    /* Editor principal */
-    .ne-editor-panel {
-      padding: 2rem 2.5rem;
-      border-right: 1px solid var(--border);
+    /* O painel deve ser scrollável internamente */
+    .ne-preview-panel {
+      background: var(--bg2);
+      overflow-y: auto;
+      padding: 1.25rem;
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 0;
+      height: 100%;
     }
 
     .ne-title-input {
@@ -1482,10 +1516,11 @@
       border-bottom: 2px solid var(--border);
       color: var(--text);
       font-family: 'Playfair Display', serif;
-      font-size: 1.75rem;
+      font-size: 2rem;
       font-weight: 700;
       outline: none;
       transition: border-color var(--transition);
+      flex-shrink: 0;
     }
 
     .ne-title-input:focus {
@@ -1493,12 +1528,12 @@
     }
 
     .ne-title-input::placeholder {
-      color: rgba(255, 255, 255, .2);
+      color: rgba(255, 255, 255, .18);
     }
 
     .ne-resumo-input {
       width: 100%;
-      padding: .6rem;
+      padding: .65rem .85rem;
       background: var(--bg3);
       border: 1px solid var(--border);
       border-radius: var(--radius);
@@ -1507,12 +1542,18 @@
       font-size: .9rem;
       outline: none;
       resize: vertical;
-      min-height: 60px;
+      min-height: 64px;
+      max-height: 120px;
       transition: border-color var(--transition);
+      flex-shrink: 0;
     }
 
     .ne-resumo-input:focus {
       border-color: var(--accent);
+    }
+
+    .ne-resumo-input::placeholder {
+      color: var(--text-muted);
     }
 
     /* Rich Text Editor */
@@ -1521,22 +1562,39 @@
       border-radius: var(--radius-lg);
       overflow: hidden;
       flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      /* CRÍTICO: impede que conteúdo interno vaze */
+      max-width: 100%;
+      width: 100%;
     }
 
     .rte-toolbar {
       background: var(--bg3);
       border-bottom: 1px solid var(--border);
-      padding: .4rem .5rem;
+      padding: .35rem .6rem;
       display: flex;
       align-items: center;
       flex-wrap: wrap;
-      gap: .2rem;
+      gap: .15rem;
+      row-gap: .3rem;
+      flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .rte-toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: .1rem;
     }
 
     .rte-btn {
-      min-width: 28px;
-      height: 28px;
-      padding: 0 .4rem;
+      min-width: 30px;
+      height: 30px;
+      padding: 0 .45rem;
       background: transparent;
       border: 1px solid transparent;
       border-radius: 5px;
@@ -1548,11 +1606,14 @@
       justify-content: center;
       transition: all var(--transition);
       font-family: 'Inter', sans-serif;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .rte-btn:hover {
-      background: var(--border);
+      background: rgba(255, 255, 255, .08);
       color: var(--text);
+      border-color: var(--border);
     }
 
     .rte-btn.active {
@@ -1563,16 +1624,16 @@
 
     .rte-sep {
       width: 1px;
-      height: 18px;
+      height: 20px;
       background: var(--border);
-      margin: 0 .2rem;
+      margin: 0 .25rem;
       flex-shrink: 0;
     }
 
     .rte-select {
-      height: 28px;
+      height: 30px;
       padding: 0 .5rem;
-      background: var(--bg);
+      background: rgba(0, 0, 0, .2);
       border: 1px solid var(--border);
       color: var(--text-dim);
       border-radius: 5px;
@@ -1580,17 +1641,21 @@
       cursor: pointer;
       outline: none;
       font-family: 'Inter', sans-serif;
+      flex-shrink: 0;
+      transition: border-color var(--transition);
     }
 
+    .rte-select:hover,
     .rte-select:focus {
       border-color: var(--accent);
+      color: var(--text);
     }
 
     .rte-fontsize {
-      width: 48px;
-      height: 28px;
+      width: 50px;
+      height: 30px;
       padding: 0 .3rem;
-      background: var(--bg);
+      background: rgba(0, 0, 0, .2);
       border: 1px solid var(--border);
       color: var(--text-dim);
       border-radius: 5px;
@@ -1598,16 +1663,30 @@
       outline: none;
       text-align: center;
       font-family: 'Inter', sans-serif;
+      flex-shrink: 0;
+      transition: border-color var(--transition);
+    }
+
+    .rte-fontsize:hover,
+    .rte-fontsize:focus {
+      border-color: var(--accent);
+      color: var(--text);
     }
 
     .rte-color-btn {
-      width: 28px;
-      height: 28px;
+      width: 30px;
+      height: 30px;
       border-radius: 5px;
       overflow: hidden;
       cursor: pointer;
       border: 1px solid var(--border);
       position: relative;
+      flex-shrink: 0;
+      transition: border-color var(--transition);
+    }
+
+    .rte-color-btn:hover {
+      border-color: var(--border-hover);
     }
 
     .rte-color-btn input[type=color] {
@@ -1622,27 +1701,38 @@
     }
 
     .rte-body {
-      min-height: 400px;
-      padding: 1.25rem 1.5rem;
+      min-height: 500px;
+      max-height: 65vh;
+      overflow-y: auto;
+      padding: 1.5rem 2rem;
       color: var(--text);
-      font-size: .95rem;
-      line-height: 1.8;
+      font-size: 1rem;
+      line-height: 1.85;
       outline: none;
       background: var(--bg2);
-      /* Evita que texto longo empurre o layout */
+      /* CRÍTICO: impede qualquer texto de vazar para fora do container */
       overflow-wrap: break-word;
       word-break: break-word;
+      word-wrap: break-word;
       overflow-x: hidden;
-      /* Largura máxima alinhada com o site publicado (~720px de conteúdo) */
-      max-width: 720px;
-      margin: 0 auto;
+      white-space: pre-wrap;
+      /* Limitar largura como no site publicado */
+      width: 100%;
+      max-width: 100%;
       box-sizing: border-box;
+    }
+
+    /* Quando o usuário usa contenteditable, pre-wrap pode causar problemas.
+       Usamos normal para o texto mas mantemos o break em palavras longas */
+    .rte-body[contenteditable] {
+      white-space: normal;
     }
 
     .rte-body:empty::before {
       content: 'Escreva o conteúdo da notícia aqui…';
       color: var(--text-muted);
       pointer-events: none;
+      display: block;
     }
 
     .rte-body h1,
@@ -1650,11 +1740,48 @@
     .rte-body h3 {
       font-family: 'Playfair Display', serif;
       color: var(--text);
-      margin: 1.2rem 0 .5rem;
+      margin: 1.5rem 0 .6rem;
+      line-height: 1.3;
+    }
+
+    .rte-body h1 {
+      font-size: 1.9rem;
+    }
+
+    .rte-body h2 {
+      font-size: 1.45rem;
+    }
+
+    .rte-body h3 {
+      font-size: 1.2rem;
     }
 
     .rte-body p {
-      margin: .6rem 0;
+      margin: .75rem 0;
+    }
+
+    .rte-body ul,
+    .rte-body ol {
+      padding-left: 1.5rem;
+      margin: .75rem 0;
+    }
+
+    .rte-body li {
+      margin: .25rem 0;
+    }
+
+    .rte-body pre {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1rem 1.25rem;
+      font-family: 'Courier New', monospace;
+      font-size: .88rem;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      margin: 1rem 0;
+      color: var(--green);
     }
 
     .rte-body blockquote {
@@ -1683,11 +1810,7 @@
       outline-offset: 2px;
     }
 
-    /* Wrapper do editor com scroll horizontal prevenido */
-    .rte-wrap {
-      overflow: hidden;
-    }
-
+    /* Imagens no editor */
     /* Context menu de imagem inserida */
     .rte-img-menu {
       position: fixed;
@@ -1813,16 +1936,6 @@
       min-width: 280px;
     }
 
-    /* Painel lateral do editor */
-    .ne-preview-panel {
-      background: var(--bg2);
-      overflow-y: auto;
-      padding: 1.25rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
-
     .ne-panel-section {
       margin-bottom: 1.25rem;
     }
@@ -1944,12 +2057,24 @@
     @media (max-width: 900px) {
       .ne-body {
         grid-template-columns: 1fr;
+        height: auto;
+        overflow: visible;
       }
 
       .ne-editor-panel {
         border-right: none;
         border-bottom: 1px solid var(--border);
-        padding: 1.25rem;
+        padding: 1rem;
+        overflow: visible;
+      }
+
+      .rte-body {
+        max-height: 50vh;
+      }
+
+      .ne-preview-panel {
+        height: auto;
+        overflow: visible;
       }
     }
 
@@ -2723,10 +2848,16 @@
             <button class="rte-btn" onmousedown="event.preventDefault()" onclick="rteInsertImageUrl('n')"
               title="Inserir imagem por URL">🔗🖼️</button>
           </div>
-          <div id="n-rte-body" class="rte-body" contenteditable="true" oninput="syncRteToHidden(); updatePreview();"
-            oncontextmenu="nContextMenu(event)" onpaste="rteHandlePaste(event,'n')" ondrop="rteHandleDrop(event,'n')"
-            ondragover="event.preventDefault()""
-            onkeyup=" updateRteToolbarState();" onmouseup="updateRteToolbarState();">
+          <div id="n-rte-body" class="rte-body" contenteditable="true"
+            oninput="syncRteToHidden(); updatePreview(); updateWordCount();" oncontextmenu="nContextMenu(event)"
+            onpaste="rteHandlePaste(event,'n')" ondrop="rteHandleDrop(event,'n')" ondragover="event.preventDefault()"
+            onkeyup="updateRteToolbarState(); updateWordCount();" onmouseup="updateRteToolbarState();">
+          </div>
+          <!-- Barra de status do editor -->
+          <div
+            style="display:flex;align-items:center;justify-content:space-between;padding:.35rem .85rem;background:var(--bg3);border-top:1px solid var(--border);font-size:.72rem;color:var(--text-muted);flex-shrink:0;">
+            <span id="rte-word-count">0 palavras · 0 caracteres</span>
+            <span style="opacity:.6;">Ctrl+B negrito · Ctrl+I itálico · Ctrl+Z desfazer</span>
           </div>
         </div>
         <textarea id="n-conteudo" style="display:none;"></textarea>
@@ -5522,7 +5653,7 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
       }
 
       function openNewsEditor() {
-        document.getElementById('news-editor-overlay').style.display = 'block';
+        document.getElementById('news-editor-overlay').style.display = 'flex';
         document.body.style.overflow = 'hidden';
         setTimeout(() => document.getElementById('n-titulo').focus(), 100);
       }
@@ -5547,6 +5678,17 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
           slugEl.value = slugify(t === 'Título da notícia…' ? '' : t);
           slugEl.dataset.autoSlug = 'true';
         }
+      }
+
+      function updateWordCount() {
+        const body = document.getElementById('n-rte-body');
+        const counter = document.getElementById('rte-word-count');
+        if (!body || !counter) return;
+        const text = body.innerText || '';
+        const chars = text.replace(/\n/g, '').length;
+        const words = text.trim() ? text.trim().split(/\s+/).filter(w => w.length > 0).length : 0;
+        const readMin = Math.ceil(words / 200);
+        counter.textContent = `${words.toLocaleString('pt-BR')} palavras · ${chars.toLocaleString('pt-BR')} caracteres${readMin > 0 ? ' · ~' + readMin + ' min de leitura' : ''}`;
       }
 
       function updateImgPreview() {
@@ -5833,7 +5975,29 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
             return; // só a primeira imagem
           }
         }
-        // Não é imagem — deixa o paste normal acontecer
+        // Para texto HTML colado, limpar estilos problemáticos (white-space, etc.)
+        const htmlData = event.clipboardData.getData('text/html');
+        if (htmlData) {
+          event.preventDefault();
+          // Cria um elemento temporário para sanitizar o HTML
+          const tmp = document.createElement('div');
+          tmp.innerHTML = htmlData;
+          // Remove atributos style que causam overflow
+          tmp.querySelectorAll('[style]').forEach(el => {
+            const style = el.getAttribute('style');
+            // Remove apenas as propriedades problemáticas
+            const cleaned = style
+              .replace(/white-space\s*:[^;]+;?/gi, '')
+              .replace(/overflow\s*:[^;]+;?/gi, '')
+              .replace(/width\s*:\s*\d+px[^;]*;?/gi, '');
+            if (cleaned.trim()) el.setAttribute('style', cleaned);
+            else el.removeAttribute('style');
+          });
+          // Insere o HTML limpo
+          document.execCommand('insertHTML', false, tmp.innerHTML);
+          return;
+        }
+        // Não é imagem nem HTML — deixa o paste normal acontecer (texto simples)
       }
       window.rteHandlePaste = rteHandlePaste;
 
@@ -8614,6 +8778,7 @@ document.addEventListener('DOMContentLoaded',function(){
       window.copyDeployLink = copyDeployLink;
       window.copySnippet = copySnippet;
       window.rteExec = rteExec;
+      window.updateWordCount = updateWordCount;
       window.rteInsertLink = rteInsertLink;
       window.rteConfirmLink = rteConfirmLink;
       window.rteClearFormat = rteClearFormat;
