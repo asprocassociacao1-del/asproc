@@ -1629,14 +1629,13 @@
       line-height: 1.8;
       outline: none;
       background: var(--bg2);
-      /* Evita que texto longo empurre o layout */
       overflow-wrap: break-word;
       word-break: break-word;
       overflow-x: hidden;
-      /* Largura máxima alinhada com o site publicado (~720px de conteúdo) */
-      max-width: 720px;
+      max-width: 56ch;
       margin: 0 auto;
       box-sizing: border-box;
+      text-align: center;
     }
 
     .rte-body:empty::before {
