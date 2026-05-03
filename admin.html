@@ -2584,6 +2584,11 @@
           <span class="nav-badge alert" id="badge-cand">–</span>
         </div>
 
+        <div class="nav-item" onclick="goTo('mensagens',this)">
+          <span class="nav-icon">✉️</span> Mensagens
+          <span class="nav-badge alert" id="badge-mensagens">–</span>
+        </div>
+
         <div class="nav-group-label">Personalização</div>
         <div class="nav-item" onclick="goTo('logomarca',this)">
           <span class="nav-icon">🖼️</span> Logomarca
@@ -2880,6 +2885,37 @@
           </div>
         </section>
 
+        <!-- MENSAGENS DE CONTATO -->
+        <section class="section" id="sec-mensagens">
+          <div class="table-wrap" style="margin-bottom:1rem;">
+            <div class="table-header" style="flex-wrap:wrap;gap:.5rem">
+              <h3>Mensagens de Contato</h3>
+              <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;">
+                <input id="msg-search" class="select-filter" type="search" placeholder="Buscar nome, e-mail, assunto…"
+                  style="min-width:200px" oninput="applyMsgFilters()">
+                <select class="select-filter" id="msg-assunto-filter" onchange="applyMsgFilters()">
+                  <option value="">Todos os assuntos</option>
+                  <option value="Informações gerais">Informações gerais</option>
+                  <option value="Parceria">Parceria</option>
+                  <option value="Imprensa">Imprensa</option>
+                  <option value="Voluntariado">Voluntariado</option>
+                  <option value="Outro">Outro</option>
+                </select>
+                <button class="btn btn-secondary btn-sm" onclick="loadMensagens()" title="Recarregar">↺
+                  Atualizar</button>
+              </div>
+            </div>
+          </div>
+          <div id="msg-loading" class="loading">
+            <div class="spinner"></div>
+          </div>
+          <div id="msg-list"></div>
+          <div class="empty-state" id="msg-empty" style="display:none;">
+            <div class="es-icon">✉️</div>
+            <p>Nenhuma mensagem recebida ainda.</p>
+          </div>
+        </section>
+
         <!-- USUÁRIOS -->
         <section class="section" id="sec-usuarios">
           <div class="table-wrap">
@@ -2987,6 +3023,35 @@
                 style="background:var(--bg3);padding:.1rem .4rem;border-radius:4px;font-size:.82rem;">supabase_setup.sql</code>
               no SQL Editor do Supabase para criar as tabelas.</p>
             <a href="supabase_setup.sql" download class="btn btn-secondary btn-sm">⬇ Baixar supabase_setup.sql</a>
+            <div
+              style="margin-top:1rem;padding:1rem;background:var(--bg3);border-radius:8px;border:1px solid var(--border);">
+              <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:.75rem;">📬 Para receber as mensagens do
+                formulário de contato, crie também a tabela abaixo no SQL Editor do Supabase:</p>
+              <pre class="code-block" style="font-size:.78rem;white-space:pre;overflow-x:auto;">-- Tabela de mensagens de contato (sobre.html)
+CREATE TABLE IF NOT EXISTS mensagens_contato (
+  id          bigserial PRIMARY KEY,
+  nome        text NOT NULL,
+  email       text NOT NULL,
+  assunto     text,
+  mensagem    text NOT NULL,
+  created_at  timestamptz DEFAULT now()
+);
+
+-- Permissão pública para inserir (anon pode enviar mensagem)
+ALTER TABLE mensagens_contato ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Inserir mensagens" ON mensagens_contato
+  FOR INSERT TO anon WITH CHECK (true);
+
+CREATE POLICY "Admin lê mensagens" ON mensagens_contato
+  FOR SELECT TO authenticated USING (true);
+
+CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
+  FOR DELETE TO authenticated USING (true);</pre>
+              <button class="btn btn-secondary btn-sm" style="margin-top:.6rem;"
+                onclick="navigator.clipboard.writeText(document.querySelector('.code-block').textContent).then(()=>toast('SQL copiado!','success'))">📋
+                Copiar SQL</button>
+            </div>
           </div>
 
           <div class="config-block">
@@ -4674,6 +4739,7 @@
         vagas: ['Vagas', 'Gerencie os processos seletivos'],
         avisos: ['Avisos', 'Gerencie os comunicados oficiais'],
         candidaturas: ['Candidaturas', 'Analise as candidaturas recebidas'],
+        mensagens: ['Mensagens de Contato', 'Mensagens enviadas pelo formulário do site'],
         configuracoes: ['Configurações', 'Configure a integração com o Supabase'],
         logomarca: ['Logomarca', 'Gerencie a identidade visual do site'],
         usuarios: ['Usuários', 'Gerencie os administradores e seus níveis de acesso'],
@@ -4686,6 +4752,9 @@
         }
         if (section === 'logomarca') {
           setTimeout(loadLogomarca, 80);
+        }
+        if (section === 'mensagens') {
+          setTimeout(loadMensagens, 80);
         }
         // Restrição: apenas super_admin acessa usuários
         if (section === 'usuarios' && _currentUserNivel && _currentUserNivel !== 'super_admin') {
@@ -4709,6 +4778,95 @@
         currentSection = section;
         loadSection(section);
         closeSidebar();
+      }
+
+      /* ══════════════════════════════════════════
+         MENSAGENS DE CONTATO
+      ══════════════════════════════════════════ */
+      let _allMensagens = [];
+
+      async function loadMensagens() {
+        const loading = document.getElementById('msg-loading');
+        const listEl = document.getElementById('msg-list');
+        const emptyEl = document.getElementById('msg-empty');
+        const badge = document.getElementById('badge-mensagens');
+
+        loading.style.display = 'flex';
+        listEl.innerHTML = '';
+        emptyEl.style.display = 'none';
+
+        try {
+          const data = await sbFetch('mensagens_contato', 'order=created_at.desc');
+          _allMensagens = data || [];
+          badge.textContent = _allMensagens.length || '0';
+          applyMsgFilters();
+        } catch (e) {
+          listEl.innerHTML = `<div style="color:var(--danger);padding:1rem;">❌ Erro ao carregar mensagens: ${e.message}</div>`;
+        } finally {
+          loading.style.display = 'none';
+        }
+      }
+
+      function applyMsgFilters() {
+        const search = (document.getElementById('msg-search')?.value || '').toLowerCase();
+        const assunto = document.getElementById('msg-assunto-filter')?.value || '';
+        const filtered = _allMensagens.filter(m => {
+          const matchSearch = !search ||
+            (m.nome || '').toLowerCase().includes(search) ||
+            (m.email || '').toLowerCase().includes(search) ||
+            (m.assunto || '').toLowerCase().includes(search) ||
+            (m.mensagem || '').toLowerCase().includes(search);
+          const matchAssunto = !assunto || m.assunto === assunto;
+          return matchSearch && matchAssunto;
+        });
+        renderMensagens(filtered);
+      }
+
+      function renderMensagens(list) {
+        const listEl = document.getElementById('msg-list');
+        const emptyEl = document.getElementById('msg-empty');
+        if (!list.length) { listEl.innerHTML = ''; emptyEl.style.display = 'flex'; return; }
+        emptyEl.style.display = 'none';
+        listEl.innerHTML = list.map(m => {
+          const data = m.created_at ? new Date(m.created_at).toLocaleString('pt-BR') : '—';
+          return `
+          <div class="table-wrap" style="margin-bottom:1rem;padding:1.2rem 1.5rem;border-radius:12px;background:var(--bg2);border:1px solid var(--border);">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap;">
+              <div style="flex:1;min-width:0;">
+                <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-bottom:.5rem;">
+                  <strong style="font-size:1rem;">${escHtml(m.nome || '—')}</strong>
+                  <span style="background:rgba(123,201,92,.12);color:var(--accent);border:1px solid rgba(123,201,92,.25);border-radius:99px;padding:.15rem .65rem;font-size:.72rem;font-weight:700;">${escHtml(m.assunto || '—')}</span>
+                  <span style="color:var(--text-muted);font-size:.78rem;">📅 ${data}</span>
+                </div>
+                <div style="color:var(--text-muted);font-size:.85rem;margin-bottom:.6rem;">
+                  📧 <a href="mailto:${escHtml(m.email || '')}" style="color:var(--accent);text-decoration:none;">${escHtml(m.email || '—')}</a>
+                </div>
+                <div style="background:var(--bg3);border-radius:8px;padding:.75rem 1rem;font-size:.88rem;line-height:1.6;color:var(--text);white-space:pre-wrap;word-break:break-word;">${escHtml(m.mensagem || '')}</div>
+              </div>
+              <div style="display:flex;gap:.5rem;flex-shrink:0;align-items:flex-start;">
+                <a href="mailto:${escHtml(m.email || '')}" class="btn btn-secondary btn-sm" title="Responder por e-mail">↩ Responder</a>
+                <button class="btn btn-sm" style="background:rgba(239,68,68,.12);color:#ef4444;border:1px solid rgba(239,68,68,.25);" onclick="deleteMensagem(${m.id})" title="Excluir mensagem">🗑 Excluir</button>
+              </div>
+            </div>
+          </div>`;
+        }).join('');
+      }
+
+      async function deleteMensagem(id) {
+        if (!confirm('Tem certeza que deseja excluir esta mensagem? A ação não pode ser desfeita.')) return;
+        try {
+          await sbFetch('mensagens_contato', `id=eq.${id}`, { method: 'DELETE' });
+          _allMensagens = _allMensagens.filter(m => m.id !== id);
+          document.getElementById('badge-mensagens').textContent = _allMensagens.length;
+          applyMsgFilters();
+          toast('🗑 Mensagem excluída.', 'success');
+        } catch (e) {
+          toast('❌ Erro ao excluir: ' + e.message, 'error');
+        }
+      }
+
+      function escHtml(str) {
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
       }
 
       function initApp() {

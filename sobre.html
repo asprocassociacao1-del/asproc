@@ -1879,13 +1879,39 @@
         document.addEventListener('keydown', e => { if (e.key === 'Escape') closePopup() });
 
         /* FORM */
-        function enviarForm() {
-            const nome = document.getElementById('f-nome').value;
-            const email = document.getElementById('f-email').value;
+        async function enviarForm() {
+            const nome = document.getElementById('f-nome').value.trim();
+            const email = document.getElementById('f-email').value.trim();
             const assunto = document.getElementById('f-assunto').value;
-            const msg = document.getElementById('f-msg').value;
+            const msg = document.getElementById('f-msg').value.trim();
             if (!nome || !email || !assunto || !msg) { showToast('⚠️ Preencha todos os campos.'); return; }
             if (!email.includes('@')) { showToast('⚠️ E-mail inválido.'); return; }
+
+            const btn = document.querySelector('.btn-form');
+            btn.textContent = 'Enviando…';
+            btn.disabled = true;
+
+            try {
+                // Tenta salvar no Supabase usando o script asproc-supabase.js
+                if (typeof SUPABASE_URL !== 'undefined' && typeof SUPABASE_KEY !== 'undefined') {
+                    const res = await fetch(SUPABASE_URL + '/rest/v1/mensagens_contato', {
+                        method: 'POST',
+                        headers: {
+                            'apikey': SUPABASE_KEY,
+                            'Authorization': 'Bearer ' + SUPABASE_KEY,
+                            'Content-Type': 'application/json',
+                            'Prefer': 'return=minimal'
+                        },
+                        body: JSON.stringify({ nome, email, assunto, mensagem: msg })
+                    });
+                    if (!res.ok) throw new Error('Erro ao salvar mensagem.');
+                }
+            } catch (e) {
+                console.warn('Supabase indisponível, mensagem não salva no servidor:', e);
+            }
+
+            btn.textContent = 'Enviar Mensagem →';
+            btn.disabled = false;
             document.getElementById('formBody').style.display = 'none';
             document.getElementById('formSuccess').style.display = 'block';
             showToast('✅ <strong>Mensagem enviada!</strong> Obrigado, ' + nome + '!');
