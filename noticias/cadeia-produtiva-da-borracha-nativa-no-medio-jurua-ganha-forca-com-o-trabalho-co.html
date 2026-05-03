@@ -9,7 +9,7 @@
 <meta property="og:type" content="article">
 <meta property="og:title" content="Cadeia produtiva da borracha nativa no Médio Juruá ganha força com o trabalho coletivo da ASPROC no escoamento">
 <meta property="og:description" content="O Médio Juruá reafirma sua posição como referência em bioeconomia na Amazônia com o início de mais uma etapa estratégica do escoamento da borracha nativa.">
-<meta property="og:url" content="https://www.asproc.com.br/noticias/cadeia-produtiva-da-borracha-nativa-no-medio-jurua-ganha-forca-com-o-trabalho-co.html">
+<meta property="og:url" content="https://www.asproc.org.br/noticias/cadeia-produtiva-da-borracha-nativa-no-medio-jurua-ganha-forca-com-o-trabalho-co.html">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,600&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -60,8 +60,33 @@ nav.scrolled{height:58px;background:rgba(8,14,8,.96);}
 .lang-sw{display:flex;gap:3px;}
 .lang-btn{background:none;border:1px solid rgba(123,201,92,.25);color:var(--texto-muito-fraco);font-size:.68rem;font-weight:700;padding:2px 7px;border-radius:4px;cursor:pointer;transition:all .2s;font-family:'Instrument Sans',sans-serif;letter-spacing:.06em;}
 .lang-btn:hover,.lang-btn.active{border-color:var(--verde-neon);color:var(--verde-neon);background:rgba(123,201,92,.07);}
-.hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:4px;background:none;border:none;}
-.hamburger span{width:22px;height:1.5px;background:var(--branco);border-radius:2px;transition:all .3s;display:block;}
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 8px 10px;
+            background: var(--verde);
+            border: 1.5px solid rgba(123, 201, 92, 0.45);
+            border-radius: 7px;
+            transition: background .2s, border-color .2s;
+        }
+
+        .hamburger:hover,
+        .hamburger:focus-visible {
+            background: var(--verde-claro);
+            border-color: var(--verde-neon);
+            outline: none;
+        }
+
+        .hamburger span {
+            width: 22px;
+            height: 2px;
+            background: var(--verde-neon);
+            border-radius: 2px;
+            transition: transform .3s, opacity .2s;
+            display: block;
+        }
 
 /* ── HERO ── */
 .art-hero{position:relative;min-height:560px;display:flex;align-items:flex-end;padding:0 5% 5%;margin-top:68px;overflow:hidden;}
@@ -272,7 +297,7 @@ footer{background:var(--superficie);border-top:1px solid var(--borda);padding:3.
 <!-- NAV -->
 <nav id="navbar">
   <a href="../index.html" style="display:flex;align-items:center;">
-    <img src="https://www.asproc.com.br/images/logo.png"
+    <img src="https://www.asproc.org.br/images/logo.png"
          onerror="this.style.display='none';this.nextElementSibling.style.display='block';"
          alt="ASPROC" class="nav-logo">
     <span class="nav-brand-txt" style="display:none;">🌿 ASPROC</span>
@@ -484,6 +509,7 @@ footer{background:var(--superficie);border-top:1px solid var(--borda);padding:3.
 
 <script>
 // ── CONFIG SUPABASE ──
+// Credenciais injetadas dinamicamente pelo admin durante publicação
 const SB_URL='https://wiatqtiyiznscjyoxxww.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpYXRxdGl5aXpuc2NqeW94eHd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1Njc0MDEsImV4cCI6MjA5MTE0MzQwMX0.xgaaZWX5kG3XowDtpR9Xd8S2S0nV-JTnv4ZwnP33PY8';
 const CAT_ICONS={pirarucu:'🐟',olea:'🌿',sanear:'💧',comercio:'🛒',vagas:'📋',geral:'📌'};
@@ -625,7 +651,7 @@ function noticiaUrl(n){
   }
   // Fallback: slug do banco
   var sl=n.slug&&n.slug.trim()?n.slug.trim():slugify(n.titulo||'');
-  return sl?('https://www.asproc.com.br/noticias/'+sl+'.html'):'../noticias.html';
+  return sl?('https://www.asproc.org.br/noticias/'+sl+'.html'):'../noticias.html';
 }
 
 // ── LOAD RELATED (sidebar + mobile) ──
@@ -646,57 +672,81 @@ async function loadRelated(){
     data=MOCK_NOTICIAS;
   }
 
+  // Função de match robusta: tenta slug exato, slug gerado do título, e slug extraído da url_externa
+  function matchBySlug(d,sl){
+    if(!sl)return false;
+    var sl2=sl.toLowerCase();
+    if(d.slug&&d.slug.trim().toLowerCase()===sl2)return true;
+    if(d.titulo&&slugify(d.titulo)===sl2)return true;
+    if(d.url_externa){
+      var ext=d.url_externa.split('/').pop().replace(/.html$/i,'').toLowerCase();
+      if(ext===sl2)return true;
+      // match parcial: o slug pode estar truncado em 80 chars
+      if(ext.startsWith(sl2)||sl2.startsWith(ext))return true;
+    }
+    return false;
+  }
+
   if(fixedSlugs.length){
-    // Modo FIXADO: hidrata os cards já no DOM com dados reais do banco
-    fixedSlugs.forEach(function(sl){
-      var n=data.find(function(d){return(d.slug&&d.slug.trim()===sl)||(d.titulo&&slugify(d.titulo)===sl);});
-      if(!n)return;
+    // Modo FIXADO: reconstrói os cards com dados reais do banco
+    function buildFixedCard(sl,n,side){
       var icon=CAT_ICONS[n.categoria]||'📌';
       var lbl=CAT_LABEL[n.categoria]||n.categoria||'Geral';
       var url=noticiaUrl(n);
-
-      // Sidebar
-      var card=list&&list.querySelector('[data-fixed-slug="'+sl+'"]');
-      if(card){
-        card.href=url;
-        var ph=card.querySelector('#rph-'+sl);
-        var catEl=card.querySelector('#rcat-'+sl);
-        var titleEl=card.querySelector('#rtitle-'+sl);
-        var dateEl=card.querySelector('#rdate-'+sl);
-        if(catEl)catEl.textContent=lbl;
-        if(titleEl)titleEl.textContent=n.titulo;
-        if(dateEl)dateEl.textContent=fmtDate(n.data_pub);
-        if(ph){
-          if(n.imagem_url){
-            var img=document.createElement('img');
-            img.className='rel-img';img.src=n.imagem_url;img.alt='';img.loading='lazy';
-            img.onerror=function(){this.outerHTML='<div class="rel-ph">'+icon+'</div>';};
-            ph.parentNode.replaceChild(img,ph);
-          }else{ph.textContent=icon;}
-        }
+      var date=fmtDate(n.data_pub);
+      if(side==='sidebar'){
+        var imgHtml=n.imagem_url
+          ?'<img class="rel-img" src="'+n.imagem_url+'" alt="'+n.titulo+'" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">'
+            +'<div class="rel-ph" style="display:none">'+icon+'</div>'
+          :'<div class="rel-ph">'+icon+'</div>';
+        return '<a class="rel-card" href="'+url+'" data-fixed-slug="'+sl+'">'
+          +imgHtml
+          +'<div class="rel-info">'
+          +'<div class="rel-cat-lbl">'+lbl+'</div>'
+          +'<div class="rel-title">'+n.titulo+'</div>'
+          +'<div class="rel-date">'+date+'</div>'
+          +'</div></a>';
+      } else {
+        var mimgHtml=n.imagem_url
+          ?'<img class="rel-mobile-img" src="'+n.imagem_url+'" alt="'+n.titulo+'" loading="lazy" onerror="this.style.display='none';this.nextSibling.style.display='flex'">'
+            +'<div class="rel-mobile-ph" style="display:none">'+icon+'</div>'
+          :'<div class="rel-mobile-ph">'+icon+'</div>';
+        return '<a class="rel-mobile-card" href="'+url+'" data-fixed-slug="'+sl+'">'
+          +mimgHtml
+          +'<div class="rel-mobile-info">'
+          +'<div class="rel-mobile-cat">'+lbl+'</div>'
+          +'<div class="rel-mobile-title">'+n.titulo+'</div>'
+          +'<div class="rel-mobile-date">'+date+'</div>'
+          +'</div></a>';
       }
+    }
 
-      // Mobile
-      var mcard=listMobile&&listMobile.querySelector('[data-fixed-slug="'+sl+'"]');
-      if(mcard){
-        mcard.href=url;
-        var mph=mcard.querySelector('#mph-'+sl);
-        var mcat=mcard.querySelector('#mcat-'+sl);
-        var mtitle=mcard.querySelector('#mtitle-'+sl);
-        var mdate=mcard.querySelector('#mdate-'+sl);
-        if(mcat)mcat.textContent=lbl;
-        if(mtitle)mtitle.textContent=n.titulo;
-        if(mdate)mdate.textContent=fmtDate(n.data_pub);
-        if(mph){
-          if(n.imagem_url){
-            var mi=document.createElement('img');
-            mi.className='rel-mobile-img';mi.src=n.imagem_url;mi.alt='';mi.loading='lazy';
-            mi.onerror=function(){this.outerHTML='<div class="rel-mobile-ph">'+icon+'</div>';};
-            mph.parentNode.replaceChild(mi,mph);
-          }else{mph.textContent=icon;}
-        }
+    var sidebarCards='', mobileCards='';
+    fixedSlugs.forEach(function(sl){
+      var n=data.find(function(d){return matchBySlug(d,sl);});
+      if(!n){
+        // Notícia não encontrada no banco: mostra card com slug como texto e link direto
+        var url='https://www.asproc.org.br/noticias/'+sl+'.html';
+        var titulo=sl.replace(/-/g,' ').replace(/w/g,function(c){return c.toUpperCase();});
+        sidebarCards+='<a class="rel-card" href="'+url+'" data-fixed-slug="'+sl+'">'
+          +'<div class="rel-ph">📰</div>'
+          +'<div class="rel-info"><div class="rel-cat-lbl">Notícia</div>'
+          +'<div class="rel-title">'+titulo+'</div>'
+          +'<div class="rel-date"></div></div></a>';
+        mobileCards+='<a class="rel-mobile-card" href="'+url+'" data-fixed-slug="'+sl+'">'
+          +'<div class="rel-mobile-ph">📰</div>'
+          +'<div class="rel-mobile-info"><div class="rel-mobile-cat">Notícia</div>'
+          +'<div class="rel-mobile-title">'+titulo+'</div>'
+          +'<div class="rel-mobile-date"></div></div></a>';
+        return;
       }
+      sidebarCards+=buildFixedCard(sl,n,'sidebar');
+      mobileCards+=buildFixedCard(sl,n,'mobile');
     });
+
+    if(list)list.innerHTML=sidebarCards;
+    if(listMobile)listMobile.innerHTML=mobileCards;
+
   } else {
     // Modo DINÂMICO: exibe as 4 mais recentes exceto a atual
     var filtered=data.filter(function(n){
@@ -775,7 +825,7 @@ async function loadVagas(){
     if(!abertas.length){box.style.display='none';return;}
     box.style.display='';
     list.innerHTML=abertas.slice(0,3).map(function(v){
-      var url=v.url_externa||v.edital_url||(v.slug?'https://www.asproc.com.br/trabalhe-conosco.html#'+v.slug:'../trabalhe-conosco.html');
+      var url=v.url_externa||v.edital_url||(v.slug?'https://www.asproc.org.br/trabalhe-conosco.html#'+v.slug:'../trabalhe-conosco.html');
       var meta=[v.local,v.regime,v.prazo?'Até '+fmtDate(v.prazo):''].filter(Boolean).join(' · ');
       return '<a class="vaga-item" href="'+url+'" target="_blank"><div class="vaga-title">'+v.titulo+'</div><div class="vaga-meta">'+meta+'</div></a>';
     }).join('');
