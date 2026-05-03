@@ -2591,6 +2591,10 @@
         </div>
 
         <div class="nav-group-label">Sistema</div>
+        <div class="nav-item" id="nav-usuarios" onclick="goTo('usuarios',this)">
+          <span class="nav-icon">👥</span> Usuários
+          <span class="nav-badge" id="badge-usuarios">–</span>
+        </div>
         <div class="nav-item" onclick="goTo('configuracoes',this)">
           <span class="nav-icon">⚙️</span> Configurações
         </div>
@@ -2871,6 +2875,50 @@
           <div class="empty-state" id="cand-empty" style="display:none;">
             <div class="es-icon">📋</div>
             <p>Nenhuma candidatura encontrada.</p>
+          </div>
+        </section>
+
+        <!-- USUÁRIOS -->
+        <section class="section" id="sec-usuarios">
+          <div class="table-wrap">
+            <div class="table-header">
+              <h3>Usuários Administrativos</h3>
+              <button class="btn btn-primary btn-sm" id="btn-novo-usuario" onclick="openModalUsuario()">+ Novo
+                Usuário</button>
+            </div>
+
+            <!-- Badges de nível -->
+            <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+              <span
+                style="background:rgba(139,92,246,.15);color:#8b5cf6;border:1px solid rgba(139,92,246,.3);border-radius:99px;padding:.2rem .75rem;font-size:.72rem;font-weight:700;">👑
+                Super Admin — acesso total</span>
+              <span
+                style="background:rgba(59,130,246,.15);color:#3b82f6;border:1px solid rgba(59,130,246,.3);border-radius:99px;padding:.2rem .75rem;font-size:.72rem;font-weight:700;">🔵
+                Admin — sem gerenciar usuários</span>
+              <span
+                style="background:rgba(16,185,129,.15);color:#10b981;border:1px solid rgba(16,185,129,.3);border-radius:99px;padding:.2rem .75rem;font-size:.72rem;font-weight:700;">✏️
+                Editor — apenas conteúdo</span>
+            </div>
+
+            <div id="usuarios-loading" class="loading">
+              <div class="spinner"></div>
+            </div>
+            <div id="usuarios-empty" style="display:none;text-align:center;padding:3rem;color:var(--text-muted);">Nenhum
+              usuário encontrado.</div>
+
+            <table class="data-table" id="usuarios-table" style="display:none;">
+              <thead>
+                <tr>
+                  <th>Nome</th>
+                  <th>E-mail</th>
+                  <th>Nível</th>
+                  <th>Status</th>
+                  <th>Criado em</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="usuarios-tbody"></tbody>
+            </table>
           </div>
         </section>
 
@@ -4623,6 +4671,7 @@
         candidaturas: ['Candidaturas', 'Analise as candidaturas recebidas'],
         configuracoes: ['Configurações', 'Configure a integração com o Supabase'],
         logomarca: ['Logomarca', 'Gerencie a identidade visual do site'],
+        usuarios: ['Usuários', 'Gerencie os administradores e seus níveis de acesso'],
       };
 
       function goTo(section, el) {
@@ -4632,6 +4681,11 @@
         }
         if (section === 'logomarca') {
           setTimeout(loadLogomarca, 80);
+        }
+        // Restrição: apenas super_admin acessa usuários
+        if (section === 'usuarios' && _currentUserNivel && _currentUserNivel !== 'super_admin') {
+          toast('⛔ Apenas Super Admins podem gerenciar usuários.', 'error');
+          return;
         }
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -4757,7 +4811,186 @@
         if (section === 'vagas') loadVagas();
         if (section === 'avisos') loadAvisos();
         if (section === 'candidaturas') loadCandidaturas();
+        if (section === 'usuarios') loadUsuarios();
       }
+
+      /* ══════════════════════════════════════════
+         USUÁRIOS
+      ══════════════════════════════════════════ */
+
+      let _usuarioEditingId = null;
+      let _currentUserNivel = null;
+
+      async function loadUsuarios() {
+        const loading = document.getElementById('usuarios-loading');
+        const table = document.getElementById('usuarios-table');
+        const empty = document.getElementById('usuarios-empty');
+        const tbody = document.getElementById('usuarios-tbody');
+        loading.style.display = 'flex'; table.style.display = 'none'; empty.style.display = 'none';
+
+        try {
+          const rows = await sbSelect('admin_usuarios', 'select=*&order=created_at.asc') || [];
+          document.getElementById('badge-usuarios').textContent = rows.length;
+
+          // Descobrir nível do usuário atual
+          const me = AuthStore.getUser();
+          if (me) {
+            const myRow = rows.find(r => r.id === me.id || r.email === me.email);
+            _currentUserNivel = myRow ? myRow.nivel : null;
+          }
+
+          // Mostrar/ocultar botão novo usuário conforme permissão
+          const btnNovo = document.getElementById('btn-novo-usuario');
+          if (btnNovo) btnNovo.style.display = _currentUserNivel === 'super_admin' ? 'flex' : 'none';
+
+          loading.style.display = 'none';
+          if (!rows.length) { empty.style.display = 'block'; return; }
+          table.style.display = 'table';
+
+          const nivelLabel = {
+            super_admin: '<span style="background:rgba(139,92,246,.15);color:#8b5cf6;border:1px solid rgba(139,92,246,.3);border-radius:99px;padding:.18rem .65rem;font-size:.72rem;font-weight:700;">👑 Super Admin</span>',
+            admin: '<span style="background:rgba(59,130,246,.15);color:#3b82f6;border:1px solid rgba(59,130,246,.3);border-radius:99px;padding:.18rem .65rem;font-size:.72rem;font-weight:700;">🔵 Admin</span>',
+            editor: '<span style="background:rgba(16,185,129,.15);color:#10b981;border:1px solid rgba(16,185,129,.3);border-radius:99px;padding:.18rem .65rem;font-size:.72rem;font-weight:700;">✏️ Editor</span>',
+          };
+
+          tbody.innerHTML = rows.map(u => `
+            <tr>
+              <td><strong>${escHtml(u.nome)}</strong></td>
+              <td style="color:var(--text-muted)">${escHtml(u.email)}</td>
+              <td>${nivelLabel[u.nivel] || u.nivel}</td>
+              <td>${u.ativo
+              ? '<span style="color:var(--green);font-weight:600;">● Ativo</span>'
+              : '<span style="color:var(--red);font-weight:600;">● Inativo</span>'}</td>
+              <td style="color:var(--text-muted)">${new Date(u.created_at).toLocaleDateString('pt-BR')}</td>
+              <td>
+                ${_currentUserNivel === 'super_admin' ? `
+                  <button class="btn btn-secondary btn-sm" onclick="openModalUsuarioEdit(${JSON.stringify(u).replace(/"/g, '&quot;')})">Editar</button>
+                  <button class="btn btn-danger btn-sm" onclick="desativarUsuario('${u.id}', ${u.ativo})" style="margin-left:.35rem;">${u.ativo ? 'Desativar' : 'Ativar'}</button>
+                ` : '<span style="color:var(--text-muted);font-size:.8rem;">—</span>'}
+              </td>
+            </tr>
+          `).join('');
+        } catch (e) {
+          loading.style.display = 'none';
+          empty.style.display = 'block';
+          empty.textContent = 'Erro ao carregar usuários: ' + e.message;
+        }
+      }
+
+      function openModalUsuario() {
+        _usuarioEditingId = null;
+        document.getElementById('modal-usuario-title').textContent = 'Novo Usuário';
+        document.getElementById('btn-salvar-usuario').textContent = 'Criar Usuário';
+        document.getElementById('modal-usuario-id').value = '';
+        document.getElementById('modal-usuario-nome').value = '';
+        document.getElementById('modal-usuario-email').value = '';
+        document.getElementById('modal-usuario-senha').value = '';
+        document.getElementById('modal-usuario-nivel').value = 'editor';
+        document.getElementById('modal-usuario-erro').style.display = 'none';
+        document.getElementById('field-email-usuario').style.display = 'block';
+        document.getElementById('field-senha-usuario').style.display = 'block';
+        document.getElementById('field-ativo-usuario').style.display = 'none';
+        document.getElementById('modal-usuario-overlay').style.display = 'flex';
+      }
+
+      function openModalUsuarioEdit(u) {
+        _usuarioEditingId = u.id;
+        document.getElementById('modal-usuario-title').textContent = 'Editar Usuário';
+        document.getElementById('btn-salvar-usuario').textContent = 'Salvar alterações';
+        document.getElementById('modal-usuario-id').value = u.id;
+        document.getElementById('modal-usuario-nome').value = u.nome;
+        document.getElementById('modal-usuario-email').value = u.email;
+        document.getElementById('modal-usuario-senha').value = '';
+        document.getElementById('modal-usuario-nivel').value = u.nivel;
+        document.getElementById('modal-usuario-ativo').value = String(u.ativo);
+        document.getElementById('modal-usuario-erro').style.display = 'none';
+        document.getElementById('field-email-usuario').style.display = 'none'; // email não editável
+        document.getElementById('field-senha-usuario').style.display = 'none'; // senha via Supabase Auth
+        document.getElementById('field-ativo-usuario').style.display = 'block';
+        document.getElementById('modal-usuario-overlay').style.display = 'flex';
+      }
+
+      function closeModalUsuario() {
+        document.getElementById('modal-usuario-overlay').style.display = 'none';
+      }
+
+      async function salvarUsuario() {
+        const btn = document.getElementById('btn-salvar-usuario');
+        const erro = document.getElementById('modal-usuario-erro');
+        const nome = document.getElementById('modal-usuario-nome').value.trim();
+        const email = document.getElementById('modal-usuario-email').value.trim();
+        const senha = document.getElementById('modal-usuario-senha').value;
+        const nivel = document.getElementById('modal-usuario-nivel').value;
+        const ativo = document.getElementById('modal-usuario-ativo').value === 'true';
+        erro.style.display = 'none';
+
+        if (!nome) { erro.textContent = 'Informe o nome.'; erro.style.display = 'block'; return; }
+
+        btn.disabled = true;
+        btn.textContent = _usuarioEditingId ? 'Salvando…' : 'Criando…';
+
+        try {
+          if (_usuarioEditingId) {
+            // Editar: apenas atualiza nome, nivel e ativo na tabela
+            await sbFetch('admin_usuarios', `id=eq.${_usuarioEditingId}`, {
+              method: 'PATCH',
+              body: JSON.stringify({ nome, nivel, ativo, updated_at: new Date().toISOString() })
+            });
+            toast('✅ Usuário atualizado!', 'success');
+          } else {
+            // Criar: usa Supabase Admin API via função RPC ou inserção direta
+            if (!email) { throw new Error('Informe o e-mail.'); }
+            if (senha.length < 8) { throw new Error('A senha deve ter no mínimo 8 caracteres.'); }
+
+            const { url, key } = getSupabase();
+            // Cria o usuário no Supabase Auth usando a service role não disponível aqui
+            // Usamos signUp público — o usuário recebe e-mail de confirmação
+            const res = await fetch(`${url}/auth/v1/signup`, {
+              method: 'POST',
+              headers: { 'apikey': key, 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email, password: senha })
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.msg || data.error_description || 'Erro ao criar usuário no Auth.');
+            if (!data.user && !data.id) throw new Error('Usuário não foi criado. Verifique se o e-mail já está cadastrado.');
+
+            const userId = data.user?.id || data.id;
+
+            // Insere na tabela admin_usuarios
+            await sbInsert('admin_usuarios', { id: userId, email, nome, nivel, ativo: true });
+            toast('✅ Usuário criado! Um e-mail de confirmação foi enviado.', 'success');
+          }
+
+          closeModalUsuario();
+          loadUsuarios();
+        } catch (e) {
+          erro.textContent = e.message;
+          erro.style.display = 'block';
+        } finally {
+          btn.disabled = false;
+          btn.textContent = _usuarioEditingId ? 'Salvar alterações' : 'Criar Usuário';
+        }
+      }
+
+      async function desativarUsuario(id, ativoAtual) {
+        const acao = ativoAtual ? 'desativar' : 'reativar';
+        if (!confirm(`Deseja ${acao} este usuário?`)) return;
+        try {
+          await sbFetch('admin_usuarios', `id=eq.${id}`, {
+            method: 'PATCH',
+            body: JSON.stringify({ ativo: !ativoAtual, updated_at: new Date().toISOString() })
+          });
+          toast(`✅ Usuário ${ativoAtual ? 'desativado' : 'reativado'}!`, 'success');
+          loadUsuarios();
+        } catch (e) {
+          toast('Erro: ' + e.message, 'error');
+        }
+      }
+
+      // Fecha modal ao clicar fora
+      document.getElementById('modal-usuario-overlay').addEventListener('click', function (e) {
+        if (e.target === this) closeModalUsuario();
+      });
 
       /* ══════════════════════════════════════════
          NOTÍCIAS
@@ -10694,6 +10927,78 @@ document.addEventListener('DOMContentLoaded',function(){
 
     }); // DOMContentLoaded
   </script>
+
+  <!-- ════ MODAL USUÁRIO ════ -->
+  <div id="modal-usuario-overlay"
+    style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:1rem;">
+    <div
+      style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;width:100%;max-width:480px;box-shadow:0 24px 80px rgba(0,0,0,.7);overflow:hidden;">
+      <!-- Header -->
+      <div
+        style="display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);">
+        <div>
+          <div style="font-size:1rem;font-weight:700;color:var(--text);" id="modal-usuario-title">Novo Usuário</div>
+          <div style="font-size:.75rem;color:var(--text-muted);margin-top:.15rem;">Preencha os dados do novo
+            administrador</div>
+        </div>
+        <button onclick="closeModalUsuario()"
+          style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;width:30px;height:30px;color:var(--text-muted);cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;">✕</button>
+      </div>
+      <!-- Body -->
+      <div style="padding:1.5rem;display:flex;flex-direction:column;gap:1rem;">
+        <input type="hidden" id="modal-usuario-id">
+
+        <div class="form-field">
+          <label>Nome completo</label>
+          <input type="text" id="modal-usuario-nome" placeholder="Ex: João Silva">
+        </div>
+
+        <div class="form-field" id="field-email-usuario">
+          <label>E-mail</label>
+          <input type="email" id="modal-usuario-email" placeholder="usuario@asproc.org.br">
+          <div style="font-size:.72rem;color:var(--text-muted);margin-top:.35rem;">⚠️ Um convite será enviado para este
+            e-mail.</div>
+        </div>
+
+        <div class="form-field" id="field-senha-usuario">
+          <label>Senha provisória</label>
+          <input type="password" id="modal-usuario-senha" placeholder="Mínimo 8 caracteres">
+          <div style="font-size:.72rem;color:var(--text-muted);margin-top:.35rem;">O usuário poderá alterar a senha após
+            o primeiro acesso.</div>
+        </div>
+
+        <div class="form-field">
+          <label>Nível de acesso</label>
+          <select id="modal-usuario-nivel">
+            <option value="editor">✏️ Editor — apenas criar/editar conteúdo</option>
+            <option value="admin">🔵 Admin — acesso total exceto usuários</option>
+            <option value="super_admin">👑 Super Admin — acesso completo</option>
+          </select>
+        </div>
+
+        <div class="form-field" id="field-ativo-usuario" style="display:none;">
+          <label>Status</label>
+          <select id="modal-usuario-ativo">
+            <option value="true">✅ Ativo</option>
+            <option value="false">🔴 Inativo</option>
+          </select>
+        </div>
+
+        <div id="modal-usuario-erro"
+          style="display:none;background:var(--red-soft);border:1px solid rgba(239,68,68,.2);border-radius:6px;padding:.65rem .9rem;font-size:.82rem;color:var(--red);">
+        </div>
+      </div>
+      <!-- Footer -->
+      <div
+        style="display:flex;justify-content:flex-end;gap:.5rem;padding:1rem 1.5rem;border-top:1px solid var(--border);background:rgba(0,0,0,.1);">
+        <button onclick="closeModalUsuario()"
+          style="background:transparent;border:1px solid var(--border);border-radius:var(--radius);color:var(--text-muted);font-size:.85rem;padding:.5rem 1rem;cursor:pointer;font-family:inherit;">Cancelar</button>
+        <button id="btn-salvar-usuario" onclick="salvarUsuario()"
+          style="background:var(--accent);border:none;border-radius:var(--radius);color:#fff;font-size:.85rem;font-weight:600;padding:.5rem 1.25rem;cursor:pointer;font-family:inherit;transition:background .15s;">Criar
+          Usuário</button>
+      </div>
+    </div>
+  </div>
 
   <!-- ════ IMAGE PICKER MODAL ════ -->
   <div id="img-picker-overlay"
