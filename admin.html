@@ -1825,7 +1825,7 @@
       min-height: 420px;
       max-height: 65vh;
       overflow-y: auto;
-      /* Permite scroll vertical no editor */
+      /* Permite scroll vertical com mouse/trackpad dentro do editor */
       padding: 1.75rem 2.25rem;
       color: var(--text);
       font-size: 1rem;
@@ -3121,8 +3121,8 @@
       <button class="btn btn-secondary btn-sm" onclick="previewNoticiaPage()">👁 Preview</button>
       <button class="btn btn-secondary btn-sm" onclick="downloadNoticiaPage()">⬇ Baixar</button>
       <button class="btn btn-secondary btn-sm" onclick="baixarModeloWord()"
-        title="Baixa um modelo Word (.docx) com a estrutura ideal para criar notícias que ficam perfeitas ao importar">📄
-        Modelo Word</button>
+        title="Baixa um modelo .doc com a estrutura ideal para criar notícias e importar de volta">📄 Modelo
+        Word</button>
       <!-- Importar Word -->
       <label class="btn btn-secondary btn-sm" id="btn-import-word-label"
         title="Importar .docx — preenche título, resumo e corpo automaticamente"
@@ -9796,6 +9796,84 @@ document.addEventListener('DOMContentLoaded',function(){
       }
 
       /* ══════════════════════════════════════════
+         MODELO WORD PARA NOTÍCIAS
+         Gera um .doc com a estrutura ideal para
+         preencher e importar de volta pelo botão
+         "⬆ Importar Word". Usa o mesmo método
+         HTML-Blob do exportador existente.
+      ══════════════════════════════════════════ */
+      function baixarModeloWord() {
+        const conteudoModelo = `
+<h2>Subtítulo da Primeira Seção</h2>
+<p>Escreva aqui o parágrafo introdutório do artigo. Apresente o contexto principal, os personagens e o fato mais importante. Use frases claras e diretas no estilo jornalístico.</p>
+
+<p>Continue aqui o desenvolvimento da notícia. Adicione detalhes, contexto histórico, declarações de fontes e informações complementares relevantes. Você pode usar <strong>negrito para destacar</strong> informações importantes ou <em>itálico para citações</em> e termos técnicos.</p>
+
+<h2>Subtítulo da Segunda Seção</h2>
+<p>Acrescente mais um parágrafo com informações complementares, dados estatísticos ou contexto institucional sobre a ASPROC e sua missão junto às comunidades ribeirinhas do Médio Juruá, Amazonas.</p>
+
+<p>Encerre o artigo com uma conclusão ou perspectiva futura sobre o tema abordado.</p>
+
+<hr>
+<p style="font-size:10pt;color:#888;font-style:italic;">
+  💡 DICAS PARA IMPORTAÇÃO PERFEITA:<br>
+  • O título principal (acima) usa "Título 1" — é detectado automaticamente.<br>
+  • O primeiro parágrafo de texto simples vira o resumo automaticamente.<br>
+  • Use "Título 2" para criar subtítulos de seção no corpo.<br>
+  • Negrito, itálico e listas são preservados na importação.<br>
+  • Imagens precisam ser adicionadas pelo editor após importar (botão 🖼 Imagem).<br>
+  • Após preencher, salve e importe pelo botão "⬆ Importar Word" no editor.
+</p>`;
+
+        const htmlModelo = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="UTF-8"><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom><w:DoNotOptimizeForBrowser/></w:WordDocument></xml><![endif]-->
+<style>
+  @page{size:A4;margin:2.5cm;}
+  body{font-family:Calibri,Arial,sans-serif;font-size:12pt;color:#222;line-height:1.6;}
+  h1{font-size:22pt;color:#1A3A6B;margin:0 0 6pt;}h2{font-size:16pt;color:#1A3A6B;margin:18pt 0 6pt;}
+  h3{font-size:13pt;color:#333;margin:14pt 0 4pt;}p{margin:0 0 10pt;}
+  blockquote{border-left:4pt solid #3B82F6;padding-left:10pt;font-style:italic;color:#555;margin:10pt 0;}
+  ul,ol{margin:6pt 0 10pt 20pt;}li{margin-bottom:4pt;}
+  .instrucao{background:#EFF6FF;border:1pt solid #BFDBFE;padding:10pt;border-radius:4pt;font-size:10pt;color:#1E40AF;}
+  .campo-label{font-size:9pt;font-weight:bold;color:#6B7280;letter-spacing:1pt;text-transform:uppercase;margin:16pt 0 2pt;}
+</style></head>
+<body>
+
+<p class="instrucao">📋 <strong>MODELO DE NOTÍCIA — ASPROC</strong><br>
+Preencha cada seção abaixo e importe de volta no editor usando o botão <strong>"⬆ Importar Word"</strong>.<br>
+O sistema detecta automaticamente: <strong>Título 1</strong> → título da notícia | <strong>1º parágrafo</strong> → resumo | restante → corpo do artigo.</p>
+
+<p class="campo-label">📌 Título da Notícia (mantenha o estilo Título 1)</p>
+<h1>Escreva aqui o título completo da notícia</h1>
+
+<p class="campo-label">📝 Resumo / Lead (1º parágrafo — detectado automaticamente)</p>
+<p style="font-size:12pt;font-style:italic;color:#444;border-left:4pt solid #3B82F6;padding-left:10pt;">Escreva aqui um resumo de 1 a 2 frases que apresente a notícia de forma atraente. Este texto aparecerá nos cards do site e nas redes sociais.</p>
+
+<hr style="border:none;border-top:1pt solid #CCC;margin:14pt 0;">
+
+<p class="campo-label">📰 Corpo do Artigo</p>
+${conteudoModelo}
+
+</body></html>`;
+
+        try {
+          const blob = new Blob(['\ufeff', htmlModelo], { type: 'application/msword;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'modelo-noticia-asproc.doc';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => URL.revokeObjectURL(url), 5000);
+          toast('📄 Modelo baixado! Preencha e importe pelo botão "⬆ Importar Word".', 'success', 5000);
+        } catch (e) {
+          toast('❌ Erro ao gerar modelo: ' + e.message, 'error');
+        }
+      }
+
+      /* ══════════════════════════════════════════
          IMPORTAR WORD (.docx) — parser nativo
          Sem biblioteca externa. Lê o ZIP do .docx,
          extrai document.xml e imagens em base64.
@@ -10415,6 +10493,7 @@ document.addEventListener('DOMContentLoaded',function(){
 
       window.exportNoticiaWord = exportNoticiaWord;
       window.exportNoticiaWordFromEditor = exportNoticiaWordFromEditor;
+      window.baixarModeloWord = baixarModeloWord;
 
       window.openNewsEditorNew = openNewsEditorNew;
       window.closeNewsEditor = closeNewsEditor;
@@ -10770,264 +10849,7 @@ document.addEventListener('DOMContentLoaded',function(){
       window.uploadCapaImagem = uploadCapaImagem;
       window.removerCapaImagem = removerCapaImagem;
 
-      /* ══════════════════════════════════════════
-         MODELO WORD PARA NOTÍCIAS
-         Gera um .docx com a estrutura ideal para
-         importar de volta e ficar perfeito no site.
-      ══════════════════════════════════════════ */
-      async function baixarModeloWord() {
-        try {
-          const { Document, Paragraph, TextRun, HeadingLevel, AlignmentType, BorderStyle, Packer } = docx;
-
-          const azulAsproc = '2563EB';
-          const cinzaClaro = 'F1F5F9';
-
-          const doc = new Document({
-            styles: {
-              default: {
-                document: {
-                  run: { font: 'Calibri', size: 24, color: '1E293B' },
-                  paragraph: { spacing: { after: 200 } }
-                }
-              }
-            },
-            sections: [{
-              properties: {
-                page: {
-                  margin: { top: 1440, right: 1440, bottom: 1440, left: 1440 }
-                }
-              },
-              children: [
-                // ── Cabeçalho explicativo ──
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: '📋 MODELO DE NOTÍCIA — ASPROC',
-                      bold: true, size: 32, color: azulAsproc, font: 'Calibri'
-                    })
-                  ],
-                  heading: HeadingLevel.HEADING_1,
-                  spacing: { after: 120 }
-                }),
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: 'Instruções: Preencha cada seção abaixo e importe este arquivo no editor de notícias usando o botão "⬆ Importar Word". O sistema irá detectar automaticamente o título (Heading 1), o resumo (primeiro parágrafo) e o corpo do artigo.',
-                      italics: true, size: 20, color: '64748B', font: 'Calibri'
-                    })
-                  ],
-                  spacing: { after: 400 }
-                }),
-
-                // ── Linha separadora ──
-                new Paragraph({
-                  children: [new TextRun({ text: '─'.repeat(60), color: 'CBD5E1' })],
-                  spacing: { after: 300 }
-                }),
-
-                // ── TÍTULO DA NOTÍCIA ──
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: '📌 TÍTULO DA NOTÍCIA',
-                      bold: true, size: 22, color: '94A3B8', font: 'Calibri'
-                    })
-                  ],
-                  spacing: { before: 0, after: 80 }
-                }),
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: 'Escreva aqui o título completo da notícia',
-                      bold: true, size: 36, color: '0F172A', font: 'Calibri'
-                    })
-                  ],
-                  heading: HeadingLevel.HEADING_1,
-                  spacing: { after: 400 }
-                }),
-
-                // ── RESUMO ──
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: '📝 RESUMO / LEAD',
-                      bold: true, size: 22, color: '94A3B8', font: 'Calibri'
-                    })
-                  ],
-                  spacing: { before: 0, after: 80 }
-                }),
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: 'Escreva aqui um resumo de 1 a 2 frases que apresente a notícia de forma atraente. Este texto aparecerá nos cards do site e nas redes sociais.',
-                      italics: true, size: 24, color: '475569', font: 'Calibri'
-                    })
-                  ],
-                  spacing: { after: 400 }
-                }),
-
-                // ── Linha separadora ──
-                new Paragraph({
-                  children: [new TextRun({ text: '─'.repeat(60), color: 'CBD5E1' })],
-                  spacing: { after: 300 }
-                }),
-
-                // ── CORPO DO ARTIGO ──
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: '📰 CORPO DO ARTIGO',
-                      bold: true, size: 22, color: '94A3B8', font: 'Calibri'
-                    })
-                  ],
-                  spacing: { before: 0, after: 80 }
-                }),
-
-                // Subtítulo exemplo
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: 'Subtítulo de Seção (use Título 2)',
-                      bold: true, size: 28, color: '1E40AF', font: 'Calibri'
-                    })
-                  ],
-                  heading: HeadingLevel.HEADING_2,
-                  spacing: { after: 160 }
-                }),
-
-                // Parágrafo introdutório
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: 'Escreva aqui o parágrafo introdutório do artigo. Apresente o contexto principal, os personagens e o fato mais importante. Use frases claras e diretas no estilo jornalístico.',
-                      size: 24, font: 'Calibri'
-                    })
-                  ],
-                  spacing: { after: 200 }
-                }),
-
-                // Parágrafo de desenvolvimento
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: 'Continue aqui o desenvolvimento da notícia. Adicione detalhes, contexto histórico, declarações de fontes e informações complementares relevantes. Você pode usar ',
-                      size: 24, font: 'Calibri'
-                    }),
-                    new TextRun({
-                      text: 'negrito para destacar',
-                      bold: true, size: 24, font: 'Calibri'
-                    }),
-                    new TextRun({
-                      text: ' informações importantes ou ',
-                      size: 24, font: 'Calibri'
-                    }),
-                    new TextRun({
-                      text: 'itálico para citações',
-                      italics: true, size: 24, font: 'Calibri'
-                    }),
-                    new TextRun({
-                      text: ' e termos técnicos.',
-                      size: 24, font: 'Calibri'
-                    })
-                  ],
-                  spacing: { after: 200 }
-                }),
-
-                // Segundo subtítulo
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: 'Outro Subtítulo de Seção',
-                      bold: true, size: 28, color: '1E40AF', font: 'Calibri'
-                    })
-                  ],
-                  heading: HeadingLevel.HEADING_2,
-                  spacing: { after: 160 }
-                }),
-
-                // Terceiro parágrafo
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: 'Acrescente mais um parágrafo com informações complementares, dados estatísticos ou contexto institucional sobre a ASPROC e sua missão junto às comunidades ribeirinhas do Médio Juruá, Amazonas.',
-                      size: 24, font: 'Calibri'
-                    })
-                  ],
-                  spacing: { after: 400 }
-                }),
-
-                // ── Linha separadora ──
-                new Paragraph({
-                  children: [new TextRun({ text: '─'.repeat(60), color: 'CBD5E1' })],
-                  spacing: { after: 300 }
-                }),
-
-                // ── DICAS ──
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: '💡 DICAS PARA MELHOR RESULTADO',
-                      bold: true, size: 22, color: '0369A1', font: 'Calibri'
-                    })
-                  ],
-                  spacing: { after: 120 }
-                }),
-                new Paragraph({
-                  children: [new TextRun({ text: '✅  Use "Título 1" (Heading 1) apenas para o título principal da notícia.', size: 22, font: 'Calibri', color: '334155' })],
-                  spacing: { after: 80 }
-                }),
-                new Paragraph({
-                  children: [new TextRun({ text: '✅  O primeiro parágrafo simples após o título vira o resumo automaticamente.', size: 22, font: 'Calibri', color: '334155' })],
-                  spacing: { after: 80 }
-                }),
-                new Paragraph({
-                  children: [new TextRun({ text: '✅  Use "Título 2" para criar subtítulos de seção no corpo do artigo.', size: 22, font: 'Calibri', color: '334155' })],
-                  spacing: { after: 80 }
-                }),
-                new Paragraph({
-                  children: [new TextRun({ text: '✅  Negrito e itálico são preservados na importação.', size: 22, font: 'Calibri', color: '334155' })],
-                  spacing: { after: 80 }
-                }),
-                new Paragraph({
-                  children: [new TextRun({ text: '✅  Listas com marcadores e numeradas também são importadas corretamente.', size: 22, font: 'Calibri', color: '334155' })],
-                  spacing: { after: 80 }
-                }),
-                new Paragraph({
-                  children: [new TextRun({ text: '⚠️  Imagens precisam ser adicionadas pelo editor após a importação (use o botão 🖼 Imagem).', size: 22, font: 'Calibri', color: '92400E' })],
-                  spacing: { after: 80 }
-                }),
-                new Paragraph({
-                  children: [new TextRun({ text: '⚠️  Tabelas complexas podem não importar perfeitamente — prefira listas.', size: 22, font: 'Calibri', color: '92400E' })],
-                  spacing: { after: 300 }
-                }),
-
-                // Rodapé
-                new Paragraph({
-                  children: [
-                    new TextRun({
-                      text: 'ASPROC – Associação dos Produtores Rurais de Carauari | Painel Administrativo',
-                      size: 18, color: 'CBD5E1', font: 'Calibri', italics: true
-                    })
-                  ],
-                  alignment: AlignmentType.CENTER
-                })
-              ]
-            }]
-          });
-
-          const blob = await Packer.toBlob(doc);
-          const a = document.createElement('a');
-          a.href = URL.createObjectURL(blob);
-          a.download = 'modelo-noticia-asproc.docx';
-          a.click();
-          URL.revokeObjectURL(a.href);
-          toast('✅ Modelo Word baixado! Preencha e importe de volta pelo botão "⬆ Importar Word".', 'success', 5000);
-        } catch (e) {
-          toast('❌ Erro ao gerar modelo: ' + e.message, 'error');
-          console.error(e);
-        }
-      }
-      window.baixarModeloWord = baixarModeloWord;
+      // Inicializa rastreamento de seleção imediatamente
       rteSetupSelectionTracking();
 
       // ── IMAGE PICKER: múltiplas fotos no cursor ──
