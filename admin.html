@@ -7196,7 +7196,7 @@ CREATE POLICY "admin_versoes" ON noticia_versoes FOR ALL TO authenticated USING 
         const dateFmt = formatDateBR(data.data_pub);
         const autorTag = data._autor ? data._autor : '';
         const slug = data._slug || slugify(data.titulo || '');
-        const pageUrl = `https://www.asproc.com.br/noticias/${slug}.html`;
+        const pageUrl = `https://www.asproc.org.br/noticias/${slug}.html`;
         const ogImg = data.imagem_url ? `<meta property="og:image" content="${data.imagem_url}">` : '';
         const heroImg = data.imagem_url || '';
 
@@ -7252,7 +7252,7 @@ CREATE POLICY "admin_versoes" ON noticia_versoes FOR ALL TO authenticated USING 
 
           function buildRelatedCardHTML(sl, side) {
             const n = findRelated(sl);
-            const url = n ? (n.url_externa || `https://www.asproc.com.br/noticias/${sl}.html`) : `https://www.asproc.com.br/noticias/${sl}.html`;
+            const url = n ? (n.url_externa || `https://www.asproc.org.br/noticias/${sl}.html`) : `https://www.asproc.org.br/noticias/${sl}.html`;
             const titulo = n ? n.titulo : sl.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
             const cat = n ? (n.categoria || 'geral') : 'geral';
             const lbl = catLabelMap2[cat] || 'Geral';
@@ -7590,7 +7590,7 @@ footer{background:var(--superficie);border-top:1px solid var(--borda);padding:3.
 <!-- NAV -->
 <nav id="navbar">
   <a href="../index.html" style="display:flex;align-items:center;">
-    <img src="https://www.asproc.com.br/images/logo.png"
+    <img src="https://www.asproc.org.br/images/logo.png"
          onerror="this.style.display='none';this.nextElementSibling.style.display='block';"
          alt="ASPROC" class="nav-logo">
     <span class="nav-brand-txt" style="display:none;">🌿 ASPROC</span>
@@ -7929,7 +7929,7 @@ function noticiaUrl(n){
   }
   // Fallback: slug do banco
   var sl=n.slug&&n.slug.trim()?n.slug.trim():slugify(n.titulo||'');
-  return sl?('https://www.asproc.com.br/noticias/'+sl+'.html'):'../noticias.html';
+  return sl?('https://www.asproc.org.br/noticias/'+sl+'.html'):'../noticias.html';
 }
 
 // ── LOAD RELATED (sidebar + mobile) ──
@@ -8004,8 +8004,8 @@ async function loadRelated(){
       var n=data.find(function(d){return matchBySlug(d,sl);});
       if(!n){
         // Notícia não encontrada no banco: mostra card com slug como texto e link direto
-        var url='https://www.asproc.com.br/noticias/'+sl+'.html';
-        var titulo=sl.replace(/-/g,' ').replace(/\w/g,function(c){return c.toUpperCase();});
+        var url='https://www.asproc.org.br/noticias/'+sl+'.html';
+        var titulo=sl.replace(/-/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase();});
         sidebarCards+='<a class="rel-card" href="'+url+'" data-fixed-slug="'+sl+'">'
           +'<div class="rel-ph">📰</div>'
           +'<div class="rel-info"><div class="rel-cat-lbl">Notícia</div>'
@@ -8103,7 +8103,7 @@ async function loadVagas(){
     if(!abertas.length){box.style.display='none';return;}
     box.style.display='';
     list.innerHTML=abertas.slice(0,3).map(function(v){
-      var url=v.url_externa||v.edital_url||(v.slug?'https://www.asproc.com.br/trabalhe-conosco.html#'+v.slug:'../trabalhe-conosco.html');
+      var url=v.url_externa||v.edital_url||(v.slug?'https://www.asproc.org.br/trabalhe-conosco.html#'+v.slug:'../trabalhe-conosco.html');
       var meta=[v.local,v.regime,v.prazo?'Até '+fmtDate(v.prazo):''].filter(Boolean).join(' · ');
       return '<a class="vaga-item" href="'+url+'" target="_blank"><div class="vaga-title">'+v.titulo+'</div><div class="vaga-meta">'+meta+'</div></a>';
     }).join('');
@@ -8146,7 +8146,7 @@ document.addEventListener('DOMContentLoaded',function(){
       GITHUB PAGES DEPLOY
       ══════════════════════════════════════════ */
       const GH_OWNER = 'asprocassociacao1-del', GH_REPO = 'asproc', GH_BRANCH = 'main';
-      const GH_BASE_URL = `https://www.asproc.com.br`;
+      const GH_BASE_URL = `https://www.asproc.org.br`;
       const GH_TOKEN_KEY = 'asproc_gh_token';        // chave criptografada no localStorage
       const GH_TOKEN_SESSION_KEY = 'asproc_gh_token_s'; // token em texto puro só na sessão
       const GH_SALT_KEY = 'asproc_gh_salt';             // salt PBKDF2 persistido
