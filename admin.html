@@ -8,6 +8,8 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap"
     rel="stylesheet">
+  <!-- docx-js: geração de .docx no browser -->
+  <script src="https://unpkg.com/docx@8.5.0/build/index.min.js"></script>
   <style>
     :root {
       --bg: #0f1117;
@@ -1304,6 +1306,96 @@
     .btn-word.loading {
       opacity: .7;
       cursor: wait;
+    }
+
+    /* ── CANDIDATURAS — melhorias ── */
+    .cand-status-select {
+      appearance: none;
+      -webkit-appearance: none;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      color: var(--text-dim);
+      font-size: .68rem;
+      font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      padding: .22rem .75rem .22rem .55rem;
+      cursor: pointer;
+      outline: none;
+      transition: border-color var(--transition), background var(--transition);
+      min-width: 130px;
+    }
+
+    .cand-status-select:hover {
+      border-color: var(--border-hover);
+    }
+
+    .cand-status-select:focus {
+      border-color: var(--accent);
+    }
+
+    .cand-status-select.s-novo {
+      background: rgba(59, 130, 246, .12);
+      color: #60a5fa;
+      border-color: rgba(59, 130, 246, .3);
+    }
+
+    .cand-status-select.s-em_analise {
+      background: rgba(245, 158, 11, .12);
+      color: #fbbf24;
+      border-color: rgba(245, 158, 11, .3);
+    }
+
+    .cand-status-select.s-aprovado {
+      background: rgba(16, 185, 129, .12);
+      color: #34d399;
+      border-color: rgba(16, 185, 129, .3);
+    }
+
+    .cand-status-select.s-reprovado {
+      background: rgba(239, 68, 68, .12);
+      color: #f87171;
+      border-color: rgba(239, 68, 68, .3);
+    }
+
+    .cand-filter-bar {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-left: auto;
+    }
+
+    .cand-date-input {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text-dim);
+      font-size: .8rem;
+      font-family: 'Inter', sans-serif;
+      padding: .38rem .65rem;
+      outline: none;
+      cursor: pointer;
+      transition: border-color var(--transition);
+    }
+
+    .cand-date-input:focus {
+      border-color: var(--accent);
+    }
+
+    .cand-date-input::-webkit-calendar-picker-indicator {
+      filter: invert(.5);
+    }
+
+    .cand-csv-btn {
+      background: rgba(16, 185, 129, .12);
+      color: var(--green);
+      border: 1px solid rgba(16, 185, 129, .25);
+      white-space: nowrap;
+    }
+
+    .cand-csv-btn:hover {
+      background: rgba(16, 185, 129, .22);
     }
 
     /* ── TOAST ── */
@@ -2739,7 +2831,11 @@
           <div class="table-wrap" style="margin-bottom:1rem;">
             <div class="table-header" style="flex-wrap:wrap;gap:.5rem">
               <h3 id="cand-header-title">Candidaturas recebidas</h3>
-              <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-left:auto;align-items:center;">
+              <div class="cand-filter-bar">
+                <!-- Busca livre -->
+                <input id="cand-search-filter" class="select-filter" type="search" placeholder="Buscar nome, e-mail…"
+                  style="min-width:170px" oninput="applyCandFilters()">
+                <!-- Filtro por status -->
                 <select class="select-filter" id="cand-status-filter" onchange="applyCandFilters()">
                   <option value="">Todos status</option>
                   <option value="novo">🆕 Novas</option>
@@ -2747,8 +2843,23 @@
                   <option value="aprovado">✅ Aprovadas</option>
                   <option value="reprovado">❌ Reprovadas</option>
                 </select>
-                <input id="cand-search-filter" class="select-filter" type="search"
-                  placeholder="Buscar por nome ou vaga…" style="min-width:200px" oninput="applyCandFilters()">
+                <!-- Filtro por vaga -->
+                <select class="select-filter" id="cand-vaga-filter" onchange="applyCandFilters()"
+                  style="min-width:150px">
+                  <option value="">Todas as vagas</option>
+                </select>
+                <!-- Filtro por data: de -->
+                <input type="date" class="cand-date-input" id="cand-date-from" title="Recebidas a partir de"
+                  onchange="applyCandFilters()">
+                <!-- Filtro por data: até -->
+                <input type="date" class="cand-date-input" id="cand-date-to" title="Recebidas até"
+                  onchange="applyCandFilters()">
+                <!-- Exportar CSV -->
+                <button class="btn cand-csv-btn btn-sm" onclick="exportCandCSV()"
+                  title="Baixar todas as candidaturas filtradas como CSV">
+                  ⬇ CSV
+                </button>
+                <!-- Recarregar -->
                 <button class="btn btn-secondary btn-sm" onclick="loadCandidaturas()" title="Recarregar">↺</button>
               </div>
             </div>
@@ -5378,6 +5489,7 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         try {
           allCandidaturas = await sbSelect('candidaturas', 'select=*&order=created_at.desc') || [];
           atualizarBadgeCand();
+          candPopulateVagaFilter();
           applyCandFilters();
         } catch (e) {
           document.getElementById('cand-loading').style.display = 'none';
@@ -5395,13 +5507,18 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
       }
 
       function applyCandFilters() {
-        const statusEl = document.getElementById('cand-status-filter');
-        const searchEl = document.getElementById('cand-search-filter');
-        const statusFilter = statusEl ? statusEl.value : '';
-        const searchQuery = searchEl ? searchEl.value.trim().toLowerCase() : '';
+        const statusFilter = (document.getElementById('cand-status-filter') || {}).value || '';
+        const searchQuery = ((document.getElementById('cand-search-filter') || {}).value || '').trim().toLowerCase();
+        const vagaFilter = (document.getElementById('cand-vaga-filter') || {}).value || '';
+        const dateFrom = (document.getElementById('cand-date-from') || {}).value || '';
+        const dateTo = (document.getElementById('cand-date-to') || {}).value || '';
 
         let filtered = allCandidaturas;
+
         if (statusFilter) filtered = filtered.filter(c => normalizeStatus(c.status) === statusFilter);
+
+        if (vagaFilter) filtered = filtered.filter(c => (c.vaga || 'Candidatura Espontânea') === vagaFilter);
+
         if (searchQuery) {
           filtered = filtered.filter(c =>
             (c.nome || '').toLowerCase().includes(searchQuery) ||
@@ -5410,9 +5527,29 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
             (c.telefone || '').toLowerCase().includes(searchQuery)
           );
         }
+
+        if (dateFrom) {
+          const from = new Date(dateFrom + 'T00:00:00');
+          filtered = filtered.filter(c => c.created_at && new Date(c.created_at) >= from);
+        }
+        if (dateTo) {
+          const to = new Date(dateTo + 'T23:59:59');
+          filtered = filtered.filter(c => c.created_at && new Date(c.created_at) <= to);
+        }
+
         const h3 = document.getElementById('cand-header-title');
         if (h3) h3.textContent = `Candidaturas recebidas (${filtered.length})`;
         renderCandidaturas(filtered);
+      }
+
+      /** Popula o select de vagas com base nas candidaturas carregadas */
+      function candPopulateVagaFilter() {
+        const sel = document.getElementById('cand-vaga-filter');
+        if (!sel) return;
+        const current = sel.value;
+        const vagas = [...new Set(allCandidaturas.map(c => c.vaga || 'Candidatura Espontânea'))].sort();
+        sel.innerHTML = '<option value="">Todas as vagas</option>' +
+          vagas.map(v => `<option value="${escHtml(v)}"${v === current ? ' selected' : ''}>${escHtml(v)}</option>`).join('');
       }
 
       // ── Helper: borda colorida conforme status
@@ -5454,7 +5591,16 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
           const cvTag = _hasCV
             ? '<span class="cand-tag tem-cv">📎 Com currículo</span>'
             : '<span class="cand-tag">Sem currículo</span>';
-          const status = c.status || 'novo';
+          const status = normalizeStatus(c.status);
+          const statusClass = 's-' + status;
+          // Opções do select inline
+          const opts = [
+            { v: 'novo', l: '🆕 Nova' },
+            { v: 'em_analise', l: '🔍 Em análise' },
+            { v: 'aprovado', l: '✅ Aprovada' },
+            { v: 'reprovado', l: '❌ Reprovada' },
+          ].map(o => `<option value="${o.v}"${o.v === status ? ' selected' : ''}>${o.l}</option>`).join('');
+
           return `<div class="cand-card" data-cand-id="${escHtml(String(c.id))}" style="border:${candCardBorderColor(status)};cursor:pointer" title="Clique para ver detalhes">
             <div class="cand-avatar">${ini}</div>
             <div class="cand-body">
@@ -5467,15 +5613,21 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
               ${preview ? '<div class="cand-preview">' + preview + '</div>' : ''}
               <div class="cand-footer">${cvTag}<span class="cand-tag">🕐 ${formatDate(c.created_at)}</span></div>
             </div>
-            <div class="cand-actions">${candStatusDot(status)}</div>
+            <div class="cand-actions" onclick="event.stopPropagation()">
+              <select class="cand-status-select ${statusClass}"
+                data-cand-id="${escHtml(String(c.id))}"
+                onchange="candInlineStatusChange(this)"
+                title="Alterar status">
+                ${opts}
+              </select>
+            </div>
           </div>`;
         }).join('');
 
         // Event delegation — um único listener, sem onclick inline
         container.onclick = function (e) {
           const card = e.target.closest('[data-cand-id]');
-          if (!card) return;
-          // Não abre modal ao clicar em link de email
+          if (!card || e.target.tagName === 'SELECT' || e.target.closest('.cand-actions')) return;
           if (e.target.tagName === 'A') return;
           viewCandidatura(card.dataset.candId);
         };
@@ -9232,106 +9384,239 @@ document.addEventListener('DOMContentLoaded',function(){
       window.openModal = openModal;
       window.closeModal = closeModal;
       /* ══════════════════════════════════════════
-         EXPORTAR NOTÍCIA PARA WORD
-         Gera .doc no formato HTML-Word (sem lib externa).
-         O Word abre nativamente e preserva toda a formatação.
+         EXPORTAR NOTÍCIA PARA WORD (.docx)
       ══════════════════════════════════════════ */
 
-      function _buildWordHtml(titulo, resumo, categoria, data_pub, autor, conteudoHtml) {
-        const catLabel = { pirarucu: 'Pirarucu', olea: 'Oleaginosas', sanear: 'Saneamento', comercio: 'Comércio', vagas: 'Vagas', geral: 'Geral' };
-        const catStr = catLabel[categoria] || categoria || 'Geral';
-        const dataStr = data_pub
-          ? new Date(data_pub + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })
-          : '';
+      /** Converte HTML do corpo da notícia em parágrafos docx */
+      function htmlToDocxParagraphs(html) {
+        const { Paragraph, TextRun, HeadingLevel, AlignmentType } = docx;
 
-        const metaParts = [];
-        if (catStr) metaParts.push(`<strong>Categoria:</strong> ${catStr}`);
-        if (dataStr) metaParts.push(`<strong>Data:</strong> ${dataStr}`);
-        if (autor) metaParts.push(`<strong>Autor:</strong> ${autor}`);
+        // Monta DOM temporário para parsear o HTML
+        const tmp = document.createElement('div');
+        tmp.innerHTML = html || '';
 
-        const metaHtml = metaParts.length
-          ? `<p style="font-size:11pt;color:#6B7A99;font-style:italic;margin:4pt 0 8pt;">${metaParts.join(' &nbsp;•&nbsp; ')}</p>`
-          : '';
+        const paragraphs = [];
 
-        const resumoHtml = (resumo && resumo.trim())
-          ? `<p style="font-size:12pt;font-style:italic;color:#444;border-left:4pt solid #3B82F6;padding-left:10pt;margin:10pt 0 16pt;">${resumo}</p>`
-          : '';
+        function nodeToRuns(node) {
+          const runs = [];
+          node.childNodes.forEach(child => {
+            if (child.nodeType === 3) { // texto puro
+              const txt = child.textContent;
+              if (txt) runs.push(new TextRun({ text: txt }));
+            } else if (child.nodeType === 1) {
+              const tag = child.tagName.toLowerCase();
+              const innerRuns = nodeToRuns(child);
+              const bold = ['b', 'strong'].includes(tag);
+              const italics = ['i', 'em'].includes(tag);
+              const underline = tag === 'u' ? { type: 'single' } : undefined;
+              innerRuns.forEach(r => {
+                // Re-cria com formatação acumulada
+                const props = {};
+                if (bold) props.bold = true;
+                if (italics) props.italics = true;
+                if (underline) props.underline = underline;
+                // TextRun não tem API de clone, mas podemos sobrescrever via opções
+                runs.push(new TextRun({ text: r._text || '', bold: props.bold, italics: props.italics, underline: props.underline }));
+              });
+              // Se não gerou runs filho (ex: elemento vazio), insere texto direto
+              if (!innerRuns.length) {
+                const txt = child.innerText || child.textContent || '';
+                if (txt) runs.push(new TextRun({ text: txt, bold, italics, underline }));
+              }
+            }
+          });
+          // Marca texto para permitir herança de formatação
+          runs.forEach((r, i) => { if (!r._text) r._text = node.childNodes[i]?.textContent || ''; });
+          return runs;
+        }
 
-        const separador = `<hr style="border:none;border-top:1pt solid #CCC;margin:14pt 0;">`;
+        function processNode(node) {
+          if (node.nodeType !== 1) return;
+          const tag = node.tagName.toLowerCase();
 
-        return `
-<html xmlns:o="urn:schemas-microsoft-com:office:office"
-      xmlns:w="urn:schemas-microsoft-com:office:word"
-      xmlns="http://www.w3.org/TR/REC-html40">
-<head>
-<meta charset="UTF-8">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<!--[if gte mso 9]>
-<xml>
-  <w:WordDocument>
-    <w:View>Print</w:View>
-    <w:Zoom>100</w:Zoom>
-    <w:DoNotOptimizeForBrowser/>
-  </w:WordDocument>
-</xml>
-<![endif]-->
-<style>
-  @page {
-    size: A4;
-    margin: 2.5cm 2.5cm 2.5cm 2.5cm;
-  }
-  body {
-    font-family: Calibri, Arial, sans-serif;
-    font-size: 12pt;
-    color: #222;
-    line-height: 1.6;
-  }
-  h1 { font-size: 22pt; color: #1A3A6B; margin: 0 0 6pt; }
-  h2 { font-size: 16pt; color: #1A3A6B; margin: 18pt 0 6pt; }
-  h3 { font-size: 13pt; color: #333; margin: 14pt 0 4pt; }
-  h4, h5, h6 { font-size: 12pt; color: #333; margin: 12pt 0 4pt; }
-  p  { margin: 0 0 10pt; }
-  blockquote {
-    border-left: 4pt solid #3B82F6;
-    padding-left: 10pt;
-    font-style: italic;
-    color: #555;
-    margin: 10pt 0;
-  }
-  ul, ol { margin: 6pt 0 10pt 20pt; }
-  li { margin-bottom: 4pt; }
-  img { max-width: 100%; height: auto; }
-  table { border-collapse: collapse; width: 100%; margin: 10pt 0; }
-  td, th { border: 1pt solid #CCC; padding: 5pt 8pt; }
-</style>
-</head>
-<body>
-  <h1>${titulo || '(sem título)'}</h1>
-  ${metaHtml}
-  ${resumoHtml}
-  ${separador}
-  <div class="conteudo">
-    ${conteudoHtml || '<p>(sem conteúdo)</p>'}
-  </div>
-</body>
-</html>`;
+          if (tag === 'h1') {
+            paragraphs.push(new Paragraph({ heading: HeadingLevel.HEADING_1, children: [new TextRun({ text: node.innerText || node.textContent || '', bold: true })] }));
+          } else if (tag === 'h2') {
+            paragraphs.push(new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun({ text: node.innerText || node.textContent || '', bold: true })] }));
+          } else if (tag === 'h3') {
+            paragraphs.push(new Paragraph({ heading: HeadingLevel.HEADING_3, children: [new TextRun({ text: node.innerText || node.textContent || '', bold: true })] }));
+          } else if (tag === 'h4' || tag === 'h5' || tag === 'h6') {
+            paragraphs.push(new Paragraph({ heading: HeadingLevel.HEADING_4, children: [new TextRun({ text: node.innerText || node.textContent || '', bold: true })] }));
+          } else if (tag === 'blockquote') {
+            const txt = node.innerText || node.textContent || '';
+            paragraphs.push(new Paragraph({
+              children: [new TextRun({ text: txt, italics: true })],
+              indent: { left: 720 },
+              border: { left: { style: 'single', size: 6, color: '3B82F6', space: 8 } }
+            }));
+          } else if (tag === 'ul') {
+            node.querySelectorAll('li').forEach(li => {
+              paragraphs.push(new Paragraph({
+                bullet: { level: 0 },
+                children: [new TextRun({ text: li.innerText || li.textContent || '' })],
+              }));
+            });
+          } else if (tag === 'ol') {
+            let num = 1;
+            node.querySelectorAll('li').forEach(li => {
+              paragraphs.push(new Paragraph({
+                children: [new TextRun({ text: `${num++}. ${li.innerText || li.textContent || ''}` })],
+              }));
+            });
+          } else if (tag === 'hr') {
+            paragraphs.push(new Paragraph({
+              children: [],
+              border: { bottom: { style: 'single', size: 4, color: 'CCCCCC', space: 1 } },
+            }));
+          } else if (tag === 'br') {
+            paragraphs.push(new Paragraph({ children: [new TextRun({ text: '' })] }));
+          } else if (['p', 'div', 'section', 'article'].includes(tag)) {
+            const txt = node.innerText || node.textContent || '';
+            if (txt.trim()) {
+              // Tenta preservar negrito/itálico de runs filhos
+              const runs = [];
+              node.childNodes.forEach(child => {
+                if (child.nodeType === 3) {
+                  if (child.textContent) runs.push(new TextRun({ text: child.textContent }));
+                } else if (child.nodeType === 1) {
+                  const ct = child.tagName.toLowerCase();
+                  const t = child.innerText || child.textContent || '';
+                  if (t) runs.push(new TextRun({
+                    text: t,
+                    bold: ['b', 'strong'].includes(ct),
+                    italics: ['i', 'em'].includes(ct),
+                    underline: ct === 'u' ? { type: 'single' } : undefined,
+                  }));
+                }
+              });
+              paragraphs.push(new Paragraph({
+                children: runs.length ? runs : [new TextRun({ text: txt })],
+                spacing: { after: 160 },
+              }));
+            } else {
+              // Parágrafo vazio — espaçamento
+              paragraphs.push(new Paragraph({ children: [new TextRun({ text: '' })] }));
+            }
+            // Processa filhos que são blocos aninhados (ex: div > h2)
+            node.childNodes.forEach(child => {
+              if (child.nodeType === 1 && ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'blockquote', 'hr'].includes(child.tagName.toLowerCase())) {
+                processNode(child);
+              }
+            });
+          } else {
+            // Elemento desconhecido — tenta extrair texto
+            const txt = node.innerText || node.textContent || '';
+            if (txt.trim()) paragraphs.push(new Paragraph({ children: [new TextRun({ text: txt })] }));
+          }
+        }
+
+        tmp.childNodes.forEach(child => processNode(child));
+
+        // Garante que sempre haja ao menos um parágrafo
+        if (!paragraphs.length) paragraphs.push(new Paragraph({ children: [new TextRun({ text: '' })] }));
+        return paragraphs;
       }
 
-      function _downloadWordFile(htmlContent, titulo, btn) {
+      async function _buildAndDownloadDocx(titulo, resumo, categoria, data_pub, autor, conteudoHtml, btn) {
+        if (typeof docx === 'undefined') {
+          toast('❌ Biblioteca docx não carregou. Verifique sua conexão.', 'error');
+          return;
+        }
+
         if (btn) { btn.classList.add('loading'); btn.disabled = true; }
+
         try {
-          const blob = new Blob(['\ufeff', htmlContent], {
-            type: 'application/msword;charset=utf-8'
+          const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, BorderStyle } = docx;
+
+          const catLabel = { pirarucu: 'Pirarucu', olea: 'Oleaginosas', sanear: 'Saneamento', comercio: 'Comércio', vagas: 'Vagas', geral: 'Geral' };
+          const catStr = catLabel[categoria] || categoria || 'Geral';
+          const dataStr = data_pub ? new Date(data_pub + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }) : '';
+
+          // Metadados no topo
+          const metaParagraphs = [
+            // Título principal
+            new Paragraph({
+              heading: HeadingLevel.HEADING_1,
+              children: [new TextRun({ text: titulo || '(sem título)', bold: true, color: '1A3A6B' })],
+              spacing: { after: 200 },
+            }),
+          ];
+
+          // Linha de metadados: categoria | data | autor
+          const metaParts = [];
+          if (catStr) metaParts.push(`Categoria: ${catStr}`);
+          if (dataStr) metaParts.push(`Data: ${dataStr}`);
+          if (autor) metaParts.push(`Autor: ${autor}`);
+          if (metaParts.length) {
+            metaParagraphs.push(new Paragraph({
+              children: [new TextRun({ text: metaParts.join('   •   '), color: '6B7A99', size: 20, italics: true })],
+              spacing: { after: 120 },
+            }));
+          }
+
+          // Resumo (se existir)
+          if (resumo && resumo.trim()) {
+            metaParagraphs.push(new Paragraph({
+              children: [new TextRun({ text: resumo, italics: true, color: '444444', size: 22 })],
+              indent: { left: 360 },
+              border: { left: { style: 'single', size: 8, color: '3B82F6', space: 6 } },
+              spacing: { after: 280 },
+            }));
+          }
+
+          // Linha separadora
+          metaParagraphs.push(new Paragraph({
+            children: [],
+            border: { bottom: { style: 'single', size: 6, color: 'CCCCCC', space: 1 } },
+            spacing: { after: 280 },
+          }));
+
+          // Corpo da notícia (HTML → docx paragraphs)
+          const bodyParagraphs = htmlToDocxParagraphs(conteudoHtml);
+
+          const doc = new Document({
+            creator: 'ASPROC Admin',
+            title: titulo || 'Notícia',
+            description: resumo || '',
+            styles: {
+              default: {
+                document: { run: { font: 'Calibri', size: 24 } },
+              },
+              paragraphStyles: [
+                {
+                  id: 'Heading1', name: 'Heading 1', basedOn: 'Normal', next: 'Normal', quickFormat: true,
+                  run: { size: 36, bold: true, font: 'Calibri', color: '1A3A6B' },
+                  paragraph: { spacing: { before: 240, after: 200 } },
+                },
+                {
+                  id: 'Heading2', name: 'Heading 2', basedOn: 'Normal', next: 'Normal', quickFormat: true,
+                  run: { size: 28, bold: true, font: 'Calibri', color: '1A3A6B' },
+                  paragraph: { spacing: { before: 200, after: 120 } },
+                },
+                {
+                  id: 'Heading3', name: 'Heading 3', basedOn: 'Normal', next: 'Normal', quickFormat: true,
+                  run: { size: 24, bold: true, font: 'Calibri' },
+                  paragraph: { spacing: { before: 160, after: 80 } },
+                },
+              ],
+            },
+            sections: [{
+              properties: {
+                page: {
+                  size: { width: 11906, height: 16838 }, // A4
+                  margin: { top: 1440, right: 1440, bottom: 1440, left: 1440 },
+                },
+              },
+              children: [...metaParagraphs, ...bodyParagraphs],
+            }],
           });
-          const slug = (titulo || 'noticia')
-            .toLowerCase()
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '')
-            .replace(/[^a-z0-9]/g, '-')
-            .replace(/-+/g, '-')
-            .substring(0, 50);
-          const filename = `${slug}.doc`;
-          const url = URL.createObjectURL(blob);
+
+          const buffer = await Packer.toBlob(doc);
+          const slug = (titulo || 'noticia').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').substring(0, 50);
+          const filename = `${slug}.docx`;
+
+          // Download
+          const url = URL.createObjectURL(buffer);
           const a = document.createElement('a');
           a.href = url;
           a.download = filename;
@@ -9339,8 +9624,10 @@ document.addEventListener('DOMContentLoaded',function(){
           a.click();
           document.body.removeChild(a);
           setTimeout(() => URL.revokeObjectURL(url), 5000);
+
           toast(`📄 "${filename}" baixado! Abra com o Word para editar.`, 'success');
         } catch (e) {
+          console.error('Erro ao gerar DOCX:', e);
           toast('❌ Erro ao gerar Word: ' + e.message, 'error');
         } finally {
           if (btn) { btn.classList.remove('loading'); btn.disabled = false; }
@@ -9348,30 +9635,30 @@ document.addEventListener('DOMContentLoaded',function(){
       }
 
       /** Exporta a partir da lista (botão na tabela) */
-      function exportNoticiaWord(noticia, btn) {
-        const html = _buildWordHtml(
+      async function exportNoticiaWord(noticia, btn) {
+        await _buildAndDownloadDocx(
           noticia.titulo,
           noticia.resumo,
           noticia.categoria,
           noticia.data_pub,
           noticia.autor,
-          noticia.conteudo || ''
+          noticia.conteudo || '',
+          btn
         );
-        _downloadWordFile(html, noticia.titulo, btn);
       }
 
       /** Exporta a partir do editor aberto */
-      function exportNoticiaWordFromEditor(btn) {
+      async function exportNoticiaWordFromEditor(btn) {
         syncRteToHidden();
-        const html = _buildWordHtml(
+        await _buildAndDownloadDocx(
           document.getElementById('n-titulo').value.trim(),
           document.getElementById('n-resumo').value.trim(),
           document.getElementById('n-categoria').value,
           document.getElementById('n-data').value,
           document.getElementById('n-autor').value.trim(),
-          document.getElementById('n-conteudo').value
+          document.getElementById('n-conteudo').value,
+          btn
         );
-        _downloadWordFile(html, document.getElementById('n-titulo').value.trim(), btn);
       }
 
       window.exportNoticiaWord = exportNoticiaWord;
@@ -9395,6 +9682,96 @@ document.addEventListener('DOMContentLoaded',function(){
       window.editAviso = editAviso;
       window.closeAvisoEditor = closeAvisoEditor;
       window.deleteItem = deleteItem;
+      /* ── Troca de status inline (select no card) ── */
+      async function candInlineStatusChange(sel) {
+        const id = sel.dataset.candId;
+        const novoStatus = sel.value;
+        const statusClassMap = { novo: 's-novo', em_analise: 's-em_analise', aprovado: 's-aprovado', reprovado: 's-reprovado' };
+
+        // Feedback visual imediato
+        sel.className = 'cand-status-select ' + (statusClassMap[novoStatus] || '');
+
+        try {
+          await sbUpdate('candidaturas', id, { status: novoStatus });
+          // Atualiza em memória
+          const idx = allCandidaturas.findIndex(c => String(c.id) === String(id));
+          if (idx !== -1) allCandidaturas[idx].status = novoStatus;
+          atualizarBadgeCand();
+          // Atualiza borda do card sem re-renderizar tudo
+          const card = sel.closest('[data-cand-id]');
+          if (card) card.style.border = candCardBorderColor(novoStatus);
+          const labelMap = { novo: '🆕 Nova', em_analise: '🔍 Em análise', aprovado: '✅ Aprovada', reprovado: '❌ Reprovada' };
+          toast(`${labelMap[novoStatus] || 'Status'} atualizado!`, 'success');
+        } catch (e) {
+          toast('❌ Erro ao salvar status: ' + e.message, 'error');
+          // Reverte visualmente
+          const idx = allCandidaturas.findIndex(c => String(c.id) === String(id));
+          if (idx !== -1) {
+            const prev = normalizeStatus(allCandidaturas[idx].status);
+            sel.value = prev;
+            sel.className = 'cand-status-select ' + (statusClassMap[prev] || '');
+          }
+        }
+      }
+
+      /* ── Exportar CSV ── */
+      function exportCandCSV() {
+        // Usa a lista filtrada atual (re-aplica filtros para garantir)
+        const statusFilter = (document.getElementById('cand-status-filter') || {}).value || '';
+        const searchQuery = ((document.getElementById('cand-search-filter') || {}).value || '').trim().toLowerCase();
+        const vagaFilter = (document.getElementById('cand-vaga-filter') || {}).value || '';
+        const dateFrom = (document.getElementById('cand-date-from') || {}).value || '';
+        const dateTo = (document.getElementById('cand-date-to') || {}).value || '';
+
+        let data = allCandidaturas;
+        if (statusFilter) data = data.filter(c => normalizeStatus(c.status) === statusFilter);
+        if (vagaFilter) data = data.filter(c => (c.vaga || 'Candidatura Espontânea') === vagaFilter);
+        if (searchQuery) data = data.filter(c =>
+          (c.nome || '').toLowerCase().includes(searchQuery) ||
+          (c.vaga || '').toLowerCase().includes(searchQuery) ||
+          (c.email || '').toLowerCase().includes(searchQuery)
+        );
+        if (dateFrom) { const f = new Date(dateFrom + 'T00:00:00'); data = data.filter(c => c.created_at && new Date(c.created_at) >= f); }
+        if (dateTo) { const t = new Date(dateTo + 'T23:59:59'); data = data.filter(c => c.created_at && new Date(c.created_at) <= t); }
+
+        if (!data.length) { toast('Nenhuma candidatura para exportar.', 'info'); return; }
+
+        const statusLabel = { novo: 'Nova', em_analise: 'Em análise', aprovado: 'Aprovada', reprovado: 'Reprovada' };
+
+        // Colunas fixas + quaisquer outras colunas presentes nos dados
+        const fixedCols = ['id', 'nome', 'email', 'telefone', 'vaga', 'status', 'mensagem', 'created_at'];
+        const extraCols = [...new Set(data.flatMap(c => Object.keys(c)))].filter(k => !fixedCols.includes(k));
+        const cols = [...fixedCols, ...extraCols];
+
+        function csvCell(val) {
+          if (val === null || val === undefined) return '';
+          const s = String(val).replace(/"/g, '""');
+          return /[",\n\r]/.test(s) ? `"${s}"` : s;
+        }
+
+        const header = cols.map(c => csvCell(c)).join(',');
+        const rows = data.map(c => cols.map(col => {
+          if (col === 'status') return csvCell(statusLabel[normalizeStatus(c[col])] || c[col] || 'Nova');
+          if (col === 'created_at' && c[col]) return csvCell(new Date(c[col]).toLocaleString('pt-BR'));
+          return csvCell(c[col]);
+        }).join(','));
+
+        const csv = '\ufeff' + [header, ...rows].join('\r\n'); // BOM para Excel UTF-8
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        const ts = new Date().toISOString().slice(0, 10);
+        a.download = `candidaturas_${ts}.csv`;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
+        toast(`✅ ${data.length} candidatura(s) exportada(s) para CSV!`, 'success');
+      }
+
+      window.candInlineStatusChange = candInlineStatusChange;
+      window.exportCandCSV = exportCandCSV;
+      window.candPopulateVagaFilter = candPopulateVagaFilter;
+
       window.viewCandidatura = viewCandidatura;
       window.applyCandFilters = applyCandFilters;
       window.deleteCandidatura = deleteCandidatura;
