@@ -8,8 +8,6 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap"
     rel="stylesheet">
-  <!-- docx-js: geração de .docx no browser -->
-  <script src="https://unpkg.com/docx@8.5.0/build/index.min.js"></script>
   <style>
     :root {
       --bg: #0f1117;
@@ -9384,280 +9382,114 @@ document.addEventListener('DOMContentLoaded',function(){
       window.openModal = openModal;
       window.closeModal = closeModal;
       /* ══════════════════════════════════════════
-         EXPORTAR NOTÍCIA PARA WORD (.docx)
+         EXPORTAR NOTÍCIA PARA WORD
+         Gera .doc no formato HTML-Word (sem lib externa).
+         O Word abre nativamente e preserva toda a formatação.
       ══════════════════════════════════════════ */
 
-      /** Converte HTML do corpo da notícia em parágrafos docx */
-      function htmlToDocxParagraphs(html) {
-        const { Paragraph, TextRun, HeadingLevel, AlignmentType } = docx;
+      function _buildWordHtml(titulo, resumo, categoria, data_pub, autor, conteudoHtml) {
+        const catLabel = { pirarucu: 'Pirarucu', olea: 'Oleaginosas', sanear: 'Saneamento', comercio: 'Comércio', vagas: 'Vagas', geral: 'Geral' };
+        const catStr = catLabel[categoria] || categoria || 'Geral';
+        const dataStr = data_pub
+          ? new Date(data_pub + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })
+          : '';
 
-        // Monta DOM temporário para parsear o HTML
-        const tmp = document.createElement('div');
-        tmp.innerHTML = html || '';
+        const metaParts = [];
+        if (catStr) metaParts.push('<strong>Categoria:</strong> ' + catStr);
+        if (dataStr) metaParts.push('<strong>Data:</strong> ' + dataStr);
+        if (autor) metaParts.push('<strong>Autor:</strong> ' + autor);
 
-        const paragraphs = [];
+        const metaHtml = metaParts.length
+          ? '<p style="font-size:11pt;color:#6B7A99;font-style:italic;margin:4pt 0 8pt;">' + metaParts.join(' &nbsp;•&nbsp; ') + '</p>'
+          : '';
 
-        function nodeToRuns(node) {
-          const runs = [];
-          node.childNodes.forEach(child => {
-            if (child.nodeType === 3) { // texto puro
-              const txt = child.textContent;
-              if (txt) runs.push(new TextRun({ text: txt }));
-            } else if (child.nodeType === 1) {
-              const tag = child.tagName.toLowerCase();
-              const innerRuns = nodeToRuns(child);
-              const bold = ['b', 'strong'].includes(tag);
-              const italics = ['i', 'em'].includes(tag);
-              const underline = tag === 'u' ? { type: 'single' } : undefined;
-              innerRuns.forEach(r => {
-                // Re-cria com formatação acumulada
-                const props = {};
-                if (bold) props.bold = true;
-                if (italics) props.italics = true;
-                if (underline) props.underline = underline;
-                // TextRun não tem API de clone, mas podemos sobrescrever via opções
-                runs.push(new TextRun({ text: r._text || '', bold: props.bold, italics: props.italics, underline: props.underline }));
-              });
-              // Se não gerou runs filho (ex: elemento vazio), insere texto direto
-              if (!innerRuns.length) {
-                const txt = child.innerText || child.textContent || '';
-                if (txt) runs.push(new TextRun({ text: txt, bold, italics, underline }));
-              }
-            }
-          });
-          // Marca texto para permitir herança de formatação
-          runs.forEach((r, i) => { if (!r._text) r._text = node.childNodes[i]?.textContent || ''; });
-          return runs;
-        }
+        const resumoHtml = (resumo && resumo.trim())
+          ? '<p style="font-size:12pt;font-style:italic;color:#444;border-left:4pt solid #3B82F6;padding-left:10pt;margin:10pt 0 16pt;">' + resumo + '</p>'
+          : '';
 
-        function processNode(node) {
-          if (node.nodeType !== 1) return;
-          const tag = node.tagName.toLowerCase();
+        const separador = '<hr style="border:none;border-top:1pt solid #CCC;margin:14pt 0;">';
 
-          if (tag === 'h1') {
-            paragraphs.push(new Paragraph({ heading: HeadingLevel.HEADING_1, children: [new TextRun({ text: node.innerText || node.textContent || '', bold: true })] }));
-          } else if (tag === 'h2') {
-            paragraphs.push(new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun({ text: node.innerText || node.textContent || '', bold: true })] }));
-          } else if (tag === 'h3') {
-            paragraphs.push(new Paragraph({ heading: HeadingLevel.HEADING_3, children: [new TextRun({ text: node.innerText || node.textContent || '', bold: true })] }));
-          } else if (tag === 'h4' || tag === 'h5' || tag === 'h6') {
-            paragraphs.push(new Paragraph({ heading: HeadingLevel.HEADING_4, children: [new TextRun({ text: node.innerText || node.textContent || '', bold: true })] }));
-          } else if (tag === 'blockquote') {
-            const txt = node.innerText || node.textContent || '';
-            paragraphs.push(new Paragraph({
-              children: [new TextRun({ text: txt, italics: true })],
-              indent: { left: 720 },
-              border: { left: { style: 'single', size: 6, color: '3B82F6', space: 8 } }
-            }));
-          } else if (tag === 'ul') {
-            node.querySelectorAll('li').forEach(li => {
-              paragraphs.push(new Paragraph({
-                bullet: { level: 0 },
-                children: [new TextRun({ text: li.innerText || li.textContent || '' })],
-              }));
-            });
-          } else if (tag === 'ol') {
-            let num = 1;
-            node.querySelectorAll('li').forEach(li => {
-              paragraphs.push(new Paragraph({
-                children: [new TextRun({ text: `${num++}. ${li.innerText || li.textContent || ''}` })],
-              }));
-            });
-          } else if (tag === 'hr') {
-            paragraphs.push(new Paragraph({
-              children: [],
-              border: { bottom: { style: 'single', size: 4, color: 'CCCCCC', space: 1 } },
-            }));
-          } else if (tag === 'br') {
-            paragraphs.push(new Paragraph({ children: [new TextRun({ text: '' })] }));
-          } else if (['p', 'div', 'section', 'article'].includes(tag)) {
-            const txt = node.innerText || node.textContent || '';
-            if (txt.trim()) {
-              // Tenta preservar negrito/itálico de runs filhos
-              const runs = [];
-              node.childNodes.forEach(child => {
-                if (child.nodeType === 3) {
-                  if (child.textContent) runs.push(new TextRun({ text: child.textContent }));
-                } else if (child.nodeType === 1) {
-                  const ct = child.tagName.toLowerCase();
-                  const t = child.innerText || child.textContent || '';
-                  if (t) runs.push(new TextRun({
-                    text: t,
-                    bold: ['b', 'strong'].includes(ct),
-                    italics: ['i', 'em'].includes(ct),
-                    underline: ct === 'u' ? { type: 'single' } : undefined,
-                  }));
-                }
-              });
-              paragraphs.push(new Paragraph({
-                children: runs.length ? runs : [new TextRun({ text: txt })],
-                spacing: { after: 160 },
-              }));
-            } else {
-              // Parágrafo vazio — espaçamento
-              paragraphs.push(new Paragraph({ children: [new TextRun({ text: '' })] }));
-            }
-            // Processa filhos que são blocos aninhados (ex: div > h2)
-            node.childNodes.forEach(child => {
-              if (child.nodeType === 1 && ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'blockquote', 'hr'].includes(child.tagName.toLowerCase())) {
-                processNode(child);
-              }
-            });
-          } else {
-            // Elemento desconhecido — tenta extrair texto
-            const txt = node.innerText || node.textContent || '';
-            if (txt.trim()) paragraphs.push(new Paragraph({ children: [new TextRun({ text: txt })] }));
-          }
-        }
-
-        tmp.childNodes.forEach(child => processNode(child));
-
-        // Garante que sempre haja ao menos um parágrafo
-        if (!paragraphs.length) paragraphs.push(new Paragraph({ children: [new TextRun({ text: '' })] }));
-        return paragraphs;
+        return `
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:w="urn:schemas-microsoft-com:office:word"
+      xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!--[if gte mso 9]>
+<xml>
+  <w:WordDocument>
+    <w:View>Print</w:View>
+    <w:Zoom>100</w:Zoom>
+    <w:DoNotOptimizeForBrowser/>
+  </w:WordDocument>
+</xml>
+<![endif]-->
+<style>
+  @page { size: A4; margin: 2.5cm; }
+  body { font-family: Calibri, Arial, sans-serif; font-size: 12pt; color: #222; line-height: 1.6; }
+  h1 { font-size: 22pt; color: #1A3A6B; margin: 0 0 6pt; }
+  h2 { font-size: 16pt; color: #1A3A6B; margin: 18pt 0 6pt; }
+  h3 { font-size: 13pt; color: #333; margin: 14pt 0 4pt; }
+  h4, h5, h6 { font-size: 12pt; color: #333; margin: 12pt 0 4pt; }
+  p  { margin: 0 0 10pt; }
+  blockquote { border-left: 4pt solid #3B82F6; padding-left: 10pt; font-style: italic; color: #555; margin: 10pt 0; }
+  ul, ol { margin: 6pt 0 10pt 20pt; }
+  li { margin-bottom: 4pt; }
+  img { max-width: 100%; height: auto; }
+  table { border-collapse: collapse; width: 100%; margin: 10pt 0; }
+  td, th { border: 1pt solid #CCC; padding: 5pt 8pt; }
+</style>
+</head>
+<body>
+  <h1>${titulo || '(sem título)'}</h1>
+  ${metaHtml}
+  ${resumoHtml}
+  ${separador}
+  <div>${conteudoHtml || '<p>(sem conteúdo)</p>'}</div>
+</body>
+</html>`;
       }
 
-      async function _buildAndDownloadDocx(titulo, resumo, categoria, data_pub, autor, conteudoHtml, btn) {
-        if (typeof docx === 'undefined') {
-          toast('❌ Biblioteca docx não carregou. Verifique sua conexão.', 'error');
-          return;
-        }
-
+      function _downloadWordFile(htmlContent, titulo, btn) {
         if (btn) { btn.classList.add('loading'); btn.disabled = true; }
-
         try {
-          const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, BorderStyle } = docx;
-
-          const catLabel = { pirarucu: 'Pirarucu', olea: 'Oleaginosas', sanear: 'Saneamento', comercio: 'Comércio', vagas: 'Vagas', geral: 'Geral' };
-          const catStr = catLabel[categoria] || categoria || 'Geral';
-          const dataStr = data_pub ? new Date(data_pub + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }) : '';
-
-          // Metadados no topo
-          const metaParagraphs = [
-            // Título principal
-            new Paragraph({
-              heading: HeadingLevel.HEADING_1,
-              children: [new TextRun({ text: titulo || '(sem título)', bold: true, color: '1A3A6B' })],
-              spacing: { after: 200 },
-            }),
-          ];
-
-          // Linha de metadados: categoria | data | autor
-          const metaParts = [];
-          if (catStr) metaParts.push(`Categoria: ${catStr}`);
-          if (dataStr) metaParts.push(`Data: ${dataStr}`);
-          if (autor) metaParts.push(`Autor: ${autor}`);
-          if (metaParts.length) {
-            metaParagraphs.push(new Paragraph({
-              children: [new TextRun({ text: metaParts.join('   •   '), color: '6B7A99', size: 20, italics: true })],
-              spacing: { after: 120 },
-            }));
-          }
-
-          // Resumo (se existir)
-          if (resumo && resumo.trim()) {
-            metaParagraphs.push(new Paragraph({
-              children: [new TextRun({ text: resumo, italics: true, color: '444444', size: 22 })],
-              indent: { left: 360 },
-              border: { left: { style: 'single', size: 8, color: '3B82F6', space: 6 } },
-              spacing: { after: 280 },
-            }));
-          }
-
-          // Linha separadora
-          metaParagraphs.push(new Paragraph({
-            children: [],
-            border: { bottom: { style: 'single', size: 6, color: 'CCCCCC', space: 1 } },
-            spacing: { after: 280 },
-          }));
-
-          // Corpo da notícia (HTML → docx paragraphs)
-          const bodyParagraphs = htmlToDocxParagraphs(conteudoHtml);
-
-          const doc = new Document({
-            creator: 'ASPROC Admin',
-            title: titulo || 'Notícia',
-            description: resumo || '',
-            styles: {
-              default: {
-                document: { run: { font: 'Calibri', size: 24 } },
-              },
-              paragraphStyles: [
-                {
-                  id: 'Heading1', name: 'Heading 1', basedOn: 'Normal', next: 'Normal', quickFormat: true,
-                  run: { size: 36, bold: true, font: 'Calibri', color: '1A3A6B' },
-                  paragraph: { spacing: { before: 240, after: 200 } },
-                },
-                {
-                  id: 'Heading2', name: 'Heading 2', basedOn: 'Normal', next: 'Normal', quickFormat: true,
-                  run: { size: 28, bold: true, font: 'Calibri', color: '1A3A6B' },
-                  paragraph: { spacing: { before: 200, after: 120 } },
-                },
-                {
-                  id: 'Heading3', name: 'Heading 3', basedOn: 'Normal', next: 'Normal', quickFormat: true,
-                  run: { size: 24, bold: true, font: 'Calibri' },
-                  paragraph: { spacing: { before: 160, after: 80 } },
-                },
-              ],
-            },
-            sections: [{
-              properties: {
-                page: {
-                  size: { width: 11906, height: 16838 }, // A4
-                  margin: { top: 1440, right: 1440, bottom: 1440, left: 1440 },
-                },
-              },
-              children: [...metaParagraphs, ...bodyParagraphs],
-            }],
-          });
-
-          const buffer = await Packer.toBlob(doc);
-          const slug = (titulo || 'noticia').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').substring(0, 50);
-          const filename = `${slug}.docx`;
-
-          // Download
-          const url = URL.createObjectURL(buffer);
+          const blob = new Blob(['\ufeff', htmlContent], { type: 'application/msword;charset=utf-8' });
+          const slug = (titulo || 'noticia')
+            .toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').substring(0, 50);
+          const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
-          a.href = url;
-          a.download = filename;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
+          a.href = url; a.download = slug + '.doc';
+          document.body.appendChild(a); a.click(); document.body.removeChild(a);
           setTimeout(() => URL.revokeObjectURL(url), 5000);
-
-          toast(`📄 "${filename}" baixado! Abra com o Word para editar.`, 'success');
+          toast('📄 "' + slug + '.doc" baixado! Abra com o Word para editar.', 'success');
         } catch (e) {
-          console.error('Erro ao gerar DOCX:', e);
           toast('❌ Erro ao gerar Word: ' + e.message, 'error');
         } finally {
           if (btn) { btn.classList.remove('loading'); btn.disabled = false; }
         }
       }
 
-      /** Exporta a partir da lista (botão na tabela) */
-      async function exportNoticiaWord(noticia, btn) {
-        await _buildAndDownloadDocx(
-          noticia.titulo,
-          noticia.resumo,
-          noticia.categoria,
-          noticia.data_pub,
-          noticia.autor,
-          noticia.conteudo || '',
-          btn
+      function exportNoticiaWord(noticia, btn) {
+        _downloadWordFile(
+          _buildWordHtml(noticia.titulo, noticia.resumo, noticia.categoria, noticia.data_pub, noticia.autor, noticia.conteudo || ''),
+          noticia.titulo, btn
         );
       }
 
-      /** Exporta a partir do editor aberto */
-      async function exportNoticiaWordFromEditor(btn) {
+      function exportNoticiaWordFromEditor(btn) {
         syncRteToHidden();
-        await _buildAndDownloadDocx(
-          document.getElementById('n-titulo').value.trim(),
-          document.getElementById('n-resumo').value.trim(),
-          document.getElementById('n-categoria').value,
-          document.getElementById('n-data').value,
-          document.getElementById('n-autor').value.trim(),
-          document.getElementById('n-conteudo').value,
-          btn
+        _downloadWordFile(
+          _buildWordHtml(
+            document.getElementById('n-titulo').value.trim(),
+            document.getElementById('n-resumo').value.trim(),
+            document.getElementById('n-categoria').value,
+            document.getElementById('n-data').value,
+            document.getElementById('n-autor').value.trim(),
+            document.getElementById('n-conteudo').value
+          ),
+          document.getElementById('n-titulo').value.trim(), btn
         );
       }
 
