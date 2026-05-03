@@ -4890,7 +4890,7 @@
         document.getElementById('field-email-usuario').style.display = 'block';
         document.getElementById('field-senha-usuario').style.display = 'block';
         document.getElementById('field-ativo-usuario').style.display = 'none';
-        document.getElementById('modal-usuario-overlay').style.display = 'flex';
+        var mu = document.getElementById('modal-usuario-overlay'); mu.style.display = 'flex'; mu.style.alignItems = 'center'; mu.style.justifyContent = 'center';
       }
 
       function openModalUsuarioEdit(u) {
@@ -4907,7 +4907,7 @@
         document.getElementById('field-email-usuario').style.display = 'none'; // email não editável
         document.getElementById('field-senha-usuario').style.display = 'none'; // senha via Supabase Auth
         document.getElementById('field-ativo-usuario').style.display = 'block';
-        document.getElementById('modal-usuario-overlay').style.display = 'flex';
+        var mu = document.getElementById('modal-usuario-overlay'); mu.style.display = 'flex'; mu.style.alignItems = 'center'; mu.style.justifyContent = 'center';
       }
 
       function closeModalUsuario() {
@@ -4987,10 +4987,6 @@
         }
       }
 
-      // Fecha modal ao clicar fora
-      document.getElementById('modal-usuario-overlay').addEventListener('click', function (e) {
-        if (e.target === this) closeModalUsuario();
-      });
 
       /* ══════════════════════════════════════════
          NOTÍCIAS
@@ -9707,6 +9703,11 @@ document.addEventListener('DOMContentLoaded',function(){
       }
 
       window.goTo = goTo;
+      window.openModalUsuario = openModalUsuario;
+      window.openModalUsuarioEdit = openModalUsuarioEdit;
+      window.closeModalUsuario = closeModalUsuario;
+      window.salvarUsuario = salvarUsuario;
+      window.desativarUsuario = desativarUsuario;
       window.doLogin = doLogin;
       window.doLogout = doLogout;
 
@@ -10929,7 +10930,7 @@ document.addEventListener('DOMContentLoaded',function(){
   </script>
 
   <!-- ════ MODAL USUÁRIO ════ -->
-  <div id="modal-usuario-overlay"
+  <div id="modal-usuario-overlay" onclick="if(event.target===this)closeModalUsuario()"
     style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:1rem;">
     <div
       style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;width:100%;max-width:480px;box-shadow:0 24px 80px rgba(0,0,0,.7);overflow:hidden;">
