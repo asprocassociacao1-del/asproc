@@ -9,7 +9,7 @@
 <meta property="og:type" content="article">
 <meta property="og:title" content="III Encontro da Cadeia Produtiva de Oleaginosas do Médio Juruá define metas para a Safra 2026">
 <meta property="og:description" content="Evento realizado na Comunidade Campina reuniu extrativistas, gestão pública e parceiros para consolidar avanços no manejo de Andiroba, Murumuru e Ucuuba">
-<meta property="og:url" content="https://www.asproc.com.br/noticias/iii-encontro-da-cadeia-produtiva-de-oleaginosas-do-medio-jurua-define-metas-para.html">
+<meta property="og:url" content="https://www.asproc.org.br/noticias/iii-encontro-da-cadeia-produtiva-de-oleaginosas-do-medio-jurua-define-metas-para.html">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,400;1,9..144,600&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
@@ -60,8 +60,33 @@ nav.scrolled{height:58px;background:rgba(8,14,8,.96);}
 .lang-sw{display:flex;gap:3px;}
 .lang-btn{background:none;border:1px solid rgba(123,201,92,.25);color:var(--texto-muito-fraco);font-size:.68rem;font-weight:700;padding:2px 7px;border-radius:4px;cursor:pointer;transition:all .2s;font-family:'Instrument Sans',sans-serif;letter-spacing:.06em;}
 .lang-btn:hover,.lang-btn.active{border-color:var(--verde-neon);color:var(--verde-neon);background:rgba(123,201,92,.07);}
-.hamburger{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:4px;background:none;border:none;}
-.hamburger span{width:22px;height:1.5px;background:var(--branco);border-radius:2px;transition:all .3s;display:block;}
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 8px 10px;
+            background: var(--verde);
+            border: 1.5px solid rgba(123, 201, 92, 0.45);
+            border-radius: 7px;
+            transition: background .2s, border-color .2s;
+        }
+
+        .hamburger:hover,
+        .hamburger:focus-visible {
+            background: var(--verde-claro);
+            border-color: var(--verde-neon);
+            outline: none;
+        }
+
+        .hamburger span {
+            width: 22px;
+            height: 2px;
+            background: var(--verde-neon);
+            border-radius: 2px;
+            transition: transform .3s, opacity .2s;
+            display: block;
+        }
 
 /* ── HERO ── */
 .art-hero{position:relative;min-height:560px;display:flex;align-items:flex-end;padding:0 5% 5%;margin-top:68px;overflow:hidden;}
@@ -272,7 +297,7 @@ footer{background:var(--superficie);border-top:1px solid var(--borda);padding:3.
 <!-- NAV -->
 <nav id="navbar">
   <a href="../index.html" style="display:flex;align-items:center;">
-    <img src="https://www.asproc.com.br/images/logo.png"
+    <img src="https://www.asproc.org.br/images/logo.png"
          onerror="this.style.display='none';this.nextElementSibling.style.display='block';"
          alt="ASPROC" class="nav-logo">
     <span class="nav-brand-txt" style="display:none;">🌿 ASPROC</span>
@@ -608,7 +633,7 @@ function noticiaUrl(n){
   }
   // Fallback: slug do banco
   var sl=n.slug&&n.slug.trim()?n.slug.trim():slugify(n.titulo||'');
-  return sl?('https://www.asproc.com.br/noticias/'+sl+'.html'):'../noticias.html';
+  return sl?('https://www.asproc.org.br/noticias/'+sl+'.html'):'../noticias.html';
 }
 
 // ── LOAD RELATED (sidebar + mobile) ──
@@ -683,7 +708,7 @@ async function loadRelated(){
       var n=data.find(function(d){return matchBySlug(d,sl);});
       if(!n){
         // Notícia não encontrada no banco: mostra card com slug como texto e link direto
-        var url='https://www.asproc.com.br/noticias/'+sl+'.html';
+        var url='https://www.asproc.org.br/noticias/'+sl+'.html';
         var titulo=sl.replace(/-/g,' ').replace(/w/g,function(c){return c.toUpperCase();});
         sidebarCards+='<a class="rel-card" href="'+url+'" data-fixed-slug="'+sl+'">'
           +'<div class="rel-ph">📰</div>'
@@ -782,7 +807,7 @@ async function loadVagas(){
     if(!abertas.length){box.style.display='none';return;}
     box.style.display='';
     list.innerHTML=abertas.slice(0,3).map(function(v){
-      var url=v.url_externa||v.edital_url||(v.slug?'https://www.asproc.com.br/trabalhe-conosco.html#'+v.slug:'../trabalhe-conosco.html');
+      var url=v.url_externa||v.edital_url||(v.slug?'https://www.asproc.org.br/trabalhe-conosco.html#'+v.slug:'../trabalhe-conosco.html');
       var meta=[v.local,v.regime,v.prazo?'Até '+fmtDate(v.prazo):''].filter(Boolean).join(' · ');
       return '<a class="vaga-item" href="'+url+'" target="_blank"><div class="vaga-title">'+v.titulo+'</div><div class="vaga-meta">'+meta+'</div></a>';
     }).join('');
