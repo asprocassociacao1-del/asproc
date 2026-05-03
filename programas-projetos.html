@@ -3,14 +3,16 @@
 
 <head>
   <title>Programas e Projetos – ASPROC | Desenvolvimento Sustentável na Amazônia</title>
-  <meta name="description" content="Conheça os projetos da ASPROC: manejo do pirarucu, saneamento, comércio ribeirinho, açaí manejado e mais. Iniciativas que transformam comunidades no Médio Juruá há 30 anos.">
+  <meta name="description"
+    content="Conheça os projetos da ASPROC: manejo do pirarucu, saneamento, comércio ribeirinho, açaí manejado e mais. Iniciativas que transformam comunidades no Médio Juruá há 30 anos.">
   <link rel="canonical" href="https://www.asproc.com.br/programas-projetos.html">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://www.asproc.com.br/programas-projetos.html">
   <meta property="og:title" content="Programas e Projetos – ASPROC | Desenvolvimento Sustentável na Amazônia">
-  <meta property="og:description" content="Conheça os projetos da ASPROC: manejo do pirarucu, saneamento, comércio ribeirinho, açaí manejado e mais. Iniciativas que transformam comunidades no Médio Juruá há 30 anos.">
+  <meta property="og:description"
+    content="Conheça os projetos da ASPROC: manejo do pirarucu, saneamento, comércio ribeirinho, açaí manejado e mais. Iniciativas que transformam comunidades no Médio Juruá há 30 anos.">
   <meta property="og:image" content="https://www.asproc.com.br/images/card-manejo-pirarucu.webp">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -20,7 +22,8 @@
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Programas e Projetos – ASPROC | Desenvolvimento Sustentável na Amazônia">
-  <meta name="twitter:description" content="Conheça os projetos da ASPROC: manejo do pirarucu, saneamento, comércio ribeirinho, açaí manejado e mais. Iniciativas que transformam comunidades no Médio Juruá há 30 anos.">
+  <meta name="twitter:description"
+    content="Conheça os projetos da ASPROC: manejo do pirarucu, saneamento, comércio ribeirinho, açaí manejado e mais. Iniciativas que transformam comunidades no Médio Juruá há 30 anos.">
   <meta name="twitter:image" content="https://www.asproc.com.br/images/card-manejo-pirarucu.webp">
   <meta charset="UTF-8">
   <!-- Favicons -->
@@ -140,7 +143,7 @@
       top: 0;
       left: 0;
       right: 0;
-      z-index: 1000;
+      z-index: 2000;
       padding: 0 5%;
       display: flex;
       align-items: center;
@@ -159,13 +162,16 @@
 
     .nav-logo {
       height: 44px;
-      object-fit: contain
+      object-fit: contain;
+      position: relative;
+      z-index: 2100;
     }
 
+    /* ── DESKTOP NAV LINKS ── */
     .nav-links {
       display: flex;
       gap: 1.8rem;
-      list-style: none
+      list-style: none;
     }
 
     .nav-links a {
@@ -176,7 +182,7 @@
       letter-spacing: .08em;
       text-transform: uppercase;
       transition: color .3s;
-      position: relative
+      position: relative;
     }
 
     .nav-links a::after {
@@ -187,23 +193,25 @@
       width: 0;
       height: 2px;
       background: var(--verde-neon);
-      transition: width .3s
+      transition: width .3s;
     }
 
     .nav-links a:hover,
     .nav-links a.ativo {
-      color: var(--verde-neon)
+      color: var(--verde-neon);
     }
 
     .nav-links a:hover::after,
     .nav-links a.ativo::after {
-      width: 100%
+      width: 100%;
     }
 
     .nav-right {
       display: flex;
       align-items: center;
-      gap: 1rem
+      gap: 1rem;
+      position: relative;
+      z-index: 2100;
     }
 
     .nav-cta {
@@ -213,22 +221,24 @@
       border-radius: 30px;
       font-weight: 600 !important;
       font-size: .82rem !important;
-      transition: background .3s, transform .2s !important
+      transition: background .3s, transform .2s !important;
+      white-space: nowrap;
     }
 
     .nav-cta:hover {
       background: var(--verde-neon) !important;
       transform: translateY(-2px);
-      color: var(--escuro) !important
+      color: var(--escuro) !important;
     }
 
     .nav-cta::after {
-      display: none !important
+      display: none !important;
     }
 
+    /* ── LANG SWITCHER ── */
     .lang-switcher {
       display: flex;
-      gap: 4px
+      gap: 4px;
     }
 
     .lang-btn {
@@ -241,16 +251,17 @@
       border-radius: 4px;
       cursor: pointer;
       transition: all .25s;
-      font-family: 'DM Sans', sans-serif
+      font-family: 'DM Sans', sans-serif;
     }
 
     .lang-btn:hover,
     .lang-btn.active {
       border-color: var(--verde-neon);
       color: var(--verde-neon);
-      background: rgba(123, 201, 92, .08)
+      background: rgba(123, 201, 92, .08);
     }
 
+    /* ── HAMBURGER ── */
     .hamburger {
       display: none;
       flex-direction: column;
@@ -261,6 +272,8 @@
       border: 1.5px solid rgba(123, 201, 92, 0.45);
       border-radius: 7px;
       transition: background .2s, border-color .2s;
+      position: relative;
+      z-index: 2100;
     }
 
     .hamburger:hover,
@@ -277,6 +290,134 @@
       border-radius: 2px;
       transition: transform .3s, opacity .2s;
       display: block;
+    }
+
+    /* ── OVERLAY ESCURO ── */
+    .nav-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1999;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(2px);
+      cursor: pointer;
+    }
+
+    .nav-overlay.open {
+      display: block;
+    }
+
+    /* ── MOBILE LANG dentro do drawer ── */
+    .nav-lang-mobile {
+      display: none;
+    }
+
+    /* ── MOBILE: DRAWER LATERAL DA DIREITA ── */
+    @media (max-width: 900px) {
+      .hamburger {
+        display: flex;
+      }
+
+      .hamburger[aria-expanded="true"] span:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+      }
+
+      .hamburger[aria-expanded="true"] span:nth-child(2) {
+        opacity: 0;
+      }
+
+      .hamburger[aria-expanded="true"] span:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
+      }
+
+      /* Esconde lang switcher fora do drawer */
+      .nav-right .lang-switcher {
+        display: none;
+      }
+
+      /* Drawer: posicionado à direita, fora da tela por padrão */
+      .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: min(300px, 80vw);
+        height: 100dvh;
+        background: #0a140a;
+        border-left: 1px solid rgba(123, 201, 92, .18);
+        flex-direction: column;
+        gap: 0;
+        padding: 5.5rem 2rem 2.5rem;
+        z-index: 2050;
+        transition: right .35s cubic-bezier(.4, 0, .2, 1);
+        overflow-y: auto;
+      }
+
+      .nav-links.open {
+        right: 0;
+      }
+
+      /* Cabeçalho "MENU" dentro do drawer */
+      .nav-links::before {
+        content: 'Menu';
+        display: block;
+        font-size: 0.65rem;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: rgba(123, 201, 92, 0.5);
+        font-weight: 700;
+        padding-bottom: 1.2rem;
+        border-bottom: 1px solid rgba(123, 201, 92, .1);
+        margin-bottom: 0.4rem;
+        font-family: 'DM Sans', sans-serif;
+      }
+
+      /* Cada item separado por linha */
+      .nav-links li {
+        border-bottom: 1px solid rgba(123, 201, 92, .07);
+      }
+
+      .nav-links li:last-child {
+        border-bottom: none;
+      }
+
+      /* Links dentro do drawer */
+      .nav-links a {
+        font-size: 1rem !important;
+        padding: 0.75rem 0 !important;
+        display: block;
+        color: rgba(245, 240, 232, 0.88) !important;
+        letter-spacing: .06em;
+      }
+
+      .nav-links a::after {
+        display: none;
+      }
+
+      .nav-links a:hover,
+      .nav-links a.ativo {
+        color: var(--verde-neon) !important;
+        padding-left: .4rem !important;
+      }
+
+      /* Botão CTA "Loja" dentro do drawer */
+      .nav-links .nav-cta {
+        margin-top: 0.6rem;
+        display: inline-block !important;
+        align-self: flex-start;
+      }
+
+      .nav-links li:has(.nav-cta) {
+        border-bottom: none;
+      }
+
+      /* Lang switcher dentro do drawer */
+      .nav-links.open .nav-lang-mobile {
+        display: flex;
+        gap: 6px;
+        padding-top: 1rem;
+        margin-top: .25rem;
+        border-top: 1px solid rgba(123, 201, 92, .12);
+      }
     }
 
     /* HERO */
@@ -1777,99 +1918,7 @@
     .pesca-justa-bar-fill.animated {
       width: 94%;
     }
-  
-        /* ── Mobile nav improvements ── */
-        .nav-cta {
-            white-space: nowrap;
-        }
-        .nav-links.open .nav-cta {
-            display: inline-block;
-            align-self: flex-start;
-            margin-top: .25rem;
-        }
-        /* Lang switcher inside mobile menu */
-        .nav-links.open .nav-lang-mobile {
-            display: flex;
-            gap: 6px;
-            padding-top: .5rem;
-            border-top: 1px solid rgba(123,201,92,.12);
-            margin-top: .25rem;
-        }
-        .nav-lang-mobile {
-            display: none;
-        }
-                /* Overlay backdrop */
-        .nav-overlay {
-            display: none;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: 1999;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(2px);
-            cursor: pointer;
-        }
-        .nav-overlay.open {
-            display: block;
-        }
-        /* â”€â”€ Drawer link styling â”€â”€ */
-        @media (max-width: 900px) {
-            .nav-links li {
-                border-bottom: 1px solid rgba(123, 201, 92, .07);
-            }
-
-            .nav-links li:last-child {
-                border-bottom: none;
-            }
-
-            .nav-links a {
-                font-size: 1rem !important;
-                padding: 0.7rem 0 !important;
-                display: block;
-                color: rgba(245, 240, 232, 0.88) !important;
-            }
-
-            .nav-links .nav-cta {
-                margin-top: 0.75rem;
-                border-bottom: none !important;
-            }
-
-            .nav-links::before {
-                content: 'Menu';
-                display: block;
-                font-size: 0.65rem;
-                letter-spacing: 0.18em;
-                text-transform: uppercase;
-                color: rgba(123, 201, 92, 0.5);
-                font-weight: 700;
-                padding-bottom: 1.2rem;
-                border-bottom: 1px solid rgba(123, 201, 92, .1);
-                margin-bottom: 0.4rem;
-                font-family: 'DM Sans', sans-serif;
-            }
-        }
-        @media (max-width: 900px) {
-            .hamburger {
-                display: flex;
-                position: relative;
-                z-index: 2100;
-            }
-            .hamburger[aria-expanded="true"] span:nth-child(1) {
-                transform: translateY(7px) rotate(45deg);
-            }
-            .hamburger[aria-expanded="true"] span:nth-child(2) {
-                opacity: 0;
-            }
-            .hamburger[aria-expanded="true"] span:nth-child(3) {
-                transform: translateY(-7px) rotate(-45deg);
-            }
-            .hamburger span {
-                transition: transform .25s, opacity .2s;
-            }
-        }
-        </style>
+  </style>
   <script src="asproc-logo.js"></script>
 </head>
 
@@ -1882,17 +1931,20 @@
   <!-- ── NAVBAR ── -->
   <!-- NAV -->
   <nav id="navbar">
-    <img
-       loading="lazy"src="images/pp-hero.webp"
-      alt="ASPROC" class="nav-logo">
+    <img loading="lazy" src="images/pp-hero.webp" alt="ASPROC" class="nav-logo">
     <ul class="nav-links" id="navLinks">
-      <li><a href="index.html">In&#237;cio</a></li>
+      <li><a href="index.html">Início</a></li>
       <li><a href="sobre.html">Sobre</a></li>
-      <li><a href="noticias.html">Not&#237;cias</a></li>
-      <li><a href="programas-projetos.html" class="ativo">Projetos</a></li>
+      <li><a href="noticias.html">Notícias</a></li>
       <li><a href="avisos.html">Avisos</a></li>
+      <li><a href="programas-projetos.html" class="ativo">Projetos</a></li>
       <li><a href="trabalhe-conosco.html">Trabalhe Conosco</a></li>
       <li><a href="https://loja.asproc.org.br/" class="nav-cta" target="_blank">Loja</a></li>
+      <li class="nav-lang-mobile">
+        <button class="lang-btn active" onclick="setLang('pt')">PT</button>
+        <button class="lang-btn" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('es')">ES</button>
+      </li>
     </ul>
     <div class="nav-right">
       <div class="lang-switcher">
@@ -1900,10 +1952,11 @@
         <button class="lang-btn" onclick="setLang('en')">EN</button>
         <button class="lang-btn" onclick="setLang('es')">ES</button>
       </div>
-      <button class="hamburger" aria-label="Abrir menu" aria-expanded="false" aria-controls="navLinks" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+      <button class="hamburger" aria-label="Abrir menu" aria-expanded="false" aria-controls="navLinks"
+        onclick="toggleMenu()"><span></span><span></span><span></span></button>
     </div>
-      <div id="navOverlay" class="nav-overlay" onclick="closeMenu()"></div>
-    </nav>
+    <div id="navOverlay" class="nav-overlay" onclick="closeMenu()"></div>
+  </nav>
 
   <!-- ── MOBILE DRAWER ── -->
 
@@ -3449,22 +3502,22 @@
 
 
     function toggleMenu() {
-            const menu    = document.getElementById('navLinks');
-            const btn     = document.querySelector('.hamburger');
-            const overlay = document.getElementById('navOverlay');
-            const isOpen  = menu.classList.toggle('open');
-            btn.setAttribute('aria-expanded', isOpen);
-            if (overlay) overlay.classList.toggle('open', isOpen);
-        }
-        function closeMenu() {
-            const menu    = document.getElementById('navLinks');
-            const btn     = document.querySelector('.hamburger');
-            const overlay = document.getElementById('navOverlay');
-            menu.classList.remove('open');
-            btn && btn.setAttribute('aria-expanded', 'false');
-            overlay && overlay.classList.remove('open');
-        }
-        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+      const menu = document.getElementById('navLinks');
+      const btn = document.querySelector('.hamburger');
+      const overlay = document.getElementById('navOverlay');
+      const isOpen = menu.classList.toggle('open');
+      btn.setAttribute('aria-expanded', isOpen);
+      if (overlay) overlay.classList.toggle('open', isOpen);
+    }
+    function closeMenu() {
+      const menu = document.getElementById('navLinks');
+      const btn = document.querySelector('.hamburger');
+      const overlay = document.getElementById('navOverlay');
+      menu.classList.remove('open');
+      btn && btn.setAttribute('aria-expanded', 'false');
+      overlay && overlay.classList.remove('open');
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
     function setLang(lang) { document.querySelectorAll('.lang-btn').forEach((b, i) => b.classList.toggle('active', ['pt', 'en', 'es'][i] === lang)) }
     // Close on escape
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && menuOpen) closeMobMenu(); });
