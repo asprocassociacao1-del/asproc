@@ -8,6 +8,8 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap"
     rel="stylesheet">
+  <!-- docx-js: geração de .docx no browser -->
+  <script src="https://unpkg.com/docx@8.5.0/build/index.min.js"></script>
   <style>
     :root {
       --bg: #0f1117;
@@ -3068,6 +3070,17 @@
       <button class="btn btn-secondary btn-sm" onclick="neToggleVersionPanel()">🕐 Versões</button>
       <button class="btn btn-secondary btn-sm" onclick="previewNoticiaPage()">👁 Preview</button>
       <button class="btn btn-secondary btn-sm" onclick="downloadNoticiaPage()">⬇ Baixar</button>
+      <!-- Importar Word -->
+      <label class="btn btn-secondary btn-sm" id="btn-import-word-label"
+        title="Importar .docx — preenche título, resumo e corpo automaticamente"
+        style="cursor:pointer;display:inline-flex;align-items:center;gap:.35rem;">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px;flex-shrink:0;">
+          <path
+            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM8.5 17l1.5-5.5 1.5 5.5h1l1.8-7h-1.1l-1.2 4.8-1.4-4.8H9.4L8 14.8 6.8 10H5.7l1.8 7H8.5z" />
+        </svg>
+        ⬆ Importar Word
+        <input type="file" id="import-word-file" accept=".docx" style="display:none;" onchange="importWordFile(this)">
+      </label>
       <button class="btn btn-word btn-sm" id="btn-export-word" onclick="exportNoticiaWordFromEditor(this)"
         title="Exportar para Word (.docx)">
         <svg class="word-icon" viewBox="0 0 24 24" fill="currentColor" style="width:15px;height:15px;">
@@ -3363,6 +3376,99 @@
             <option value="editorial">Editorial (amplo)</option>
             <option value="compact">Compacto (sem sidebar)</option>
           </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- IMPORT WORD MODAL -->
+    <div id="import-word-modal"
+      style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:1rem;">
+      <div
+        style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;width:100%;max-width:520px;box-shadow:0 24px 80px rgba(0,0,0,.7);overflow:hidden;display:flex;flex-direction:column;">
+        <!-- Header -->
+        <div
+          style="display:flex;align-items:center;gap:.75rem;padding:1.1rem 1.4rem;border-bottom:1px solid var(--border);">
+          <div style="flex:1;">
+            <div style="font-size:.92rem;font-weight:600;color:var(--text);">⬆ Importar documento Word</div>
+            <div style="font-size:.72rem;color:var(--text-muted);margin-top:.15rem;" id="import-word-filename">Nenhum
+              arquivo selecionado</div>
+          </div>
+          <button onclick="closeImportWordModal()"
+            style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;width:28px;height:28px;color:var(--text-muted);cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;">✕</button>
+        </div>
+
+        <!-- Progress -->
+        <div id="import-word-progress" style="padding:1.5rem 1.4rem;display:none;">
+          <div style="height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;margin-bottom:.75rem;">
+            <div id="import-word-bar"
+              style="height:100%;width:0%;background:var(--accent);transition:width .3s;border-radius:2px;"></div>
+          </div>
+          <div id="import-word-status" style="font-size:.8rem;color:var(--text-muted);">Processando…</div>
+        </div>
+
+        <!-- Preview -->
+        <div id="import-word-preview"
+          style="display:none;padding:1.1rem 1.4rem;border-bottom:1px solid var(--border);max-height:320px;overflow-y:auto;">
+          <div
+            style="font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.7rem;">
+            📋 Preview do conteúdo extraído</div>
+          <div style="font-size:.75rem;font-weight:600;color:var(--text-muted);margin-bottom:.2rem;">TÍTULO DETECTADO
+          </div>
+          <div id="import-prev-titulo"
+            style="font-size:.92rem;font-weight:600;color:var(--text);margin-bottom:.85rem;padding:.5rem .7rem;background:var(--bg3);border-radius:6px;">
+          </div>
+          <div style="font-size:.75rem;font-weight:600;color:var(--text-muted);margin-bottom:.2rem;">RESUMO (1º
+            parágrafo)</div>
+          <div id="import-prev-resumo"
+            style="font-size:.82rem;color:var(--text-dim);margin-bottom:.85rem;padding:.5rem .7rem;background:var(--bg3);border-radius:6px;font-style:italic;">
+          </div>
+          <div style="font-size:.75rem;font-weight:600;color:var(--text-muted);margin-bottom:.2rem;">CORPO</div>
+          <div id="import-prev-corpo"
+            style="font-size:.78rem;color:var(--text-dim);padding:.5rem .7rem;background:var(--bg3);border-radius:6px;line-height:1.6;max-height:120px;overflow:hidden;">
+          </div>
+          <div id="import-word-stats"
+            style="margin-top:.75rem;font-size:.72rem;color:var(--text-muted);display:flex;gap:1rem;flex-wrap:wrap;">
+          </div>
+        </div>
+
+        <!-- Opções -->
+        <div id="import-word-options"
+          style="display:none;padding:.85rem 1.4rem;border-bottom:1px solid var(--border);background:rgba(0,0,0,.1);">
+          <div
+            style="font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.6rem;">
+            ⚙ Opções de importação</div>
+          <div style="display:flex;flex-direction:column;gap:.4rem;">
+            <label
+              style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-dim);cursor:pointer;">
+              <input type="checkbox" id="import-opt-titulo" checked style="accent-color:var(--accent);">
+              Preencher título automaticamente (1º Heading 1)
+            </label>
+            <label
+              style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-dim);cursor:pointer;">
+              <input type="checkbox" id="import-opt-resumo" checked style="accent-color:var(--accent);">
+              Preencher resumo automaticamente (1º parágrafo)
+            </label>
+            <label
+              style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-dim);cursor:pointer;">
+              <input type="checkbox" id="import-opt-imagens" checked style="accent-color:var(--accent);">
+              Incluir imagens do documento (base64 inline)
+            </label>
+            <label
+              style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-dim);cursor:pointer;">
+              <input type="checkbox" id="import-opt-append" style="accent-color:var(--accent);">
+              Acrescentar ao final do editor (sem limpar conteúdo atual)
+            </label>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div style="display:flex;align-items:center;justify-content:flex-end;gap:.5rem;padding:.85rem 1.4rem;">
+          <button onclick="closeImportWordModal()"
+            style="background:transparent;border:1px solid var(--border);border-radius:var(--radius);color:var(--text-muted);font-size:.82rem;padding:.45rem .9rem;cursor:pointer;font-family:inherit;">Cancelar</button>
+          <button id="import-word-confirm-btn" onclick="confirmImportWord()" disabled
+            style="background:var(--accent);border:none;border-radius:var(--radius);color:#fff;font-size:.82rem;font-weight:600;padding:.45rem 1.25rem;cursor:not-allowed;opacity:.4;font-family:inherit;transition:all .2s;">
+            ✅ Importar para o editor
+          </button>
         </div>
       </div>
     </div>
@@ -9384,7 +9490,6 @@ document.addEventListener('DOMContentLoaded',function(){
       /* ══════════════════════════════════════════
          EXPORTAR NOTÍCIA PARA WORD
          Gera .doc no formato HTML-Word (sem lib externa).
-         O Word abre nativamente e preserva toda a formatação.
       ══════════════════════════════════════════ */
 
       function _buildWordHtml(titulo, resumo, categoria, data_pub, autor, conteudoHtml) {
@@ -9393,71 +9498,34 @@ document.addEventListener('DOMContentLoaded',function(){
         const dataStr = data_pub
           ? new Date(data_pub + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })
           : '';
-
         const metaParts = [];
         if (catStr) metaParts.push('<strong>Categoria:</strong> ' + catStr);
         if (dataStr) metaParts.push('<strong>Data:</strong> ' + dataStr);
         if (autor) metaParts.push('<strong>Autor:</strong> ' + autor);
-
-        const metaHtml = metaParts.length
-          ? '<p style="font-size:11pt;color:#6B7A99;font-style:italic;margin:4pt 0 8pt;">' + metaParts.join(' &nbsp;•&nbsp; ') + '</p>'
-          : '';
-
-        const resumoHtml = (resumo && resumo.trim())
-          ? '<p style="font-size:12pt;font-style:italic;color:#444;border-left:4pt solid #3B82F6;padding-left:10pt;margin:10pt 0 16pt;">' + resumo + '</p>'
-          : '';
-
-        const separador = '<hr style="border:none;border-top:1pt solid #CCC;margin:14pt 0;">';
-
-        return `
-<html xmlns:o="urn:schemas-microsoft-com:office:office"
-      xmlns:w="urn:schemas-microsoft-com:office:word"
-      xmlns="http://www.w3.org/TR/REC-html40">
-<head>
-<meta charset="UTF-8">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<!--[if gte mso 9]>
-<xml>
-  <w:WordDocument>
-    <w:View>Print</w:View>
-    <w:Zoom>100</w:Zoom>
-    <w:DoNotOptimizeForBrowser/>
-  </w:WordDocument>
-</xml>
-<![endif]-->
+        const metaHtml = metaParts.length ? '<p style="font-size:11pt;color:#6B7A99;font-style:italic;margin:4pt 0 8pt;">' + metaParts.join(' &nbsp;•&nbsp; ') + '</p>' : '';
+        const resumoHtml = (resumo && resumo.trim()) ? '<p style="font-size:12pt;font-style:italic;color:#444;border-left:4pt solid #3B82F6;padding-left:10pt;margin:10pt 0 16pt;">' + resumo + '</p>' : '';
+        const sep = '<hr style="border:none;border-top:1pt solid #CCC;margin:14pt 0;">';
+        return `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="UTF-8"><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom><w:DoNotOptimizeForBrowser/></w:WordDocument></xml><![endif]-->
 <style>
-  @page { size: A4; margin: 2.5cm; }
-  body { font-family: Calibri, Arial, sans-serif; font-size: 12pt; color: #222; line-height: 1.6; }
-  h1 { font-size: 22pt; color: #1A3A6B; margin: 0 0 6pt; }
-  h2 { font-size: 16pt; color: #1A3A6B; margin: 18pt 0 6pt; }
-  h3 { font-size: 13pt; color: #333; margin: 14pt 0 4pt; }
-  h4, h5, h6 { font-size: 12pt; color: #333; margin: 12pt 0 4pt; }
-  p  { margin: 0 0 10pt; }
-  blockquote { border-left: 4pt solid #3B82F6; padding-left: 10pt; font-style: italic; color: #555; margin: 10pt 0; }
-  ul, ol { margin: 6pt 0 10pt 20pt; }
-  li { margin-bottom: 4pt; }
-  img { max-width: 100%; height: auto; }
-  table { border-collapse: collapse; width: 100%; margin: 10pt 0; }
-  td, th { border: 1pt solid #CCC; padding: 5pt 8pt; }
-</style>
-</head>
-<body>
-  <h1>${titulo || '(sem título)'}</h1>
-  ${metaHtml}
-  ${resumoHtml}
-  ${separador}
-  <div>${conteudoHtml || '<p>(sem conteúdo)</p>'}</div>
-</body>
-</html>`;
+  @page{size:A4;margin:2.5cm;}
+  body{font-family:Calibri,Arial,sans-serif;font-size:12pt;color:#222;line-height:1.6;}
+  h1{font-size:22pt;color:#1A3A6B;margin:0 0 6pt;}h2{font-size:16pt;color:#1A3A6B;margin:18pt 0 6pt;}
+  h3{font-size:13pt;color:#333;margin:14pt 0 4pt;}p{margin:0 0 10pt;}
+  blockquote{border-left:4pt solid #3B82F6;padding-left:10pt;font-style:italic;color:#555;margin:10pt 0;}
+  ul,ol{margin:6pt 0 10pt 20pt;}li{margin-bottom:4pt;}img{max-width:100%;height:auto;}
+  table{border-collapse:collapse;width:100%;margin:10pt 0;}td,th{border:1pt solid #CCC;padding:5pt 8pt;}
+</style></head>
+<body><h1>${titulo || '(sem título)'}</h1>${metaHtml}${resumoHtml}${sep}<div>${conteudoHtml || '<p>(sem conteúdo)</p>'}</div></body></html>`;
       }
 
       function _downloadWordFile(htmlContent, titulo, btn) {
         if (btn) { btn.classList.add('loading'); btn.disabled = true; }
         try {
           const blob = new Blob(['\ufeff', htmlContent], { type: 'application/msword;charset=utf-8' });
-          const slug = (titulo || 'noticia')
-            .toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-            .replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').substring(0, 50);
+          const slug = (titulo || 'noticia').toLowerCase().normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-').substring(0, 50);
           const url = URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url; a.download = slug + '.doc';
@@ -9472,26 +9540,638 @@ document.addEventListener('DOMContentLoaded',function(){
       }
 
       function exportNoticiaWord(noticia, btn) {
-        _downloadWordFile(
-          _buildWordHtml(noticia.titulo, noticia.resumo, noticia.categoria, noticia.data_pub, noticia.autor, noticia.conteudo || ''),
-          noticia.titulo, btn
-        );
+        _downloadWordFile(_buildWordHtml(noticia.titulo, noticia.resumo, noticia.categoria, noticia.data_pub, noticia.autor, noticia.conteudo || ''), noticia.titulo, btn);
       }
 
       function exportNoticiaWordFromEditor(btn) {
         syncRteToHidden();
-        _downloadWordFile(
-          _buildWordHtml(
-            document.getElementById('n-titulo').value.trim(),
-            document.getElementById('n-resumo').value.trim(),
-            document.getElementById('n-categoria').value,
-            document.getElementById('n-data').value,
-            document.getElementById('n-autor').value.trim(),
-            document.getElementById('n-conteudo').value
-          ),
-          document.getElementById('n-titulo').value.trim(), btn
-        );
+        _downloadWordFile(_buildWordHtml(
+          document.getElementById('n-titulo').value.trim(),
+          document.getElementById('n-resumo').value.trim(),
+          document.getElementById('n-categoria').value,
+          document.getElementById('n-data').value,
+          document.getElementById('n-autor').value.trim(),
+          document.getElementById('n-conteudo').value
+        ), document.getElementById('n-titulo').value.trim(), btn);
       }
+
+      /* ══════════════════════════════════════════
+         IMPORTAR WORD (.docx) — parser nativo
+         Sem biblioteca externa. Lê o ZIP do .docx,
+         extrai document.xml e imagens em base64.
+      ══════════════════════════════════════════ */
+
+      // Estado global do import
+      let _importData = null; // { titulo, resumo, htmlBody }
+
+      /* ── Lê um arquivo como ArrayBuffer ── */
+      function _readFileAsBuffer(file) {
+        return new Promise((res, rej) => {
+          const r = new FileReader();
+          r.onload = e => res(e.target.result);
+          r.onerror = () => rej(new Error('Erro ao ler arquivo'));
+          r.readAsArrayBuffer(file);
+        });
+      }
+
+      /* ── Parser de ZIP minimalista (sem lib) ──
+         O formato .docx é um ZIP padrão (PK).
+         Cada arquivo no ZIP tem:
+           - local file header (30 bytes + nome + extra)
+           - dados comprimidos (deflate) ou armazenados
+         Lemos o End-of-Central-Directory para achar
+         o Central Directory, depois cada entry.
+      ── */
+      async function _parseZip(buffer) {
+        const view = new DataView(buffer);
+        const bytes = new Uint8Array(buffer);
+        const len = bytes.length;
+
+        // Acha o End of Central Directory (assinatura 0x06054b50)
+        let eocdOffset = -1;
+        for (let i = len - 22; i >= 0; i--) {
+          if (view.getUint32(i, true) === 0x06054b50) { eocdOffset = i; break; }
+        }
+        if (eocdOffset < 0) throw new Error('Arquivo não é um ZIP válido.');
+
+        const cdOffset = view.getUint32(eocdOffset + 16, true);
+        const cdSize = view.getUint32(eocdOffset + 12, true);
+        const cdCount = view.getUint16(eocdOffset + 10, true);
+
+        const decoder = new TextDecoder('utf-8');
+        const files = {};
+        let pos = cdOffset;
+
+        for (let i = 0; i < cdCount; i++) {
+          const sig = view.getUint32(pos, true);
+          if (sig !== 0x02014b50) break; // Central Directory signature
+          const compression = view.getUint16(pos + 10, true);
+          const compressedSize = view.getUint32(pos + 20, true);
+          const uncompressedSize = view.getUint32(pos + 24, true);
+          const fnLen = view.getUint16(pos + 28, true);
+          const extraLen = view.getUint16(pos + 30, true);
+          const commentLen = view.getUint16(pos + 32, true);
+          const localOffset = view.getUint32(pos + 42, true);
+          const name = decoder.decode(bytes.slice(pos + 46, pos + 46 + fnLen));
+          pos += 46 + fnLen + extraLen + commentLen;
+
+          // Lê local file header para achar os dados reais
+          const localFnLen = view.getUint16(localOffset + 26, true);
+          const localExtraLen = view.getUint16(localOffset + 28, true);
+          const dataStart = localOffset + 30 + localFnLen + localExtraLen;
+          const compData = bytes.slice(dataStart, dataStart + compressedSize);
+
+          let data;
+          if (compression === 0) {
+            // Stored (sem compressão)
+            data = compData;
+          } else if (compression === 8) {
+            // Deflate — usa DecompressionStream nativa do browser
+            try {
+              const ds = new DecompressionStream('deflate-raw');
+              const writer = ds.writable.getWriter();
+              writer.write(compData);
+              writer.close();
+              const chunks = [];
+              const reader = ds.readable.getReader();
+              while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                chunks.push(value);
+              }
+              const total = chunks.reduce((s, c) => s + c.length, 0);
+              data = new Uint8Array(total);
+              let off = 0;
+              for (const c of chunks) { data.set(c, off); off += c.length; }
+            } catch (e) {
+              data = new Uint8Array(0);
+            }
+          } else {
+            data = new Uint8Array(0);
+          }
+          files[name] = data;
+        }
+        return files;
+      }
+
+      /* ── Converte Uint8Array para string UTF-8 ── */
+      function _uint8ToString(u8) {
+        try { return new TextDecoder('utf-8').decode(u8); }
+        catch (e) { return ''; }
+      }
+
+      /* ── Converte Uint8Array para data URL base64 ── */
+      function _uint8ToDataUrl(u8, mime) {
+        let bin = '';
+        const chunk = 8192;
+        for (let i = 0; i < u8.length; i += chunk) {
+          bin += String.fromCharCode(...u8.slice(i, i + chunk));
+        }
+        return `data:${mime};base64,${btoa(bin)}`;
+      }
+
+      /* ── Extrai mime type da extensão ── */
+      function _imgMime(name) {
+        const ext = (name.split('.').pop() || '').toLowerCase();
+        return {
+          png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg',
+          gif: 'image/gif', webp: 'image/webp', svg: 'image/svg+xml',
+          bmp: 'image/bmp', tiff: 'image/tiff'
+        }[ext] || 'image/png';
+      }
+
+      /* ── Parser principal: extrai texto + imagens do document.xml ── */
+      async function _parseDocx(file) {
+        const buf = await _readFileAsBuffer(file);
+        const files = await _parseZip(buf);
+
+        // document.xml é o corpo principal
+        const docXmlKey = Object.keys(files).find(k =>
+          k === 'word/document.xml' || k.endsWith('/document.xml')
+        );
+        if (!docXmlKey) throw new Error('Arquivo .docx inválido — word/document.xml não encontrado.');
+
+        const xmlStr = _uint8ToString(files[docXmlKey]);
+
+        // Relações de imagem: word/_rels/document.xml.rels
+        const relsKey = Object.keys(files).find(k =>
+          k === 'word/_rels/document.xml.rels' || k.endsWith('/_rels/document.xml.rels')
+        );
+        const imgMap = {}; // rId → data URL
+        if (relsKey) {
+          const relsStr = _uint8ToString(files[relsKey]);
+          const relRx = /Relationship[^>]+Id="([^"]+)"[^>]+Type="[^"]*\/image"[^>]+Target="([^"]+)"/g;
+          let m;
+          while ((m = relRx.exec(relsStr)) !== null) {
+            const rId = m[1];
+            let target = m[2].replace(/^\//, ''); // remove leading /
+            // Target pode ser relativo a word/ ou absoluto
+            const candidates = [
+              'word/' + target,
+              target,
+              target.startsWith('word/') ? target : 'word/' + target,
+            ];
+            for (const cand of candidates) {
+              const imgData = files[cand] || files[decodeURIComponent(cand)];
+              if (imgData && imgData.length > 0) {
+                const mime = _imgMime(cand);
+                imgMap[rId] = _uint8ToDataUrl(imgData, mime);
+                break;
+              }
+            }
+          }
+        }
+
+        // Transforma o XML do Word em HTML limpo
+        const html = _wordXmlToHtml(xmlStr, imgMap);
+        return html;
+      }
+
+      /* ── Converte word/document.xml em HTML ── */
+      function _wordXmlToHtml(xmlStr, imgMap) {
+        // Usa DOMParser para parsear o XML
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(xmlStr, 'application/xml');
+
+        if (doc.querySelector('parsererror')) {
+          // fallback: extrai texto bruto via regex
+          const text = xmlStr.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+          return '<p>' + text.split(/\n\n+/).map(p => p.trim()).filter(Boolean).join('</p><p>') + '</p>';
+        }
+
+        const body = doc.querySelector('body') || doc.documentElement;
+        const ns = 'http://schemas.openxmlformats.org/wordprocessingml/2006/main';
+        const nsPic = 'http://schemas.openxmlformats.org/drawingml/2006/picture';
+        const nsR = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+
+        // Helper: pega valor de atributo ignorando namespace
+        function attr(el, localName) {
+          for (const a of el.attributes) {
+            if (a.localName === localName) return a.value;
+          }
+          return '';
+        }
+
+        // Helper: nós filhos por tagName local
+        function kids(el, localName) {
+          return [...el.children].filter(c => c.localName === localName);
+        }
+
+        // Helper: primeiro descendente por tagName local
+        function first(el, localName) {
+          if (!el) return null;
+          if (el.localName === localName) return el;
+          for (const c of el.children) {
+            const found = first(c, localName);
+            if (found) return found;
+          }
+          return null;
+        }
+
+        // Processa um run (w:r) → trecho HTML
+        function processRun(run) {
+          const rPr = first(run, 'rPr');
+          const bold = rPr && (first(rPr, 'b') || first(rPr, 'bCs'));
+          const italic = rPr && (first(rPr, 'i') || first(rPr, 'iCs'));
+          const under = rPr && first(rPr, 'u');
+          const strike = rPr && first(rPr, 'strike');
+
+          // Imagem embutida (w:drawing → a:blip)
+          const drawing = first(run, 'drawing');
+          if (drawing) {
+            // Busca rEmbed na árvore
+            const blips = drawing.querySelectorAll ? drawing.querySelectorAll('*') : [];
+            for (const el of blips) {
+              const rEmbed = attr(el, 'embed') || el.getAttributeNS && el.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships', 'embed');
+              if (rEmbed && imgMap[rEmbed]) {
+                return `<img src="${imgMap[rEmbed]}" style="max-width:100%;height:auto;border-radius:6px;margin:.5rem 0;display:block;" alt="imagem">`;
+              }
+            }
+            // Tenta pelo XML bruto
+            const embedRx = /r:embed="([^"]+)"/g;
+            const xmlFrag = drawing.outerHTML || '';
+            let em;
+            while ((em = embedRx.exec(xmlFrag)) !== null) {
+              if (imgMap[em[1]]) {
+                return `<img src="${imgMap[em[1]]}" style="max-width:100%;height:auto;border-radius:6px;margin:.5rem 0;display:block;" alt="imagem">`;
+              }
+            }
+            return '';
+          }
+
+          // Texto
+          const tEls = kids(run, 't');
+          if (!tEls.length) return '';
+          let text = tEls.map(t => t.textContent).join('');
+          if (!text) return '';
+
+          // Escapa HTML
+          text = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+          if (bold) text = `<strong>${text}</strong>`;
+          if (italic) text = `<em>${text}</em>`;
+          if (under && attr(under, 'val') !== 'none') text = `<u>${text}</u>`;
+          if (strike) text = `<s>${text}</s>`;
+          return text;
+        }
+
+        // Detecta nível de heading pelo estilo do parágrafo
+        function headingLevel(pPr) {
+          if (!pPr) return 0;
+          const styleEl = first(pPr, 'pStyle');
+          if (!styleEl) return 0;
+          const val = (attr(styleEl, 'val') || '').toLowerCase();
+          if (val === 'title') return 1;
+          if (val === 'heading1' || val === 'ttulo1' || val === 'heading 1') return 1;
+          if (val === 'heading2' || val === 'ttulo2' || val === 'heading 2') return 2;
+          if (val === 'heading3' || val === 'ttulo3' || val === 'heading 3') return 3;
+          if (val === 'heading4' || val === 'heading 4') return 4;
+          if (/heading(\d)/.test(val)) return parseInt(RegExp.$1);
+          if (val.includes('1')) return 1;
+          if (val.includes('2')) return 2;
+          if (val.includes('3')) return 3;
+          return 0;
+        }
+
+        // Detecta se é item de lista
+        function listInfo(pPr) {
+          if (!pPr) return null;
+          const numPr = first(pPr, 'numPr');
+          if (!numPr) return null;
+          const ilvl = first(numPr, 'ilvl');
+          const numId = first(numPr, 'numId');
+          return {
+            level: ilvl ? parseInt(attr(ilvl, 'val') || '0') : 0,
+            numId: numId ? attr(numId, 'val') : '0',
+          };
+        }
+
+        // Detecta alinhamento
+        function textAlign(pPr) {
+          if (!pPr) return '';
+          const jc = first(pPr, 'jc');
+          if (!jc) return '';
+          const val = attr(jc, 'val');
+          const map = { center: 'center', right: 'right', both: 'justify', left: 'left' };
+          return map[val] || '';
+        }
+
+        // Processa um parágrafo (w:p)
+        function processP(p) {
+          const pPr = first(p, 'pPr');
+          const runs = [...p.children].filter(c => c.localName === 'r' || c.localName === 'hyperlink' || c.localName === 'ins' || c.localName === 'del');
+
+          let inner = '';
+          for (const child of runs) {
+            if (child.localName === 'r') {
+              inner += processRun(child);
+            } else if (child.localName === 'hyperlink') {
+              // w:hyperlink
+              const href = child.getAttributeNS
+                ? child.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships', 'id') || ''
+                : '';
+              const linkText = [...child.children].filter(c => c.localName === 'r').map(processRun).join('');
+              inner += linkText ? `<a href="#">${linkText}</a>` : linkText;
+            } else if (child.localName === 'ins') {
+              // tracked insertion
+              const rs = [...child.children].filter(c => c.localName === 'r');
+              inner += rs.map(processRun).join('');
+            }
+            // del (tracked deletion) → ignora
+          }
+
+          // Verifica se há imagens inline (sem run wrapper)
+          const directDrawings = [...p.children].filter(c => c.localName === 'drawing');
+          for (const d of directDrawings) {
+            const embedRx = /r:embed="([^"]+)"/g;
+            const xmlFrag = d.outerHTML || '';
+            let em;
+            while ((em = embedRx.exec(xmlFrag)) !== null) {
+              if (imgMap[em[1]]) {
+                inner += `<img src="${imgMap[em[1]]}" style="max-width:100%;height:auto;border-radius:6px;margin:.5rem 0;display:block;" alt="imagem">`;
+              }
+            }
+          }
+
+          if (!inner.trim() && !inner.includes('<img')) return '<p><br></p>';
+
+          const h = headingLevel(pPr);
+          if (h) return `<h${h}>${inner}</h${h}>`;
+
+          const align = textAlign(pPr);
+          const style = align ? ` style="text-align:${align}"` : '';
+
+          // Blockquote (estilo Quote ou BlockText)
+          if (pPr) {
+            const styleEl = first(pPr, 'pStyle');
+            const sv = (styleEl ? attr(styleEl, 'val') : '').toLowerCase();
+            if (sv.includes('quote') || sv.includes('block')) {
+              return `<blockquote${style}>${inner}</blockquote>`;
+            }
+          }
+
+          return `<p${style}>${inner}</p>`;
+        }
+
+        // Processa tabela
+        function processTbl(tbl) {
+          const rows = [...tbl.children].filter(c => c.localName === 'tr');
+          const rowsHtml = rows.map(tr => {
+            const cells = [...tr.children].filter(c => c.localName === 'tc');
+            const cellsHtml = cells.map(tc => {
+              const ps = [...tc.children].filter(c => c.localName === 'p');
+              const content = ps.map(processP).join('');
+              return `<td style="border:1px solid #ccc;padding:6px 10px;">${content}</td>`;
+            }).join('');
+            return `<tr>${cellsHtml}</tr>`;
+          }).join('');
+          return `<table style="border-collapse:collapse;width:100%;margin:1rem 0;">${rowsHtml}</table>`;
+        }
+
+        // Processa o body do document.xml
+        const htmlParts = [];
+        let listStack = []; // {numId, level, tag}
+
+        const bodyChildren = [...body.children];
+        for (let i = 0; i < bodyChildren.length; i++) {
+          const el = bodyChildren[i];
+          const tag = el.localName;
+
+          if (tag === 'p') {
+            const pPr = first(el, 'pPr');
+            const li = listInfo(pPr);
+
+            if (li) {
+              // Fecha listas abertas que não correspondem mais
+              while (listStack.length > 0) {
+                const top = listStack[listStack.length - 1];
+                if (top.numId !== li.numId || top.level > li.level) {
+                  htmlParts.push(`</${top.tag}>`);
+                  listStack.pop();
+                } else break;
+              }
+
+              // Abre nova lista se necessário
+              const isOrdered = false; // simplificação: usa ul sempre
+              if (listStack.length === 0 || listStack[listStack.length - 1].level < li.level) {
+                const ltag = 'ul';
+                htmlParts.push(`<${ltag} style="margin:.4rem 0 .4rem 1.5rem;">`);
+                listStack.push({ numId: li.numId, level: li.level, tag: ltag });
+              }
+
+              // Conteúdo do item
+              const runs = [...el.children].filter(c => c.localName === 'r' || c.localName === 'ins');
+              let inner = runs.map(r => {
+                if (r.localName === 'ins') return [...r.children].filter(c => c.localName === 'r').map(processRun).join('');
+                return processRun(r);
+              }).join('');
+              htmlParts.push(`<li>${inner || '&nbsp;'}</li>`);
+              continue;
+            }
+
+            // Não é lista — fecha listas abertas
+            while (listStack.length > 0) {
+              htmlParts.push(`</${listStack.pop().tag}>`);
+            }
+
+            htmlParts.push(processP(el));
+
+          } else if (tag === 'tbl') {
+            while (listStack.length > 0) {
+              htmlParts.push(`</${listStack.pop().tag}>`);
+            }
+            htmlParts.push(processTbl(el));
+
+          } else if (tag === 'sectPr') {
+            // Seção — ignora
+          }
+        }
+
+        // Fecha qualquer lista aberta restante
+        while (listStack.length > 0) {
+          htmlParts.push(`</${listStack.pop().tag}>`);
+        }
+
+        return htmlParts.join('\n');
+      }
+
+      /* ── Extrai título e resumo do HTML gerado ── */
+      function _extractMeta(html) {
+        const tmp = document.createElement('div');
+        tmp.innerHTML = html;
+
+        // Título: primeiro h1 ou h2
+        let titulo = '';
+        const h1 = tmp.querySelector('h1,h2');
+        if (h1) { titulo = h1.textContent.trim(); h1.remove(); }
+
+        // Resumo: primeiro parágrafo não vazio após o título
+        let resumo = '';
+        const ps = tmp.querySelectorAll('p');
+        for (const p of ps) {
+          const txt = p.textContent.trim();
+          if (txt && txt.length > 20) { resumo = txt.substring(0, 300); break; }
+        }
+
+        return { titulo, resumo, html: tmp.innerHTML };
+      }
+
+      /* ── Entry point: chamado pelo input[file] ── */
+      async function importWordFile(input) {
+        const file = input.files && input.files[0];
+        if (!file) return;
+        input.value = ''; // reset para permitir re-seleção do mesmo arquivo
+
+        if (!file.name.toLowerCase().endsWith('.docx')) {
+          toast('❌ Selecione um arquivo .docx (Word 2007+)', 'error');
+          return;
+        }
+
+        // Abre modal e mostra progresso
+        const modal = document.getElementById('import-word-modal');
+        modal.style.display = 'flex';
+
+        document.getElementById('import-word-filename').textContent = file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB)';
+        document.getElementById('import-word-progress').style.display = 'block';
+        document.getElementById('import-word-preview').style.display = 'none';
+        document.getElementById('import-word-options').style.display = 'none';
+        const confirmBtn = document.getElementById('import-word-confirm-btn');
+        confirmBtn.disabled = true;
+        confirmBtn.style.opacity = '.4';
+        confirmBtn.style.cursor = 'not-allowed';
+
+        const bar = document.getElementById('import-word-bar');
+        const status = document.getElementById('import-word-status');
+
+        try {
+          bar.style.width = '15%'; status.textContent = 'Lendo arquivo…';
+          await new Promise(r => setTimeout(r, 80));
+
+          bar.style.width = '35%'; status.textContent = 'Descompactando ZIP…';
+          await new Promise(r => setTimeout(r, 80));
+
+          bar.style.width = '60%'; status.textContent = 'Extraindo conteúdo e imagens…';
+          const rawHtml = await _parseDocx(file);
+
+          bar.style.width = '85%'; status.textContent = 'Organizando estrutura…';
+          await new Promise(r => setTimeout(r, 80));
+
+          const { titulo, resumo, html } = _extractMeta(rawHtml);
+
+          bar.style.width = '100%'; status.textContent = '✅ Concluído!';
+          await new Promise(r => setTimeout(r, 300));
+
+          // Conta imagens extraídas
+          const imgCount = (html.match(/<img /g) || []).length;
+          const wordCount = html.replace(/<[^>]+>/g, '').trim().split(/\s+/).filter(Boolean).length;
+
+          // Salva para uso no confirm
+          _importData = { titulo, resumo, html };
+
+          // Mostra preview
+          document.getElementById('import-word-progress').style.display = 'none';
+          document.getElementById('import-word-preview').style.display = 'block';
+          document.getElementById('import-word-options').style.display = 'block';
+
+          document.getElementById('import-prev-titulo').textContent = titulo || '(não detectado — primeiro parágrafo usado)';
+          document.getElementById('import-prev-resumo').textContent = resumo || '(não detectado)';
+
+          // Preview do corpo (sem imagens para não sobrecarregar)
+          const bodyPreview = html.replace(/<img[^>]*>/g, '[🖼 imagem]').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 300);
+          document.getElementById('import-prev-corpo').textContent = bodyPreview + (bodyPreview.length >= 300 ? '…' : '');
+
+          const stats = [];
+          stats.push(`📝 ~${wordCount} palavras`);
+          if (imgCount > 0) stats.push(`🖼 ${imgCount} imagem${imgCount > 1 ? 'ns' : ''}`);
+          document.getElementById('import-word-stats').innerHTML = stats.map(s =>
+            `<span style="background:var(--bg3);padding:.2rem .55rem;border-radius:99px;">${s}</span>`
+          ).join('');
+
+          confirmBtn.disabled = false;
+          confirmBtn.style.opacity = '1';
+          confirmBtn.style.cursor = 'pointer';
+
+        } catch (e) {
+          bar.style.width = '100%';
+          bar.style.background = 'var(--red)';
+          status.textContent = '❌ ' + e.message;
+          status.style.color = 'var(--red)';
+          console.error('Import Word error:', e);
+        }
+      }
+
+      /* ── Confirma e injeta no editor ── */
+      function confirmImportWord() {
+        if (!_importData) return;
+
+        const useTitulo = document.getElementById('import-opt-titulo').checked;
+        const useResumo = document.getElementById('import-opt-resumo').checked;
+        const useImagens = document.getElementById('import-opt-imagens').checked;
+        const append = document.getElementById('import-opt-append').checked;
+
+        let html = _importData.html;
+
+        // Remove imagens se não solicitado
+        if (!useImagens) {
+          html = html.replace(/<img[^>]*>/g, '');
+        }
+
+        // Preenche título
+        if (useTitulo && _importData.titulo) {
+          const tituloEl = document.getElementById('n-titulo');
+          if (!tituloEl.value.trim() || window.confirm('Substituir o título atual por "' + _importData.titulo.substring(0, 60) + '"?')) {
+            tituloEl.value = _importData.titulo;
+            if (typeof neTitleCounter === 'function') neTitleCounter(tituloEl);
+            if (typeof updatePreview === 'function') updatePreview();
+          }
+        }
+
+        // Preenche resumo
+        if (useResumo && _importData.resumo) {
+          const resumoEl = document.getElementById('n-resumo');
+          if (!resumoEl.value.trim()) {
+            resumoEl.value = _importData.resumo.substring(0, 300);
+            if (typeof updatePreview === 'function') updatePreview();
+          }
+        }
+
+        // Injeta no editor RTE
+        const rte = document.getElementById('n-rte-body');
+        if (append) {
+          rte.innerHTML += html;
+        } else {
+          rte.innerHTML = html;
+        }
+        if (typeof syncRteToHidden === 'function') syncRteToHidden();
+        if (typeof updateWordCount === 'function') updateWordCount();
+        if (typeof rteBindImgClicks === 'function') rteBindImgClicks('n');
+
+        // Slug automático
+        const slugEl = document.getElementById('n-slug');
+        if (slugEl && !slugEl.value.trim() && _importData.titulo) {
+          slugEl.value = slugify(_importData.titulo);
+          slugEl.dataset.autoSlug = 'true';
+        }
+
+        closeImportWordModal();
+        toast('✅ Documento importado com sucesso! Revise e salve.', 'success');
+        _importData = null;
+      }
+
+      function closeImportWordModal() {
+        const modal = document.getElementById('import-word-modal');
+        if (modal) modal.style.display = 'none';
+        _importData = null;
+        // Reset progress bar color
+        const bar = document.getElementById('import-word-bar');
+        if (bar) { bar.style.width = '0%'; bar.style.background = 'var(--accent)'; }
+        const status = document.getElementById('import-word-status');
+        if (status) { status.textContent = 'Processando…'; status.style.color = ''; }
+      }
+
+      window.importWordFile = importWordFile;
+      window.confirmImportWord = confirmImportWord;
+      window.closeImportWordModal = closeImportWordModal;
 
       window.exportNoticiaWord = exportNoticiaWord;
       window.exportNoticiaWordFromEditor = exportNoticiaWordFromEditor;
