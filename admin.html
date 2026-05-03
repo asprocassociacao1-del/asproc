@@ -2032,6 +2032,142 @@
       margin-bottom: .5rem;
     }
 
+    /* ── TÍTULO CHAR COUNTER ── */
+    .ne-title-wrap {
+      position: relative;
+    }
+
+    .ne-title-counter {
+      position: absolute;
+      right: .75rem;
+      bottom: .55rem;
+      font-size: .68rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      pointer-events: none;
+      transition: color var(--transition);
+    }
+
+    /* Give the title input extra right padding so text doesn't overlap counter */
+    .ne-title-wrap .ne-title-input {
+      padding-right: 4rem;
+    }
+
+    .ne-title-counter.warn {
+      color: var(--amber);
+    }
+
+    .ne-title-counter.over {
+      color: var(--red);
+    }
+
+    /* ── AUTO-SAVE INDICATOR ── */
+    #ne-autosave-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      font-size: .72rem;
+      color: var(--text-muted);
+      padding: .25rem .6rem;
+      border-radius: 99px;
+      border: 1px solid transparent;
+      transition: all .3s;
+    }
+
+    #ne-autosave-indicator.saving {
+      color: var(--accent);
+      border-color: rgba(59, 130, 246, .2);
+      background: var(--accent-soft);
+    }
+
+    #ne-autosave-indicator.saved {
+      color: var(--green);
+      border-color: rgba(16, 185, 129, .2);
+      background: var(--green-soft);
+    }
+
+    #ne-autosave-indicator.draft-exists {
+      color: var(--amber);
+      border-color: rgba(245, 158, 11, .2);
+      background: var(--amber-soft);
+      cursor: pointer;
+    }
+
+    /* ── VERSION HISTORY PANEL ── */
+    #ne-version-panel {
+      display: none;
+      position: fixed;
+      top: 60px;
+      right: 0;
+      width: 320px;
+      height: calc(100vh - 60px);
+      background: var(--bg2);
+      border-left: 1px solid var(--border);
+      z-index: 9990;
+      flex-direction: column;
+      box-shadow: -4px 0 24px rgba(0, 0, 0, .4);
+    }
+
+    #ne-version-panel.open {
+      display: flex;
+    }
+
+    .ne-version-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .ne-version-header h4 {
+      font-size: .88rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .ne-version-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: .75rem;
+    }
+
+    .ne-version-item {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: .85rem;
+      margin-bottom: .6rem;
+      cursor: pointer;
+      transition: border-color var(--transition);
+    }
+
+    .ne-version-item:hover {
+      border-color: var(--accent);
+    }
+
+    .ne-version-item .nvi-title {
+      font-size: .82rem;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: .3rem;
+    }
+
+    .ne-version-item .nvi-meta {
+      font-size: .7rem;
+      color: var(--text-muted);
+    }
+
+    .ne-version-item .nvi-actions {
+      display: flex;
+      gap: .4rem;
+      margin-top: .6rem;
+    }
+
     .ne-divider {
       height: 1px;
       background: var(--border);
@@ -2790,6 +2926,8 @@
     <div class="ne-topbar">
       <button class="btn btn-secondary btn-sm" onclick="closeNewsEditor()">← Voltar</button>
       <span class="ne-topbar-title" id="ne-topbar-title">Nova Notícia</span>
+      <span id="ne-autosave-indicator" title="Auto-save a cada 30s">💾 Rascunho</span>
+      <button class="btn btn-secondary btn-sm" onclick="neToggleVersionPanel()">🕐 Versões</button>
       <button class="btn btn-secondary btn-sm" onclick="previewNoticiaPage()">👁 Preview</button>
       <button class="btn btn-secondary btn-sm" onclick="downloadNoticiaPage()">⬇ Baixar</button>
       <button class="btn btn-amber btn-sm" id="btn-ai-format" onclick="aiAutoFormat()"
@@ -2802,8 +2940,11 @@
     <div class="ne-body">
       <!-- EDITOR PRINCIPAL -->
       <div class="ne-editor-panel">
-        <input class="ne-title-input" id="n-titulo" type="text" placeholder="Título da notícia…"
-          oninput="updatePreview()">
+        <div class="ne-title-wrap">
+          <input class="ne-title-input" id="n-titulo" type="text" placeholder="Título da notícia…" maxlength="120"
+            oninput="updatePreview(); neTitleCounter(this);">
+          <span class="ne-title-counter" id="ne-title-counter">0/100</span>
+        </div>
         <textarea class="ne-resumo-input" id="n-resumo" placeholder="Resumo (1–2 frases para os cards do site)…"
           oninput="updatePreview()" rows="2"></textarea>
 
@@ -3077,6 +3218,21 @@
             <option value="compact">Compacto (sem sidebar)</option>
           </select>
         </div>
+      </div>
+    </div>
+
+    <!-- VERSION HISTORY PANEL -->
+    <div id="ne-version-panel">
+      <div class="ne-version-header">
+        <h4>🕐 Histórico de Versões</h4>
+        <button class="btn btn-secondary btn-sm" onclick="neToggleVersionPanel()">✕ Fechar</button>
+      </div>
+      <div class="ne-version-list" id="ne-version-list">
+        <p style="font-size:.82rem;color:var(--text-muted);text-align:center;padding:2rem 0;">Carregando versões…</p>
+      </div>
+      <div style="padding:.75rem 1rem;border-top:1px solid var(--border);flex-shrink:0;">
+        <button class="btn btn-secondary btn-sm" style="width:100%;" onclick="neSaveVersion(true)">💾 Salvar versão
+          agora</button>
       </div>
     </div>
 
@@ -4424,6 +4580,7 @@
         document.getElementById('n-tags').value = n.tags || '';
         document.getElementById('n-related').value = n.related_slugs || '';
         updateImgPreview(); updatePreview();
+        neTitleCounter(document.getElementById('n-titulo'));
         if (n.url_externa) { document.getElementById('n-url').value = n.url_externa; setDeployStatus('✅', 'Já publicada no site', n.url_externa); }
         else { const ds = document.getElementById('ne-deploy-status'); if (ds) ds.style.display = 'none'; }
         openNewsEditor();
@@ -4440,6 +4597,10 @@
             const isEdit = !!editingId.noticias;
             if (isEdit) { await sbUpdate('noticias', editingId.noticias, dbPayload); }
             else { await sbInsert('noticias', dbPayload); }
+            // Limpa rascunho local
+            neClearDraft();
+            // Salva versão no Supabase (silencioso)
+            await neSaveVersion(false);
             toast(isEdit ? '✅ Notícia atualizada!' : '✅ Notícia salva!', 'success');
             closeNewsEditor(); loadNoticias(); loadDashboard();
           } catch (e) { toast('❌ Erro ao salvar: ' + e.message, 'error'); }
@@ -5701,6 +5862,8 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         const remBtn = document.getElementById('btn-remover-img'); if (remBtn) remBtn.style.display = 'none';
         const ds = document.getElementById('ne-deploy-status');
         if (ds) ds.style.display = 'none';
+        // Reset char counter
+        neTitleCounter(document.getElementById('n-titulo'));
         updatePreview();
         openNewsEditor();
       }
@@ -5711,6 +5874,8 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         setTimeout(() => {
           document.getElementById('n-titulo').focus();
           rteSetupSelectionTracking();
+          neStartAutoSave();
+          neCheckDraftOnOpen();
         }, 100);
       }
 
@@ -5718,6 +5883,291 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         document.getElementById('news-editor-overlay').style.display = 'none';
         document.body.style.overflow = '';
         editingId.noticias = null;
+        // Para o auto-save ao fechar
+        neStopAutoSave();
+        // Fecha painel de versões
+        document.getElementById('ne-version-panel').classList.remove('open');
+      }
+
+      /* ══════════════════════════════════════════
+         CONTAGEM DE CARACTERES NO TÍTULO
+      ══════════════════════════════════════════ */
+      const NE_TITLE_LIMIT = 100;
+
+      function neTitleCounter(input) {
+        const len = (input.value || '').length;
+        const counter = document.getElementById('ne-title-counter');
+        if (!counter) return;
+        counter.textContent = `${len}/${NE_TITLE_LIMIT}`;
+        counter.className = 'ne-title-counter';
+        if (len > NE_TITLE_LIMIT) counter.classList.add('over');
+        else if (len > NE_TITLE_LIMIT * 0.85) counter.classList.add('warn');
+      }
+
+      /* ══════════════════════════════════════════
+         AUTO-SAVE DE RASCUNHO (localStorage, 30s)
+      ══════════════════════════════════════════ */
+      const NE_DRAFT_KEY = 'asproc_ne_draft';
+      let _neAutoSaveTimer = null;
+
+      function neGetDraftKey() {
+        // Rascunho diferente por notícia (nova vs edição existente)
+        return editingId.noticias ? `${NE_DRAFT_KEY}_${editingId.noticias}` : `${NE_DRAFT_KEY}_new`;
+      }
+
+      function neCollectDraft() {
+        syncRteToHidden();
+        return {
+          titulo: document.getElementById('n-titulo').value,
+          resumo: document.getElementById('n-resumo').value,
+          conteudo: document.getElementById('n-conteudo').value,
+          categoria: document.getElementById('n-categoria').value,
+          data_pub: document.getElementById('n-data').value,
+          imagem_url: document.getElementById('n-imagem').value,
+          autor: document.getElementById('n-autor').value,
+          tags: document.getElementById('n-tags').value,
+          slug: document.getElementById('n-slug').value,
+          related_slugs: document.getElementById('n-related').value,
+          destaque: document.getElementById('n-destaque').checked,
+          publicado: document.getElementById('n-publicado').checked,
+          _savedAt: new Date().toISOString(),
+          _editingId: editingId.noticias || null,
+        };
+      }
+
+      function neAutoSaveNow(silent) {
+        try {
+          const draft = neCollectDraft();
+          if (!draft.titulo && !draft.conteudo) return; // Não salva rascunho vazio
+          localStorage.setItem(neGetDraftKey(), JSON.stringify(draft));
+          if (!silent) neShowAutoSaveState('saved');
+        } catch (e) {
+          console.warn('Auto-save falhou:', e);
+        }
+      }
+
+      function neShowAutoSaveState(state) {
+        const el = document.getElementById('ne-autosave-indicator');
+        if (!el) return;
+        el.className = 'ne-autosave-indicator';
+        if (state === 'saving') {
+          el.id = 'ne-autosave-indicator';
+          el.className = '';
+          el.setAttribute('id', 'ne-autosave-indicator');
+          el.textContent = '⏳ Salvando…';
+          el.style.cssText = 'display:inline-flex;align-items:center;gap:.35rem;font-size:.72rem;font-weight:600;color:var(--accent);padding:.25rem .6rem;border-radius:99px;border:1px solid rgba(59,130,246,.2);background:var(--accent-soft);transition:all .3s;';
+        } else if (state === 'saved') {
+          const now = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+          el.textContent = `✅ Rascunho salvo às ${now}`;
+          el.style.cssText = 'display:inline-flex;align-items:center;gap:.35rem;font-size:.72rem;font-weight:600;color:var(--green);padding:.25rem .6rem;border-radius:99px;border:1px solid rgba(16,185,129,.2);background:var(--green-soft);transition:all .3s;';
+          setTimeout(() => {
+            el.textContent = '💾 Auto-save ativo';
+            el.style.cssText = 'display:inline-flex;align-items:center;gap:.35rem;font-size:.72rem;color:var(--text-muted);padding:.25rem .6rem;border-radius:99px;border:1px solid transparent;transition:all .3s;';
+          }, 3000);
+        } else {
+          el.textContent = '💾 Auto-save ativo';
+          el.style.cssText = 'display:inline-flex;align-items:center;gap:.35rem;font-size:.72rem;color:var(--text-muted);padding:.25rem .6rem;border-radius:99px;border:1px solid transparent;transition:all .3s;';
+        }
+      }
+
+      function neStartAutoSave() {
+        neStopAutoSave();
+        _neAutoSaveTimer = setInterval(() => {
+          neShowAutoSaveState('saving');
+          setTimeout(() => neAutoSaveNow(false), 300);
+        }, 30000);
+        neShowAutoSaveState('idle');
+      }
+
+      function neStopAutoSave() {
+        if (_neAutoSaveTimer) { clearInterval(_neAutoSaveTimer); _neAutoSaveTimer = null; }
+      }
+
+      function neCheckDraftOnOpen() {
+        const key = neGetDraftKey();
+        const raw = localStorage.getItem(key);
+        if (!raw) return;
+        try {
+          const draft = JSON.parse(raw);
+          if (!draft.titulo && !draft.conteudo) return;
+          const savedAt = draft._savedAt ? new Date(draft._savedAt).toLocaleString('pt-BR') : '?';
+          const el = document.getElementById('ne-autosave-indicator');
+          if (el) {
+            el.textContent = `⚠️ Rascunho de ${savedAt} — clique para restaurar`;
+            el.style.cssText = 'display:inline-flex;align-items:center;gap:.35rem;font-size:.72rem;font-weight:600;color:var(--amber);padding:.25rem .6rem;border-radius:99px;border:1px solid rgba(245,158,11,.2);background:var(--amber-soft);cursor:pointer;transition:all .3s;';
+            el.onclick = () => neRestoreDraft(draft);
+          }
+        } catch (e) { /* rascunho inválido */ }
+      }
+
+      function neRestoreDraft(draft) {
+        document.getElementById('n-titulo').value = draft.titulo || '';
+        document.getElementById('n-resumo').value = draft.resumo || '';
+        document.getElementById('n-conteudo').value = draft.conteudo || '';
+        document.getElementById('n-rte-body').innerHTML = draft.conteudo || '';
+        document.getElementById('n-categoria').value = draft.categoria || 'geral';
+        document.getElementById('n-data').value = draft.data_pub || '';
+        document.getElementById('n-imagem').value = draft.imagem_url || '';
+        document.getElementById('n-autor').value = draft.autor || '';
+        document.getElementById('n-tags').value = draft.tags || '';
+        document.getElementById('n-slug').value = draft.slug || '';
+        document.getElementById('n-related').value = draft.related_slugs || '';
+        document.getElementById('n-destaque').checked = !!draft.destaque;
+        document.getElementById('n-publicado').checked = draft.publicado !== false;
+        updateImgPreview(); updatePreview(); updateWordCount();
+        neTitleCounter(document.getElementById('n-titulo'));
+        // Remove aviso de rascunho e reseta o onclick
+        const el = document.getElementById('ne-autosave-indicator');
+        if (el) { el.onclick = null; neShowAutoSaveState('idle'); }
+        toast('✅ Rascunho restaurado!', 'success');
+      }
+
+      function neClearDraft() {
+        try { localStorage.removeItem(neGetDraftKey()); } catch (e) { }
+      }
+
+      /* ══════════════════════════════════════════
+         HISTÓRICO DE VERSÕES (Supabase)
+      ══════════════════════════════════════════ */
+      const NE_VERSION_MAX = 3; // máximo de versões por notícia
+
+      async function neSaveVersion(manual) {
+        if (!editingId.noticias) {
+          if (manual) toast('Salve a notícia primeiro para criar versões.', 'info');
+          return;
+        }
+        try {
+          syncRteToHidden();
+          const snapshot = {
+            noticia_id: editingId.noticias,
+            titulo: document.getElementById('n-titulo').value,
+            resumo: document.getElementById('n-resumo').value,
+            conteudo: document.getElementById('n-conteudo').value,
+            saved_at: new Date().toISOString(),
+            saved_by: currentUser?.email || 'admin',
+          };
+
+          // Insere nova versão
+          try {
+            await sbInsert('noticia_versoes', snapshot);
+          } catch (e) {
+            // Tabela pode não existir — falha silenciosa exceto em salvamento manual
+            if (manual) toast('⚠️ Tabela noticia_versoes não encontrada. Execute o SQL de criação.', 'error');
+            return;
+          }
+
+          // Mantém só as últimas 3 versões: busca e apaga as antigas
+          try {
+            const all = await sbSelect('noticia_versoes',
+              `select=id,saved_at&noticia_id=eq.${editingId.noticias}&order=saved_at.desc`);
+            if (Array.isArray(all) && all.length > NE_VERSION_MAX) {
+              const toDelete = all.slice(NE_VERSION_MAX);
+              for (const v of toDelete) {
+                await sbFetch('noticia_versoes', `id=eq.${v.id}`, { method: 'DELETE' }).catch(() => { });
+              }
+            }
+          } catch (e) { /* Ignora erros de limpeza */ }
+
+          if (manual) {
+            toast('✅ Versão salva!', 'success');
+            neLoadVersions();
+          }
+        } catch (e) {
+          if (manual) toast('❌ Erro ao salvar versão: ' + e.message, 'error');
+        }
+      }
+
+      async function neLoadVersions() {
+        const list = document.getElementById('ne-version-list');
+        if (!list) return;
+        list.innerHTML = '<p style="font-size:.82rem;color:var(--text-muted);text-align:center;padding:2rem 0;">Carregando…</p>';
+
+        if (!editingId.noticias) {
+          list.innerHTML = '<p style="font-size:.82rem;color:var(--text-muted);text-align:center;padding:2rem 0;">Salve a notícia primeiro para ver versões.</p>';
+          return;
+        }
+
+        try {
+          const versions = await sbSelect('noticia_versoes',
+            `select=*&noticia_id=eq.${editingId.noticias}&order=saved_at.desc&limit=10`);
+
+          if (!versions || !versions.length) {
+            list.innerHTML = '<p style="font-size:.82rem;color:var(--text-muted);text-align:center;padding:2rem 0;">Nenhuma versão salva ainda.</p>';
+            return;
+          }
+
+          list.innerHTML = versions.map((v, i) => {
+            const date = new Date(v.saved_at).toLocaleString('pt-BR');
+            const label = i === 0 ? ' <span style="color:var(--green);font-size:.68rem;">(mais recente)</span>' : '';
+            const words = v.conteudo ? v.conteudo.replace(/<[^>]*>/g, '').trim().split(/\s+/).filter(w => w).length : 0;
+            return `
+              <div class="ne-version-item">
+                <div class="nvi-title">${escHtml(v.titulo || '(sem título)')}${label}</div>
+                <div class="nvi-meta">📅 ${date} · ${words} palavras · ${escHtml(v.saved_by || 'admin')}</div>
+                <div class="nvi-actions">
+                  <button class="btn btn-secondary btn-xs" onclick="neRestoreVersion(${JSON.stringify(JSON.stringify(v))})">↩ Restaurar</button>
+                  <button class="btn btn-secondary btn-xs" onclick="nePreviewVersion(${JSON.stringify(JSON.stringify(v))})">👁 Ver</button>
+                </div>
+              </div>`;
+          }).join('');
+        } catch (e) {
+          list.innerHTML = `<p style="font-size:.82rem;color:var(--red);text-align:center;padding:2rem 0;">⚠️ ${escHtml(e.message)}<br><small style="color:var(--text-muted);">Execute o SQL abaixo para criar a tabela.</small></p>
+          <pre style="margin:.75rem;padding:.75rem;background:var(--bg3);border-radius:6px;font-size:.7rem;color:var(--text-muted);overflow-x:auto;white-space:pre-wrap;">CREATE TABLE IF NOT EXISTS noticia_versoes (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  noticia_id uuid REFERENCES noticias(id) ON DELETE CASCADE,
+  titulo text,
+  resumo text,
+  conteudo text,
+  saved_at timestamptz DEFAULT now(),
+  saved_by text
+);
+ALTER TABLE noticia_versoes ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "admin_versoes" ON noticia_versoes FOR ALL TO authenticated USING (true);</pre>`;
+        }
+      }
+
+      function neToggleVersionPanel() {
+        const panel = document.getElementById('ne-version-panel');
+        const isOpen = panel.classList.toggle('open');
+        if (isOpen) neLoadVersions();
+      }
+
+      function neRestoreVersion(jsonStr) {
+        try {
+          const v = JSON.parse(jsonStr);
+          const confirmed = window.confirm(`Restaurar versão de ${new Date(v.saved_at).toLocaleString('pt-BR')}?\nO conteúdo atual do editor será substituído.`);
+          if (!confirmed) return;
+          document.getElementById('n-titulo').value = v.titulo || '';
+          document.getElementById('n-resumo').value = v.resumo || '';
+          document.getElementById('n-conteudo').value = v.conteudo || '';
+          document.getElementById('n-rte-body').innerHTML = v.conteudo || '';
+          updatePreview(); updateWordCount();
+          neTitleCounter(document.getElementById('n-titulo'));
+          toast('↩ Versão restaurada no editor. Salve para confirmar.', 'success');
+          neToggleVersionPanel();
+        } catch (e) { toast('Erro ao restaurar versão.', 'error'); }
+      }
+
+      function nePreviewVersion(jsonStr) {
+        try {
+          const v = JSON.parse(jsonStr);
+          const tempData = {
+            titulo: v.titulo,
+            resumo: v.resumo,
+            conteudo: v.conteudo,
+            categoria: document.getElementById('n-categoria').value,
+            data_pub: document.getElementById('n-data').value,
+            imagem_url: document.getElementById('n-imagem').value,
+            _autor: document.getElementById('n-autor').value,
+            _tags: document.getElementById('n-tags').value,
+            _related: document.getElementById('n-related').value,
+            _slug: document.getElementById('n-slug').value,
+          };
+          const html = buildNoticiaPageHTML(tempData);
+          const win = window.open('', '_blank');
+          win.document.write(html);
+          win.document.close();
+        } catch (e) { toast('Erro ao gerar preview.', 'error'); }
       }
 
       function slugify(str) {
@@ -8737,6 +9187,11 @@ document.addEventListener('DOMContentLoaded',function(){
       window.closeNewsEditor = closeNewsEditor;
       window.saveNoticia = saveNoticia;
       window.editNoticia = editNoticia;
+      window.neTitleCounter = neTitleCounter;
+      window.neToggleVersionPanel = neToggleVersionPanel;
+      window.neRestoreVersion = neRestoreVersion;
+      window.nePreviewVersion = nePreviewVersion;
+      window.neSaveVersion = neSaveVersion;
       window.saveVaga = saveVaga;
       window.closeVagaEditor = closeVagaEditor;
       window.openVagaEditorNew = openVagaEditorNew;
