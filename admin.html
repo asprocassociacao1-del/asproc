@@ -5876,7 +5876,10 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
           rteSetupSelectionTracking();
           neStartAutoSave();
           neCheckDraftOnOpen();
-        }, 100);
+          // Dispara contadores uma vez após o editor estar visível
+          updateWordCount();
+          neTitleCounter(document.getElementById('n-titulo'));
+        }, 120);
       }
 
       function closeNewsEditor() {
@@ -6190,8 +6193,11 @@ CREATE POLICY "admin_versoes" ON noticia_versoes FOR ALL TO authenticated USING 
         const body = document.getElementById('n-rte-body');
         const counter = document.getElementById('rte-word-count');
         if (!body || !counter) return;
-        const text = body.innerText || '';
-        const chars = text.replace(/\n/g, '').length;
+        // innerText falha quando elemento não tem layout ainda — usa textContent como fallback
+        const text = (body.innerText !== undefined && body.innerText !== '')
+          ? body.innerText
+          : body.textContent || '';
+        const chars = text.replace(/[\n\r]/g, '').length;
         const words = text.trim() ? text.trim().split(/\s+/).filter(w => w.length > 0).length : 0;
         const readMin = Math.ceil(words / 200);
         counter.textContent = `${words.toLocaleString('pt-BR')} palavras · ${chars.toLocaleString('pt-BR')} caracteres${readMin > 0 ? ' · ~' + readMin + ' min de leitura' : ''}`;
@@ -9192,6 +9198,7 @@ document.addEventListener('DOMContentLoaded',function(){
       window.neRestoreVersion = neRestoreVersion;
       window.nePreviewVersion = nePreviewVersion;
       window.neSaveVersion = neSaveVersion;
+      window.updateWordCount = updateWordCount;
       window.saveVaga = saveVaga;
       window.closeVagaEditor = closeVagaEditor;
       window.openVagaEditorNew = openVagaEditorNew;
