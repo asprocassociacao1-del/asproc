@@ -1,383 +1,1839 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
 
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: var(--font-sans); background: var(--color-background-tertiary); }
-  .page { padding: 2rem; max-width: 1200px; margin: 0 auto; }
-  .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; }
-  .header-left h1 { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
-  .header-left p { font-size: 13px; color: var(--color-text-secondary); margin-top: 4px; }
-  .badge { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; display: inline-flex; align-items: center; gap: 5px; }
-  .badge-success { background: var(--color-background-success); color: var(--color-text-success); }
-  .badge-warning { background: var(--color-background-warning); color: var(--color-text-warning); }
-  .badge-danger { background: var(--color-background-danger); color: var(--color-text-danger); }
-  .badge-info { background: var(--color-background-info); color: var(--color-text-info); }
-  .badge-neutral { background: var(--color-background-secondary); color: var(--color-text-secondary); border: 0.5px solid var(--color-border-tertiary); }
-  .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
-  .dot-green { background: #1D9E75; }
-  .dot-amber { background: #BA7517; }
-  .dot-red { background: #E24B4A; }
-  .dot-blue { background: #378ADD; }
-  .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 1.5rem; }
-  .metric { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 1rem; }
-  .metric-label { font-size: 11px; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
-  .metric-value { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
-  .metric-sub { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; }
-  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
-  .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem; }
-  .card-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
-  .icon { width: 16px; height: 16px; flex-shrink: 0; }
-  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: transparent; color: var(--color-text-primary); font-size: 13px; cursor: pointer; font-family: var(--font-sans); transition: background 0.15s; }
-  .btn:hover { background: var(--color-background-secondary); }
-  .btn:active { transform: scale(0.98); }
-  .btn-primary { background: var(--color-text-primary); color: var(--color-background-primary); border-color: var(--color-text-primary); }
-  .btn-primary:hover { opacity: 0.85; background: var(--color-text-primary); }
-  .btn-danger { border-color: var(--color-border-danger); color: var(--color-text-danger); }
-  .btn-danger:hover { background: var(--color-background-danger); }
-  .btn-sm { padding: 4px 10px; font-size: 12px; }
-  .schedule-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
-  .schedule-row:last-child { border-bottom: none; padding-bottom: 0; }
-  .schedule-label { font-size: 13px; color: var(--color-text-secondary); }
-  .schedule-val { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
-  .backup-list { display: flex; flex-direction: column; gap: 6px; }
-  .backup-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-tertiary); background: var(--color-background-secondary); font-size: 12px; }
-  .backup-item.current { border-color: #1D9E75; background: #E1F5EE; }
-  .backup-item.current .backup-date { color: #085041; }
-  .backup-num { width: 22px; height: 22px; border-radius: 50%; background: var(--color-background-primary); border: 0.5px solid var(--color-border-secondary); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 500; color: var(--color-text-secondary); flex-shrink: 0; }
-  .backup-date { font-weight: 500; color: var(--color-text-primary); flex: 1; }
-  .backup-size { color: var(--color-text-secondary); min-width: 52px; text-align: right; }
-  .backup-actions { display: flex; gap: 4px; }
-  .scope-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-  .scope-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-tertiary); font-size: 12px; color: var(--color-text-primary); background: var(--color-background-secondary); }
-  .scope-check { width: 14px; height: 14px; border-radius: 3px; background: #1D9E75; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .log-table-wrap { overflow-x: auto; }
-  .log-table { width: 100%; font-size: 12px; border-collapse: collapse; }
-  .log-table th { font-size: 10px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.04em; padding: 6px 8px; border-bottom: 0.5px solid var(--color-border-tertiary); text-align: left; white-space: nowrap; }
-  .log-table td { padding: 8px 8px; border-bottom: 0.5px solid var(--color-border-tertiary); color: var(--color-text-primary); vertical-align: middle; white-space: nowrap; }
-  .log-table tr:last-child td { border-bottom: none; }
-  .log-table tr:hover td { background: var(--color-background-secondary); }
-  .log-type { font-family: var(--font-mono); font-size: 11px; }
-  .progress-bar { height: 4px; background: var(--color-border-tertiary); border-radius: 2px; overflow: hidden; margin-top: 8px; }
-  .progress-fill { height: 100%; border-radius: 2px; background: #1D9E75; transition: width 0.3s; }
-  .cycle-vis { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
-  .cycle-day { width: 28px; height: 28px; border-radius: var(--border-radius-md); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 500; border: 0.5px solid var(--color-border-tertiary); }
-  .cycle-day.done { background: #E1F5EE; color: #085041; border-color: #9FE1CB; }
-  .cycle-day.current { background: #1D9E75; color: #fff; border-color: #1D9E75; }
-  .cycle-day.pending { background: var(--color-background-secondary); color: var(--color-text-secondary); }
-  .cycle-day.purge { background: #FAECE7; color: #993C1D; border-color: #F5C4B3; }
-  .sep { width: 8px; height: 1px; background: var(--color-border-secondary); }
-  .full-card { margin-bottom: 1rem; }
-  .filter-row { display: flex; align-items: center; gap: 8px; margin-bottom: 1rem; flex-wrap: wrap; }
-  select { padding: 6px 10px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); color: var(--color-text-primary); font-size: 12px; font-family: var(--font-sans); }
-  input[type="text"] { padding: 6px 10px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); color: var(--color-text-primary); font-size: 12px; font-family: var(--font-sans); width: 200px; }
-  .restore-modal { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem; margin-top: 1rem; }
-  .restore-steps { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
-  .restore-step { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: var(--border-radius-md); background: var(--color-background-secondary); font-size: 12px; }
-  .step-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 500; flex-shrink: 0; }
-  .step-pending { background: var(--color-background-primary); border: 0.5px solid var(--color-border-secondary); color: var(--color-text-secondary); }
-  .step-done { background: #E1F5EE; color: #085041; }
-  .section-title { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-secondary); margin-bottom: 10px; }
-</style>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Backup & Restauração · ASPROC Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Inter:wght@400;500&display=swap"
+    rel="stylesheet" />
+  <style>
+    /* ── RESET ─────────────────────────────────────────────── */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
 
-<div class="page">
+    html {
+      font-size: 16px
+    }
 
-  <div class="header">
-    <div class="header-left">
-      <h1>Backup & Restauração</h1>
-      <p>Gerenciamento automático de backups do banco de dados · Supabase</p>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f0ede6;
+      color: #1a1a18;
+      min-height: 100vh
+    }
+
+    /* ── TOKENS ASPROC ─────────────────────────────────────── */
+    :root {
+      --verde: #1a6644;
+      --verde-meio: #2d8a5e;
+      --verde-claro: #e6f4ee;
+      --verde-borda: #9fd4bc;
+      --terra: #5c3d1e;
+      --terra-claro: #f5ede0;
+      --rio: #1e5c8a;
+      --rio-claro: #e0eef8;
+      --areia: #f5f0e8;
+      --areia-borda: #d9d0be;
+      --laranja: #c4611a;
+      --laranja-claro: #faeade;
+      --vermelho: #9b2a2a;
+      --vermelho-claro: #f8e6e6;
+      --amarelo: #b87c0a;
+      --amarelo-claro: #fdf3d7;
+      --fundo: #f0ede6;
+      --card: #ffffff;
+      --texto: #1a1a18;
+      --texto-suave: #5a5a52;
+      --borda: #d9d0be;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --shadow: 0 1px 4px rgba(26, 26, 24, .08);
+      --shadow-md: 0 4px 16px rgba(26, 26, 24, .12);
+    }
+
+    /* ── LAYOUT ─────────────────────────────────────────────── */
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem
+    }
+
+    /* ── TOPO ───────────────────────────────────────────────── */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--verde);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow-md);
+    }
+
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .topbar-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--verde);
+      flex-shrink: 0;
+    }
+
+    .topbar-title {
+      font-family: 'Sora', sans-serif;
+      font-weight: 600;
+      font-size: 16px;
+      color: #fff
+    }
+
+    .topbar-sub {
+      font-size: 11px;
+      color: rgba(255, 255, 255, .65);
+      margin-top: 2px
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, .15);
+      border: 1px solid rgba(255, 255, 255, .25);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    .pulse {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #6ee7b7;
+      animation: pulse 2s infinite
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1
+      }
+
+      50% {
+        opacity: .4
+      }
+    }
+
+    /* ── BOTÕES ─────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      border: none;
+      transition: all .15s;
+      white-space: nowrap;
+    }
+
+    .btn:active {
+      transform: scale(.97)
+    }
+
+    .btn:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+      transform: none
+    }
+
+    .btn-verde {
+      background: var(--verde);
+      color: #fff
+    }
+
+    .btn-verde:hover:not(:disabled) {
+      background: var(--verde-meio)
+    }
+
+    .btn-verde-outline {
+      background: transparent;
+      color: var(--verde);
+      border: 1.5px solid var(--verde)
+    }
+
+    .btn-verde-outline:hover:not(:disabled) {
+      background: var(--verde-claro)
+    }
+
+    .btn-branco {
+      background: #fff;
+      color: var(--verde);
+      border: 1px solid rgba(255, 255, 255, .3)
+    }
+
+    .btn-branco:hover {
+      background: rgba(255, 255, 255, .9)
+    }
+
+    .btn-danger {
+      background: var(--vermelho-claro);
+      color: var(--vermelho);
+      border: 1px solid #e8b4b4
+    }
+
+    .btn-danger:hover:not(:disabled) {
+      background: #f0c8c8
+    }
+
+    .btn-terra {
+      background: var(--terra-claro);
+      color: var(--terra);
+      border: 1px solid #d4b99a
+    }
+
+    .btn-terra:hover {
+      background: #eedece
+    }
+
+    .btn-sm {
+      padding: 5px 12px;
+      font-size: 12px
+    }
+
+    .btn-xs {
+      padding: 3px 8px;
+      font-size: 11px;
+      border-radius: var(--radius-sm)
+    }
+
+    /* ── CARDS ──────────────────────────────────────────────── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--borda);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      box-shadow: var(--shadow);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      padding-bottom: .75rem;
+      border-bottom: 1px solid var(--borda);
+    }
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Sora', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--texto);
+    }
+
+    .card-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-sm);
+      background: var(--verde-claro);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-icon svg {
+      width: 14px;
+      height: 14px;
+      stroke: var(--verde);
+      fill: none;
+      stroke-width: 2
+    }
+
+    /* ── MÉTRICAS ───────────────────────────────────────────── */
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 1.25rem
+    }
+
+    .metric {
+      background: var(--card);
+      border: 1px solid var(--borda);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--verde);
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+    }
+
+    .metric.warn::before {
+      background: var(--amarelo)
+    }
+
+    .metric.danger::before {
+      background: var(--vermelho)
+    }
+
+    .metric.info::before {
+      background: var(--rio)
+    }
+
+    .metric-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--texto-suave);
+      margin-bottom: 6px;
+      font-weight: 500
+    }
+
+    .metric-value {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 24px;
+      color: var(--texto);
+      line-height: 1
+    }
+
+    .metric-sub {
+      font-size: 11px;
+      color: var(--texto-suave);
+      margin-top: 4px
+    }
+
+    /* ── GRID 2 ─────────────────────────────────────────────── */
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem
+    }
+
+    @media(max-width:700px) {
+      .grid2 {
+        grid-template-columns: 1fr
+      }
+    }
+
+    /* ── CICLO VISUAL ───────────────────────────────────────── */
+    .cycle-wrap {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin: 12px 0
+    }
+
+    .cday {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 600;
+      border: 1.5px solid transparent;
+      transition: all .2s;
+      cursor: default;
+    }
+
+    .cday.done {
+      background: var(--verde-claro);
+      color: var(--verde);
+      border-color: var(--verde-borda)
+    }
+
+    .cday.current {
+      background: var(--verde);
+      color: #fff;
+      border-color: var(--verde);
+      box-shadow: 0 0 0 3px rgba(26, 102, 68, .2)
+    }
+
+    .cday.pending {
+      background: var(--areia);
+      color: var(--texto-suave);
+      border-color: var(--areia-borda)
+    }
+
+    .cday.purge {
+      background: var(--vermelho-claro);
+      color: var(--vermelho);
+      border-color: #e8b4b4
+    }
+
+    .cycle-sep {
+      width: 16px;
+      height: 2px;
+      background: var(--borda);
+      border-radius: 1px
+    }
+
+    .cycle-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px
+    }
+
+    .leg {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      color: var(--texto-suave)
+    }
+
+    .leg-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px
+    }
+
+    /* ── PROGRESSO ──────────────────────────────────────────── */
+    .prog-bar {
+      height: 6px;
+      background: var(--areia);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 10px
+    }
+
+    .prog-fill {
+      height: 100%;
+      border-radius: 3px;
+      background: var(--verde);
+      transition: width .4s
+    }
+
+    /* ── ESCOPO GRID ────────────────────────────────────────── */
+    .scope-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px
+    }
+
+    .scope-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 7px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--verde-borda);
+      background: var(--verde-claro);
+      font-size: 12px;
+      color: var(--verde);
+      font-weight: 500;
+    }
+
+    .scope-check {
+      width: 15px;
+      height: 15px;
+      border-radius: 3px;
+      background: var(--verde);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .scope-check svg {
+      width: 9px;
+      height: 9px;
+      stroke: #fff;
+      fill: none;
+      stroke-width: 2.5
+    }
+
+    /* ── BACKUP LIST ────────────────────────────────────────── */
+    .bk-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px
+    }
+
+    .bk-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 14px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--borda);
+      background: var(--areia);
+      font-size: 12px;
+      transition: border-color .15s;
+    }
+
+    .bk-item:hover {
+      border-color: var(--verde-borda)
+    }
+
+    .bk-item.current {
+      border-color: var(--verde);
+      background: var(--verde-claro)
+    }
+
+    .bk-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--card);
+      border: 1.5px solid var(--borda);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--texto-suave);
+      flex-shrink: 0;
+    }
+
+    .bk-item.current .bk-num {
+      background: var(--verde);
+      border-color: var(--verde);
+      color: #fff
+    }
+
+    .bk-date {
+      flex: 1;
+      font-weight: 500;
+      color: var(--texto)
+    }
+
+    .bk-meta {
+      color: var(--texto-suave);
+      font-size: 11px;
+      min-width: 110px;
+      text-align: right
+    }
+
+    .bk-actions {
+      display: flex;
+      gap: 4px
+    }
+
+    .tag-current {
+      font-size: 10px;
+      font-weight: 600;
+      background: var(--verde);
+      color: #fff;
+      padding: 2px 8px;
+      border-radius: 12px;
+      margin-left: 6px;
+    }
+
+    .tag-spin {
+      animation: spin .8s linear infinite;
+      display: inline-block
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    /* ── BADGES ─────────────────────────────────────────────── */
+    .badge {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .03em;
+      padding: 3px 8px;
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+
+    .b-verde {
+      background: var(--verde-claro);
+      color: var(--verde)
+    }
+
+    .b-azul {
+      background: var(--rio-claro);
+      color: var(--rio)
+    }
+
+    .b-laranja {
+      background: var(--laranja-claro);
+      color: var(--laranja)
+    }
+
+    .b-vermelho {
+      background: var(--vermelho-claro);
+      color: var(--vermelho)
+    }
+
+    .b-cinza {
+      background: #ece9e0;
+      color: #5a5a52
+    }
+
+    .b-amarelo {
+      background: var(--amarelo-claro);
+      color: var(--amarelo)
+    }
+
+    /* ── LOG TABLE ──────────────────────────────────────────── */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 1rem;
+      align-items: center
+    }
+
+    .filter-bar select,
+    .filter-bar input {
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--borda);
+      background: #fff;
+      color: var(--texto);
+      font-size: 12px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+    }
+
+    .filter-bar select:focus,
+    .filter-bar input:focus {
+      border-color: var(--verde)
+    }
+
+    .filter-bar input {
+      width: 200px
+    }
+
+    .log-wrap {
+      overflow-x: auto;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--borda)
+    }
+
+    .log-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px
+    }
+
+    .log-table th {
+      background: var(--areia);
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--texto-suave);
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--borda);
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .log-table td {
+      padding: 9px 10px;
+      border-bottom: 1px solid #ede9df;
+      color: var(--texto);
+      vertical-align: middle;
+      white-space: nowrap
+    }
+
+    .log-table tr:last-child td {
+      border-bottom: none
+    }
+
+    .log-table tr:hover td {
+      background: #faf8f2
+    }
+
+    .log-mono {
+      font-family: monospace;
+      font-size: 11px;
+      color: var(--texto-suave)
+    }
+
+    .log-msg {
+      max-width: 240px;
+      white-space: normal;
+      color: var(--texto-suave);
+      font-size: 11px
+    }
+
+    /* ── RESTAURAÇÃO ────────────────────────────────────────── */
+    .restore-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin: 12px 0
+    }
+
+    .r-step {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      background: var(--areia);
+      border: 1px solid var(--borda);
+      font-size: 12px;
+      transition: background .2s;
+    }
+
+    .r-step.active {
+      background: var(--verde-claro);
+      border-color: var(--verde-borda)
+    }
+
+    .r-step.done-step {
+      background: #e8f5ee;
+      border-color: #9fd4bc
+    }
+
+    .r-step.error-step {
+      background: var(--vermelho-claro);
+      border-color: #e8b4b4
+    }
+
+    .step-num {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      background: #fff;
+      border: 2px solid var(--borda);
+      color: var(--texto-suave);
+    }
+
+    .step-num.ok {
+      background: var(--verde);
+      border-color: var(--verde);
+      color: #fff
+    }
+
+    .step-num.running {
+      background: var(--amarelo-claro);
+      border-color: var(--amarelo);
+      color: var(--amarelo)
+    }
+
+    .step-num.err {
+      background: var(--vermelho-claro);
+      border-color: var(--vermelho);
+      color: var(--vermelho)
+    }
+
+    .step-label {
+      font-weight: 600;
+      color: var(--texto)
+    }
+
+    .step-desc {
+      color: var(--texto-suave);
+      font-size: 11px
+    }
+
+    /* ── ALERTA ─────────────────────────────────────────────── */
+    .alerta {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      margin-bottom: 1rem;
+      animation: fadeIn .3s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-4px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    .alerta.ok {
+      background: var(--verde-claro);
+      border: 1px solid var(--verde-borda);
+      color: var(--verde)
+    }
+
+    .alerta.erro {
+      background: var(--vermelho-claro);
+      border: 1px solid #e8b4b4;
+      color: var(--vermelho)
+    }
+
+    .alerta.warn {
+      background: var(--amarelo-claro);
+      border: 1px solid #f0d080;
+      color: var(--amarelo)
+    }
+
+    .alerta-close {
+      margin-left: auto;
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1;
+      opacity: .6
+    }
+
+    .alerta-close:hover {
+      opacity: 1
+    }
+
+    /* ── SELECT TABELAS ─────────────────────────────────────── */
+    .tabela-check-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+      margin: 8px 0
+    }
+
+    .t-check {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--borda);
+      background: #fff;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background .15s;
+    }
+
+    .t-check:hover {
+      background: var(--verde-claro)
+    }
+
+    .t-check input[type=checkbox] {
+      accent-color: var(--verde)
+    }
+
+    /* ── MODAL OVERLAY ──────────────────────────────────────── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(26, 26, 24, .5);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.open {
+      display: flex
+    }
+
+    .modal {
+      background: #fff;
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      max-width: 520px;
+      width: 90%;
+      box-shadow: var(--shadow-md);
+      animation: slideUp .25s ease;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    .modal-title {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--texto);
+      margin-bottom: 4px;
+    }
+
+    .modal-sub {
+      font-size: 12px;
+      color: var(--texto-suave);
+      margin-bottom: 1rem
+    }
+
+    .modal-footer {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      margin-top: 1rem
+    }
+
+    /* ── SEÇÃO ──────────────────────────────────────────────── */
+    .section {
+      margin-bottom: 1rem
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--borda);
+      margin: 1.25rem 0
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ════════════════ CONFIGURAÇÃO SUPABASE ════════════════ -->
+  <script>
+    // ⚠️ SUBSTITUA PELOS SEUS DADOS DO SUPABASE:
+    const SUPABASE_URL = 'https://SEU_PROJETO.supabase.co';
+    const SUPABASE_ANON_KEY = 'SUA_ANON_KEY';
+    const BACKUP_EDGE_URL = SUPABASE_URL + '/functions/v1/backup-diario';
+
+    // Tabelas incluídas no backup
+    const TABELAS = [
+      'noticias', 'noticia_versoes', 'avisos', 'vagas',
+      'candidaturas', 'mensagens_contato', 'newsletters',
+      'admin_usuarios', 'site_textos', 'app_config'
+    ];
+
+    // ── Cliente Supabase via REST ────────────────────────────
+    const sb = {
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'Prefer': 'return=representation'
+      },
+
+      async get(table, params = '') {
+        const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}${params}`, { headers: { ...sb.headers, 'Prefer': 'count=exact' } });
+        const data = await r.json();
+        const count = r.headers.get('content-range')?.split('/')[1];
+        return { data, count: count ? parseInt(count) : null };
+      },
+
+      async insert(table, body) {
+        const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+          method: 'POST', headers: sb.headers, body: JSON.stringify(body)
+        });
+        return await r.json();
+      },
+
+      async rpc(fn, body = {}) {
+        const r = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${fn}`, {
+          method: 'POST', headers: sb.headers, body: JSON.stringify(body)
+        });
+        return r.ok;
+      },
+
+      async delete(table, filter) {
+        const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${filter}`, {
+          method: 'DELETE', headers: sb.headers
+        });
+        return r.ok;
+      },
+
+      async update(table, filter, body) {
+        const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${filter}`, {
+          method: 'PATCH', headers: sb.headers, body: JSON.stringify(body)
+        });
+        return r.ok;
+      }
+    };
+  </script>
+
+  <div class="page">
+
+    <!-- ── TOPO ─────────────────────────────────────────────── -->
+    <div class="topbar">
+      <div class="topbar-brand">
+        <div class="topbar-logo">AS</div>
+        <div>
+          <div class="topbar-title">Backup & Restauração</div>
+          <div class="topbar-sub">ASPROC · Painel Administrativo · Supabase</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <span class="status-pill" id="statusPill">
+          <span class="pulse" id="statusDot"></span>
+          <span id="statusTxt">Verificando...</span>
+        </span>
+        <button class="btn btn-branco" id="btnBackupNow" onclick="backupAgora()">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M8 2v8M5 7l3 3 3-3M3 13h10" />
+          </svg>
+          Backup agora
+        </button>
+      </div>
     </div>
-    <div style="display:flex; gap:8px; align-items:center;">
-      <span class="badge badge-success"><span class="dot dot-green"></span> Agendador ativo</span>
-      <button class="btn btn-primary" onclick="sendPrompt('Gerar backup manual agora')">
-        <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v8M5 7l3 3 3-3M3 12h10"/></svg>
-        Backup agora ↗
-      </button>
+
+    <!-- ── ALERTA GLOBAL ─────────────────────────────────────── -->
+    <div id="alertaGlobal" style="display:none"></div>
+
+    <!-- ── MÉTRICAS ──────────────────────────────────────────── -->
+    <div class="metrics" id="metricsRow">
+      <div class="metric">
+        <div class="metric-label">Total de backups</div>
+        <div class="metric-value" id="mTotal">–</div>
+        <div class="metric-sub">de 10 máximo</div>
+      </div>
+      <div class="metric warn">
+        <div class="metric-label">Ciclo atual</div>
+        <div class="metric-value" id="mCiclo">–</div>
+        <div class="metric-sub" id="mCicloSub">carregando...</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Último backup</div>
+        <div class="metric-value" id="mUltimo">–</div>
+        <div class="metric-sub" id="mUltimoSub">–</div>
+      </div>
+      <div class="metric info">
+        <div class="metric-label">Registros gravados</div>
+        <div class="metric-value" id="mRegistros">–</div>
+        <div class="metric-sub">último backup</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Logs hoje</div>
+        <div class="metric-value" id="mLogs">–</div>
+        <div class="metric-sub">eventos registrados</div>
+      </div>
+    </div>
+
+    <!-- ── CICLO + ESCOPO ─────────────────────────────────────── -->
+    <div class="grid2 section">
+
+      <!-- Ciclo -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-icon"><svg viewBox="0 0 16 16">
+                <circle cx="8" cy="8" r="6" />
+                <path d="M8 5v3l2 2" />
+              </svg></div>
+            Ciclo de retenção
+          </div>
+          <button class="btn btn-danger btn-xs" onclick="confirmarPurge()">Purge manual</button>
+        </div>
+        <p style="font-size:11px;color:var(--texto-suave);margin-bottom:10px">Dias 1–10 → mantidos · No dia 11 os 10
+          anteriores são excluídos automaticamente e um novo ciclo começa.</p>
+        <div class="cycle-wrap" id="cycleVis">
+          <!-- preenchido pelo JS -->
+        </div>
+        <div class="prog-bar">
+          <div class="prog-fill" id="progFill" style="width:0%"></div>
+        </div>
+        <p style="font-size:11px;color:var(--texto-suave);margin-top:6px" id="progLabel">–</p>
+        <div class="cycle-legend">
+          <span class="leg"><span class="leg-dot"
+              style="background:var(--verde-claro);border:1.5px solid var(--verde-borda)"></span>Concluído</span>
+          <span class="leg"><span class="leg-dot" style="background:var(--verde)"></span>Atual</span>
+          <span class="leg"><span class="leg-dot"
+              style="background:var(--areia);border:1.5px solid var(--areia-borda)"></span>Pendente</span>
+          <span class="leg"><span class="leg-dot"
+              style="background:var(--vermelho-claro);border:1.5px solid #e8b4b4"></span>Purge (dia 11)</span>
+        </div>
+      </div>
+
+      <!-- Escopo -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <div class="card-icon"><svg viewBox="0 0 16 16">
+                <rect x="2" y="4" width="12" height="9" rx="1.5" />
+                <path d="M5 4V3a1 1 0 011-1h4a1 1 0 011 1v1" />
+              </svg></div>
+            Escopo do backup
+          </div>
+          <span class="badge b-verde">10 tabelas</span>
+        </div>
+        <div class="scope-grid">
+          <div class="scope-item">
+            <div class="scope-check"><svg viewBox="0 0 10 10">
+                <path d="M2 5l2 2 4-4" />
+              </svg></div>Notícias
+          </div>
+          <div class="scope-item">
+            <div class="scope-check"><svg viewBox="0 0 10 10">
+                <path d="M2 5l2 2 4-4" />
+              </svg></div>Versões notícias
+          </div>
+          <div class="scope-item">
+            <div class="scope-check"><svg viewBox="0 0 10 10">
+                <path d="M2 5l2 2 4-4" />
+              </svg></div>Avisos
+          </div>
+          <div class="scope-item">
+            <div class="scope-check"><svg viewBox="0 0 10 10">
+                <path d="M2 5l2 2 4-4" />
+              </svg></div>Vagas
+          </div>
+          <div class="scope-item">
+            <div class="scope-check"><svg viewBox="0 0 10 10">
+                <path d="M2 5l2 2 4-4" />
+              </svg></div>Candidaturas
+          </div>
+          <div class="scope-item">
+            <div class="scope-check"><svg viewBox="0 0 10 10">
+                <path d="M2 5l2 2 4-4" />
+              </svg></div>Mensagens
+          </div>
+          <div class="scope-item">
+            <div class="scope-check"><svg viewBox="0 0 10 10">
+                <path d="M2 5l2 2 4-4" />
+              </svg></div>Newsletters
+          </div>
+          <div class="scope-item">
+            <div class="scope-check"><svg viewBox="0 0 10 10">
+                <path d="M2 5l2 2 4-4" />
+              </svg></div>Usuários admin
+          </div>
+          <div class="scope-item">
+            <div class="scope-check"><svg viewBox="0 0 10 10">
+                <path d="M2 5l2 2 4-4" />
+              </svg></div>Textos do site
+          </div>
+          <div class="scope-item">
+            <div class="scope-check"><svg viewBox="0 0 10 10">
+                <path d="M2 5l2 2 4-4" />
+              </svg></div>App config
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── LISTA DE BACKUPS ───────────────────────────────────── -->
+    <div class="card section">
+      <div class="card-header">
+        <div class="card-title">
+          <div class="card-icon"><svg viewBox="0 0 16 16">
+              <path d="M4 2h5l3 3v9H4V2z" />
+              <path d="M9 2v3h3" />
+            </svg></div>
+          Backups armazenados
+        </div>
+        <button class="btn btn-verde-outline btn-sm" onclick="carregarDados()">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 8a5 5 0 0 0 9 2.5M13 8a5 5 0 0 0-9-2.5" />
+            <path d="M13 3v5h-5" />
+          </svg>
+          Atualizar
+        </button>
+      </div>
+      <div class="bk-list" id="backupList">
+        <div style="text-align:center;padding:2rem;color:var(--texto-suave);font-size:13px">Carregando backups...</div>
+      </div>
+    </div>
+
+    <!-- ── ASSISTENTE DE RESTAURAÇÃO ─────────────────────────── -->
+    <div class="card section">
+      <div class="card-header">
+        <div class="card-title">
+          <div class="card-icon"><svg viewBox="0 0 16 16">
+              <path d="M3 8a5 5 0 1 0 2-4" />
+              <path d="M3 4v4h4" />
+            </svg></div>
+          Assistente de restauração
+        </div>
+      </div>
+      <p style="font-size:13px;color:var(--texto-suave);margin-bottom:1rem">Selecione o backup de origem e o modo de
+        restauração. O modo <strong>upsert</strong> é seguro e não apaga dados existentes.</p>
+
+      <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:1rem">
+        <div>
+          <label style="font-size:11px;font-weight:600;color:var(--texto-suave);display:block;margin-bottom:4px">Backup
+            de origem</label>
+          <select id="restoreBackupSel"
+            style="padding:7px 10px;border:1px solid var(--borda);border-radius:var(--radius-sm);font-family:'Inter',sans-serif;font-size:12px;color:var(--texto);background:#fff">
+            <option value="">— selecione —</option>
+          </select>
+        </div>
+        <div>
+          <label
+            style="font-size:11px;font-weight:600;color:var(--texto-suave);display:block;margin-bottom:4px">Escopo</label>
+          <select id="restoreScope"
+            style="padding:7px 10px;border:1px solid var(--borda);border-radius:var(--radius-sm);font-family:'Inter',sans-serif;font-size:12px;color:var(--texto);background:#fff">
+            <option value="all">Restauração completa</option>
+            <option value="select">Selecionar tabelas</option>
+          </select>
+        </div>
+        <div>
+          <label
+            style="font-size:11px;font-weight:600;color:var(--texto-suave);display:block;margin-bottom:4px">Modo</label>
+          <select id="restoreMode"
+            style="padding:7px 10px;border:1px solid var(--borda);border-radius:var(--radius-sm);font-family:'Inter',sans-serif;font-size:12px;color:var(--texto);background:#fff">
+            <option value="upsert">Upsert (seguro)</option>
+            <option value="replace">Substituir tudo (⚠️ risco)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Seleção de tabelas (aparece quando "selecionar tabelas") -->
+      <div id="tabelasCheckWrap" style="display:none;margin-bottom:1rem">
+        <p style="font-size:11px;font-weight:600;color:var(--texto-suave);margin-bottom:6px">Tabelas a restaurar:</p>
+        <div class="tabela-check-grid" id="tabelasCheck"></div>
+      </div>
+
+      <div class="restore-steps" id="restoreSteps">
+        <div class="r-step" id="rs1">
+          <div class="step-num" id="sn1">1</div>
+          <div>
+            <div class="step-label">Validar backup</div>
+            <div class="step-desc">Verificar integridade do arquivo JSON no Supabase</div>
+          </div>
+        </div>
+        <div class="r-step" id="rs2">
+          <div class="step-num" id="sn2">2</div>
+          <div>
+            <div class="step-label">Confirmar escopo</div>
+            <div class="step-desc">Revisar tabelas e registros que serão afetados</div>
+          </div>
+        </div>
+        <div class="r-step" id="rs3">
+          <div class="step-num" id="sn3">3</div>
+          <div>
+            <div class="step-label">Snapshot de segurança</div>
+            <div class="step-desc">Criar backup automático do estado atual pré-restore</div>
+          </div>
+        </div>
+        <div class="r-step" id="rs4">
+          <div class="step-num" id="sn4">4</div>
+          <div>
+            <div class="step-label">Executar restauração</div>
+            <div class="step-desc" id="rs4desc">Inserir / atualizar registros linha a linha com log</div>
+          </div>
+        </div>
+        <div class="r-step" id="rs5">
+          <div class="step-num" id="sn5">5</div>
+          <div>
+            <div class="step-label">Relatório final</div>
+            <div class="step-desc" id="rs5desc">Aguardando execução...</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:1rem;display:flex;gap:8px">
+        <button class="btn btn-verde" id="btnRestore" onclick="iniciarRestauracao()">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 8a5 5 0 1 0 2-4" />
+            <path d="M3 4v4h4" />
+          </svg>
+          Iniciar restauração
+        </button>
+        <button class="btn btn-terra btn-sm" onclick="resetRestoreSteps()">Resetar etapas</button>
+      </div>
+    </div>
+
+    <!-- ── LOG DE ATIVIDADES ──────────────────────────────────── -->
+    <div class="card section">
+      <div class="card-header">
+        <div class="card-title">
+          <div class="card-icon"><svg viewBox="0 0 16 16">
+              <path d="M2 4h12M2 8h8M2 12h5" />
+            </svg></div>
+          Log de atividades
+        </div>
+        <span class="badge b-cinza" id="logCount">– eventos</span>
+      </div>
+      <div class="filter-bar">
+        <select id="filterEvento" onchange="filtrarLogs()">
+          <option value="">Todos os eventos</option>
+          <option>BACKUP</option>
+          <option>RESTORE</option>
+          <option>PURGE</option>
+          <option>LOGIN</option>
+          <option>ERRO</option>
+        </select>
+        <select id="filterStatus" onchange="filtrarLogs()">
+          <option value="">Qualquer status</option>
+          <option>ok</option>
+          <option>erro</option>
+        </select>
+        <input type="text" id="filterBusca" placeholder="Buscar mensagem..." oninput="filtrarLogs()" />
+        <button class="btn btn-terra btn-xs" onclick="limparFiltros()">Limpar filtros</button>
+        <button class="btn btn-verde-outline btn-xs" onclick="exportarCSV()">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M8 2v8M5 7l3 3 3-3M3 13h10" />
+          </svg>
+          Exportar CSV
+        </button>
+      </div>
+      <div class="log-wrap">
+        <table class="log-table">
+          <thead>
+            <tr>
+              <th>Data / hora</th>
+              <th>Evento</th>
+              <th>Usuário</th>
+              <th>Tabela</th>
+              <th style="text-align:right">Registros</th>
+              <th>Status</th>
+              <th>Mensagem</th>
+            </tr>
+          </thead>
+          <tbody id="logBody">
+            <tr>
+              <td colspan="7" style="text-align:center;padding:2rem;color:var(--texto-suave)">Carregando logs...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div><!-- /page -->
+
+  <!-- ── MODAL CONFIRMAÇÃO PURGE ───────────────────────────── -->
+  <div class="modal-overlay" id="modalPurge">
+    <div class="modal">
+      <div class="modal-title">⚠️ Confirmar purge manual</div>
+      <div class="modal-sub">Esta ação é irreversível. Todos os backups do ciclo atual serão excluídos.</div>
+      <div
+        style="background:var(--vermelho-claro);border:1px solid #e8b4b4;border-radius:var(--radius-md);padding:10px 14px;font-size:13px;color:var(--vermelho)">
+        Após o purge, o contador de ciclo avança e um novo ciclo começa. Certifique-se de que possui pelo menos um
+        backup antes de continuar.
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-terra btn-sm" onclick="fecharModal('modalPurge')">Cancelar</button>
+        <button class="btn btn-danger btn-sm" onclick="executarPurge()">Sim, excluir todos</button>
+      </div>
     </div>
   </div>
 
-  <div class="metrics">
-    <div class="metric">
-      <div class="metric-label">Total de backups</div>
-      <div class="metric-value">7</div>
-      <div class="metric-sub">de 10 máximo</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">Ciclo atual</div>
-      <div class="metric-value">Dia 7</div>
-      <div class="metric-sub">próximo purge em 3 dias</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">Último backup</div>
-      <div class="metric-value">04/05</div>
-      <div class="metric-sub">Hoje · 00:00 · 2.1 MB</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">Registros gravados</div>
-      <div class="metric-value">4.832</div>
-      <div class="metric-sub">em todas as tabelas</div>
-    </div>
-    <div class="metric">
-      <div class="metric-label">Logs hoje</div>
-      <div class="metric-value">12</div>
-      <div class="metric-sub">3 usuários · 0 erros</div>
-    </div>
-  </div>
-
-  <div class="grid2">
-    <div class="card">
-      <div class="card-title">
-        <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 2"/></svg>
-        Ciclo de retenção
-      </div>
-      <p class="section-title">Dias 1–10 → manter → dia 11 → purge automático</p>
-      <div class="cycle-vis">
-        <div class="cycle-day done">1</div>
-        <div class="cycle-day done">2</div>
-        <div class="cycle-day done">3</div>
-        <div class="cycle-day done">4</div>
-        <div class="cycle-day done">5</div>
-        <div class="cycle-day done">6</div>
-        <div class="cycle-day current">7</div>
-        <div class="cycle-day pending">8</div>
-        <div class="cycle-day pending">9</div>
-        <div class="cycle-day pending">10</div>
-        <div class="sep"></div>
-        <div class="cycle-day purge">11</div>
-      </div>
-      <div style="margin-top: 12px;">
-        <div class="progress-bar"><div class="progress-fill" style="width: 70%"></div></div>
-        <p style="font-size:11px; color: var(--color-text-secondary); margin-top:4px;">70% do ciclo concluído</p>
-      </div>
-      <div style="margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap;">
-        <span class="badge badge-success"><span class="dot dot-green"></span> concluído</span>
-        <span class="badge badge-info"><span class="dot dot-blue"></span> atual</span>
-        <span class="badge badge-neutral">pendente</span>
-        <span class="badge badge-danger"><span class="dot dot-red"></span> purge</span>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">
-        <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="12" height="8" rx="1.5"/><path d="M5 4V3a1 1 0 011-1h4a1 1 0 011 1v1"/></svg>
-        Escopo do backup
-      </div>
-      <div class="scope-grid">
-        <div class="scope-item"><span class="scope-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.8"><path d="M2 5l2 2 4-4"/></svg></span> Notícias</div>
-        <div class="scope-item"><span class="scope-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.8"><path d="M2 5l2 2 4-4"/></svg></span> Avisos</div>
-        <div class="scope-item"><span class="scope-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.8"><path d="M2 5l2 2 4-4"/></svg></span> Mensagens</div>
-        <div class="scope-item"><span class="scope-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.8"><path d="M2 5l2 2 4-4"/></svg></span> Vagas</div>
-        <div class="scope-item"><span class="scope-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.8"><path d="M2 5l2 2 4-4"/></svg></span> Candidaturas</div>
-        <div class="scope-item"><span class="scope-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.8"><path d="M2 5l2 2 4-4"/></svg></span> Usuários admin</div>
-        <div class="scope-item"><span class="scope-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.8"><path d="M2 5l2 2 4-4"/></svg></span> Newsletters</div>
-        <div class="scope-item"><span class="scope-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.8"><path d="M2 5l2 2 4-4"/></svg></span> Config / textos</div>
-        <div class="scope-item"><span class="scope-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.8"><path d="M2 5l2 2 4-4"/></svg></span> URLs de arquivos</div>
-        <div class="scope-item"><span class="scope-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.8"><path d="M2 5l2 2 4-4"/></svg></span> Versões notícias</div>
+  <!-- ── MODAL CONFIRMAÇÃO RESTORE ─────────────────────────── -->
+  <div class="modal-overlay" id="modalRestore">
+    <div class="modal">
+      <div class="modal-title" id="modalRestoreTitle">Confirmar restauração</div>
+      <div class="modal-sub" id="modalRestoreSub"></div>
+      <div
+        style="background:var(--amarelo-claro);border:1px solid #f0d080;border-radius:var(--radius-md);padding:10px 14px;font-size:13px;color:var(--amarelo)"
+        id="modalRestoreWarn"></div>
+      <div class="modal-footer">
+        <button class="btn btn-terra btn-sm" onclick="fecharModal('modalRestore')">Cancelar</button>
+        <button class="btn btn-verde btn-sm" id="btnConfirmRestore">Confirmar</button>
       </div>
     </div>
   </div>
 
-  <div class="card full-card">
-    <div class="card-title" style="justify-content: space-between;">
-      <span style="display:flex; align-items:center; gap:8px;">
-        <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 2h5l3 3v9H4V2z"/><path d="M9 2v3h3"/></svg>
-        Backups armazenados
-      </span>
-      <button class="btn btn-sm btn-danger" onclick="sendPrompt('Confirmar purge manual de todos os backups do ciclo atual')">Purge manual ↗</button>
-    </div>
-    <div class="backup-list">
-      <div class="backup-item current">
-        <div class="backup-num">7</div>
-        <div class="backup-date">04/05/2026 · 00:00 <span class="badge badge-success" style="margin-left:6px; font-size:10px;">atual</span></div>
-        <div class="backup-size">2.1 MB</div>
-        <div class="backup-actions">
-          <button class="btn btn-sm" onclick="sendPrompt('Ver detalhes do backup do dia 04/05/2026')">detalhes ↗</button>
-          <button class="btn btn-sm" onclick="sendPrompt('Restaurar backup do dia 04/05/2026')">restaurar ↗</button>
-        </div>
-      </div>
-      <div class="backup-item">
-        <div class="backup-num">6</div>
-        <div class="backup-date">03/05/2026 · 00:00</div>
-        <div class="backup-size">2.0 MB</div>
-        <div class="backup-actions">
-          <button class="btn btn-sm" onclick="sendPrompt('Ver detalhes do backup do dia 03/05/2026')">detalhes ↗</button>
-          <button class="btn btn-sm" onclick="sendPrompt('Restaurar backup do dia 03/05/2026')">restaurar ↗</button>
-        </div>
-      </div>
-      <div class="backup-item">
-        <div class="backup-num">5</div>
-        <div class="backup-date">02/05/2026 · 00:00</div>
-        <div class="backup-size">1.9 MB</div>
-        <div class="backup-actions">
-          <button class="btn btn-sm" onclick="sendPrompt('Ver detalhes do backup do dia 02/05/2026')">detalhes ↗</button>
-          <button class="btn btn-sm" onclick="sendPrompt('Restaurar backup do dia 02/05/2026')">restaurar ↗</button>
-        </div>
-      </div>
-      <div class="backup-item">
-        <div class="backup-num">4</div>
-        <div class="backup-date">01/05/2026 · 00:00</div>
-        <div class="backup-size">1.9 MB</div>
-        <div class="backup-actions">
-          <button class="btn btn-sm">detalhes ↗</button>
-          <button class="btn btn-sm">restaurar ↗</button>
-        </div>
-      </div>
-      <div class="backup-item">
-        <div class="backup-num">3</div>
-        <div class="backup-date">30/04/2026 · 00:00</div>
-        <div class="backup-size">1.8 MB</div>
-        <div class="backup-actions">
-          <button class="btn btn-sm">detalhes ↗</button>
-          <button class="btn btn-sm">restaurar ↗</button>
-        </div>
-      </div>
-      <div class="backup-item">
-        <div class="backup-num">2</div>
-        <div class="backup-date">29/04/2026 · 00:00</div>
-        <div class="backup-size">1.7 MB</div>
-        <div class="backup-actions">
-          <button class="btn btn-sm">detalhes ↗</button>
-          <button class="btn btn-sm">restaurar ↗</button>
-        </div>
-      </div>
-      <div class="backup-item">
-        <div class="backup-num">1</div>
-        <div class="backup-date">28/04/2026 · 00:00</div>
-        <div class="backup-size">1.6 MB</div>
-        <div class="backup-actions">
-          <button class="btn btn-sm">detalhes ↗</button>
-          <button class="btn btn-sm">restaurar ↗</button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- ════════════════ JAVASCRIPT ════════════════════════════ -->
+  <script>
+    // ── Estado global ────────────────────────────────────────
+    let todosLogs = [];
+    let todosBackups = [];
+    let configCiclo = { ciclo_atual: 1 };
+    let restoreCallback = null;
 
-  <div class="card full-card">
-    <div class="card-title">
-      <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h8M2 12h5"/></svg>
-      Log de atividades
-    </div>
-    <div class="filter-row">
-      <select id="filterType">
-        <option value="">Todos os eventos</option>
-        <option>BACKUP</option>
-        <option>RESTORE</option>
-        <option>PURGE</option>
-        <option>LOGIN</option>
-        <option>ERRO</option>
-      </select>
-      <select id="filterUser">
-        <option value="">Todos os usuários</option>
-        <option>sistema</option>
-        <option>admin@site.com.br</option>
-        <option>editor@site.com.br</option>
-      </select>
-      <input type="text" placeholder="Buscar na mensagem..." id="filterSearch" />
-      <button class="btn btn-sm" onclick="applyFilter()">Filtrar</button>
-      <button class="btn btn-sm" onclick="resetFilter()">Limpar</button>
-    </div>
-    <div class="log-table-wrap">
-      <table class="log-table" id="logTable">
-        <thead>
-          <tr>
-            <th>Data / hora</th>
-            <th>Tipo</th>
-            <th>Usuário</th>
-            <th>Tabela / escopo</th>
-            <th>Registros</th>
-            <th>Status</th>
-            <th>Mensagem</th>
-          </tr>
-        </thead>
-        <tbody id="logBody"></tbody>
-      </table>
-    </div>
-  </div>
+    // ── Utilitários ──────────────────────────────────────────
+    function fmtDate(iso) {
+      if (!iso) return '–';
+      return new Date(iso).toLocaleString('pt-BR', {
+        timeZone: 'America/Sao_Paulo',
+        day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit'
+      });
+    }
+    function fmtDateShort(iso) {
+      if (!iso) return '–';
+      return new Date(iso).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', year: 'numeric' });
+    }
+    function fmtKb(kb) {
+      if (!kb) return '–';
+      return kb > 1024 ? (kb / 1024).toFixed(1) + ' MB' : kb + ' KB';
+    }
+    function hoje() { return new Date().toISOString().slice(0, 10) }
 
-  <div class="restore-modal">
-    <div class="card-title">
-      <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8a5 5 0 1 0 2-4"/><path d="M3 4v4h4"/></svg>
-      Assistente de restauração
-    </div>
-    <p style="font-size: 13px; color: var(--color-text-secondary); margin-bottom: 12px;">Selecione o backup e as tabelas que deseja restaurar. O processo é incremental e não apaga dados existentes por padrão.</p>
-    <div style="display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;">
-      <select><option>Backup 04/05/2026</option><option>Backup 03/05/2026</option><option>Backup 02/05/2026</option></select>
-      <select><option>Restauração completa</option><option>Apenas notícias</option><option>Apenas vagas</option><option>Apenas usuários</option><option>Selecionar tabelas</option></select>
-      <select><option>Modo: upsert (seguro)</option><option>Modo: substituir tudo</option></select>
-    </div>
-    <div class="restore-steps">
-      <div class="restore-step"><div class="step-icon step-done">1</div><div><strong style="font-size:12px;">Validar backup</strong> · verificar integridade do arquivo JSON</div></div>
-      <div class="restore-step"><div class="step-icon step-pending">2</div><div><strong style="font-size:12px;">Confirmar escopo</strong> · revisar tabelas e registros afetados</div></div>
-      <div class="restore-step"><div class="step-icon step-pending">3</div><div><strong style="font-size:12px;">Gravar snapshot atual</strong> · backup de segurança pré-restore</div></div>
-      <div class="restore-step"><div class="step-icon step-pending">4</div><div><strong style="font-size:12px;">Executar restauração</strong> · upsert linha a linha com log</div></div>
-      <div class="restore-step"><div class="step-icon step-pending">5</div><div><strong style="font-size:12px;">Relatório final</strong> · resumo de linhas inseridas / atualizadas / ignoradas</div></div>
-    </div>
-    <div style="margin-top:12px;">
-      <button class="btn btn-primary" onclick="sendPrompt('Iniciar restauração do backup de 04/05/2026 em modo upsert completo')">Iniciar restauração ↗</button>
-    </div>
-  </div>
+    // ── Alertas ──────────────────────────────────────────────
+    function mostrarAlerta(msg, tipo = 'ok', dur = 5000) {
+      const el = document.getElementById('alertaGlobal');
+      el.innerHTML = `<div class="alerta ${tipo}">
+    <span>${msg}</span>
+    <span class="alerta-close" onclick="this.parentElement.parentElement.style.display='none'">✕</span>
+  </div>`;
+      el.style.display = 'block';
+      if (dur) setTimeout(() => el.style.display = 'none', dur);
+    }
 
-</div>
+    // ── Modal ────────────────────────────────────────────────
+    function abrirModal(id) { document.getElementById(id).classList.add('open') }
+    function fecharModal(id) { document.getElementById(id).classList.remove('open') }
 
-<script>
-const logs = [
-  { dt: '04/05/2026 00:00:03', tipo: 'BACKUP', user: 'sistema', tabela: 'todas (10)', reg: 4832, status: 'ok', msg: 'Backup automático concluído · 2.1 MB' },
-  { dt: '03/05/2026 14:22:11', tipo: 'LOGIN', user: 'admin@site.com.br', tabela: '—', reg: null, status: 'ok', msg: 'Acesso ao painel de backup' },
-  { dt: '03/05/2026 14:23:05', tipo: 'RESTORE', user: 'admin@site.com.br', tabela: 'noticias', reg: 142, status: 'ok', msg: 'Restauração parcial concluída · 142 registros upserted' },
-  { dt: '03/05/2026 00:00:04', tipo: 'BACKUP', user: 'sistema', tabela: 'todas (10)', reg: 4800, status: 'ok', msg: 'Backup automático concluído · 2.0 MB' },
-  { dt: '02/05/2026 11:10:40', tipo: 'LOGIN', user: 'editor@site.com.br', tabela: '—', reg: null, status: 'ok', msg: 'Acesso ao painel de backup (somente leitura)' },
-  { dt: '02/05/2026 00:00:02', tipo: 'BACKUP', user: 'sistema', tabela: 'todas (10)', reg: 4781, status: 'ok', msg: 'Backup automático concluído · 1.9 MB' },
-  { dt: '01/05/2026 00:00:06', tipo: 'BACKUP', user: 'sistema', tabela: 'todas (10)', reg: 4750, status: 'ok', msg: 'Backup automático concluído · 1.9 MB' },
-  { dt: '30/04/2026 00:00:03', tipo: 'BACKUP', user: 'sistema', tabela: 'todas (10)', reg: 4710, status: 'ok', msg: 'Backup automático concluído · 1.8 MB' },
-  { dt: '29/04/2026 00:00:05', tipo: 'BACKUP', user: 'sistema', tabela: 'todas (10)', reg: 4680, status: 'ok', msg: 'Backup automático concluído · 1.7 MB' },
-  { dt: '28/04/2026 00:00:04', tipo: 'BACKUP', user: 'sistema', tabela: 'todas (10)', reg: 4640, status: 'ok', msg: 'Backup automático concluído · 1.6 MB' },
-  { dt: '27/04/2026 00:00:01', tipo: 'PURGE', user: 'sistema', tabela: 'backups_db', reg: 10, status: 'ok', msg: 'Ciclo completo: 10 backups purgados · novo ciclo iniciado' },
-  { dt: '26/04/2026 09:15:33', tipo: 'ERRO', user: 'sistema', tabela: 'vagas', reg: 0, status: 'erro', msg: 'Timeout ao exportar tabela vagas · retry em 30s' },
-];
+    // ── Carregar dados do Supabase ────────────────────────────
+    async function carregarDados() {
+      try {
+        // Config ciclo
+        const { data: cfg } = await sb.get('backup_ciclo_config', '?id=eq.1&select=*');
+        if (cfg && cfg[0]) configCiclo = cfg[0];
 
-const badgeMap = {
-  BACKUP: 'badge-info',
-  RESTORE: 'badge-warning',
-  PURGE: 'badge-danger',
-  LOGIN: 'badge-neutral',
-  ERRO: 'badge-danger',
-};
-const statusMap = {
-  ok: 'badge-success',
-  erro: 'badge-danger',
-};
+        // Backups
+        const { data: bkps } = await sb.get('backups_db', '?order=criado_em.desc&limit=10&select=id,ciclo,dia_no_ciclo,criado_em,criado_por,tamanho_kb,total_registros,status,notas');
+        todosBackups = bkps || [];
 
-function renderLogs(data) {
-  const tb = document.getElementById('logBody');
-  tb.innerHTML = data.map(l => `
-    <tr>
-      <td style="font-family: var(--font-mono); font-size:11px;">${l.dt}</td>
-      <td><span class="badge ${badgeMap[l.tipo]} log-type">${l.tipo}</span></td>
-      <td style="color: var(--color-text-secondary);">${l.user}</td>
-      <td>${l.tabela}</td>
-      <td style="text-align:right;">${l.reg !== null ? l.reg.toLocaleString('pt-BR') : '—'}</td>
-      <td><span class="badge ${statusMap[l.status]}">${l.status}</span></td>
-      <td style="color: var(--color-text-secondary); max-width: 260px; white-space: normal; font-size: 11px;">${l.msg}</td>
-    </tr>
+        // Logs
+        const { data: lgs } = await sb.get('backup_logs', '?order=criado_em.desc&limit=200&select=*');
+        todosLogs = lgs || [];
+
+        atualizarUI();
+      } catch (e) {
+        mostrarAlerta('Erro ao conectar com o Supabase. Verifique as credenciais no topo do arquivo. ' + e.message, 'erro', 0);
+        // Modo demo (dados fictícios)
+        carregarDemo();
+      }
+    }
+
+    function carregarDemo() {
+      configCiclo = { ciclo_atual: 1 };
+      todosBackups = [];
+      todosLogs = [
+        { id: 1, evento: 'BACKUP', usuario: 'sistema', tabela: 'todas', registros: 4832, status: 'ok', mensagem: 'Modo demo · configure SUPABASE_URL e ANON_KEY', criado_em: new Date().toISOString() },
+      ];
+      atualizarUI();
+    }
+
+    // ── Atualizar toda a UI ──────────────────────────────────
+    function atualizarUI() {
+      // Status pill
+      const temSupabase = SUPABASE_URL !== 'https://SEU_PROJETO.supabase.co';
+      document.getElementById('statusTxt').textContent = temSupabase ? 'Agendador ativo' : 'Modo demo';
+      document.getElementById('statusDot').style.background = temSupabase ? '#6ee7b7' : '#fcd34d';
+
+      // Métricas
+      const cicloAtual = configCiclo.ciclo_atual || 1;
+      const bkpsDoCiclo = todosBackups.filter(b => b.ciclo === cicloAtual);
+      const ultimo = todosBackups[0];
+      const logsDeHoje = todosLogs.filter(l => l.criado_em?.slice(0, 10) === hoje());
+
+      document.getElementById('mTotal').textContent = todosBackups.length;
+      document.getElementById('mCiclo').textContent = 'Dia ' + bkpsDoCiclo.length;
+      document.getElementById('mCicloSub').textContent = `Ciclo ${cicloAtual} · purge em ${10 - bkpsDoCiclo.length} dias`;
+      document.getElementById('mUltimo').textContent = ultimo ? fmtDateShort(ultimo.criado_em) : '–';
+      document.getElementById('mUltimoSub').textContent = ultimo ? fmtKb(ultimo.tamanho_kb) : 'Nenhum backup ainda';
+      document.getElementById('mRegistros').textContent = ultimo ? (ultimo.total_registros || 0).toLocaleString('pt-BR') : '–';
+      document.getElementById('mLogs').textContent = logsDeHoje.length;
+
+      // Ciclo visual
+      renderCiclo(bkpsDoCiclo.length);
+
+      // Backup list
+      renderBackups();
+
+      // Restore select
+      const sel = document.getElementById('restoreBackupSel');
+      sel.innerHTML = '<option value="">— selecione —</option>';
+      todosBackups.forEach(b => {
+        sel.innerHTML += `<option value="${b.id}">${fmtDate(b.criado_em)} · ${fmtKb(b.tamanho_kb)}</option>`;
+      });
+
+      // Log
+      filtrarLogs();
+
+      // Tabelas check
+      renderTabelasCheck();
+    }
+
+    // ── Ciclo visual ─────────────────────────────────────────
+    function renderCiclo(diaAtual) {
+      let html = '';
+      for (let d = 1; d <= 10; d++) {
+        const cls = d < diaAtual ? 'done' : d === diaAtual ? 'current' : 'pending';
+        const title = cls === 'done' ? 'Backup concluído' : cls === 'current' ? 'Dia atual' : 'Aguardando';
+        html += `<div class="cday ${cls}" title="${title}">${d}</div>`;
+      }
+      html += `<div class="cycle-sep"></div><div class="cday purge" title="Dia do purge automático">11</div>`;
+      document.getElementById('cycleVis').innerHTML = html;
+
+      const pct = Math.round((diaAtual / 10) * 100);
+      document.getElementById('progFill').style.width = pct + '%';
+      document.getElementById('progLabel').textContent = `${pct}% do ciclo concluído · ${10 - diaAtual} dias restantes`;
+    }
+
+    // ── Render lista de backups ──────────────────────────────
+    function renderBackups() {
+      const el = document.getElementById('backupList');
+      if (!todosBackups.length) {
+        el.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--texto-suave);font-size:13px">Nenhum backup encontrado. Clique em "Backup agora" para criar o primeiro.</div>';
+        return;
+      }
+      el.innerHTML = todosBackups.map((b, i) => `
+    <div class="bk-item ${i === 0 ? 'current' : ''}">
+      <div class="bk-num">${b.dia_no_ciclo || i + 1}</div>
+      <div class="bk-date">
+        ${fmtDate(b.criado_em)}
+        ${i === 0 ? '<span class="tag-current">mais recente</span>' : ''}
+        <span style="font-size:11px;color:var(--texto-suave);margin-left:6px">por ${b.criado_por || 'sistema'}</span>
+      </div>
+      <div class="bk-meta">${fmtKb(b.tamanho_kb)} · ${(b.total_registros || 0).toLocaleString('pt-BR')} reg.</div>
+      <div class="bk-actions">
+        <button class="btn btn-verde-outline btn-xs" onclick="preencherRestoreComBackup('${b.id}')">Restaurar</button>
+        <button class="btn btn-xs" style="background:var(--rio-claro);color:var(--rio);border:1px solid #b0cfe8" onclick="verDetalhe('${b.id}')">Detalhe</button>
+      </div>
+    </div>
   `).join('');
-}
+    }
 
-function applyFilter() {
-  const tipo = document.getElementById('filterType').value;
-  const user = document.getElementById('filterUser').value;
-  const search = document.getElementById('filterSearch').value.toLowerCase();
-  const filtered = logs.filter(l =>
-    (!tipo || l.tipo === tipo) &&
-    (!user || l.user === user) &&
-    (!search || l.msg.toLowerCase().includes(search))
-  );
-  renderLogs(filtered);
-}
+    // ── Render tabelas check ─────────────────────────────────
+    function renderTabelasCheck() {
+      document.getElementById('tabelasCheck').innerHTML = TABELAS.map(t => `
+    <label class="t-check">
+      <input type="checkbox" checked value="${t}"> ${t}
+    </label>
+  `).join('');
+    }
 
-function resetFilter() {
-  document.getElementById('filterType').value = '';
-  document.getElementById('filterUser').value = '';
-  document.getElementById('filterSearch').value = '';
-  renderLogs(logs);
-}
+    document.getElementById('restoreScope').addEventListener('change', function () {
+      document.getElementById('tabelasCheckWrap').style.display = this.value === 'select' ? 'block' : 'none';
+    });
 
-renderLogs(logs);
-</script>
+    // ── BACKUP AGORA ─────────────────────────────────────────
+    async function backupAgora() {
+      const btn = document.getElementById('btnBackupNow');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="tag-spin">⟳</span> Gerando...';
+
+      try {
+        const temEdge = SUPABASE_URL !== 'https://SEU_PROJETO.supabase.co';
+
+        if (temEdge) {
+          // Chama a Edge Function
+          const res = await fetch(BACKUP_EDGE_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY },
+            body: JSON.stringify({ manual: true, usuario: 'admin-painel' })
+          });
+          const json = await res.json();
+          if (!json.ok) throw new Error(json.error || 'Erro na Edge Function');
+          mostrarAlerta(`✅ Backup criado com sucesso · ${fmtKb(json.tamanho_kb)} · ${(json.registros || 0).toLocaleString('pt-BR')} registros`, 'ok');
+        } else {
+          // Modo demo / fallback sem Edge Function: exporta direto pelo REST
+          await backupDireto('admin-painel');
+        }
+
+        await carregarDados();
+      } catch (e) {
+        mostrarAlerta('Erro ao gerar backup: ' + e.message, 'erro', 0);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2v8M5 7l3 3 3-3M3 13h10"/></svg> Backup agora';
+      }
+    }
+
+    // ── BACKUP DIRETO (fallback sem Edge Function) ───────────
+    async function backupDireto(usuario) {
+      // Purge se necessário
+      await sb.rpc('backup_purge_ciclo');
+
+      // Ciclo
+      const { data: cfgArr } = await sb.get('backup_ciclo_config', '?id=eq.1');
+      const cicloAtual = cfgArr?.[0]?.ciclo_atual || 1;
+      const { count: contagem } = await sb.get('backups_db', `?ciclo=eq.${cicloAtual}&select=id`);
+      const diaNoCiclo = (contagem || 0) + 1;
+
+      // Exportar tabelas
+      const tabelas = {};
+      let totalRegistros = 0;
+      const notasArr = [];
+      for (const t of TABELAS) {
+        const { data: rows, count: cnt } = await sb.get(t, '?select=*&limit=5000');
+        tabelas[t] = rows || [];
+        totalRegistros += (cnt || rows?.length || 0);
+        notasArr.push(`${t}:${rows?.length || 0}`);
+      }
+
+      const payload = { versao: '1.0', criado_em: new Date().toISOString(), tabelas };
+      const jsonStr = JSON.stringify(payload);
+      const tamanhoKb = Math.round(new Blob([jsonStr]).size / 1024);
+
+      // Inserir
+      const [bkp] = await sb.insert('backups_db', {
+        ciclo: cicloAtual, dia_no_ciclo: diaNoCiclo,
+        criado_por: usuario, tamanho_kb: tamanhoKb,
+        total_registros: totalRegistros, status: 'ok',
+        payload, notas: 'Tabelas: ' + notasArr.join(', ')
+      });
+
+      // Log
+      await sb.insert('backup_logs', {
+        evento: 'BACKUP', usuario, backup_id: bkp?.id,
+        tabela: 'todas', registros: totalRegistros, status: 'ok',
+        mensagem: `Backup direto concluído · ${tamanhoKb} KB · ${totalRegistros} registros`,
+        metadados: { ciclo: cicloAtual, dia: diaNoCiclo }
+      });
+
+      // Atualizar timestamp
+      await sb.update('backup_ciclo_config', 'id=eq.1', { ultimo_backup: new Date().toISOString() });
+
+      mostrarAlerta(`✅ Backup criado · ${fmtKb(tamanhoKb)} · ${totalRegistros.toLocaleString('pt-BR')} registros`, 'ok');
+    }
+
+    // ── PURGE MANUAL ─────────────────────────────────────────
+    function confirmarPurge() { abrirModal('modalPurge') }
+    async function executarPurge() {
+      fecharModal('modalPurge');
+      try {
+        await sb.rpc('backup_purge_ciclo');
+        await sb.insert('backup_logs', { evento: 'PURGE', usuario: 'admin-painel', tabela: 'backups_db', status: 'ok', mensagem: 'Purge manual executado pelo painel' });
+        mostrarAlerta('✅ Purge executado. Novo ciclo iniciado.', 'ok');
+        await carregarDados();
+      } catch (e) {
+        mostrarAlerta('Erro no purge: ' + e.message, 'erro', 0);
+      }
+    }
+
+    // ── RESTAURAÇÃO ──────────────────────────────────────────
+    function preencherRestoreComBackup(id) {
+      document.getElementById('restoreBackupSel').value = id;
+      document.getElementById('btnRestore').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      resetRestoreSteps();
+    }
+
+    function resetRestoreSteps() {
+      [1, 2, 3, 4, 5].forEach(n => {
+        const sn = document.getElementById('sn' + n);
+        sn.textContent = n;
+        sn.className = 'step-num';
+        document.getElementById('rs' + n).className = 'r-step';
+      });
+      document.getElementById('rs4desc').textContent = 'Inserir / atualizar registros linha a linha com log';
+      document.getElementById('rs5desc').textContent = 'Aguardando execução...';
+    }
+
+    function setStep(n, estado, desc = '') {
+      const sn = document.getElementById('sn' + n);
+      const rs = document.getElementById('rs' + n);
+      if (estado === 'running') {
+        sn.textContent = '⟳'; sn.className = 'step-num running';
+        rs.className = 'r-step active';
+      } else if (estado === 'ok') {
+        sn.textContent = '✓'; sn.className = 'step-num ok';
+        rs.className = 'r-step done-step';
+      } else if (estado === 'erro') {
+        sn.textContent = '✕'; sn.className = 'step-num err';
+        rs.className = 'r-step error-step';
+      }
+      if (desc && document.getElementById(`rs${n}desc`)) {
+        document.getElementById(`rs${n}desc`).textContent = desc;
+      }
+    }
+
+    async function iniciarRestauracao() {
+      const bkpId = document.getElementById('restoreBackupSel').value;
+      const modo = document.getElementById('restoreMode').value;
+      const scope = document.getElementById('restoreScope').value;
+
+      if (!bkpId) { mostrarAlerta('Selecione um backup de origem.', 'warn'); return; }
+
+      // Tabelas selecionadas
+      let tabelasSel = TABELAS;
+      if (scope === 'select') {
+        tabelasSel = [...document.querySelectorAll('#tabelasCheck input:checked')].map(i => i.value);
+        if (!tabelasSel.length) { mostrarAlerta('Selecione pelo menos uma tabela.', 'warn'); return; }
+      }
+
+      const bkp = todosBackups.find(b => b.id === bkpId);
+      const warn = modo === 'replace' ? '<br><strong>⚠️ MODO SUBSTITUIR:</strong> dados atuais serão apagados antes de inserir.' : '';
+
+      document.getElementById('modalRestoreTitle').textContent = 'Confirmar restauração';
+      document.getElementById('modalRestoreSub').textContent = `Backup de ${fmtDate(bkp?.criado_em)} · modo ${modo} · ${tabelasSel.length} tabelas`;
+      document.getElementById('modalRestoreWarn').innerHTML = `Essa ação irá alterar o banco de dados. Certifique-se de que quer continuar.${warn}`;
+
+      restoreCallback = () => executarRestauracao(bkpId, modo, tabelasSel);
+      document.getElementById('btnConfirmRestore').onclick = () => { fecharModal('modalRestore'); restoreCallback(); };
+      abrirModal('modalRestore');
+    }
+
+    async function executarRestauracao(bkpId, modo, tabelasSel) {
+      const btn = document.getElementById('btnRestore');
+      btn.disabled = true;
+      resetRestoreSteps();
+      let totalRestored = 0;
+
+      try {
+        // 1 — Buscar backup
+        setStep(1, 'running');
+        const { data: bkpArr } = await sb.get('backups_db', `?id=eq.${bkpId}&select=*`);
+        const bkp = bkpArr?.[0];
+        if (!bkp || !bkp.payload?.tabelas) throw new Error('Backup não encontrado ou payload inválido');
+        setStep(1, 'ok', `Payload validado · ${fmtKb(bkp.tamanho_kb)}`);
+
+        // 2 — Confirmar escopo
+        setStep(2, 'running');
+        const tabelasDisp = Object.keys(bkp.payload.tabelas).filter(t => tabelasSel.includes(t));
+        const totalReg = tabelasDisp.reduce((s, t) => (s + (bkp.payload.tabelas[t]?.length || 0)), 0);
+        setStep(2, 'ok', `${tabelasDisp.length} tabelas · ${totalReg.toLocaleString('pt-BR')} registros`);
+
+        // 3 — Snapshot de segurança
+        setStep(3, 'running');
+        await backupDireto('restore-snapshot');
+        setStep(3, 'ok', 'Snapshot criado antes da restauração');
+
+        // 4 — Restaurar
+        setStep(4, 'running', 'Restaurando tabelas...');
+        for (const tabela of tabelasDisp) {
+          const rows = bkp.payload.tabelas[tabela];
+          if (!rows?.length) continue;
+
+          if (modo === 'replace') {
+            await sb.delete(tabela, 'id=not.is.null');
+            await sb.insert(tabela, rows);
+          } else {
+            // upsert: inserir em lotes de 50
+            for (let i = 0; i < rows.length; i += 50) {
+              const batch = rows.slice(i, i + 50);
+              await fetch(`${SUPABASE_URL}/rest/v1/${tabela}`, {
+                method: 'POST',
+                headers: { ...sb.headers, 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+                body: JSON.stringify(batch)
+              });
+            }
+          }
+          totalRestored += rows.length;
+        }
+        setStep(4, 'ok', `${totalRestored.toLocaleString('pt-BR')} registros processados`);
+
+        // 5 — Log + relatório
+        setStep(5, 'running');
+        await sb.insert('backup_logs', {
+          evento: 'RESTORE', usuario: 'admin-painel', backup_id: bkpId,
+          tabela: tabelasDisp.join(','), registros: totalRestored,
+          status: 'ok', mensagem: `Restauração concluída · ${totalRestored} registros · modo ${modo}`,
+          metadados: { backup_data: bkp.criado_em, modo, tabelas: tabelasDisp }
+        });
+        setStep(5, 'ok', `Restauração finalizada · ${totalRestored.toLocaleString('pt-BR')} registros em ${tabelasDisp.length} tabelas`);
+
+        mostrarAlerta(`✅ Restauração concluída! ${totalRestored.toLocaleString('pt-BR')} registros em ${tabelasDisp.length} tabelas (modo ${modo}).`, 'ok');
+        await carregarDados();
+
+      } catch (e) {
+        const etapaAtual = [1, 2, 3, 4, 5].find(n => document.getElementById('sn' + n).textContent === '⟳') || 4;
+        setStep(etapaAtual, 'erro', e.message);
+        await sb.insert('backup_logs', { evento: 'ERRO', usuario: 'admin-painel', backup_id: bkpId, status: 'erro', mensagem: 'Falha na restauração: ' + e.message });
+        mostrarAlerta('Erro na restauração: ' + e.message, 'erro', 0);
+      } finally {
+        btn.disabled = false;
+      }
+    }
+
+    // ── Ver detalhe de um backup ─────────────────────────────
+    async function verDetalhe(id) {
+      const bkp = todosBackups.find(b => b.id === id);
+      if (!bkp) return;
+      const tabelas = bkp.payload?.tabelas || {};
+      const resumo = Object.entries(tabelas).map(([t, rows]) => `${t}: ${rows.length} registros`).join('\n');
+      alert(`Backup: ${fmtDate(bkp.criado_em)}\nTamanho: ${fmtKb(bkp.tamanho_kb)}\nTotal: ${(bkp.total_registros || 0).toLocaleString('pt-BR')} registros\n\n${resumo}`);
+    }
+
+    // ── Log filtering ────────────────────────────────────────
+    function filtrarLogs() {
+      const ev = document.getElementById('filterEvento').value;
+      const st = document.getElementById('filterStatus').value;
+      const busca = document.getElementById('filterBusca').value.toLowerCase();
+
+      const filtrado = todosLogs.filter(l =>
+        (!ev || l.evento === ev) &&
+        (!st || l.status === st) &&
+        (!busca || l.mensagem?.toLowerCase().includes(busca) || l.usuario?.toLowerCase().includes(busca))
+      );
+
+      document.getElementById('logCount').textContent = filtrado.length + ' eventos';
+
+      const evBadge = {
+        BACKUP: 'b-azul', RESTORE: 'b-amarelo', PURGE: 'b-vermelho',
+        LOGIN: 'b-cinza', ERRO: 'b-vermelho'
+      };
+
+      document.getElementById('logBody').innerHTML = filtrado.length ? filtrado.map(l => `
+    <tr>
+      <td class="log-mono">${fmtDate(l.criado_em)}</td>
+      <td><span class="badge ${evBadge[l.evento] || 'b-cinza'}">${l.evento}</span></td>
+      <td style="color:var(--texto-suave)">${l.usuario || '–'}</td>
+      <td>${l.tabela || '–'}</td>
+      <td style="text-align:right">${l.registros != null ? l.registros.toLocaleString('pt-BR') : '–'}</td>
+      <td><span class="badge ${l.status === 'ok' ? 'b-verde' : 'b-vermelho'}">${l.status}</span></td>
+      <td class="log-msg">${l.mensagem || ''}</td>
+    </tr>
+  `).join('') : '<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--texto-suave)">Nenhum log encontrado para os filtros aplicados.</td></tr>';
+    }
+
+    function limparFiltros() {
+      document.getElementById('filterEvento').value = '';
+      document.getElementById('filterStatus').value = '';
+      document.getElementById('filterBusca').value = '';
+      filtrarLogs();
+    }
+
+    // ── Exportar CSV ─────────────────────────────────────────
+    function exportarCSV() {
+      const header = 'Data/Hora,Evento,Usuário,Tabela,Registros,Status,Mensagem\n';
+      const linhas = todosLogs.map(l => [
+        fmtDate(l.criado_em), l.evento, l.usuario || '',
+        l.tabela || '', l.registros ?? '', l.status, (l.mensagem || '').replace(/,/g, ' ')
+      ].join(',')).join('\n');
+      const blob = new Blob(['\uFEFF' + header + linhas], { type: 'text/csv;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `asproc-backup-logs-${hoje()}.csv`;
+      a.click();
+    }
+
+    // ── INIT ─────────────────────────────────────────────────
+    carregarDados();
+
+    // Atualiza a cada 5 minutos automaticamente
+    setInterval(carregarDados, 5 * 60 * 1000);
+  </script>
+</body>
+
+</html>
