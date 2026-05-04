@@ -1,0 +1,383 @@
+
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans); background: var(--color-background-tertiary); }
+  .page { padding: 2rem; max-width: 1200px; margin: 0 auto; }
+  .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; }
+  .header-left h1 { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+  .header-left p { font-size: 13px; color: var(--color-text-secondary); margin-top: 4px; }
+  .badge { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 20px; display: inline-flex; align-items: center; gap: 5px; }
+  .badge-success { background: var(--color-background-success); color: var(--color-text-success); }
+  .badge-warning { background: var(--color-background-warning); color: var(--color-text-warning); }
+  .badge-danger { background: var(--color-background-danger); color: var(--color-text-danger); }
+  .badge-info { background: var(--color-background-info); color: var(--color-text-info); }
+  .badge-neutral { background: var(--color-background-secondary); color: var(--color-text-secondary); border: 0.5px solid var(--color-border-tertiary); }
+  .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+  .dot-green { background: #1D9E75; }
+  .dot-amber { background: #BA7517; }
+  .dot-red { background: #E24B4A; }
+  .dot-blue { background: #378ADD; }
+  .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 1.5rem; }
+  .metric { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 1rem; }
+  .metric-label { font-size: 11px; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
+  .metric-value { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+  .metric-sub { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+  .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem; }
+  .card-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 1rem; display: flex; align-items: center; gap: 8px; }
+  .icon { width: 16px; height: 16px; flex-shrink: 0; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: transparent; color: var(--color-text-primary); font-size: 13px; cursor: pointer; font-family: var(--font-sans); transition: background 0.15s; }
+  .btn:hover { background: var(--color-background-secondary); }
+  .btn:active { transform: scale(0.98); }
+  .btn-primary { background: var(--color-text-primary); color: var(--color-background-primary); border-color: var(--color-text-primary); }
+  .btn-primary:hover { opacity: 0.85; background: var(--color-text-primary); }
+  .btn-danger { border-color: var(--color-border-danger); color: var(--color-text-danger); }
+  .btn-danger:hover { background: var(--color-background-danger); }
+  .btn-sm { padding: 4px 10px; font-size: 12px; }
+  .schedule-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+  .schedule-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .schedule-label { font-size: 13px; color: var(--color-text-secondary); }
+  .schedule-val { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+  .backup-list { display: flex; flex-direction: column; gap: 6px; }
+  .backup-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-tertiary); background: var(--color-background-secondary); font-size: 12px; }
+  .backup-item.current { border-color: #1D9E75; background: #E1F5EE; }
+  .backup-item.current .backup-date { color: #085041; }
+  .backup-num { width: 22px; height: 22px; border-radius: 50%; background: var(--color-background-primary); border: 0.5px solid var(--color-border-secondary); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 500; color: var(--color-text-secondary); flex-shrink: 0; }
+  .backup-date { font-weight: 500; color: var(--color-text-primary); flex: 1; }
+  .backup-size { color: var(--color-text-secondary); min-width: 52px; text-align: right; }
+  .backup-actions { display: flex; gap: 4px; }
+  .scope-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .scope-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-tertiary); font-size: 12px; color: var(--color-text-primary); background: var(--color-background-secondary); }
+  .scope-check { width: 14px; height: 14px; border-radius: 3px; background: #1D9E75; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .log-table-wrap { overflow-x: auto; }
+  .log-table { width: 100%; font-size: 12px; border-collapse: collapse; }
+  .log-table th { font-size: 10px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.04em; padding: 6px 8px; border-bottom: 0.5px solid var(--color-border-tertiary); text-align: left; white-space: nowrap; }
+  .log-table td { padding: 8px 8px; border-bottom: 0.5px solid var(--color-border-tertiary); color: var(--color-text-primary); vertical-align: middle; white-space: nowrap; }
+  .log-table tr:last-child td { border-bottom: none; }
+  .log-table tr:hover td { background: var(--color-background-secondary); }
+  .log-type { font-family: var(--font-mono); font-size: 11px; }
+  .progress-bar { height: 4px; background: var(--color-border-tertiary); border-radius: 2px; overflow: hidden; margin-top: 8px; }
+  .progress-fill { height: 100%; border-radius: 2px; background: #1D9E75; transition: width 0.3s; }
+  .cycle-vis { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+  .cycle-day { width: 28px; height: 28px; border-radius: var(--border-radius-md); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 500; border: 0.5px solid var(--color-border-tertiary); }
+  .cycle-day.done { background: #E1F5EE; color: #085041; border-color: #9FE1CB; }
+  .cycle-day.current { background: #1D9E75; color: #fff; border-color: #1D9E75; }
+  .cycle-day.pending { background: var(--color-background-secondary); color: var(--color-text-secondary); }
+  .cycle-day.purge { background: #FAECE7; color: #993C1D; border-color: #F5C4B3; }
+  .sep { width: 8px; height: 1px; background: var(--color-border-secondary); }
+  .full-card { margin-bottom: 1rem; }
+  .filter-row { display: flex; align-items: center; gap: 8px; margin-bottom: 1rem; flex-wrap: wrap; }
+  select { padding: 6px 10px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); color: var(--color-text-primary); font-size: 12px; font-family: var(--font-sans); }
+  input[type="text"] { padding: 6px 10px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); color: var(--color-text-primary); font-size: 12px; font-family: var(--font-sans); width: 200px; }
+  .restore-modal { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1.25rem; margin-top: 1rem; }
+  .restore-steps { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+  .restore-step { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: var(--border-radius-md); background: var(--color-background-secondary); font-size: 12px; }
+  .step-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 500; flex-shrink: 0; }
+  .step-pending { background: var(--color-background-primary); border: 0.5px solid var(--color-border-secondary); color: var(--color-text-secondary); }
+  .step-done { background: #E1F5EE; color: #085041; }
+  .section-title { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-secondary); margin-bottom: 10px; }
+</style>
+
+<div class="page">
+
+  <div class="header">
+    <div class="header-left">
+      <h1>Backup & Restauração</h1>
+      <p>Gerenciamento automático de backups do banco de dados · Supabase</p>
+    </div>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <span class="badge badge-success"><span class="dot dot-green"></span> Agendador ativo</span>
+      <button class="btn btn-primary" onclick="sendPrompt('Gerar backup manual agora')">
+        <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v8M5 7l3 3 3-3M3 12h10"/></svg>
+        Backup agora ↗
+      </button>
+    </div>
+  </div>
+
+  <div class="metrics">
+    <div class="metric">
+      <div class="metric-label">Total de backups</div>
+      <div class="metric-value">7</div>
+      <div class="metric-sub">de 10 máximo</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Ciclo atual</div>
+      <div class="metric-value">Dia 7</div>
+      <div class="metric-sub">próximo purge em 3 dias</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Último backup</div>
+      <div class="metric-value">04/05</div>
+      <div class="metric-sub">Hoje · 00:00 · 2.1 MB</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Registros gravados</div>
+      <div class="metric-value">4.832</div>
+      <div class="metric-sub">em todas as tabelas</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Logs hoje</div>
+      <div class="metric-value">12</div>
+      <div class="metric-sub">3 usuários · 0 erros</div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title">
+        <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 2"/></svg>
+        Ciclo de retenção
+      </div>
+      <p class="section-title">Dias 1–10 → manter → dia 11 → purge automático</p>
+      <div class="cycle-vis">
+        <div class="cycle-day done">1</div>
+        <div class="cycle-day done">2</div>
+        <div class="cycle-day done">3</div>
+        <div class="cycle-day done">4</div>
+        <div class="cycle-day done">5</div>
+        <div class="cycle-day done">6</div>
+        <div class="cycle-day current">7</div>
+        <div class="cycle-day pending">8</div>
+        <div class="cycle-day pending">9</div>
+        <div class="cycle-day pending">10</div>
+        <div class="sep"></div>
+        <div class="cycle-day purge">11</div>
+      </div>
+      <div style="margin-top: 12px;">
+        <div class="progress-bar"><div class="progress-fill" style="width: 70%"></div></div>
+        <p style="font-size:11px; color: var(--color-text-secondary); margin-top:4px;">70% do ciclo concluído</p>
+      </div>
+      <div style="margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap;">
+        <span class="badge badge-success"><span class="dot dot-green"></span> concluído</span>
+        <span class="badge badge-info"><span class="dot dot-blue"></span> atual</span>
+        <span class="badge badge-neutral">pendente</span>
+        <span class="badge badge-danger"><span class="dot dot-red"></span> purge</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">
+        <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="12" height="8" rx="1.5"/><path d="M5 4V3a1 1 0 011-1h4a1 1 0 011 1v1"/></svg>
+        Escopo do backup
+      </div>
+      <div class="scope-grid">
+        <div class="scope-item"><span class="scope-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.8"><path d="M2 5l2 2 4-4"/></svg></span> Notícias</div>
+        <div class="scope-item"><span class="scope-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.8"><path d="M2 5l2 2 4-4"/></svg></span> Avisos</div>
+        <div class="scope-item"><span class="scope-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.8"><path d="M2 5l2 2 4-4"/></svg></span> Mensagens</div>
+        <div class="scope-item"><span class="scope-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.8"><path d="M2 5l2 2 4-4"/></svg></span> Vagas</div>
+        <div class="scope-item"><span class="scope-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.8"><path d="M2 5l2 2 4-4"/></svg></span> Candidaturas</div>
+        <div class="scope-item"><span class="scope-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.8"><path d="M2 5l2 2 4-4"/></svg></span> Usuários admin</div>
+        <div class="scope-item"><span class="scope-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.8"><path d="M2 5l2 2 4-4"/></svg></span> Newsletters</div>
+        <div class="scope-item"><span class="scope-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.8"><path d="M2 5l2 2 4-4"/></svg></span> Config / textos</div>
+        <div class="scope-item"><span class="scope-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.8"><path d="M2 5l2 2 4-4"/></svg></span> URLs de arquivos</div>
+        <div class="scope-item"><span class="scope-check"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.8"><path d="M2 5l2 2 4-4"/></svg></span> Versões notícias</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card full-card">
+    <div class="card-title" style="justify-content: space-between;">
+      <span style="display:flex; align-items:center; gap:8px;">
+        <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 2h5l3 3v9H4V2z"/><path d="M9 2v3h3"/></svg>
+        Backups armazenados
+      </span>
+      <button class="btn btn-sm btn-danger" onclick="sendPrompt('Confirmar purge manual de todos os backups do ciclo atual')">Purge manual ↗</button>
+    </div>
+    <div class="backup-list">
+      <div class="backup-item current">
+        <div class="backup-num">7</div>
+        <div class="backup-date">04/05/2026 · 00:00 <span class="badge badge-success" style="margin-left:6px; font-size:10px;">atual</span></div>
+        <div class="backup-size">2.1 MB</div>
+        <div class="backup-actions">
+          <button class="btn btn-sm" onclick="sendPrompt('Ver detalhes do backup do dia 04/05/2026')">detalhes ↗</button>
+          <button class="btn btn-sm" onclick="sendPrompt('Restaurar backup do dia 04/05/2026')">restaurar ↗</button>
+        </div>
+      </div>
+      <div class="backup-item">
+        <div class="backup-num">6</div>
+        <div class="backup-date">03/05/2026 · 00:00</div>
+        <div class="backup-size">2.0 MB</div>
+        <div class="backup-actions">
+          <button class="btn btn-sm" onclick="sendPrompt('Ver detalhes do backup do dia 03/05/2026')">detalhes ↗</button>
+          <button class="btn btn-sm" onclick="sendPrompt('Restaurar backup do dia 03/05/2026')">restaurar ↗</button>
+        </div>
+      </div>
+      <div class="backup-item">
+        <div class="backup-num">5</div>
+        <div class="backup-date">02/05/2026 · 00:00</div>
+        <div class="backup-size">1.9 MB</div>
+        <div class="backup-actions">
+          <button class="btn btn-sm" onclick="sendPrompt('Ver detalhes do backup do dia 02/05/2026')">detalhes ↗</button>
+          <button class="btn btn-sm" onclick="sendPrompt('Restaurar backup do dia 02/05/2026')">restaurar ↗</button>
+        </div>
+      </div>
+      <div class="backup-item">
+        <div class="backup-num">4</div>
+        <div class="backup-date">01/05/2026 · 00:00</div>
+        <div class="backup-size">1.9 MB</div>
+        <div class="backup-actions">
+          <button class="btn btn-sm">detalhes ↗</button>
+          <button class="btn btn-sm">restaurar ↗</button>
+        </div>
+      </div>
+      <div class="backup-item">
+        <div class="backup-num">3</div>
+        <div class="backup-date">30/04/2026 · 00:00</div>
+        <div class="backup-size">1.8 MB</div>
+        <div class="backup-actions">
+          <button class="btn btn-sm">detalhes ↗</button>
+          <button class="btn btn-sm">restaurar ↗</button>
+        </div>
+      </div>
+      <div class="backup-item">
+        <div class="backup-num">2</div>
+        <div class="backup-date">29/04/2026 · 00:00</div>
+        <div class="backup-size">1.7 MB</div>
+        <div class="backup-actions">
+          <button class="btn btn-sm">detalhes ↗</button>
+          <button class="btn btn-sm">restaurar ↗</button>
+        </div>
+      </div>
+      <div class="backup-item">
+        <div class="backup-num">1</div>
+        <div class="backup-date">28/04/2026 · 00:00</div>
+        <div class="backup-size">1.6 MB</div>
+        <div class="backup-actions">
+          <button class="btn btn-sm">detalhes ↗</button>
+          <button class="btn btn-sm">restaurar ↗</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card full-card">
+    <div class="card-title">
+      <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h8M2 12h5"/></svg>
+      Log de atividades
+    </div>
+    <div class="filter-row">
+      <select id="filterType">
+        <option value="">Todos os eventos</option>
+        <option>BACKUP</option>
+        <option>RESTORE</option>
+        <option>PURGE</option>
+        <option>LOGIN</option>
+        <option>ERRO</option>
+      </select>
+      <select id="filterUser">
+        <option value="">Todos os usuários</option>
+        <option>sistema</option>
+        <option>admin@site.com.br</option>
+        <option>editor@site.com.br</option>
+      </select>
+      <input type="text" placeholder="Buscar na mensagem..." id="filterSearch" />
+      <button class="btn btn-sm" onclick="applyFilter()">Filtrar</button>
+      <button class="btn btn-sm" onclick="resetFilter()">Limpar</button>
+    </div>
+    <div class="log-table-wrap">
+      <table class="log-table" id="logTable">
+        <thead>
+          <tr>
+            <th>Data / hora</th>
+            <th>Tipo</th>
+            <th>Usuário</th>
+            <th>Tabela / escopo</th>
+            <th>Registros</th>
+            <th>Status</th>
+            <th>Mensagem</th>
+          </tr>
+        </thead>
+        <tbody id="logBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="restore-modal">
+    <div class="card-title">
+      <svg class="icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8a5 5 0 1 0 2-4"/><path d="M3 4v4h4"/></svg>
+      Assistente de restauração
+    </div>
+    <p style="font-size: 13px; color: var(--color-text-secondary); margin-bottom: 12px;">Selecione o backup e as tabelas que deseja restaurar. O processo é incremental e não apaga dados existentes por padrão.</p>
+    <div style="display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;">
+      <select><option>Backup 04/05/2026</option><option>Backup 03/05/2026</option><option>Backup 02/05/2026</option></select>
+      <select><option>Restauração completa</option><option>Apenas notícias</option><option>Apenas vagas</option><option>Apenas usuários</option><option>Selecionar tabelas</option></select>
+      <select><option>Modo: upsert (seguro)</option><option>Modo: substituir tudo</option></select>
+    </div>
+    <div class="restore-steps">
+      <div class="restore-step"><div class="step-icon step-done">1</div><div><strong style="font-size:12px;">Validar backup</strong> · verificar integridade do arquivo JSON</div></div>
+      <div class="restore-step"><div class="step-icon step-pending">2</div><div><strong style="font-size:12px;">Confirmar escopo</strong> · revisar tabelas e registros afetados</div></div>
+      <div class="restore-step"><div class="step-icon step-pending">3</div><div><strong style="font-size:12px;">Gravar snapshot atual</strong> · backup de segurança pré-restore</div></div>
+      <div class="restore-step"><div class="step-icon step-pending">4</div><div><strong style="font-size:12px;">Executar restauração</strong> · upsert linha a linha com log</div></div>
+      <div class="restore-step"><div class="step-icon step-pending">5</div><div><strong style="font-size:12px;">Relatório final</strong> · resumo de linhas inseridas / atualizadas / ignoradas</div></div>
+    </div>
+    <div style="margin-top:12px;">
+      <button class="btn btn-primary" onclick="sendPrompt('Iniciar restauração do backup de 04/05/2026 em modo upsert completo')">Iniciar restauração ↗</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const logs = [
+  { dt: '04/05/2026 00:00:03', tipo: 'BACKUP', user: 'sistema', tabela: 'todas (10)', reg: 4832, status: 'ok', msg: 'Backup automático concluído · 2.1 MB' },
+  { dt: '03/05/2026 14:22:11', tipo: 'LOGIN', user: 'admin@site.com.br', tabela: '—', reg: null, status: 'ok', msg: 'Acesso ao painel de backup' },
+  { dt: '03/05/2026 14:23:05', tipo: 'RESTORE', user: 'admin@site.com.br', tabela: 'noticias', reg: 142, status: 'ok', msg: 'Restauração parcial concluída · 142 registros upserted' },
+  { dt: '03/05/2026 00:00:04', tipo: 'BACKUP', user: 'sistema', tabela: 'todas (10)', reg: 4800, status: 'ok', msg: 'Backup automático concluído · 2.0 MB' },
+  { dt: '02/05/2026 11:10:40', tipo: 'LOGIN', user: 'editor@site.com.br', tabela: '—', reg: null, status: 'ok', msg: 'Acesso ao painel de backup (somente leitura)' },
+  { dt: '02/05/2026 00:00:02', tipo: 'BACKUP', user: 'sistema', tabela: 'todas (10)', reg: 4781, status: 'ok', msg: 'Backup automático concluído · 1.9 MB' },
+  { dt: '01/05/2026 00:00:06', tipo: 'BACKUP', user: 'sistema', tabela: 'todas (10)', reg: 4750, status: 'ok', msg: 'Backup automático concluído · 1.9 MB' },
+  { dt: '30/04/2026 00:00:03', tipo: 'BACKUP', user: 'sistema', tabela: 'todas (10)', reg: 4710, status: 'ok', msg: 'Backup automático concluído · 1.8 MB' },
+  { dt: '29/04/2026 00:00:05', tipo: 'BACKUP', user: 'sistema', tabela: 'todas (10)', reg: 4680, status: 'ok', msg: 'Backup automático concluído · 1.7 MB' },
+  { dt: '28/04/2026 00:00:04', tipo: 'BACKUP', user: 'sistema', tabela: 'todas (10)', reg: 4640, status: 'ok', msg: 'Backup automático concluído · 1.6 MB' },
+  { dt: '27/04/2026 00:00:01', tipo: 'PURGE', user: 'sistema', tabela: 'backups_db', reg: 10, status: 'ok', msg: 'Ciclo completo: 10 backups purgados · novo ciclo iniciado' },
+  { dt: '26/04/2026 09:15:33', tipo: 'ERRO', user: 'sistema', tabela: 'vagas', reg: 0, status: 'erro', msg: 'Timeout ao exportar tabela vagas · retry em 30s' },
+];
+
+const badgeMap = {
+  BACKUP: 'badge-info',
+  RESTORE: 'badge-warning',
+  PURGE: 'badge-danger',
+  LOGIN: 'badge-neutral',
+  ERRO: 'badge-danger',
+};
+const statusMap = {
+  ok: 'badge-success',
+  erro: 'badge-danger',
+};
+
+function renderLogs(data) {
+  const tb = document.getElementById('logBody');
+  tb.innerHTML = data.map(l => `
+    <tr>
+      <td style="font-family: var(--font-mono); font-size:11px;">${l.dt}</td>
+      <td><span class="badge ${badgeMap[l.tipo]} log-type">${l.tipo}</span></td>
+      <td style="color: var(--color-text-secondary);">${l.user}</td>
+      <td>${l.tabela}</td>
+      <td style="text-align:right;">${l.reg !== null ? l.reg.toLocaleString('pt-BR') : '—'}</td>
+      <td><span class="badge ${statusMap[l.status]}">${l.status}</span></td>
+      <td style="color: var(--color-text-secondary); max-width: 260px; white-space: normal; font-size: 11px;">${l.msg}</td>
+    </tr>
+  `).join('');
+}
+
+function applyFilter() {
+  const tipo = document.getElementById('filterType').value;
+  const user = document.getElementById('filterUser').value;
+  const search = document.getElementById('filterSearch').value.toLowerCase();
+  const filtered = logs.filter(l =>
+    (!tipo || l.tipo === tipo) &&
+    (!user || l.user === user) &&
+    (!search || l.msg.toLowerCase().includes(search))
+  );
+  renderLogs(filtered);
+}
+
+function resetFilter() {
+  document.getElementById('filterType').value = '';
+  document.getElementById('filterUser').value = '';
+  document.getElementById('filterSearch').value = '';
+  renderLogs(logs);
+}
+
+renderLogs(logs);
+</script>
