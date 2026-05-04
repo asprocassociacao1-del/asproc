@@ -4873,7 +4873,7 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
         loadGhTokenFromSupabase();
         loadConfigFields();
         loadDashboard();
-        loadSection('noticias'); loadSection('vagas'); loadSection('avisos'); loadCandidaturas();
+        loadSection('noticias'); loadSection('vagas'); loadSection('avisos'); loadCandidaturas(); loadMensagens();
       }
 
       async function loadConfigFields() {
@@ -4974,6 +4974,7 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
         if (section === 'vagas') loadVagas();
         if (section === 'avisos') loadAvisos();
         if (section === 'candidaturas') loadCandidaturas();
+        if (section === 'mensagens') loadMensagens();
         if (section === 'usuarios') loadUsuarios();
       }
 

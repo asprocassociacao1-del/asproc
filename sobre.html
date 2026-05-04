@@ -1879,11 +1879,31 @@
         document.addEventListener('keydown', e => { if (e.key === 'Escape') closePopup() });
 
         /* FORM */
+        function getSbCreds() {
+            // Prioridade 1: variáveis globais definidas pelo asproc-supabase.js (caso existam)
+            const gUrl = (typeof SUPABASE_URL !== 'undefined' && SUPABASE_URL) ? SUPABASE_URL :
+                (typeof SUPABASE_ANON_URL !== 'undefined' && SUPABASE_ANON_URL) ? SUPABASE_ANON_URL :
+                    (typeof supabaseUrl !== 'undefined' && supabaseUrl) ? supabaseUrl : '';
+            const gKey = (typeof SUPABASE_KEY !== 'undefined' && SUPABASE_KEY) ? SUPABASE_KEY :
+                (typeof SUPABASE_ANON_KEY !== 'undefined' && SUPABASE_ANON_KEY) ? SUPABASE_ANON_KEY :
+                    (typeof supabaseKey !== 'undefined' && supabaseKey) ? supabaseKey : '';
+            if (gUrl && gKey) return { url: gUrl.trim(), key: gKey.trim() };
+
+            // Prioridade 2: mesma chave salva pelo admin.html no localStorage
+            try {
+                const cfg = JSON.parse(localStorage.getItem('asproc_config_v3') || '{}');
+                if (cfg.url && cfg.key) return { url: cfg.url.trim(), key: cfg.key.trim() };
+            } catch (_) { }
+
+            return null;
+        }
+
         async function enviarForm() {
             const nome = document.getElementById('f-nome').value.trim();
             const email = document.getElementById('f-email').value.trim();
             const assunto = document.getElementById('f-assunto').value;
             const msg = document.getElementById('f-msg').value.trim();
+
             if (!nome || !email || !assunto || !msg) { showToast('⚠️ Preencha todos os campos.'); return; }
             if (!email.includes('@')) { showToast('⚠️ E-mail inválido.'); return; }
 
@@ -1891,23 +1911,37 @@
             btn.textContent = 'Enviando…';
             btn.disabled = true;
 
+            const creds = getSbCreds();
+            if (!creds) {
+                // Credenciais não encontradas — não bloqueia o usuário, mas registra no console
+                console.error('[ASPROC] Supabase não configurado. Configure no admin.html → Configurações.');
+                btn.textContent = 'Enviar Mensagem →';
+                btn.disabled = false;
+                showToast('❌ Erro de configuração. Contacte o administrador.');
+                return;
+            }
+
             try {
-                // Tenta salvar no Supabase usando o script asproc-supabase.js
-                if (typeof SUPABASE_URL !== 'undefined' && typeof SUPABASE_KEY !== 'undefined') {
-                    const res = await fetch(SUPABASE_URL + '/rest/v1/mensagens_contato', {
-                        method: 'POST',
-                        headers: {
-                            'apikey': SUPABASE_KEY,
-                            'Authorization': 'Bearer ' + SUPABASE_KEY,
-                            'Content-Type': 'application/json',
-                            'Prefer': 'return=minimal'
-                        },
-                        body: JSON.stringify({ nome, email, assunto, mensagem: msg })
-                    });
-                    if (!res.ok) throw new Error('Erro ao salvar mensagem.');
+                const res = await fetch(`${creds.url}/rest/v1/mensagens_contato`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': creds.key,
+                        'Authorization': `Bearer ${creds.key}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify({ nome, email, assunto, mensagem: msg })
+                });
+                if (!res.ok) {
+                    const err = await res.json().catch(() => ({}));
+                    throw new Error(err.message || `Erro HTTP ${res.status}`);
                 }
             } catch (e) {
-                console.warn('Supabase indisponível, mensagem não salva no servidor:', e);
+                console.error('[ASPROC] Falha ao gravar mensagem:', e);
+                btn.textContent = 'Enviar Mensagem →';
+                btn.disabled = false;
+                showToast('❌ Não foi possível enviar: ' + e.message);
+                return;
             }
 
             btn.textContent = 'Enviar Mensagem →';
