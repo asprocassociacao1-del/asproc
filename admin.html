@@ -3628,6 +3628,29 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
     <div class="ne-topbar">
       <button class="btn btn-secondary btn-sm" onclick="closeVagaEditor()">← Voltar</button>
       <span class="ne-topbar-title" id="ve-topbar-title">Nova Vaga</span>
+      <button class="btn btn-secondary btn-sm" onclick="baixarModeloVaga()"
+        title="Baixa um modelo .doc com a estrutura ideal para criar vagas e importar de volta">📄 Modelo Word</button>
+      <label class="btn btn-secondary btn-sm" id="btn-import-word-vaga-label"
+        title="Importar .docx — preenche título, resumo e corpo automaticamente"
+        style="cursor:pointer;display:inline-flex;align-items:center;gap:.35rem;">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px;flex-shrink:0;">
+          <path
+            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM8.5 17l1.5-5.5 1.5 5.5h1l1.8-7h-1.1l-1.2 4.8-1.4-4.8H9.4L8 14.8 6.8 10H5.7l1.8 7H8.5z" />
+        </svg>
+        ⬆ Importar Word
+        <input type="file" id="import-word-vaga-file" accept=".docx" style="display:none;"
+          onchange="importWordVagaFile(this)">
+      </label>
+      <button class="btn btn-word btn-sm" id="btn-export-word-vaga" onclick="exportVagaWord(this)"
+        title="Exportar para Word (.docx)">
+        <svg class="word-icon" viewBox="0 0 24 24" fill="currentColor" style="width:15px;height:15px;">
+          <path
+            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM8.5 17l1.5-5.5 1.5 5.5h1l1.8-7h-1.1l-1.2 4.8-1.4-4.8H9.4L8 14.8 6.8 10H5.7l1.8 7H8.5z" />
+        </svg>
+        Word
+      </button>
+      <button class="btn btn-amber btn-sm" id="btn-ai-format-vaga" onclick="aiAutoFormatVaga()"
+        title="Formata o conteúdo automaticamente com IA">✨ Auto-formatar</button>
       <button class="btn btn-secondary btn-sm" id="btn-save-vaga-draft" onclick="saveVaga(false)">💾 Salvar
         rascunho</button>
       <button class="btn btn-primary btn-sm" id="btn-save-vaga-pub" onclick="saveVaga(true)">🌐 Publicar</button>
@@ -3858,6 +3881,174 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
     </div>
   </div>
 
+  <!-- ════ IMPORT WORD MODAL — VAGAS ════ -->
+  <div id="import-word-vaga-modal"
+    style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:1rem;">
+    <div
+      style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;width:100%;max-width:520px;box-shadow:0 24px 80px rgba(0,0,0,.7);overflow:hidden;display:flex;flex-direction:column;">
+      <div
+        style="display:flex;align-items:center;gap:.75rem;padding:1.1rem 1.4rem;border-bottom:1px solid var(--border);">
+        <div style="flex:1;">
+          <div style="font-size:.92rem;font-weight:600;color:var(--text);">⬆ Importar documento Word — Vaga</div>
+          <div style="font-size:.72rem;color:var(--text-muted);margin-top:.15rem;" id="import-word-vaga-filename">Nenhum
+            arquivo selecionado</div>
+        </div>
+        <button onclick="closeImportWordVagaModal()"
+          style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;width:28px;height:28px;color:var(--text-muted);cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;">✕</button>
+      </div>
+      <div id="import-word-vaga-progress" style="padding:1.5rem 1.4rem;display:none;">
+        <div style="height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;margin-bottom:.75rem;">
+          <div id="import-word-vaga-bar"
+            style="height:100%;width:0%;background:var(--accent);transition:width .3s;border-radius:2px;"></div>
+        </div>
+        <div id="import-word-vaga-status" style="font-size:.8rem;color:var(--text-muted);">Processando…</div>
+      </div>
+      <div id="import-word-vaga-preview"
+        style="display:none;padding:1.1rem 1.4rem;border-bottom:1px solid var(--border);max-height:320px;overflow-y:auto;">
+        <div
+          style="font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.7rem;">
+          📋 Preview do conteúdo extraído</div>
+        <div style="font-size:.75rem;font-weight:600;color:var(--text-muted);margin-bottom:.2rem;">TÍTULO DETECTADO
+        </div>
+        <div id="import-prev-vaga-titulo"
+          style="font-size:.92rem;font-weight:600;color:var(--text);margin-bottom:.85rem;padding:.5rem .7rem;background:var(--bg3);border-radius:6px;">
+        </div>
+        <div style="font-size:.75rem;font-weight:600;color:var(--text-muted);margin-bottom:.2rem;">RESUMO (1º parágrafo)
+        </div>
+        <div id="import-prev-vaga-resumo"
+          style="font-size:.82rem;color:var(--text-dim);margin-bottom:.85rem;padding:.5rem .7rem;background:var(--bg3);border-radius:6px;font-style:italic;">
+        </div>
+        <div style="font-size:.75rem;font-weight:600;color:var(--text-muted);margin-bottom:.2rem;">CORPO</div>
+        <div id="import-prev-vaga-corpo"
+          style="font-size:.78rem;color:var(--text-dim);padding:.5rem .7rem;background:var(--bg3);border-radius:6px;line-height:1.6;max-height:120px;overflow:hidden;">
+        </div>
+        <div id="import-word-vaga-stats"
+          style="margin-top:.75rem;font-size:.72rem;color:var(--text-muted);display:flex;gap:1rem;flex-wrap:wrap;">
+        </div>
+      </div>
+      <div id="import-word-vaga-options"
+        style="display:none;padding:.85rem 1.4rem;border-bottom:1px solid var(--border);background:rgba(0,0,0,.1);">
+        <div
+          style="font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.6rem;">
+          ⚙ Opções de importação</div>
+        <div style="display:flex;flex-direction:column;gap:.4rem;">
+          <label
+            style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-dim);cursor:pointer;">
+            <input type="checkbox" id="import-vaga-opt-titulo" checked style="accent-color:var(--accent);">
+            Preencher título automaticamente (1º Heading 1)
+          </label>
+          <label
+            style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-dim);cursor:pointer;">
+            <input type="checkbox" id="import-vaga-opt-resumo" checked style="accent-color:var(--accent);">
+            Preencher resumo automaticamente (1º parágrafo)
+          </label>
+          <label
+            style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-dim);cursor:pointer;">
+            <input type="checkbox" id="import-vaga-opt-imagens" checked style="accent-color:var(--accent);">
+            Incluir imagens do documento (base64 inline)
+          </label>
+          <label
+            style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-dim);cursor:pointer;">
+            <input type="checkbox" id="import-vaga-opt-append" style="accent-color:var(--accent);">
+            Acrescentar ao final do editor (sem limpar conteúdo atual)
+          </label>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:flex-end;gap:.5rem;padding:.85rem 1.4rem;">
+        <button onclick="closeImportWordVagaModal()"
+          style="background:transparent;border:1px solid var(--border);border-radius:var(--radius);color:var(--text-muted);font-size:.82rem;padding:.45rem .9rem;cursor:pointer;font-family:inherit;">Cancelar</button>
+        <button id="import-word-vaga-confirm-btn" onclick="confirmImportWordVaga()" disabled
+          style="background:var(--accent);border:none;border-radius:var(--radius);color:#fff;font-size:.82rem;font-weight:600;padding:.45rem 1.25rem;cursor:not-allowed;opacity:.4;font-family:inherit;transition:all .2s;">
+          ✅ Importar para o editor
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ IMPORT WORD MODAL — AVISOS ════ -->
+  <div id="import-word-aviso-modal"
+    style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:1rem;">
+    <div
+      style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;width:100%;max-width:520px;box-shadow:0 24px 80px rgba(0,0,0,.7);overflow:hidden;display:flex;flex-direction:column;">
+      <div
+        style="display:flex;align-items:center;gap:.75rem;padding:1.1rem 1.4rem;border-bottom:1px solid var(--border);">
+        <div style="flex:1;">
+          <div style="font-size:.92rem;font-weight:600;color:var(--text);">⬆ Importar documento Word — Aviso</div>
+          <div style="font-size:.72rem;color:var(--text-muted);margin-top:.15rem;" id="import-word-aviso-filename">
+            Nenhum arquivo selecionado</div>
+        </div>
+        <button onclick="closeImportWordAvisoModal()"
+          style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;width:28px;height:28px;color:var(--text-muted);cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;">✕</button>
+      </div>
+      <div id="import-word-aviso-progress" style="padding:1.5rem 1.4rem;display:none;">
+        <div style="height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;margin-bottom:.75rem;">
+          <div id="import-word-aviso-bar"
+            style="height:100%;width:0%;background:var(--accent);transition:width .3s;border-radius:2px;"></div>
+        </div>
+        <div id="import-word-aviso-status" style="font-size:.8rem;color:var(--text-muted);">Processando…</div>
+      </div>
+      <div id="import-word-aviso-preview"
+        style="display:none;padding:1.1rem 1.4rem;border-bottom:1px solid var(--border);max-height:320px;overflow-y:auto;">
+        <div
+          style="font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.7rem;">
+          📋 Preview do conteúdo extraído</div>
+        <div style="font-size:.75rem;font-weight:600;color:var(--text-muted);margin-bottom:.2rem;">TÍTULO DETECTADO
+        </div>
+        <div id="import-prev-aviso-titulo"
+          style="font-size:.92rem;font-weight:600;color:var(--text);margin-bottom:.85rem;padding:.5rem .7rem;background:var(--bg3);border-radius:6px;">
+        </div>
+        <div style="font-size:.75rem;font-weight:600;color:var(--text-muted);margin-bottom:.2rem;">RESUMO (1º parágrafo)
+        </div>
+        <div id="import-prev-aviso-resumo"
+          style="font-size:.82rem;color:var(--text-dim);margin-bottom:.85rem;padding:.5rem .7rem;background:var(--bg3);border-radius:6px;font-style:italic;">
+        </div>
+        <div style="font-size:.75rem;font-weight:600;color:var(--text-muted);margin-bottom:.2rem;">CORPO</div>
+        <div id="import-prev-aviso-corpo"
+          style="font-size:.78rem;color:var(--text-dim);padding:.5rem .7rem;background:var(--bg3);border-radius:6px;line-height:1.6;max-height:120px;overflow:hidden;">
+        </div>
+        <div id="import-word-aviso-stats"
+          style="margin-top:.75rem;font-size:.72rem;color:var(--text-muted);display:flex;gap:1rem;flex-wrap:wrap;">
+        </div>
+      </div>
+      <div id="import-word-aviso-options"
+        style="display:none;padding:.85rem 1.4rem;border-bottom:1px solid var(--border);background:rgba(0,0,0,.1);">
+        <div
+          style="font-size:.7rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.6rem;">
+          ⚙ Opções de importação</div>
+        <div style="display:flex;flex-direction:column;gap:.4rem;">
+          <label
+            style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-dim);cursor:pointer;">
+            <input type="checkbox" id="import-aviso-opt-titulo" checked style="accent-color:var(--accent);">
+            Preencher título automaticamente (1º Heading 1)
+          </label>
+          <label
+            style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-dim);cursor:pointer;">
+            <input type="checkbox" id="import-aviso-opt-resumo" checked style="accent-color:var(--accent);">
+            Preencher resumo automaticamente (1º parágrafo)
+          </label>
+          <label
+            style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-dim);cursor:pointer;">
+            <input type="checkbox" id="import-aviso-opt-imagens" checked style="accent-color:var(--accent);">
+            Incluir imagens do documento (base64 inline)
+          </label>
+          <label
+            style="display:flex;align-items:center;gap:.5rem;font-size:.82rem;color:var(--text-dim);cursor:pointer;">
+            <input type="checkbox" id="import-aviso-opt-append" style="accent-color:var(--accent);">
+            Acrescentar ao final do editor (sem limpar conteúdo atual)
+          </label>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:flex-end;gap:.5rem;padding:.85rem 1.4rem;">
+        <button onclick="closeImportWordAvisoModal()"
+          style="background:transparent;border:1px solid var(--border);border-radius:var(--radius);color:var(--text-muted);font-size:.82rem;padding:.45rem .9rem;cursor:pointer;font-family:inherit;">Cancelar</button>
+        <button id="import-word-aviso-confirm-btn" onclick="confirmImportWordAviso()" disabled
+          style="background:var(--accent);border:none;border-radius:var(--radius);color:#fff;font-size:.82rem;font-weight:600;padding:.45rem 1.25rem;cursor:not-allowed;opacity:.4;font-family:inherit;transition:all .2s;">
+          ✅ Importar para o editor
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- ════ MENU DE CONTEXTO DO EDITOR DE VAGAS ════ -->
   <!-- Context menu NOTÍCIAS -->
   <div id="n-context-menu"
@@ -4062,6 +4253,29 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
     <div class="ne-topbar">
       <button class="btn btn-secondary btn-sm" onclick="closeAvisoEditor()">← Voltar</button>
       <span class="ne-topbar-title" id="ae-topbar-title">Novo Aviso</span>
+      <button class="btn btn-secondary btn-sm" onclick="baixarModeloAviso()"
+        title="Baixa um modelo .doc com a estrutura ideal para criar avisos e importar de volta">📄 Modelo Word</button>
+      <label class="btn btn-secondary btn-sm" id="btn-import-word-aviso-label"
+        title="Importar .docx — preenche título, resumo e corpo automaticamente"
+        style="cursor:pointer;display:inline-flex;align-items:center;gap:.35rem;">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px;flex-shrink:0;">
+          <path
+            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM8.5 17l1.5-5.5 1.5 5.5h1l1.8-7h-1.1l-1.2 4.8-1.4-4.8H9.4L8 14.8 6.8 10H5.7l1.8 7H8.5z" />
+        </svg>
+        ⬆ Importar Word
+        <input type="file" id="import-word-aviso-file" accept=".docx" style="display:none;"
+          onchange="importWordAvisoFile(this)">
+      </label>
+      <button class="btn btn-word btn-sm" id="btn-export-word-aviso" onclick="exportAvisoWord(this)"
+        title="Exportar para Word (.docx)">
+        <svg class="word-icon" viewBox="0 0 24 24" fill="currentColor" style="width:15px;height:15px;">
+          <path
+            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM8.5 17l1.5-5.5 1.5 5.5h1l1.8-7h-1.1l-1.2 4.8-1.4-4.8H9.4L8 14.8 6.8 10H5.7l1.8 7H8.5z" />
+        </svg>
+        Word
+      </button>
+      <button class="btn btn-amber btn-sm" id="btn-ai-format-aviso" onclick="aiAutoFormatAviso()"
+        title="Formata o conteúdo automaticamente com IA">✨ Auto-formatar</button>
       <button class="btn btn-secondary btn-sm" id="btn-save-aviso-draft" onclick="saveAviso(false)">💾 Salvar
         rascunho</button>
       <button class="btn btn-primary btn-sm" id="btn-save-aviso-pub" onclick="saveAviso(true)">🌐 Publicar</button>
@@ -10645,6 +10859,432 @@ ${conteudoModelo}
         const status = document.getElementById('import-word-status');
         if (status) { status.textContent = 'Processando…'; status.style.color = ''; }
       }
+
+      /* ══════════════════════════════════════════
+         MODELO / IMPORTAR / EXPORTAR WORD — VAGAS
+      ══════════════════════════════════════════ */
+
+      function baixarModeloVaga() {
+        const conteudoModelo = `<h2>Descrição da Vaga</h2>
+<p>Descreva aqui a função, responsabilidades e contexto da vaga.</p>
+<h2>Requisitos</h2>
+<ul><li>Requisito 1</li><li>Requisito 2</li><li>Requisito 3</li></ul>
+<h2>Diferenciais</h2>
+<ul><li>Diferencial 1</li><li>Diferencial 2</li></ul>
+<h2>Benefícios</h2>
+<ul><li>Salário compatível com o mercado</li><li>Outros benefícios…</li></ul>
+<h2>Como se candidatar</h2>
+<p>Envie seu currículo para <strong>email@asproc.org.br</strong> com o assunto "<em>Nome da Vaga</em>".</p>`;
+
+        const htmlModelo = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="UTF-8"><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style>
+  @page{size:A4;margin:2.5cm;}
+  body{font-family:Calibri,Arial,sans-serif;font-size:12pt;color:#222;line-height:1.6;}
+  h1{font-size:22pt;color:#1A3A6B;margin:0 0 6pt;}h2{font-size:16pt;color:#1A3A6B;margin:18pt 0 6pt;}
+  h3{font-size:13pt;color:#333;margin:14pt 0 4pt;}p{margin:0 0 10pt;}
+  ul,ol{margin:6pt 0 10pt 20pt;}li{margin-bottom:4pt;}
+  .instrucao{background:#F0FDF4;border:1pt solid #BBF7D0;padding:10pt;border-radius:4pt;font-size:10pt;color:#166534;}
+  .campo-label{font-size:9pt;font-weight:bold;color:#6B7280;letter-spacing:1pt;text-transform:uppercase;margin:16pt 0 2pt;}
+</style></head>
+<body>
+<p class="instrucao">📋 <strong>MODELO DE VAGA — ASPROC</strong><br>
+Preencha cada seção abaixo e importe de volta no editor usando o botão <strong>"⬆ Importar Word"</strong>.<br>
+O sistema detecta automaticamente: <strong>Título 1</strong> → título da vaga | <strong>1º parágrafo</strong> → resumo | restante → corpo.</p>
+<p class="campo-label">📌 Título da Vaga (mantenha o estilo Título 1)</p>
+<h1>Escreva aqui o título completo da vaga</h1>
+<p class="campo-label">📝 Resumo / Lead (1º parágrafo — detectado automaticamente)</p>
+<p style="font-size:12pt;font-style:italic;color:#444;border-left:4pt solid #10B981;padding-left:10pt;">Escreva aqui um resumo de 1 a 2 frases que apresente a vaga de forma atraente. Este texto aparecerá nos cards do site.</p>
+<hr style="border:none;border-top:1pt solid #CCC;margin:14pt 0;">
+<p class="campo-label">📰 Corpo da Vaga</p>
+${conteudoModelo}
+</body></html>`;
+
+        try {
+          const blob = new Blob(['\ufeff', htmlModelo], { type: 'application/msword;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'modelo-vaga-asproc.doc';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => URL.revokeObjectURL(url), 5000);
+          toast('📄 Modelo de vaga baixado! Preencha e importe pelo botão "⬆ Importar Word".', 'success', 5000);
+        } catch (e) {
+          toast('❌ Erro ao gerar modelo: ' + e.message, 'error');
+        }
+      }
+
+      let _importDataVaga = null;
+
+      async function importWordVagaFile(input) {
+        const file = input.files && input.files[0];
+        if (!file) return;
+        input.value = '';
+        if (!file.name.toLowerCase().endsWith('.docx')) {
+          toast('❌ Selecione um arquivo .docx (Word 2007+)', 'error'); return;
+        }
+        const modal = document.getElementById('import-word-vaga-modal');
+        modal.style.display = 'flex';
+        document.getElementById('import-word-vaga-filename').textContent = file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB)';
+        document.getElementById('import-word-vaga-progress').style.display = 'block';
+        document.getElementById('import-word-vaga-preview').style.display = 'none';
+        document.getElementById('import-word-vaga-options').style.display = 'none';
+        const confirmBtn = document.getElementById('import-word-vaga-confirm-btn');
+        confirmBtn.disabled = true; confirmBtn.style.opacity = '.4'; confirmBtn.style.cursor = 'not-allowed';
+        const bar = document.getElementById('import-word-vaga-bar');
+        const status = document.getElementById('import-word-vaga-status');
+        try {
+          bar.style.width = '15%'; status.textContent = 'Lendo arquivo…';
+          await new Promise(r => setTimeout(r, 80));
+          bar.style.width = '35%'; status.textContent = 'Descompactando ZIP…';
+          await new Promise(r => setTimeout(r, 80));
+          bar.style.width = '60%'; status.textContent = 'Extraindo conteúdo e imagens…';
+          const rawHtml = await _parseDocx(file);
+          bar.style.width = '85%'; status.textContent = 'Organizando estrutura…';
+          await new Promise(r => setTimeout(r, 80));
+          const { titulo, resumo, html } = _extractMeta(rawHtml);
+          bar.style.width = '100%'; status.textContent = '✅ Concluído!';
+          await new Promise(r => setTimeout(r, 300));
+          const imgCount = (html.match(/<img /g) || []).length;
+          const wordCount = html.replace(/<[^>]+>/g, '').trim().split(/\s+/).filter(Boolean).length;
+          _importDataVaga = { titulo, resumo, html };
+          document.getElementById('import-word-vaga-progress').style.display = 'none';
+          document.getElementById('import-word-vaga-preview').style.display = 'block';
+          document.getElementById('import-word-vaga-options').style.display = 'block';
+          document.getElementById('import-prev-vaga-titulo').textContent = titulo || '(não detectado)';
+          document.getElementById('import-prev-vaga-resumo').textContent = resumo || '(não detectado)';
+          const bodyPreview = html.replace(/<img[^>]*>/g, '[🖼 imagem]').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 300);
+          document.getElementById('import-prev-vaga-corpo').textContent = bodyPreview + (bodyPreview.length >= 300 ? '…' : '');
+          const stats = [];
+          stats.push(`📝 ~${wordCount} palavras`);
+          if (imgCount > 0) stats.push(`🖼 ${imgCount} imagem${imgCount > 1 ? 'ns' : ''}`);
+          document.getElementById('import-word-vaga-stats').innerHTML = stats.map(s =>
+            `<span style="background:var(--bg3);padding:.2rem .55rem;border-radius:99px;">${s}</span>`).join('');
+          confirmBtn.disabled = false; confirmBtn.style.opacity = '1'; confirmBtn.style.cursor = 'pointer';
+        } catch (e) {
+          bar.style.width = '100%'; bar.style.background = 'var(--red)';
+          status.textContent = '❌ ' + e.message; status.style.color = 'var(--red)';
+          console.error('Import Word Vaga error:', e);
+        }
+      }
+
+      function confirmImportWordVaga() {
+        if (!_importDataVaga) return;
+        const useTitulo = document.getElementById('import-vaga-opt-titulo').checked;
+        const useResumo = document.getElementById('import-vaga-opt-resumo').checked;
+        const useImagens = document.getElementById('import-vaga-opt-imagens').checked;
+        const append = document.getElementById('import-vaga-opt-append').checked;
+        let html = _importDataVaga.html;
+        if (!useImagens) html = html.replace(/<img[^>]*>/g, '');
+        if (useTitulo && _importDataVaga.titulo) {
+          const tituloEl = document.getElementById('v-titulo');
+          if (!tituloEl.value.trim() || window.confirm('Substituir o título atual por "' + _importDataVaga.titulo.substring(0, 60) + '"?')) {
+            tituloEl.value = _importDataVaga.titulo;
+          }
+        }
+        if (useResumo && _importDataVaga.resumo) {
+          const resumoEl = document.getElementById('v-resumo');
+          if (!resumoEl.value.trim()) resumoEl.value = _importDataVaga.resumo.substring(0, 300);
+        }
+        const rte = document.getElementById('ve-rte-body');
+        if (append) { rte.innerHTML += html; } else { rte.innerHTML = html; }
+        if (typeof veSync === 'function') veSync();
+        if (typeof rteBindImgClicks === 'function') rteBindImgClicks('ve');
+        closeImportWordVagaModal();
+        toast('✅ Documento importado com sucesso! Revise e salve.', 'success');
+        _importDataVaga = null;
+      }
+
+      function closeImportWordVagaModal() {
+        const modal = document.getElementById('import-word-vaga-modal');
+        if (modal) modal.style.display = 'none';
+        _importDataVaga = null;
+        const bar = document.getElementById('import-word-vaga-bar');
+        if (bar) { bar.style.width = '0%'; bar.style.background = 'var(--accent)'; }
+        const status = document.getElementById('import-word-vaga-status');
+        if (status) { status.textContent = 'Processando…'; status.style.color = ''; }
+      }
+
+      function exportVagaWord(btn) {
+        const titulo = document.getElementById('v-titulo').value.trim() || 'Vaga';
+        const resumo = document.getElementById('v-resumo').value.trim();
+        const corpo = document.getElementById('ve-rte-body').innerHTML;
+        const htmlDoc = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="UTF-8"><style>
+@page{size:A4;margin:2.5cm;}body{font-family:Calibri,Arial,sans-serif;font-size:12pt;color:#222;line-height:1.6;}
+h1{font-size:22pt;color:#1A3A6B;}h2{font-size:16pt;color:#1A3A6B;}p{margin:0 0 10pt;}
+ul,ol{margin:6pt 0 10pt 20pt;}li{margin-bottom:4pt;}blockquote{border-left:4pt solid #10B981;padding-left:10pt;font-style:italic;color:#555;margin:10pt 0;}
+</style></head><body>
+<h1>${titulo}</h1>${resumo ? `<p style="font-style:italic;color:#555;border-left:4pt solid #10B981;padding-left:10pt;">${resumo}</p><hr style="border:none;border-top:1pt solid #CCC;margin:14pt 0;">` : ''}
+${corpo}
+</body></html>`;
+        try {
+          if (btn) { btn.textContent = '⏳ Exportando…'; btn.disabled = true; }
+          const blob = new Blob(['\ufeff', htmlDoc], { type: 'application/msword;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = (titulo.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') || 'vaga') + '.doc';
+          document.body.appendChild(a); a.click(); document.body.removeChild(a);
+          setTimeout(() => URL.revokeObjectURL(url), 5000);
+          toast('📄 Vaga exportada em Word!', 'success');
+        } catch (e) {
+          toast('❌ Erro ao exportar: ' + e.message, 'error');
+        } finally {
+          if (btn) { setTimeout(() => { btn.innerHTML = '<svg class="word-icon" viewBox="0 0 24 24" fill="currentColor" style="width:15px;height:15px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM8.5 17l1.5-5.5 1.5 5.5h1l1.8-7h-1.1l-1.2 4.8-1.4-4.8H9.4L8 14.8 6.8 10H5.7l1.8 7H8.5z"/></svg> Word'; btn.disabled = false; }, 2000); }
+        }
+      }
+
+      async function aiAutoFormatVaga() {
+        const rte = document.getElementById('ve-rte-body');
+        if (!rte || !rte.textContent.trim()) { toast('⚠️ Editor de vagas vazio.', 'warning'); return; }
+        const btn = document.getElementById('btn-ai-format-vaga');
+        if (btn) { btn.textContent = '⏳ Formatando…'; btn.disabled = true; }
+        try {
+          const response = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              model: 'claude-sonnet-4-20250514', max_tokens: 4000,
+              system: 'Você é um editor de texto para vagas de emprego. Formate o HTML fornecido mantendo o conteúdo original, melhorando apenas a estrutura, hierarquia de títulos (h2, h3), listas (ul/li), parágrafos e ênfases (strong, em). Retorne apenas o HTML formatado, sem comentários.',
+              messages: [{ role: 'user', content: `Formate este HTML de vaga:\n${rte.innerHTML}` }]
+            })
+          });
+          const data = await response.json();
+          const text = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
+          const clean = text.replace(/```html|```/g, '').trim();
+          if (clean) {
+            rte.innerHTML = clean;
+            if (typeof veSync === 'function') veSync();
+            toast('✨ Formatação aplicada!', 'success');
+          } else { toast('⚠️ IA não retornou conteúdo.', 'warning'); }
+        } catch (e) {
+          toast('❌ Erro na IA: ' + e.message, 'error');
+        } finally {
+          if (btn) { btn.textContent = '✨ Auto-formatar'; btn.disabled = false; }
+        }
+      }
+
+      window.baixarModeloVaga = baixarModeloVaga;
+      window.importWordVagaFile = importWordVagaFile;
+      window.confirmImportWordVaga = confirmImportWordVaga;
+      window.closeImportWordVagaModal = closeImportWordVagaModal;
+      window.exportVagaWord = exportVagaWord;
+      window.aiAutoFormatVaga = aiAutoFormatVaga;
+
+      /* ══════════════════════════════════════════
+         MODELO / IMPORTAR / EXPORTAR WORD — AVISOS
+      ══════════════════════════════════════════ */
+
+      function baixarModeloAviso() {
+        const conteudoModelo = `<h2>Informações Importantes</h2>
+<p>Descreva aqui o conteúdo principal do aviso.</p>
+<h2>Ações Necessárias</h2>
+<ul><li>Ação 1</li><li>Ação 2</li></ul>
+<h2>Prazo</h2>
+<p>Informe aqui prazos ou datas relevantes.</p>
+<h2>Contato</h2>
+<p>Para dúvidas, entre em contato pelo e-mail <strong>contato@asproc.org.br</strong>.</p>`;
+
+        const htmlModelo = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="UTF-8"><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style>
+  @page{size:A4;margin:2.5cm;}
+  body{font-family:Calibri,Arial,sans-serif;font-size:12pt;color:#222;line-height:1.6;}
+  h1{font-size:22pt;color:#1A3A6B;margin:0 0 6pt;}h2{font-size:16pt;color:#1A3A6B;margin:18pt 0 6pt;}
+  h3{font-size:13pt;color:#333;margin:14pt 0 4pt;}p{margin:0 0 10pt;}
+  ul,ol{margin:6pt 0 10pt 20pt;}li{margin-bottom:4pt;}
+  .instrucao{background:#FFF7ED;border:1pt solid #FED7AA;padding:10pt;border-radius:4pt;font-size:10pt;color:#9A3412;}
+  .campo-label{font-size:9pt;font-weight:bold;color:#6B7280;letter-spacing:1pt;text-transform:uppercase;margin:16pt 0 2pt;}
+</style></head>
+<body>
+<p class="instrucao">📋 <strong>MODELO DE AVISO — ASPROC</strong><br>
+Preencha cada seção abaixo e importe de volta no editor usando o botão <strong>"⬆ Importar Word"</strong>.<br>
+O sistema detecta automaticamente: <strong>Título 1</strong> → título do aviso | <strong>1º parágrafo</strong> → resumo | restante → corpo.</p>
+<p class="campo-label">📌 Título do Aviso (mantenha o estilo Título 1)</p>
+<h1>Escreva aqui o título completo do aviso</h1>
+<p class="campo-label">📝 Resumo / Lead (1º parágrafo — detectado automaticamente)</p>
+<p style="font-size:12pt;font-style:italic;color:#444;border-left:4pt solid #F59E0B;padding-left:10pt;">Escreva aqui um resumo de 1 a 2 frases que apresente o aviso de forma direta. Este texto aparecerá nos cards do site.</p>
+<hr style="border:none;border-top:1pt solid #CCC;margin:14pt 0;">
+<p class="campo-label">📰 Corpo do Aviso</p>
+${conteudoModelo}
+</body></html>`;
+
+        try {
+          const blob = new Blob(['\ufeff', htmlModelo], { type: 'application/msword;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'modelo-aviso-asproc.doc';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(() => URL.revokeObjectURL(url), 5000);
+          toast('📄 Modelo de aviso baixado! Preencha e importe pelo botão "⬆ Importar Word".', 'success', 5000);
+        } catch (e) {
+          toast('❌ Erro ao gerar modelo: ' + e.message, 'error');
+        }
+      }
+
+      let _importDataAviso = null;
+
+      async function importWordAvisoFile(input) {
+        const file = input.files && input.files[0];
+        if (!file) return;
+        input.value = '';
+        if (!file.name.toLowerCase().endsWith('.docx')) {
+          toast('❌ Selecione um arquivo .docx (Word 2007+)', 'error'); return;
+        }
+        const modal = document.getElementById('import-word-aviso-modal');
+        modal.style.display = 'flex';
+        document.getElementById('import-word-aviso-filename').textContent = file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB)';
+        document.getElementById('import-word-aviso-progress').style.display = 'block';
+        document.getElementById('import-word-aviso-preview').style.display = 'none';
+        document.getElementById('import-word-aviso-options').style.display = 'none';
+        const confirmBtn = document.getElementById('import-word-aviso-confirm-btn');
+        confirmBtn.disabled = true; confirmBtn.style.opacity = '.4'; confirmBtn.style.cursor = 'not-allowed';
+        const bar = document.getElementById('import-word-aviso-bar');
+        const status = document.getElementById('import-word-aviso-status');
+        try {
+          bar.style.width = '15%'; status.textContent = 'Lendo arquivo…';
+          await new Promise(r => setTimeout(r, 80));
+          bar.style.width = '35%'; status.textContent = 'Descompactando ZIP…';
+          await new Promise(r => setTimeout(r, 80));
+          bar.style.width = '60%'; status.textContent = 'Extraindo conteúdo e imagens…';
+          const rawHtml = await _parseDocx(file);
+          bar.style.width = '85%'; status.textContent = 'Organizando estrutura…';
+          await new Promise(r => setTimeout(r, 80));
+          const { titulo, resumo, html } = _extractMeta(rawHtml);
+          bar.style.width = '100%'; status.textContent = '✅ Concluído!';
+          await new Promise(r => setTimeout(r, 300));
+          const imgCount = (html.match(/<img /g) || []).length;
+          const wordCount = html.replace(/<[^>]+>/g, '').trim().split(/\s+/).filter(Boolean).length;
+          _importDataAviso = { titulo, resumo, html };
+          document.getElementById('import-word-aviso-progress').style.display = 'none';
+          document.getElementById('import-word-aviso-preview').style.display = 'block';
+          document.getElementById('import-word-aviso-options').style.display = 'block';
+          document.getElementById('import-prev-aviso-titulo').textContent = titulo || '(não detectado)';
+          document.getElementById('import-prev-aviso-resumo').textContent = resumo || '(não detectado)';
+          const bodyPreview = html.replace(/<img[^>]*>/g, '[🖼 imagem]').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 300);
+          document.getElementById('import-prev-aviso-corpo').textContent = bodyPreview + (bodyPreview.length >= 300 ? '…' : '');
+          const stats = [];
+          stats.push(`📝 ~${wordCount} palavras`);
+          if (imgCount > 0) stats.push(`🖼 ${imgCount} imagem${imgCount > 1 ? 'ns' : ''}`);
+          document.getElementById('import-word-aviso-stats').innerHTML = stats.map(s =>
+            `<span style="background:var(--bg3);padding:.2rem .55rem;border-radius:99px;">${s}</span>`).join('');
+          confirmBtn.disabled = false; confirmBtn.style.opacity = '1'; confirmBtn.style.cursor = 'pointer';
+        } catch (e) {
+          bar.style.width = '100%'; bar.style.background = 'var(--red)';
+          status.textContent = '❌ ' + e.message; status.style.color = 'var(--red)';
+          console.error('Import Word Aviso error:', e);
+        }
+      }
+
+      function confirmImportWordAviso() {
+        if (!_importDataAviso) return;
+        const useTitulo = document.getElementById('import-aviso-opt-titulo').checked;
+        const useResumo = document.getElementById('import-aviso-opt-resumo').checked;
+        const useImagens = document.getElementById('import-aviso-opt-imagens').checked;
+        const append = document.getElementById('import-aviso-opt-append').checked;
+        let html = _importDataAviso.html;
+        if (!useImagens) html = html.replace(/<img[^>]*>/g, '');
+        if (useTitulo && _importDataAviso.titulo) {
+          const tituloEl = document.getElementById('a-titulo');
+          if (!tituloEl.value.trim() || window.confirm('Substituir o título atual por "' + _importDataAviso.titulo.substring(0, 60) + '"?')) {
+            tituloEl.value = _importDataAviso.titulo;
+          }
+        }
+        if (useResumo && _importDataAviso.resumo) {
+          const resumoEl = document.getElementById('a-resumo');
+          if (!resumoEl.value.trim()) resumoEl.value = _importDataAviso.resumo.substring(0, 300);
+        }
+        const rte = document.getElementById('ae-rte-body');
+        if (append) { rte.innerHTML += html; } else { rte.innerHTML = html; }
+        if (typeof aeSync === 'function') aeSync();
+        if (typeof rteBindImgClicks === 'function') rteBindImgClicks('ae');
+        closeImportWordAvisoModal();
+        toast('✅ Documento importado com sucesso! Revise e salve.', 'success');
+        _importDataAviso = null;
+      }
+
+      function closeImportWordAvisoModal() {
+        const modal = document.getElementById('import-word-aviso-modal');
+        if (modal) modal.style.display = 'none';
+        _importDataAviso = null;
+        const bar = document.getElementById('import-word-aviso-bar');
+        if (bar) { bar.style.width = '0%'; bar.style.background = 'var(--accent)'; }
+        const status = document.getElementById('import-word-aviso-status');
+        if (status) { status.textContent = 'Processando…'; status.style.color = ''; }
+      }
+
+      function exportAvisoWord(btn) {
+        const titulo = document.getElementById('a-titulo').value.trim() || 'Aviso';
+        const resumo = document.getElementById('a-resumo').value.trim();
+        const corpo = document.getElementById('ae-rte-body').innerHTML;
+        const htmlDoc = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">
+<head><meta charset="UTF-8"><style>
+@page{size:A4;margin:2.5cm;}body{font-family:Calibri,Arial,sans-serif;font-size:12pt;color:#222;line-height:1.6;}
+h1{font-size:22pt;color:#1A3A6B;}h2{font-size:16pt;color:#1A3A6B;}p{margin:0 0 10pt;}
+ul,ol{margin:6pt 0 10pt 20pt;}li{margin-bottom:4pt;}blockquote{border-left:4pt solid #F59E0B;padding-left:10pt;font-style:italic;color:#555;margin:10pt 0;}
+</style></head><body>
+<h1>${titulo}</h1>${resumo ? `<p style="font-style:italic;color:#555;border-left:4pt solid #F59E0B;padding-left:10pt;">${resumo}</p><hr style="border:none;border-top:1pt solid #CCC;margin:14pt 0;">` : ''}
+${corpo}
+</body></html>`;
+        try {
+          if (btn) { btn.textContent = '⏳ Exportando…'; btn.disabled = true; }
+          const blob = new Blob(['\ufeff', htmlDoc], { type: 'application/msword;charset=utf-8' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = (titulo.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') || 'aviso') + '.doc';
+          document.body.appendChild(a); a.click(); document.body.removeChild(a);
+          setTimeout(() => URL.revokeObjectURL(url), 5000);
+          toast('📄 Aviso exportado em Word!', 'success');
+        } catch (e) {
+          toast('❌ Erro ao exportar: ' + e.message, 'error');
+        } finally {
+          if (btn) { setTimeout(() => { btn.innerHTML = '<svg class="word-icon" viewBox="0 0 24 24" fill="currentColor" style="width:15px;height:15px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM8.5 17l1.5-5.5 1.5 5.5h1l1.8-7h-1.1l-1.2 4.8-1.4-4.8H9.4L8 14.8 6.8 10H5.7l1.8 7H8.5z"/></svg> Word'; btn.disabled = false; }, 2000); }
+        }
+      }
+
+      async function aiAutoFormatAviso() {
+        const rte = document.getElementById('ae-rte-body');
+        if (!rte || !rte.textContent.trim()) { toast('⚠️ Editor de avisos vazio.', 'warning'); return; }
+        const btn = document.getElementById('btn-ai-format-aviso');
+        if (btn) { btn.textContent = '⏳ Formatando…'; btn.disabled = true; }
+        try {
+          const response = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              model: 'claude-sonnet-4-20250514', max_tokens: 4000,
+              system: 'Você é um editor de texto para avisos institucionais. Formate o HTML fornecido mantendo o conteúdo original, melhorando apenas a estrutura, hierarquia de títulos (h2, h3), listas (ul/li), parágrafos e ênfases (strong, em). Retorne apenas o HTML formatado, sem comentários.',
+              messages: [{ role: 'user', content: `Formate este HTML de aviso:\n${rte.innerHTML}` }]
+            })
+          });
+          const data = await response.json();
+          const text = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
+          const clean = text.replace(/```html|```/g, '').trim();
+          if (clean) {
+            rte.innerHTML = clean;
+            if (typeof aeSync === 'function') aeSync();
+            toast('✨ Formatação aplicada!', 'success');
+          } else { toast('⚠️ IA não retornou conteúdo.', 'warning'); }
+        } catch (e) {
+          toast('❌ Erro na IA: ' + e.message, 'error');
+        } finally {
+          if (btn) { btn.textContent = '✨ Auto-formatar'; btn.disabled = false; }
+        }
+      }
+
+      window.baixarModeloAviso = baixarModeloAviso;
+      window.importWordAvisoFile = importWordAvisoFile;
+      window.confirmImportWordAviso = confirmImportWordAviso;
+      window.closeImportWordAvisoModal = closeImportWordAvisoModal;
+      window.exportAvisoWord = exportAvisoWord;
+      window.aiAutoFormatAviso = aiAutoFormatAviso;
 
       window.importWordFile = importWordFile;
       window.confirmImportWord = confirmImportWord;
