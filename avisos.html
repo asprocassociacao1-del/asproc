@@ -6,18 +6,31 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>Avisos e Documentos – ASPROC</title>
 
-    <!-- ── Open Graph / WhatsApp preview (defaults; sobrescritos via JS se ?aviso=ID) ── -->
+    <!-- ═══ Open Graph / WhatsApp preview ═══════════════════════════
+         Tags estáticas: funcionam imediatamente no GitHub Pages.
+         A imagem og-default.jpg deve estar na raiz do seu repositório.
+         Tamanho ideal: 1200×630px.
+    ════════════════════════════════════════════════════════════════ -->
     <meta property="og:site_name" content="ASPROC">
-    <meta property="og:type" content="article">
-    <meta id="og-title" property="og:title" content="Avisos – ASPROC">
+    <meta property="og:type" content="website">
+    <meta id="og-title" property="og:title" content="Avisos e Documentos – ASPROC">
     <meta id="og-description" property="og:description"
-        content="Acompanhe os avisos e informativos da Associação dos Produtores Rurais de Carauari – ASPROC.">
-    <meta id="og-image" property="og:image" content="https://www.asproc.org.br/og-default.jpg">
-    <meta id="og-url" property="og:url" content="https://www.asproc.org.br/avisos.html">
+        content="Acompanhe os avisos e informativos da Associação dos Produtores Rurais de Carauari – ASPROC. Comunidades Ribeirinhas do Médio Juruá.">
+    <meta id="og-image" property="og:image" content="https://www.asproc.com.br/og-default.jpg">
+    <meta id="og-image-w" property="og:image:width" content="1200">
+    <meta id="og-image-h" property="og:image:height" content="630">
+    <meta id="og-url" property="og:url" content="https://www.asproc.com.br/avisos.html">
+
+    <!-- Twitter / X (funciona no WhatsApp também como fallback) -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta id="tw-title" name="twitter:title" content="Avisos – ASPROC">
-    <meta id="tw-description" name="twitter:description" content="Acompanhe os avisos e informativos da ASPROC.">
-    <meta id="tw-image" name="twitter:image" content="https://www.asproc.org.br/og-default.jpg">
+    <meta id="tw-title" name="twitter:title" content="Avisos e Documentos – ASPROC">
+    <meta id="tw-description" name="twitter:description"
+        content="Acompanhe os avisos e informativos da ASPROC. Comunidades Ribeirinhas do Médio Juruá.">
+    <meta id="tw-image" name="twitter:image" content="https://www.asproc.com.br/og-default.jpg">
+
+    <!-- SEO básico -->
+    <meta name="description"
+        content="Avisos e informativos da Associação dos Produtores Rurais de Carauari – ASPROC. Comunidades Ribeirinhas do Médio Juruá.">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <script src="asproc-supabase.js"></script>
@@ -1006,7 +1019,7 @@
             color: var(--escuro)
         }
 
-        /* ── Botão Compartilhar ── */
+        /* ── Botão Compartilhar (modal) ─────────────────────────── */
         .av-btn-share {
             background: rgba(26, 107, 138, .15);
             color: #5bbcd4;
@@ -1014,7 +1027,7 @@
             display: inline-flex;
             align-items: center;
             gap: .3rem;
-            padding: .3rem .82rem;
+            padding: .28rem .78rem;
             border-radius: 20px;
             font-size: .68rem;
             font-weight: 700;
@@ -1035,20 +1048,20 @@
             border-color: rgba(123, 201, 92, .4)
         }
 
-        /* Botão compartilhar no card (rodapé) */
+        /* ── Ícone compartilhar no card ─────────────────────────── */
         .av-share-card {
             background: none;
             border: none;
-            color: rgba(245, 240, 232, .38);
-            font-size: .72rem;
+            color: rgba(245, 240, 232, .35);
+            font-size: .75rem;
             cursor: pointer;
-            padding: .15rem .4rem;
+            padding: .15rem .42rem;
             border-radius: 6px;
             transition: color .2s, background .2s;
             display: inline-flex;
             align-items: center;
-            gap: .3rem;
-            font-family: 'DM Sans', sans-serif
+            font-family: 'DM Sans', sans-serif;
+            line-height: 1
         }
 
         .av-share-card:hover {
@@ -1060,7 +1073,7 @@
             color: var(--verde-neon)
         }
 
-        /* Toast de confirmação */
+        /* ── Toast ──────────────────────────────────────────────── */
         #av-toast {
             position: fixed;
             bottom: 1.6rem;
@@ -1069,7 +1082,7 @@
             background: var(--cinza);
             border: 1px solid rgba(123, 201, 92, .35);
             color: var(--verde-neon);
-            padding: .65rem 1.4rem;
+            padding: .6rem 1.4rem;
             border-radius: 30px;
             font-size: .82rem;
             font-weight: 600;
@@ -1086,7 +1099,7 @@
             opacity: 1
         }
 
-        /* ══ LIGHTBOX ══════════════════════════════════════════ */
+
         #av-lb {
             display: none;
             position: fixed;
@@ -1410,7 +1423,7 @@
                 <div class="av-m-meta">
                     <span id="av-m-badge" class="badge"></span>
                     <span id="av-m-date"></span>
-                    <button id="av-m-share" class="av-btn-share" onclick="avShare()" aria-label="Compartilhar aviso">🔗
+                    <button id="av-m-share" class="av-btn-share" onclick="avShare()" aria-label="Compartilhar">🔗
                         Compartilhar</button>
                 </div>
                 <div id="av-m-title"></div>
@@ -1521,9 +1534,9 @@
                     + '<a class="av-ler-mais" href="#" onclick="event.preventDefault();event.stopPropagation();avOpen(' + a.id + ')">'
                     + 'Ler mais <span class="av-ler-mais-arrow">→</span>'
                     + '</a>'
-                    + '<div style="display:flex;align-items:center;gap:.5rem">'
+                    + '<div style="display:flex;align-items:center;gap:.4rem">'
                     + nAnexos
-                    + '<button class="av-share-card" title="Copiar link" onclick="event.stopPropagation();avCopyLink(' + a.id + ',this)" aria-label="Compartilhar">🔗</button>'
+                    + '<button class="av-share-card" title="Copiar link para compartilhar" onclick="event.stopPropagation();avCopyLink(' + a.id + ',this)">🔗</button>'
                     + '</div>'
                     + '</div>'
                     + '</div>';
@@ -1590,25 +1603,9 @@
             var a = (window._AV_DATA || []).find(function (x) { return x.id === id; });
             if (!a) return;
 
-            // ── Atualiza URL sem recarregar ──
+            // Rastreia o aviso aberto e atualiza URL para deep link
             window._AV_CURRENT_ID = id;
             history.pushState({ aviso: id }, '', '?aviso=' + id);
-
-            // ── Atualiza Open Graph (para compartilhamento via JS share) ──
-            var resumoOG = (a.resumo || (function () { var d = document.createElement('div'); d.innerHTML = a.descricao || ''; return d.textContent || ''; }()))
-                .replace(/\s+/g, ' ').trim().substring(0, 200);
-            var imgOG = '';
-            if (Array.isArray(a.anexos)) {
-                var imgAnx = a.anexos.find(function (d) { return /^image\//i.test(d.tipo || d.mime || '') || /\.(jpe?g|png|gif|webp)(\?|$)/i.test(d.url || ''); });
-                if (imgAnx) imgOG = imgAnx.url;
-            }
-            if (!imgOG && a.imagem) imgOG = a.imagem;
-            if (!imgOG) imgOG = 'https://www.asproc.org.br/og-default.jpg';
-            var linkOG = window.location.origin + window.location.pathname + '?aviso=' + id;
-            ['og-title', 'tw-title'].forEach(function (i) { var m = document.getElementById(i); if (m) m.content = a.titulo || 'Aviso – ASPROC'; });
-            ['og-description', 'tw-description'].forEach(function (i) { var m = document.getElementById(i); if (m) m.content = resumoOG || ''; });
-            ['og-image', 'tw-image'].forEach(function (i) { var m = document.getElementById(i); if (m) m.content = imgOG; });
-            var ogUrl = document.getElementById('og-url'); if (ogUrl) ogUrl.content = linkOG;
             document.title = (a.titulo || 'Aviso') + ' – ASPROC';
 
             function fD(d) { if (!d) return ''; try { var dt = new Date(d + 'T00:00:00'); return 'Publicado em ' + MESES_G[dt.getMonth()] + ' de ' + dt.getFullYear(); } catch (e) { return d; } }
@@ -1709,47 +1706,43 @@
         });
 
         /* ════════════════════════════════════════════════════════════
-           COMPARTILHAMENTO — copia link individual e toast
+           COMPARTILHAR — copia link e mostra toast
         ════════════════════════════════════════════════════════════ */
-        var _toastTimer = null;
+        var _toastTmr = null;
         function avShowToast(msg) {
             var t = document.getElementById('av-toast');
             if (!t) return;
             t.textContent = msg || '🔗 Link copiado!';
             t.classList.add('show');
-            clearTimeout(_toastTimer);
-            _toastTimer = setTimeout(function () { t.classList.remove('show'); }, 2600);
+            clearTimeout(_toastTmr);
+            _toastTmr = setTimeout(function () { t.classList.remove('show'); }, 2800);
         }
 
-        function avBuildLink(id) {
-            return window.location.origin + window.location.pathname + '?aviso=' + id;
+        // O link que é copiado aponta para a Edge Function do Supabase,
+        // que gera o preview OG para WhatsApp e redireciona browsers.
+        function avBuildShareLink(id) {
+            return 'https://wiatqtiyiznscjyoxxww.supabase.co/functions/v1/og-aviso?aviso=' + id;
         }
 
-        function avCopyToClipboard(text, onSuccess) {
+        function avCopyToClipboard(text, onOk) {
             if (navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(text).then(onSuccess).catch(function () {
-                    _avFallbackCopy(text, onSuccess);
-                });
-            } else {
-                _avFallbackCopy(text, onSuccess);
-            }
+                navigator.clipboard.writeText(text).then(onOk).catch(function () { _avFallback(text, onOk); });
+            } else { _avFallback(text, onOk); }
         }
-
-        function _avFallbackCopy(text, cb) {
+        function _avFallback(text, cb) {
             var ta = document.createElement('textarea');
             ta.value = text;
             ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
-            document.body.appendChild(ta);
-            ta.select();
+            document.body.appendChild(ta); ta.select();
             try { document.execCommand('copy'); cb && cb(); } catch (e) { }
             document.body.removeChild(ta);
         }
 
-        // Botão compartilhar no modal
+        // Botão 🔗 Compartilhar dentro do modal
         function avShare() {
             var id = window._AV_CURRENT_ID;
             if (!id) return;
-            var link = avBuildLink(id);
+            var link = avBuildShareLink(id);
             var btn = document.getElementById('av-m-share');
             avCopyToClipboard(link, function () {
                 avShowToast('🔗 Link copiado! Cole no WhatsApp.');
@@ -1761,10 +1754,9 @@
             });
         }
 
-        // Botão compartilhar no card
+        // Botão 🔗 no rodapé do card
         function avCopyLink(id, btn) {
-            var link = avBuildLink(id);
-            avCopyToClipboard(link, function () {
+            avCopyToClipboard(avBuildShareLink(id), function () {
                 avShowToast('🔗 Link copiado! Cole no WhatsApp.');
                 if (btn) {
                     btn.textContent = '✅';
@@ -1775,47 +1767,32 @@
         }
 
         /* ════════════════════════════════════════════════════════════
-           DEEP LINK — abre modal se ?aviso=ID na URL
+           DEEP LINK — abre modal se URL contém ?aviso=ID
+           (usado quando alguém clica no link compartilhado)
         ════════════════════════════════════════════════════════════ */
         (function () {
-            function tryOpenFromURL() {
-                var params = new URLSearchParams(window.location.search);
-                var id = params.get('aviso');
-                if (!id) return;
-                id = parseInt(id, 10);
-                if (isNaN(id)) return;
-                var data = window._AV_DATA || [];
-                if (data.length) {
+            function tryOpen() {
+                var id = parseInt(new URLSearchParams(window.location.search).get('aviso'), 10);
+                if (!id || isNaN(id)) return;
+                if ((window._AV_DATA || []).length) {
                     avOpen(id);
                 } else {
-                    // aguarda carregamento dos dados (polling simples)
-                    var tries = 0;
-                    var iv = setInterval(function () {
-                        tries++;
-                        if ((window._AV_DATA || []).length) {
-                            clearInterval(iv);
-                            avOpen(id);
-                        } else if (tries > 40) {
-                            clearInterval(iv);
-                        }
+                    var tries = 0, iv = setInterval(function () {
+                        if ((window._AV_DATA || []).length) { clearInterval(iv); avOpen(id); }
+                        else if (++tries > 40) clearInterval(iv);
                     }, 250);
                 }
             }
-            // Aguarda DOM + script de carga
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', function () { setTimeout(tryOpenFromURL, 600); });
-            } else {
-                setTimeout(tryOpenFromURL, 600);
-            }
-            // Suporte ao botão voltar do browser
+            document.readyState === 'loading'
+                ? document.addEventListener('DOMContentLoaded', function () { setTimeout(tryOpen, 600); })
+                : setTimeout(tryOpen, 600);
+
             window.addEventListener('popstate', function (e) {
-                if (e.state && e.state.aviso) {
-                    avOpen(e.state.aviso);
-                } else {
-                    avClose();
-                }
+                if (e.state && e.state.aviso) avOpen(e.state.aviso);
+                else avClose();
             });
         })();
+
     </script>
 
     <!-- ── scripts originais da página ── -->
