@@ -676,15 +676,10 @@
             margin-bottom: .55rem
         }
 
-        /* Resumo truncado 3 linhas */
         .av-resumo {
             font-size: .85rem;
             color: rgba(245, 240, 232, .58);
             line-height: 1.72;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
             margin-bottom: .95rem
         }
 
@@ -1499,9 +1494,9 @@
                 var b = BADGE[a.tipo] || BADGE.info;
                 var anexos = getAnexos(a);
 
-                // Resumo: campo resumo ou texto limpo (max 175 chars)
+                // Resumo: texto completo sem truncagem
                 var txt = a.resumo || stripHtml(a.descricao || '');
-                var resumo = txt.length > 175 ? txt.substring(0, 175) + '…' : txt;
+                var resumo = txt;
 
                 // Chips de preview (máx 2)
                 var chipsHtml = '';
