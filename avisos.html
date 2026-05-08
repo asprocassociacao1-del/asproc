@@ -1721,9 +1721,7 @@
         // O link que é copiado aponta para a Edge Function do Supabase,
         // que gera o preview OG para WhatsApp e redireciona browsers.
         function avBuildShareLink(id) {
-            // Link direto da página — as meta OG estáticas no <head>
-            // já garantem o preview no WhatsApp sem precisar de servidor.
-            return 'https://www.asproc.com.br/avisos.html?aviso=' + id;
+            return 'https://difficult-pheasant-95.asprocassociacao1-del.deno.net/?aviso=' + id;
         }
 
         function avCopyToClipboard(text, onOk) {
