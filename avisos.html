@@ -5,6 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>Avisos e Documentos – ASPROC</title>
+
+    <!-- ── Open Graph / WhatsApp preview (defaults; sobrescritos via JS se ?aviso=ID) ── -->
+    <meta property="og:site_name" content="ASPROC">
+    <meta property="og:type" content="article">
+    <meta id="og-title" property="og:title" content="Avisos – ASPROC">
+    <meta id="og-description" property="og:description"
+        content="Acompanhe os avisos e informativos da Associação dos Produtores Rurais de Carauari – ASPROC.">
+    <meta id="og-image" property="og:image" content="https://www.asproc.org.br/og-default.jpg">
+    <meta id="og-url" property="og:url" content="https://www.asproc.org.br/avisos.html">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta id="tw-title" name="twitter:title" content="Avisos – ASPROC">
+    <meta id="tw-description" name="twitter:description" content="Acompanhe os avisos e informativos da ASPROC.">
+    <meta id="tw-image" name="twitter:image" content="https://www.asproc.org.br/og-default.jpg">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <script src="asproc-supabase.js"></script>
     <script src="asproc-logo.js"></script>
@@ -451,7 +465,7 @@
         }
 
         @media(max-width:900px) {
-                        .nav-links {
+            .nav-links {
                 position: absolute;
                 top: 0;
                 right: 0;
@@ -500,42 +514,6 @@
             max-width: 1400px;
             margin: 0 auto;
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         .sidebar-box {
             background: var(--cinza);
@@ -1028,6 +1006,86 @@
             color: var(--escuro)
         }
 
+        /* ── Botão Compartilhar ── */
+        .av-btn-share {
+            background: rgba(26, 107, 138, .15);
+            color: #5bbcd4;
+            border: 1px solid rgba(26, 107, 138, .32);
+            display: inline-flex;
+            align-items: center;
+            gap: .3rem;
+            padding: .3rem .82rem;
+            border-radius: 20px;
+            font-size: .68rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all .2s;
+            white-space: nowrap;
+            font-family: 'DM Sans', sans-serif
+        }
+
+        .av-btn-share:hover {
+            background: #5bbcd4;
+            color: var(--escuro)
+        }
+
+        .av-btn-share.copiado {
+            background: rgba(123, 201, 92, .2);
+            color: var(--verde-neon);
+            border-color: rgba(123, 201, 92, .4)
+        }
+
+        /* Botão compartilhar no card (rodapé) */
+        .av-share-card {
+            background: none;
+            border: none;
+            color: rgba(245, 240, 232, .38);
+            font-size: .72rem;
+            cursor: pointer;
+            padding: .15rem .4rem;
+            border-radius: 6px;
+            transition: color .2s, background .2s;
+            display: inline-flex;
+            align-items: center;
+            gap: .3rem;
+            font-family: 'DM Sans', sans-serif
+        }
+
+        .av-share-card:hover {
+            color: var(--verde-neon);
+            background: rgba(123, 201, 92, .08)
+        }
+
+        .av-share-card.copiado {
+            color: var(--verde-neon)
+        }
+
+        /* Toast de confirmação */
+        #av-toast {
+            position: fixed;
+            bottom: 1.6rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: var(--cinza);
+            border: 1px solid rgba(123, 201, 92, .35);
+            color: var(--verde-neon);
+            padding: .65rem 1.4rem;
+            border-radius: 30px;
+            font-size: .82rem;
+            font-weight: 600;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, .5);
+            z-index: 99999;
+            transition: transform .3s cubic-bezier(.34, 1.5, .64, 1), opacity .3s;
+            opacity: 0;
+            pointer-events: none;
+            white-space: nowrap
+        }
+
+        #av-toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1
+        }
+
         /* ══ LIGHTBOX ══════════════════════════════════════════ */
         #av-lb {
             display: none;
@@ -1123,47 +1181,57 @@
             backdrop-filter: blur(2px);
             cursor: pointer;
         }
+
         .nav-overlay.open {
             display: block;
         }
+
         /* ── Mobile nav improvements ── */
         .nav-cta {
             white-space: nowrap;
         }
+
         .nav-links.open .nav-cta {
             display: inline-block;
             align-self: flex-start;
             margin-top: .25rem;
         }
+
         /* Lang switcher inside mobile menu */
         .nav-links.open .nav-lang-mobile {
             display: flex;
             gap: 6px;
             padding-top: .5rem;
-            border-top: 1px solid rgba(123,201,92,.12);
+            border-top: 1px solid rgba(123, 201, 92, .12);
             margin-top: .25rem;
         }
+
         .nav-lang-mobile {
             display: none;
         }
+
         /* ── Drawer link styling ── */
         @media (max-width: 900px) {
             .nav-links li {
                 border-bottom: 1px solid rgba(123, 201, 92, .07);
             }
+
             .nav-links li:last-child {
                 border-bottom: none;
             }
+
             .nav-links a {
                 font-size: 1rem !important;
                 padding: 0.7rem 0 !important;
                 display: block;
                 color: rgba(245, 240, 232, 0.88) !important;
             }
+
             .nav-links .nav-cta {
                 margin-top: 0.75rem;
                 border-bottom: none !important;
             }
+
             .nav-links::before {
                 content: 'Menu';
                 display: block;
@@ -1178,21 +1246,26 @@
                 font-family: 'DM Sans', sans-serif;
             }
         }
+
         @media (max-width: 900px) {
             .hamburger {
                 display: flex;
                 position: relative;
                 z-index: 2100;
             }
+
             .hamburger[aria-expanded="true"] span:nth-child(1) {
                 transform: translateY(7px) rotate(45deg);
             }
+
             .hamburger[aria-expanded="true"] span:nth-child(2) {
                 opacity: 0;
             }
+
             .hamburger[aria-expanded="true"] span:nth-child(3) {
                 transform: translateY(-7px) rotate(-45deg);
             }
+
             .hamburger span {
                 transition: transform .25s, opacity .2s;
             }
@@ -1223,7 +1296,8 @@
                 <button class="lang-btn" onclick="setLang('en')">EN</button>
                 <button class="lang-btn" onclick="setLang('es')">ES</button>
             </div>
-            <button class="hamburger" aria-label="Abrir menu" aria-expanded="false" aria-controls="navLinks" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+            <button class="hamburger" aria-label="Abrir menu" aria-expanded="false" aria-controls="navLinks"
+                onclick="toggleMenu()"><span></span><span></span><span></span></button>
         </div>
         <div id="navOverlay" class="nav-overlay" onclick="closeMenu()"></div>
     </nav>
@@ -1325,6 +1399,9 @@
     </footer>
 
 
+    <!-- ── TOAST ──────────────────────────────── -->
+    <div id="av-toast">🔗 Link copiado!</div>
+
     <!-- ── MODAL ──────────────────────────────── -->
     <div id="av-overlay">
         <div id="av-modal" role="dialog" aria-modal="true" aria-labelledby="av-m-title">
@@ -1333,6 +1410,8 @@
                 <div class="av-m-meta">
                     <span id="av-m-badge" class="badge"></span>
                     <span id="av-m-date"></span>
+                    <button id="av-m-share" class="av-btn-share" onclick="avShare()" aria-label="Compartilhar aviso">🔗
+                        Compartilhar</button>
                 </div>
                 <div id="av-m-title"></div>
             </div>
@@ -1442,7 +1521,10 @@
                     + '<a class="av-ler-mais" href="#" onclick="event.preventDefault();event.stopPropagation();avOpen(' + a.id + ')">'
                     + 'Ler mais <span class="av-ler-mais-arrow">→</span>'
                     + '</a>'
+                    + '<div style="display:flex;align-items:center;gap:.5rem">'
                     + nAnexos
+                    + '<button class="av-share-card" title="Copiar link" onclick="event.stopPropagation();avCopyLink(' + a.id + ',this)" aria-label="Compartilhar">🔗</button>'
+                    + '</div>'
                     + '</div>'
                     + '</div>';
             }
@@ -1508,6 +1590,27 @@
             var a = (window._AV_DATA || []).find(function (x) { return x.id === id; });
             if (!a) return;
 
+            // ── Atualiza URL sem recarregar ──
+            window._AV_CURRENT_ID = id;
+            history.pushState({ aviso: id }, '', '?aviso=' + id);
+
+            // ── Atualiza Open Graph (para compartilhamento via JS share) ──
+            var resumoOG = (a.resumo || (function () { var d = document.createElement('div'); d.innerHTML = a.descricao || ''; return d.textContent || ''; }()))
+                .replace(/\s+/g, ' ').trim().substring(0, 200);
+            var imgOG = '';
+            if (Array.isArray(a.anexos)) {
+                var imgAnx = a.anexos.find(function (d) { return /^image\//i.test(d.tipo || d.mime || '') || /\.(jpe?g|png|gif|webp)(\?|$)/i.test(d.url || ''); });
+                if (imgAnx) imgOG = imgAnx.url;
+            }
+            if (!imgOG && a.imagem) imgOG = a.imagem;
+            if (!imgOG) imgOG = 'https://www.asproc.org.br/og-default.jpg';
+            var linkOG = window.location.origin + window.location.pathname + '?aviso=' + id;
+            ['og-title', 'tw-title'].forEach(function (i) { var m = document.getElementById(i); if (m) m.content = a.titulo || 'Aviso – ASPROC'; });
+            ['og-description', 'tw-description'].forEach(function (i) { var m = document.getElementById(i); if (m) m.content = resumoOG || ''; });
+            ['og-image', 'tw-image'].forEach(function (i) { var m = document.getElementById(i); if (m) m.content = imgOG; });
+            var ogUrl = document.getElementById('og-url'); if (ogUrl) ogUrl.content = linkOG;
+            document.title = (a.titulo || 'Aviso') + ' – ASPROC';
+
             function fD(d) { if (!d) return ''; try { var dt = new Date(d + 'T00:00:00'); return 'Publicado em ' + MESES_G[dt.getMonth()] + ' de ' + dt.getFullYear(); } catch (e) { return d; } }
             function ec(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
             var IX = /\.(jpe?g|png|gif|webp|svg|bmp|avif|tiff?)(\?.*)?$/i;
@@ -1568,6 +1671,9 @@
         function avClose() {
             document.getElementById('av-overlay').classList.remove('open');
             document.body.style.overflow = '';
+            window._AV_CURRENT_ID = null;
+            history.pushState({}, '', window.location.pathname);
+            document.title = 'Avisos e Documentos – ASPROC';
         }
 
         // Fechar ao clicar no fundo
@@ -1601,6 +1707,115 @@
         document.getElementById('av-lb').addEventListener('click', function (e) {
             if (e.target === this) avLbFechar();
         });
+
+        /* ════════════════════════════════════════════════════════════
+           COMPARTILHAMENTO — copia link individual e toast
+        ════════════════════════════════════════════════════════════ */
+        var _toastTimer = null;
+        function avShowToast(msg) {
+            var t = document.getElementById('av-toast');
+            if (!t) return;
+            t.textContent = msg || '🔗 Link copiado!';
+            t.classList.add('show');
+            clearTimeout(_toastTimer);
+            _toastTimer = setTimeout(function () { t.classList.remove('show'); }, 2600);
+        }
+
+        function avBuildLink(id) {
+            return window.location.origin + window.location.pathname + '?aviso=' + id;
+        }
+
+        function avCopyToClipboard(text, onSuccess) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(onSuccess).catch(function () {
+                    _avFallbackCopy(text, onSuccess);
+                });
+            } else {
+                _avFallbackCopy(text, onSuccess);
+            }
+        }
+
+        function _avFallbackCopy(text, cb) {
+            var ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand('copy'); cb && cb(); } catch (e) { }
+            document.body.removeChild(ta);
+        }
+
+        // Botão compartilhar no modal
+        function avShare() {
+            var id = window._AV_CURRENT_ID;
+            if (!id) return;
+            var link = avBuildLink(id);
+            var btn = document.getElementById('av-m-share');
+            avCopyToClipboard(link, function () {
+                avShowToast('🔗 Link copiado! Cole no WhatsApp.');
+                if (btn) {
+                    btn.textContent = '✅ Copiado!';
+                    btn.classList.add('copiado');
+                    setTimeout(function () { btn.textContent = '🔗 Compartilhar'; btn.classList.remove('copiado'); }, 2500);
+                }
+            });
+        }
+
+        // Botão compartilhar no card
+        function avCopyLink(id, btn) {
+            var link = avBuildLink(id);
+            avCopyToClipboard(link, function () {
+                avShowToast('🔗 Link copiado! Cole no WhatsApp.');
+                if (btn) {
+                    btn.textContent = '✅';
+                    btn.classList.add('copiado');
+                    setTimeout(function () { btn.textContent = '🔗'; btn.classList.remove('copiado'); }, 2500);
+                }
+            });
+        }
+
+        /* ════════════════════════════════════════════════════════════
+           DEEP LINK — abre modal se ?aviso=ID na URL
+        ════════════════════════════════════════════════════════════ */
+        (function () {
+            function tryOpenFromURL() {
+                var params = new URLSearchParams(window.location.search);
+                var id = params.get('aviso');
+                if (!id) return;
+                id = parseInt(id, 10);
+                if (isNaN(id)) return;
+                var data = window._AV_DATA || [];
+                if (data.length) {
+                    avOpen(id);
+                } else {
+                    // aguarda carregamento dos dados (polling simples)
+                    var tries = 0;
+                    var iv = setInterval(function () {
+                        tries++;
+                        if ((window._AV_DATA || []).length) {
+                            clearInterval(iv);
+                            avOpen(id);
+                        } else if (tries > 40) {
+                            clearInterval(iv);
+                        }
+                    }, 250);
+                }
+            }
+            // Aguarda DOM + script de carga
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', function () { setTimeout(tryOpenFromURL, 600); });
+            } else {
+                setTimeout(tryOpenFromURL, 600);
+            }
+            // Suporte ao botão voltar do browser
+            window.addEventListener('popstate', function (e) {
+                if (e.state && e.state.aviso) {
+                    avOpen(e.state.aviso);
+                } else {
+                    avClose();
+                }
+            });
+        })();
     </script>
 
     <!-- ── scripts originais da página ── -->
@@ -1621,22 +1836,22 @@
             if (pb) pb.style.width = (window.scrollY / (h.scrollHeight - h.clientHeight) * 100) + "%";
         });
         function toggleMenu() {
-            const menu    = document.getElementById('navLinks');
-            const btn     = document.querySelector('.hamburger');
+            const menu = document.getElementById('navLinks');
+            const btn = document.querySelector('.hamburger');
             const overlay = document.getElementById('navOverlay');
-            const isOpen  = menu.classList.toggle('open');
+            const isOpen = menu.classList.toggle('open');
             btn.setAttribute('aria-expanded', isOpen);
             if (overlay) overlay.classList.toggle('open', isOpen);
         }
         function closeMenu() {
-            const menu    = document.getElementById('navLinks');
-            const btn     = document.querySelector('.hamburger');
+            const menu = document.getElementById('navLinks');
+            const btn = document.querySelector('.hamburger');
             const overlay = document.getElementById('navOverlay');
             menu.classList.remove('open');
             btn && btn.setAttribute('aria-expanded', 'false');
             overlay && overlay.classList.remove('open');
         }
-        document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeMenu(); });
+        document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeMenu(); });
         document.querySelectorAll(".reveal").forEach(el => {
             new IntersectionObserver(entries => {
                 entries.forEach(e => { if (e.isIntersecting) e.target.classList.add("visible"); });
