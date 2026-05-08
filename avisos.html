@@ -1713,10 +1713,9 @@
             _toastTmr = setTimeout(function () { t.classList.remove('show'); }, 2800);
         }
 
-        // O link que é copiado aponta para a Edge Function do Supabase,
-        // que gera o preview OG para WhatsApp e redireciona browsers.
+        // Aponta para Supabase Edge Function que serve meta OG para bots e redireciona navegadores
         function avBuildShareLink(id) {
-            return 'https://www.asproc.org.br/avisos.html?aviso=' + id;
+            return 'https://wiatqtiyiznscjyoxxww.supabase.co/functions/v1/og?aviso=' + id;
         }
 
         function avCopyToClipboard(text, onOk) {
