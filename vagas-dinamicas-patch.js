@@ -182,6 +182,7 @@
               ${v.status === 'aberta'
                 ? `<button class="vbtn-apply" onclick="window._setVaga && window._setVaga('${v.titulo.replace(/'/g, "\\'")}')">Candidatar-se →</button>`
                 : `<span class="vbtn-apply" style="opacity:.35;cursor:default">Encerrada</span>`}
+              <button class="vbtn-share" title="Copiar link para compartilhar" onclick="event.stopPropagation();vpShareCard(${v.id},this)" style="background:transparent;border:1px solid rgba(37,211,102,.25);color:#25d366;border-radius:6px;padding:.4rem .6rem;font-size:.8rem;cursor:pointer;flex-shrink:0">🔗</button>
             </div>
           </div>`;
         grid.appendChild(card);
@@ -235,6 +236,32 @@
       el.textContent = total;
     });
   }
+
+  /* ── Compartilhar vaga via card ────────────────────────────── */
+  var _vpCardToast = null;
+  window.vpShareCard = function (id, btn) {
+    var link = 'https://wiatqtiyiznscjyoxxww.supabase.co/functions/v1/og-vaga?vaga=' + id;
+    var copy = (navigator.clipboard && navigator.clipboard.writeText)
+      ? navigator.clipboard.writeText(link)
+      : Promise.reject();
+    var ok = function () {
+      if (btn) { btn.textContent = '✅'; setTimeout(function () { btn.textContent = '🔗'; }, 2500); }
+      var t = document.getElementById('vp-toast');
+      if (t) {
+        t.textContent = '🔗 Link copiado! Cole no WhatsApp.';
+        t.classList.add('show');
+        clearTimeout(_vpCardToast);
+        _vpCardToast = setTimeout(function () { t.classList.remove('show'); }, 2800);
+      }
+    };
+    copy.then(ok).catch(function () {
+      var ta = document.createElement('textarea');
+      ta.value = link; ta.style.cssText = 'position:fixed;opacity:0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); ok(); } catch (e) { }
+      document.body.removeChild(ta);
+    });
+  };
 
   /* ── Inicialização ────────────────────────────────────────── */
   async function init() {

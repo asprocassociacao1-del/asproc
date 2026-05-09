@@ -2200,6 +2200,7 @@
                 <div class="vp-anexos" id="vp-anexos"></div>
                 <div class="vp-actions">
                     <button class="vp-btn-cand" id="vp-det-cand" onclick="vpTab('cand')">Candidatar-se →</button>
+                    <button class="vp-btn-share" id="vp-share-btn" onclick="vpShare()" style="background:rgba(37,211,102,.12);border:1px solid rgba(37,211,102,.25);color:#25d366;border-radius:8px;padding:.55rem 1rem;font-size:.82rem;font-weight:600;cursor:pointer;font-family:inherit;transition:background .2s">🔗 Compartilhar</button>
                     <button class="vp-btn-fechar" onclick="vpFechar()">Fechar</button>
                 </div>
             </div>
@@ -2541,6 +2542,41 @@
                 });
             });
 
+            /* ── Compartilhar vaga ── */
+            var _vpShareTmr = null;
+            function vpShowToast(msg) {
+                var t = document.getElementById('vp-toast');
+                if (!t) return;
+                t.textContent = msg;
+                t.classList.add('show');
+                clearTimeout(_vpShareTmr);
+                _vpShareTmr = setTimeout(function () { t.classList.remove('show'); }, 2800);
+            }
+
+            function vpShare() {
+                if (!vagaAtual) return;
+                var link = 'https://wiatqtiyiznscjyoxxww.supabase.co/functions/v1/og-vaga?vaga=' + vagaAtual.id;
+                var btn = document.getElementById('vp-share-btn');
+                var copy = navigator.clipboard
+                    ? navigator.clipboard.writeText(link)
+                    : Promise.reject();
+                copy.catch(function () {
+                    var ta = document.createElement('textarea');
+                    ta.value = link; ta.style.cssText = 'position:fixed;opacity:0';
+                    document.body.appendChild(ta); ta.select();
+                    try { document.execCommand('copy'); } catch (e) { }
+                    document.body.removeChild(ta);
+                }).finally ? copy.finally(function () {
+                    vpShowToast('🔗 Link copiado! Cole no WhatsApp.');
+                    if (btn) { btn.textContent = '✅ Copiado!'; setTimeout(function () { btn.textContent = '🔗 Compartilhar'; }, 2500); }
+                }) : (function () {
+                    vpShowToast('🔗 Link copiado! Cole no WhatsApp.');
+                    if (btn) { btn.textContent = '✅ Copiado!'; setTimeout(function () { btn.textContent = '🔗 Compartilhar'; }, 2500); }
+                })();
+            }
+
+            window.vpShare = vpShare;
+
             /* Expor globalmente */
             window.vpAbrir = vpAbrir;
             window.vpFechar = vpFechar;
@@ -2550,6 +2586,10 @@
             window.vpSubmit = vpSubmit;
         })();
     </script>
+
+    <!-- Toast de compartilhamento de vaga -->
+    <div id="vp-toast" style="position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(80px);background:#1e2a1e;color:#25d366;border:1px solid rgba(37,211,102,.3);padding:.6rem 1.2rem;border-radius:99px;font-size:.82rem;font-weight:600;z-index:9999;transition:transform .3s,opacity .3s;opacity:0;pointer-events:none"></div>
+    <style>#vp-toast.show{transform:translateX(-50%) translateY(0);opacity:1}</style>
 </body>
 
 </html>
