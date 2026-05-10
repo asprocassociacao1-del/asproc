@@ -2141,10 +2141,10 @@
                                 var sec = document.getElementById('vagas-grid');
                                 if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
                                 window.vpAbrir(alvo);
-                                // Limpa o parâmetro da URL sem recarregar a página
+                                // Atualiza a URL para o formato curto /vaga/{id} (sem recarregar)
                                 if (window.history && window.history.replaceState) {
-                                    var url = window.location.pathname + window.location.hash;
-                                    window.history.replaceState({}, document.title, url);
+                                    var novaUrl = '/vaga/' + vagaId + window.location.hash;
+                                    window.history.replaceState({ vagaId: vagaId }, document.title, novaUrl);
                                 }
                             }, 200);
                         } else if (!alvo) {
@@ -2552,6 +2552,11 @@
                 g('vaga-popup-overlay').classList.remove('open');
                 document.body.style.overflow = '';
                 vagaAtual = null;
+                // Restaura URL para /trabalhe-conosco.html quando estiver em /vaga/{id}
+                if (window.history && window.history.replaceState
+                    && /^\/vaga\/\d+\/?$/.test(window.location.pathname)) {
+                    window.history.replaceState({}, document.title, '/trabalhe-conosco.html' + window.location.hash);
+                }
             }
             function vpClose(e) {
                 if (e.target === g('vaga-popup-overlay')) vpFechar();
@@ -2587,7 +2592,7 @@
 
             function vpShare() {
                 if (!vagaAtual) return;
-                var link = 'https://wiatqtiyiznscjyoxxww.supabase.co/functions/v1/og-vaga?vaga=' + vagaAtual.id;
+                var link = 'https://www.asproc.org.br/vaga/' + vagaAtual.id;
                 var btn = document.getElementById('vp-share-btn');
                 var copy = navigator.clipboard
                     ? navigator.clipboard.writeText(link)
