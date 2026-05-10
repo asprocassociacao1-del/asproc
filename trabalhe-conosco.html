@@ -2122,6 +2122,38 @@
                     esp.textContent = 'Candidatura Espontânea';
                     sel.appendChild(esp);
                 }
+
+                /* ── Abrir vaga automaticamente via ?vaga=ID na URL ── */
+                try {
+                    var params = new URLSearchParams(window.location.search);
+                    var vagaId = params.get('vaga');
+                    if (vagaId) {
+                        var alvo = null;
+                        for (var k = 0; k < vagas.length; k++) {
+                            if (String(vagas[k].id) === String(vagaId)) {
+                                alvo = vagas[k];
+                                break;
+                            }
+                        }
+                        if (alvo && typeof window.vpAbrir === 'function') {
+                            // Pequeno delay para garantir que o popup esteja pronto e o scroll suave funcione
+                            setTimeout(function () {
+                                var sec = document.getElementById('vagas-grid');
+                                if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                window.vpAbrir(alvo);
+                                // Limpa o parâmetro da URL sem recarregar a página
+                                if (window.history && window.history.replaceState) {
+                                    var url = window.location.pathname + window.location.hash;
+                                    window.history.replaceState({}, document.title, url);
+                                }
+                            }, 200);
+                        } else if (!alvo) {
+                            console.warn('[ASPROC] Vaga não encontrada para id=' + vagaId);
+                        }
+                    }
+                } catch (e) {
+                    console.warn('[ASPROC] Erro ao abrir vaga via URL:', e);
+                }
             }
 
             /* Função global para os botões "Candidatar-se" */
