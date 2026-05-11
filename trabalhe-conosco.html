@@ -1764,7 +1764,7 @@
         <div class="slbl reveal">Oportunidades</div>
         <h2 class="stit reveal">Vagas em <span>Aberto</span></h2>
         <p class="sdesc reveal" style="margin-bottom:0">Processos seletivos abertos. <strong
-                style="color:var(--dourado)">Prazo final: 23 de Fevereiro de 2026.</strong></p>
+                style="color:var(--dourado)">2026.</strong></p>
         <div class="vagas-grid" id="vagas-grid">
             <div style="grid-column:1/-1;text-align:center;padding:3rem;color:rgba(245,240,232,.4)">
                 Carregando vagas…
@@ -2278,7 +2278,9 @@
                 <div class="vp-anexos" id="vp-anexos"></div>
                 <div class="vp-actions">
                     <button class="vp-btn-cand" id="vp-det-cand" onclick="vpTab('cand')">Candidatar-se →</button>
-                    <button class="vp-btn-share" id="vp-share-btn" onclick="vpShare()" style="background:rgba(37,211,102,.12);border:1px solid rgba(37,211,102,.25);color:#25d366;border-radius:8px;padding:.55rem 1rem;font-size:.82rem;font-weight:600;cursor:pointer;font-family:inherit;transition:background .2s">🔗 Compartilhar</button>
+                    <button class="vp-btn-share" id="vp-share-btn" onclick="vpShare()"
+                        style="background:rgba(37,211,102,.12);border:1px solid rgba(37,211,102,.25);color:#25d366;border-radius:8px;padding:.55rem 1rem;font-size:.82rem;font-weight:600;cursor:pointer;font-family:inherit;transition:background .2s">🔗
+                        Compartilhar</button>
                     <button class="vp-btn-fechar" onclick="vpFechar()">Fechar</button>
                 </div>
             </div>
@@ -2703,8 +2705,15 @@
     </script>
 
     <!-- Toast de compartilhamento de vaga -->
-    <div id="vp-toast" style="position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(80px);background:#1e2a1e;color:#25d366;border:1px solid rgba(37,211,102,.3);padding:.6rem 1.2rem;border-radius:99px;font-size:.82rem;font-weight:600;z-index:9999;transition:transform .3s,opacity .3s;opacity:0;pointer-events:none"></div>
-    <style>#vp-toast.show{transform:translateX(-50%) translateY(0);opacity:1}</style>
+    <div id="vp-toast"
+        style="position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(80px);background:#1e2a1e;color:#25d366;border:1px solid rgba(37,211,102,.3);padding:.6rem 1.2rem;border-radius:99px;font-size:.82rem;font-weight:600;z-index:9999;transition:transform .3s,opacity .3s;opacity:0;pointer-events:none">
+    </div>
+    <style>
+        #vp-toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1
+        }
+    </style>
 </body>
 
 </html>
