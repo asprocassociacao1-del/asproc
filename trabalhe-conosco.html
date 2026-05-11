@@ -1389,6 +1389,27 @@
             cursor: default
         }
 
+        /* ── VAGA EXPIRADA: card e popup em preto e branco ── */
+        .vcard.expirada {
+            filter: grayscale(1);
+            opacity: .75;
+        }
+
+        .vcard.expirada:hover {
+            filter: grayscale(1);
+            opacity: .85;
+        }
+
+        .vaga-popup.expirada {
+            filter: grayscale(1);
+        }
+
+        /* Badge específico para vaga expirada */
+        .vc-prazo.expirado {
+            color: #f87171 !important;
+            font-weight: 700;
+        }
+
         .vp-btn-fechar {
             padding: .82rem 1.4rem;
             background: rgba(245, 240, 232, .06);
@@ -2047,6 +2068,20 @@
                 return p[2] + '/' + p[1] + '/' + p[0];
             }
 
+            /* ── Verifica se a data de prazo já passou ── */
+            function isVagaExpirada(vaga) {
+                if (!vaga || !vaga.prazo) return false;
+                // Trata a string YYYY-MM-DD como data local (não UTC) para evitar timezone offset
+                var p = vaga.prazo.split('-');
+                if (p.length !== 3) return false;
+                var prazo = new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, parseInt(p[2], 10));
+                prazo.setHours(23, 59, 59, 999); // Considera o dia inteiro do prazo como válido
+                var hoje = new Date();
+                return hoje > prazo;
+            }
+            // Exposição global para outras funções (popup) também usarem
+            window.isVagaExpirada = isVagaExpirada;
+
             function statusCls(s) {
                 return s === 'aberta' ? 'ab' : s === 'encerrada' ? 'enc' : 'sus';
             }
@@ -2079,7 +2114,9 @@
                 for (var i = 0; i < vagas.length; i++) {
                     var v = vagas[i];
                     var img = v.imagem_url || 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=600&q=80';
-                    var dotCls = v.status === 'aberta' ? 'ab' : v.status === 'encerrada' ? 'enc' : 'sus';
+                    var expirada = isVagaExpirada(v) && v.status === 'aberta';
+                    // Se expirada, o dot vira vermelho (encerrada visualmente)
+                    var dotCls = expirada ? 'enc' : (v.status === 'aberta' ? 'ab' : v.status === 'encerrada' ? 'enc' : 'sus');
 
                     var chips = '';
                     if (v.local) chips += '<span class="chip" style="font-size:.68rem">' + v.local + '</span>';
@@ -2089,7 +2126,15 @@
                     // Resumo: usa campo resumo se existir, senão strip do descricao
                     var resumo = v.resumo || (v.descricao ? v.descricao.replace(/<[^>]*>/g, '').substring(0, 90) + '…' : '');
 
-                    html += '<div class="vcard visible" style="opacity:1;transform:none" data-idx="' + i + '" onclick="vpAbrir(window._vagasData[' + i + '])">' +
+                    var prazoHtml = '';
+                    if (v.prazo) {
+                        var prazoCls = expirada ? 'vc-prazo expirado' : 'vc-prazo';
+                        var prazoIcon = expirada ? '⛔' : '⏰';
+                        var prazoTxt = expirada ? 'Encerrada em ' + fmt(v.prazo) : fmt(v.prazo);
+                        prazoHtml = '<div class="' + prazoCls + '" style="margin-top:.3rem;align-self:flex-start">' + prazoIcon + ' ' + prazoTxt + '</div>';
+                    }
+
+                    html += '<div class="vcard visible' + (expirada ? ' expirada' : '') + '" style="opacity:1;transform:none" data-idx="' + i + '" onclick="vpAbrir(window._vagasData[' + i + '])">' +
                         '<div class="vc-img">' +
                         '<img src="' + img + '" alt="' + v.titulo + '" loading="lazy">' +
                         '<div class="vc-img-overlay"></div>' +
@@ -2100,7 +2145,7 @@
                         '<div class="vc-title">' + v.titulo + '</div>' +
                         (resumo ? '<div class="vc-desc">' + resumo + '</div>' : '') +
                         (chips ? '<div class="vc-chips" style="flex-wrap:wrap;margin-top:.2rem">' + chips + '</div>' : '') +
-                        (v.prazo ? '<div class="vc-prazo" style="margin-top:.3rem;align-self:flex-start">⏰ ' + fmt(v.prazo) + '</div>' : '') +
+                        prazoHtml +
                         '</div></div>';
                 }
                 grid.innerHTML = html;
@@ -2110,7 +2155,8 @@
                 if (sel) {
                     sel.innerHTML = '<option value="">Selecionar vaga…</option>';
                     for (var j = 0; j < vagas.length; j++) {
-                        if (vagas[j].status === 'aberta') {
+                        // Só inclui vagas abertas que NÃO estão expiradas
+                        if (vagas[j].status === 'aberta' && !isVagaExpirada(vagas[j])) {
                             var op = document.createElement('option');
                             op.value = vagas[j].titulo;
                             op.textContent = vagas[j].titulo;
@@ -2339,22 +2385,45 @@
             function vpAbrir(vaga) {
                 vagaAtual = vaga;
 
+                // Detecta se a vaga está expirada (prazo passou) mesmo com status "aberta"
+                var vagaExpirada = (typeof window.isVagaExpirada === 'function')
+                    ? window.isVagaExpirada(vaga) && vaga.status === 'aberta'
+                    : false;
+
                 g('vp-img').src = vaga.imagem_url || 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?w=900&q=80';
                 g('vp-img').alt = vaga.titulo;
                 g('vp-titulo').textContent = vaga.titulo;
 
-                // Badge de status
+                // Aplica/remove o efeito preto e branco no popup inteiro
+                var popupEl = document.querySelector('.vaga-popup');
+                if (popupEl) {
+                    if (vagaExpirada || vaga.status === 'encerrada' || vaga.status === 'suspensa') {
+                        popupEl.classList.add('expirada');
+                    } else {
+                        popupEl.classList.remove('expirada');
+                    }
+                }
+
+                // Badge de status — se expirada por data, mostra como "Encerrada"
                 var stMap = {
                     aberta: ['status-ab', '● Aberta'],
                     encerrada: ['status-enc', '● Encerrada'],
                     suspensa: ['status-sus', '● Suspensa']
                 };
-                var si = stMap[vaga.status] || ['status-ab', vaga.status];
+                var si;
+                if (vagaExpirada) {
+                    si = ['status-enc', '● Prazo Encerrado'];
+                } else {
+                    si = stMap[vaga.status] || ['status-ab', vaga.status];
+                }
                 g('vp-sbadge').innerHTML = '<span class="vp-chip ' + si[0] + '" style="font-size:.62rem">' + si[1] + '</span>';
 
                 // Meta chips
                 var chips = '';
-                if (vaga.prazo) chips += '<span class="vp-chip dourado">⏰ Prazo: ' + fmtDate(vaga.prazo) + '</span>';
+                if (vaga.prazo) {
+                    var prazoLabel = vagaExpirada ? '⛔ Encerrada em: ' : '⏰ Prazo: ';
+                    chips += '<span class="vp-chip dourado">' + prazoLabel + fmtDate(vaga.prazo) + '</span>';
+                }
                 if (vaga.local) chips += '<span class="vp-chip">📍 ' + vaga.local + '</span>';
                 if (vaga.regime) chips += '<span class="vp-chip">📑 ' + vaga.regime + '</span>';
                 if (vaga.carga_horaria) chips += '<span class="vp-chip">🕐 ' + vaga.carga_horaria + '</span>';
@@ -2381,17 +2450,24 @@
                 g('vp-anexos').innerHTML = anx;
 
                 // Botão na aba Detalhes + aba Candidatura
-                var aberta = (vaga.status === 'aberta');
+                // Considera "ativa" apenas se status='aberta' E prazo não passou
+                var aberta = (vaga.status === 'aberta') && !vagaExpirada;
                 var btnDet = g('vp-det-cand');
                 var tabC = g('vp-tab-cand');
                 if (aberta) {
                     btnDet.className = 'vp-btn-cand';
                     btnDet.textContent = 'Candidatar-se →';
+                    btnDet.disabled = false;
                     tabC.disabled = false;
                     tabC.style.opacity = '';
                 } else {
                     btnDet.className = 'vp-btn-cand disabled';
-                    btnDet.textContent = vaga.status === 'encerrada' ? 'Vaga Encerrada' : 'Vaga Suspensa';
+                    btnDet.disabled = true;
+                    if (vagaExpirada) {
+                        btnDet.textContent = 'Prazo Encerrado';
+                    } else {
+                        btnDet.textContent = vaga.status === 'encerrada' ? 'Vaga Encerrada' : 'Vaga Suspensa';
+                    }
                     tabC.disabled = true;
                     tabC.style.opacity = '.28';
                 }
@@ -2408,6 +2484,8 @@
 
             /* ── Alternar abas ── */
             function vpTab(t) {
+                // Bloqueia ir para a aba "Candidatar-se" se ela estiver desabilitada (vaga expirada/encerrada/suspensa)
+                if (t === 'cand' && g('vp-tab-cand') && g('vp-tab-cand').disabled) return;
                 g('vp-tab-det').classList.toggle('active', t === 'det');
                 g('vp-tab-cand').classList.toggle('active', t === 'cand');
                 g('vp-pdet').style.display = t === 'det' ? '' : 'none';
