@@ -10,6 +10,8 @@
     rel="stylesheet">
   <!-- docx-js: geração de .docx no browser -->
   <script src="https://unpkg.com/docx@8.5.0/build/index.min.js"></script>
+  <!-- DOMPurify: sanitização de HTML colado (protege contra XSS) -->
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.7/dist/purify.min.js"></script>
   <style>
     :root {
       --bg: #0f1117;
@@ -4284,9 +4286,10 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
     <div class="ne-body">
       <!-- EDITOR PRINCIPAL -->
       <div class="ne-editor-panel">
-        <input class="ne-title-input" id="a-titulo" type="text" placeholder="Título do aviso…" oninput="aeUpdateWappPreview()">
-        <textarea class="ne-resumo-input" id="a-resumo" placeholder="Resumo breve (aparece nos cards)…"
-          rows="2" oninput="aeUpdateWappPreview()"></textarea>
+        <input class="ne-title-input" id="a-titulo" type="text" placeholder="Título do aviso…"
+          oninput="aeUpdateWappPreview()">
+        <textarea class="ne-resumo-input" id="a-resumo" placeholder="Resumo breve (aparece nos cards)…" rows="2"
+          oninput="aeUpdateWappPreview()"></textarea>
 
         <!-- Rich Text Editor -->
         <div class="rte-wrap">
@@ -4429,14 +4432,20 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
 
           <!-- Preview de como ficará o compartilhamento no WhatsApp -->
           <div style="margin-top:1rem">
-            <div style="font-size:.68rem;font-weight:600;color:var(--text-muted);margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.07em">Preview WhatsApp / Telegram</div>
+            <div
+              style="font-size:.68rem;font-weight:600;color:var(--text-muted);margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.07em">
+              Preview WhatsApp / Telegram</div>
             <div style="border-radius:8px;overflow:hidden;background:#1b2a22;border:1px solid rgba(37,211,102,.2)">
               <div id="ae-wapp-img-wrap" style="display:none;width:100%;max-height:140px;overflow:hidden">
                 <img id="ae-wapp-img" src="" alt="" style="width:100%;height:140px;object-fit:cover;display:block">
               </div>
               <div style="padding:.6rem .75rem">
-                <div id="ae-wapp-titulo" style="font-size:.76rem;font-weight:700;color:#e9e9e9;line-height:1.35;margin-bottom:.2rem;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">Título do aviso – ASPROC</div>
-                <div id="ae-wapp-resumo" style="font-size:.7rem;color:#9e9e9e;line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">Resumo do aviso aparece aqui...</div>
+                <div id="ae-wapp-titulo"
+                  style="font-size:.76rem;font-weight:700;color:#e9e9e9;line-height:1.35;margin-bottom:.2rem;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">
+                  Título do aviso – ASPROC</div>
+                <div id="ae-wapp-resumo"
+                  style="font-size:.7rem;color:#9e9e9e;line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">
+                  Resumo do aviso aparece aqui...</div>
                 <div style="font-size:.64rem;color:#25d366;margin-top:.35rem;font-weight:600">www.asproc.org.br</div>
               </div>
             </div>
@@ -5665,7 +5674,7 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
          EDITOR DE AVISOS (fullscreen)
       ══════════════════════════════════════════ */
       let aeAnexos = []; // [{nome, url, tipo}]
-      let aeSavedSel = null;
+      // (aeSavedSel removido: a seleção agora é gerenciada por RTE.ae em closure.)
 
       function openAvisoEditor() {
         document.getElementById('aviso-editor-overlay').classList.add('open');
@@ -5819,112 +5828,235 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         }); // fim withBtn
       }
 
-      // RTE helpers para o editor de avisos
-      function aeRteSaveSelection() {
-        const sel = window.getSelection();
-        if (sel && sel.rangeCount) aeSavedSel = sel.getRangeAt(0).cloneRange();
-      }
+      /* ══════════════════════════════════════════════════════════════
+         FACTORY UNIFICADA DOS EDITORES (RTE)
+         ──────────────────────────────────────────────────────────────
+         Antes: 3 cópias quase idênticas (rte*, veRte*, aeRte*) com
+         ~600 linhas duplicadas e bugs corrigidos em apenas 1 de 3.
+         Agora: makeRTE(id) gera uma instância completa; as funções
+         globais antigas viram wrappers de uma linha para preservar
+         os onclick="..." inline no HTML.
 
-      function aeRteRestoreSelection() {
-        const rte = document.getElementById('ae-rte-body');
-        rte.focus();
-        if (aeSavedSel) {
-          const sel = window.getSelection();
-          sel.removeAllRanges();
-          sel.addRange(aeSavedSel);
-        }
-      }
+         Editores registrados:
+           RTE.n   → editor de notícias  (#n-rte-body  → #n-conteudo)
+           RTE.ve  → editor de vagas     (#ve-rte-body → #v-descricao)
+           RTE.ae  → editor de avisos    (#ae-rte-body → #a-descricao)
+         ════════════════════════════════════════════════════════════ */
+      function makeRTE(config) {
+        const bodyId = config.bodyId;
+        const hiddenId = config.hiddenId;
+        const linkPopupId = config.linkPopupId;
+        const linkUrlId = config.linkUrlId;
+        const linkTextId = config.linkTextId;
+        let savedSel = null;
 
-      function aeRteExec(cmd, val) {
-        // Restaura seleção salva (crítico para o menu de contexto funcionar)
-        aeRteRestoreSelection();
-        document.execCommand(cmd, false, val || null);
-        aeSync();
-      }
+        const $body = () => document.getElementById(bodyId);
 
-      function aeRteFontSize(px) {
-        aeRteRestoreSelection();
-        const sel = window.getSelection();
-        if (sel && sel.rangeCount && !sel.isCollapsed) {
-          try {
+        const api = {
+          id: config.id,
+
+          saveSelection() {
+            const sel = window.getSelection();
+            if (!sel || !sel.rangeCount) return;
             const range = sel.getRangeAt(0);
-            // Extrai o conteúdo selecionado e envolve em span
-            const fragment = range.extractContents();
-            const span = document.createElement('span');
-            span.style.fontSize = px + 'px';
-            span.appendChild(fragment);
-            range.insertNode(span);
-            // Reseleciona o span inserido
-            const newRange = document.createRange();
-            newRange.selectNodeContents(span);
-            sel.removeAllRanges();
-            sel.addRange(newRange);
-          } catch (err) {
-            // Fallback via execCommand
-            document.execCommand('fontSize', false, '3');
-            document.querySelectorAll('#ae-rte-body font[size="3"]').forEach(f => {
-              f.removeAttribute('size');
-              f.style.fontSize = px + 'px';
-            });
-          }
-        } else {
-          document.execCommand('fontSize', false, '3');
-          document.querySelectorAll('#ae-rte-body font[size="3"]').forEach(f => {
-            f.removeAttribute('size');
-            f.style.fontSize = px + 'px';
-          });
-        }
-        aeSync();
+            const body = $body();
+            // Só salva se a seleção está DENTRO deste editor
+            if (body && body.contains(range.commonAncestorContainer)) {
+              savedSel = range.cloneRange();
+            }
+          },
+
+          restoreSelection() {
+            const body = $body();
+            if (!body) return;
+            body.focus();
+            if (savedSel) {
+              const sel = window.getSelection();
+              sel.removeAllRanges();
+              sel.addRange(savedSel);
+            }
+          },
+
+          sync() {
+            const body = $body();
+            const hidden = document.getElementById(hiddenId);
+            if (body && hidden) hidden.value = body.innerHTML;
+            // Hook opcional adicional (preview, autosave futuro etc.)
+            if (typeof config.onSync === 'function') config.onSync();
+          },
+
+          exec(cmd, val) {
+            this.restoreSelection();
+            document.execCommand(cmd, false, val || null);
+            this.sync();
+          },
+
+          block(tag) {
+            this.restoreSelection();
+            if (['h1', 'h2', 'h3', 'h4', 'blockquote', 'pre'].includes(tag)) {
+              document.execCommand('formatBlock', false, tag);
+            } else {
+              document.execCommand('formatBlock', false, 'p');
+            }
+            this.sync();
+          },
+
+          fontSize(px) {
+            this.restoreSelection();
+            const sel = window.getSelection();
+            const body = $body();
+            if (sel && sel.rangeCount && !sel.isCollapsed) {
+              try {
+                const range = sel.getRangeAt(0);
+                const fragment = range.extractContents();
+                const span = document.createElement('span');
+                span.style.fontSize = px + 'px';
+                span.appendChild(fragment);
+                range.insertNode(span);
+                const newRange = document.createRange();
+                newRange.selectNodeContents(span);
+                sel.removeAllRanges();
+                sel.addRange(newRange);
+              } catch (err) {
+                // Fallback: surroundContents/extractContents falham com seleções
+                // que cruzam fronteiras de nós. Usa o execCommand legado.
+                document.execCommand('fontSize', false, '7');
+                body.querySelectorAll('font[size="7"]').forEach(f => {
+                  f.removeAttribute('size');
+                  f.style.fontSize = px + 'px';
+                });
+              }
+            } else {
+              // Sem seleção: ainda aplica como fallback ao bloco corrente
+              document.execCommand('fontSize', false, '7');
+              body.querySelectorAll('font[size="7"]').forEach(f => {
+                f.removeAttribute('size');
+                f.style.fontSize = px + 'px';
+              });
+            }
+            this.sync();
+          },
+
+          clearFormat() {
+            this.restoreSelection();
+            document.execCommand('removeFormat', false, null);
+            this.sync();
+          },
+
+          insertDivider() {
+            this.restoreSelection();
+            document.execCommand('insertHTML', false,
+              '<hr style="border:none;border-top:1px solid rgba(255,255,255,.15);margin:1.5rem 0;"><p><br></p>');
+            this.sync();
+          },
+
+          insertLink() {
+            if (!linkPopupId) return; // editores que não têm popup de link próprio
+            this.saveSelection();
+            const sel = window.getSelection();
+            const txt = sel && !sel.isCollapsed ? sel.toString() : '';
+            const txtEl = document.getElementById(linkTextId);
+            const urlEl = document.getElementById(linkUrlId);
+            if (txtEl) txtEl.value = txt;
+            if (urlEl) urlEl.value = '';
+            const popup = document.getElementById(linkPopupId);
+            if (popup) {
+              popup.style.display = 'block';
+              popup.style.left = '50%';
+              popup.style.top = '50%';
+              popup.style.transform = 'translate(-50%, -50%)';
+            }
+            if (urlEl) urlEl.focus();
+          },
+
+          confirmLink() {
+            const urlEl = document.getElementById(linkUrlId);
+            const txtEl = document.getElementById(linkTextId);
+            const url = urlEl ? urlEl.value.trim() : '';
+            const text = txtEl ? txtEl.value.trim() : '';
+            if (!url) {
+              if (typeof toast === 'function') toast('Digite a URL.', 'error');
+              return;
+            }
+            // Validação leve: só http(s) e mailto — bloqueia javascript:
+            if (!/^(https?:|mailto:|\/|#)/i.test(url)) {
+              if (typeof toast === 'function') toast('URL inválida.', 'error');
+              return;
+            }
+            this.restoreSelection();
+            const sel = window.getSelection();
+            if (text && sel && sel.isCollapsed) {
+              // Sem seleção: insere link com o texto digitado
+              const safeUrl = url.replace(/"/g, '&quot;');
+              const safeTxt = text.replace(/[<>&"]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c]));
+              document.execCommand('insertHTML', false,
+                `<a href="${safeUrl}" target="_blank" rel="noopener noreferrer" style="color:var(--accent)">${safeTxt}</a>`);
+            } else {
+              document.execCommand('createLink', false, url);
+              if (sel && sel.anchorNode) {
+                const anchor = sel.anchorNode.parentElement?.closest('a')
+                  || sel.focusNode?.parentElement?.closest('a');
+                if (anchor) {
+                  anchor.target = '_blank';
+                  anchor.rel = 'noopener noreferrer';
+                  anchor.style.color = 'var(--accent)';
+                }
+              }
+            }
+            const popup = document.getElementById(linkPopupId);
+            if (popup) popup.style.display = 'none';
+            this.sync();
+          },
+        };
+
+        return api;
       }
 
-      function aeRteBlock(tag) {
-        document.getElementById('ae-rte-body').focus();
-        document.execCommand('formatBlock', false, tag);
-        aeSync();
-      }
+      // Registra os 3 editores. onSync é injetado depois (quando as funções
+      // de preview/wordcount/etc. já estão definidas).
+      const RTE = {
+        n: makeRTE({
+          id: 'n',
+          bodyId: 'n-rte-body',
+          hiddenId: 'n-conteudo',
+          linkPopupId: 'rte-link-popup',
+          linkUrlId: 'rte-link-url',
+          linkTextId: 'rte-link-text',
+        }),
+        ve: makeRTE({
+          id: 've',
+          bodyId: 've-rte-body',
+          hiddenId: 'v-descricao',
+          linkPopupId: 've-rte-link-popup',
+          linkUrlId: 've-rte-link-url',
+          linkTextId: 've-rte-link-text',
+        }),
+        ae: makeRTE({
+          id: 'ae',
+          bodyId: 'ae-rte-body',
+          hiddenId: 'a-descricao',
+          linkPopupId: 'ae-rte-link-popup',
+          linkUrlId: 'ae-rte-link-url',
+          linkTextId: 'ae-rte-link-text',
+        }),
+      };
+      window.RTE = RTE; // exposto para debug
 
-      function aeRteClearFormat() {
-        document.getElementById('ae-rte-body').focus();
-        document.execCommand('removeFormat', false, null);
-        aeSync();
-      }
-
-      function aeRteInsertLink() {
-        aeRteSaveSelection();
-        const sel = window.getSelection();
-        const txt = sel && !sel.isCollapsed ? sel.toString() : '';
-        document.getElementById('ae-rte-link-text').value = txt;
-        document.getElementById('ae-rte-link-url').value = '';
-        const popup = document.getElementById('ae-rte-link-popup');
-        popup.style.cssText += ';display:block;top:50%;left:50%;transform:translate(-50%,-50%);';
-        document.getElementById('ae-rte-link-url').focus();
-      }
-
-      function aeRteConfirmLink() {
-        const url = document.getElementById('ae-rte-link-url').value.trim();
-        const txt = document.getElementById('ae-rte-link-text').value.trim();
-        if (!url) return;
-        aeRteRestoreSelection();
-        const sel = window.getSelection();
-        if (txt && sel && sel.isCollapsed) {
-          document.execCommand('insertHTML', false, `<a href="${url}" target="_blank" style="color:var(--accent)">${txt}</a>`);
-        } else {
-          document.execCommand('createLink', false, url);
-          if (sel && sel.anchorNode) {
-            const anchor = sel.anchorNode.parentElement?.closest('a') || sel.focusNode?.parentElement?.closest('a');
-            if (anchor) { anchor.target = '_blank'; anchor.style.color = 'var(--accent)'; }
-          }
-        }
-        document.getElementById('ae-rte-link-popup').style.display = 'none';
-        aeSync();
-      }
+      /* ══════════════════════════════════════════════════════════════
+         WRAPPERS DE COMPATIBILIDADE — editor de avisos (ae)
+         Os onclick="aeRteXxx(...)" no HTML continuam funcionando,
+         mas agora delegam para a factory.
+         ════════════════════════════════════════════════════════════ */
+      const aeRteSaveSelection = () => RTE.ae.saveSelection();
+      const aeRteRestoreSelection = () => RTE.ae.restoreSelection();
+      const aeRteExec = (cmd, val) => RTE.ae.exec(cmd, val);
+      const aeRteFontSize = (px) => RTE.ae.fontSize(px);
+      const aeRteBlock = (tag) => RTE.ae.block(tag);
+      const aeRteClearFormat = () => RTE.ae.clearFormat();
+      const aeRteInsertLink = () => RTE.ae.insertLink();
+      const aeRteConfirmLink = () => RTE.ae.confirmLink();
+      const aeRteInsertDivider = () => RTE.ae.insertDivider();
       window.aeRteConfirmLink = aeRteConfirmLink;
-
-      function aeRteInsertDivider() {
-        document.getElementById('ae-rte-body').focus();
-        document.execCommand('insertHTML', false, '<hr style="border:none;border-top:1px solid rgba(255,255,255,.12);margin:1.5rem 0;"><p><br></p>');
-        aeSync();
-      }
 
       function aeSync() {
         document.getElementById('a-descricao').value = document.getElementById('ae-rte-body').innerHTML;
@@ -5937,8 +6069,9 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         if (!sel || sel.isCollapsed) return;
         e.preventDefault();
         e.stopPropagation();
-        // Salva a seleção AGORA, antes de qualquer interação com o menu
-        if (sel.rangeCount) aeSavedSel = sel.getRangeAt(0).cloneRange();
+        // Salva a seleção AGORA, antes de qualquer interação com o menu.
+        // Usa a factory (RTE.ae) — é dela que os comandos vão restaurar depois.
+        RTE.ae.saveSelection();
         const menu = document.getElementById('ae-context-menu');
         menu.style.display = 'block';
         const mx = Math.min(e.clientX, window.innerWidth - 245);
@@ -5949,7 +6082,7 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
 
       function aeHideCtx() {
         document.getElementById('ae-context-menu').style.display = 'none';
-        // NÃO limpa aeSavedSel aqui — a seleção pode ainda ser usada pelo comando
+        // NÃO limpa a seleção aqui — pode ainda ser usada pelo comando do menu.
       }
       window.aeHideCtx = aeHideCtx;
 
@@ -7327,45 +7460,23 @@ CREATE POLICY "admin_versoes" ON noticia_versoes FOR ALL TO authenticated USING 
         }
       }
 
+      // Wrappers que delegam à factory RTE.n, preservando os hooks específicos
+      // do editor principal (word count, preview etc).
       function rteExec(cmd, val) {
-        rteRestoreSelection();
-        document.execCommand(cmd, false, val || null);
-        syncRteToHidden();
-        updateWordCount();
+        RTE.n.exec(cmd, val);
+        if (typeof updateWordCount === 'function') updateWordCount();
       }
 
       function rteBlock(tag) {
-        rteRestoreSelection();
-        if (['h1', 'h2', 'h3', 'h4'].includes(tag)) document.execCommand('formatBlock', false, tag);
-        else if (tag === 'blockquote') document.execCommand('formatBlock', false, 'blockquote');
-        else if (tag === 'pre') document.execCommand('formatBlock', false, 'pre');
-        else document.execCommand('formatBlock', false, 'p');
-        syncRteToHidden();
+        RTE.n.block(tag);
       }
 
       function rteFontSize(px) {
-        rteRestoreSelection();
-        const sel = window.getSelection();
-        if (sel && sel.rangeCount > 0 && !sel.isCollapsed) {
-          const range = sel.getRangeAt(0);
-          try {
-            const span = document.createElement('span');
-            span.style.fontSize = px + 'px';
-            range.surroundContents(span);
-          } catch (e) {
-            // surroundContents falha se seleção cruza nós — usa execCommand como fallback
-            document.execCommand('fontSize', false, '7');
-            const body = document.getElementById('n-rte-body');
-            body.querySelectorAll('font[size="7"]').forEach(f => {
-              f.removeAttribute('size');
-              f.style.fontSize = px + 'px';
-            });
-          }
-        }
-        syncRteToHidden();
+        RTE.n.fontSize(px);
       }
 
       function rteInsertImage() {
+        // Mantida por compatibilidade; o fluxo recomendado é rteOpenImagePicker.
         const url = prompt('URL da imagem:');
         if (!url) return;
         rteRestoreSelection();
@@ -7448,6 +7559,102 @@ CREATE POLICY "admin_versoes" ON noticia_versoes FOR ALL TO authenticated USING 
       window.rteInsertImageFile = rteInsertImageFile;
 
       /** Handler de paste — captura imagens coladas da área de transferência */
+      /* ══════════════════════════════════════════════════════════════
+         SANITIZADOR DE PASTE
+         ──────────────────────────────────────────────────────────────
+         Filtros aplicados em ordem:
+           1) DOMPurify  →  remove <script>, on*=..., javascript:, etc.
+           2) Whitelist de tags/atributos (não remove conteúdo, só tags
+              perigosas como <iframe>, <object>, <embed>, <form>...)
+           3) Limpeza de inline styles via parser nativo (não regex):
+              tira font-family/size do Word, overflow, width fixo, etc.
+           4) Validação de URLs em <a href> e <img src>: só http(s):,
+              mailto: e data:image — bloqueia javascript:, vbscript:.
+         ════════════════════════════════════════════════════════════ */
+      const PASTE_ALLOWED_TAGS = [
+        'p', 'br', 'hr', 'div', 'span',
+        'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+        'b', 'strong', 'i', 'em', 'u', 's', 'strike', 'sub', 'sup', 'code', 'pre', 'mark',
+        'ul', 'ol', 'li', 'blockquote',
+        'a', 'img',
+        'table', 'thead', 'tbody', 'tfoot', 'tr', 'td', 'th',
+      ];
+      const PASTE_ALLOWED_ATTR = ['href', 'src', 'alt', 'title', 'style', 'target', 'rel', 'colspan', 'rowspan', 'class'];
+      // Estilos inline que sobrevivem ao paste (resto vai embora)
+      const PASTE_ALLOWED_STYLES = new Set([
+        'color', 'background-color', 'text-align', 'font-weight', 'font-style',
+        'text-decoration', 'text-decoration-line',
+      ]);
+
+      function pasteSafeUrl(url) {
+        if (!url) return '';
+        const trimmed = String(url).trim();
+        // Aceita http(s), mailto, tel, âncoras e relativos.
+        // Bloqueia javascript:, vbscript:, file: e data: (exceto data:image em img).
+        if (/^(https?:|mailto:|tel:|\/|#|\.)/i.test(trimmed)) return trimmed;
+        return '';
+      }
+      function pasteSafeImgSrc(url) {
+        if (!url) return '';
+        const trimmed = String(url).trim();
+        if (/^(https?:|\/|\.)/i.test(trimmed)) return trimmed;
+        if (/^data:image\/(png|jpe?g|gif|webp|svg\+xml);/i.test(trimmed)) return trimmed;
+        return '';
+      }
+      function pasteCleanStyles(el) {
+        if (!el.style) return;
+        const remove = [];
+        for (let i = 0; i < el.style.length; i++) {
+          const prop = el.style[i];
+          if (!PASTE_ALLOWED_STYLES.has(prop)) remove.push(prop);
+        }
+        remove.forEach(p => el.style.removeProperty(p));
+        if (!el.getAttribute('style')) el.removeAttribute('style');
+      }
+
+      function sanitizePastedHtml(rawHtml) {
+        // Fase 1: DOMPurify (se disponível). Fallback gracioso se a CDN falhou.
+        let html = rawHtml;
+        if (typeof DOMPurify !== 'undefined' && DOMPurify.sanitize) {
+          html = DOMPurify.sanitize(rawHtml, {
+            ALLOWED_TAGS: PASTE_ALLOWED_TAGS,
+            ALLOWED_ATTR: PASTE_ALLOWED_ATTR,
+            FORBID_TAGS: ['script', 'style', 'iframe', 'object', 'embed', 'form', 'input', 'button', 'meta', 'link'],
+            FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover', 'onfocus', 'onblur', 'onsubmit'],
+            ALLOW_DATA_ATTR: false,
+          });
+        }
+
+        // Fase 2: walk no DOM e endurece o que sobrou
+        const tmp = document.createElement('div');
+        tmp.innerHTML = html;
+
+        // Validação de URLs em <a> e <img>
+        tmp.querySelectorAll('a').forEach(a => {
+          const safe = pasteSafeUrl(a.getAttribute('href'));
+          if (safe) {
+            a.setAttribute('href', safe);
+            // Links externos: força target=_blank + rel seguro
+            if (/^https?:/i.test(safe)) {
+              a.setAttribute('target', '_blank');
+              a.setAttribute('rel', 'noopener noreferrer');
+            }
+          } else {
+            a.removeAttribute('href');
+          }
+        });
+        tmp.querySelectorAll('img').forEach(img => {
+          const safe = pasteSafeImgSrc(img.getAttribute('src'));
+          if (safe) img.setAttribute('src', safe);
+          else img.remove();
+        });
+
+        // Limpeza de estilos inline via parser nativo (não regex)
+        tmp.querySelectorAll('[style]').forEach(pasteCleanStyles);
+
+        return tmp.innerHTML;
+      }
+
       async function rteHandlePaste(event, editorId) {
         const cd = event.clipboardData;
         if (!cd) return;
@@ -7474,59 +7681,40 @@ CREATE POLICY "admin_versoes" ON noticia_versoes FOR ALL TO authenticated USING 
           }
         }
 
-        // 2) Imagem copiada da internet (vem como text/html com <img src="...">)
+        // 2) HTML (de site, doc, e-mail) — sempre passa pela sanitização
         const htmlData = cd.getData('text/html');
         if (htmlData) {
-          const tmp = document.createElement('div');
-          tmp.innerHTML = htmlData;
-          const imgs = tmp.querySelectorAll('img');
+          const cleanHtml = sanitizePastedHtml(htmlData);
 
-          // Se o HTML colado contém APENAS imagem(ns) e nenhum texto relevante
-          const textContent = tmp.innerText || tmp.textContent || '';
-          if (imgs.length > 0 && textContent.trim().length < 10) {
+          // Caso especial: só imagem(ns) e quase nenhum texto → trata como insert de imagem
+          const probe = document.createElement('div');
+          probe.innerHTML = cleanHtml;
+          const imgs = probe.querySelectorAll('img');
+          const textContent = (probe.innerText || probe.textContent || '').trim();
+          if (imgs.length > 0 && textContent.length < 10) {
             event.preventDefault();
-            for (const img of imgs) {
-              const src = img.src || img.getAttribute('src');
-              if (!src) continue;
-
-              // Tenta carregar a imagem como blob para fazer proxy local (evita CORS no editor)
-              try {
-                const res = await fetch(src, { mode: 'no-cors' });
-                // no-cors não deixa ler o body, mas pelo menos tenta
-              } catch (_) { }
-
-              // Insere direto via URL (funciona na maioria dos casos)
-              rteInjectImage(editorId, src, img.alt || 'imagem');
-              toast('🖼️ Imagem da internet inserida!', 'success');
-            }
+            imgs.forEach(img => {
+              const src = img.getAttribute('src');
+              if (src) {
+                rteInjectImage(editorId, src, img.alt || 'imagem');
+              }
+            });
+            toast('🖼️ Imagem inserida!', 'success');
             return;
           }
 
-          // 3) HTML misto (texto + formatação) — limpa estilos problemáticos
+          // Caso geral: insere o HTML já sanitizado
           event.preventDefault();
-          tmp.querySelectorAll('[style]').forEach(el => {
-            const style = el.getAttribute('style');
-            const cleaned = style
-              .replace(/white-space\s*:[^;]+;?/gi, '')
-              .replace(/overflow\s*:[^;]+;?/gi, '')
-              .replace(/width\s*:\s*\d+px[^;]*;?/gi, '')
-              .replace(/font-size\s*:\s*(?:x-small|small|large|x-large|xx-large|smaller|larger)[^;]*;?/gi, '');
-            if (cleaned.trim()) el.setAttribute('style', cleaned);
-            else el.removeAttribute('style');
-          });
-          // Remove tags problemáticas mas mantém conteúdo
-          tmp.querySelectorAll('meta, script, style, link').forEach(el => el.remove());
-
           const map = RTE_MAP[editorId];
           if (map) {
             map.focus();
-            document.execCommand('insertHTML', false, tmp.innerHTML);
+            document.execCommand('insertHTML', false, cleanHtml);
             map.sync();
           }
           return;
         }
 
-        // 4) Texto puro — deixa o comportamento padrão
+        // 3) Texto puro — deixa o comportamento padrão do browser
       }
       window.rteHandlePaste = rteHandlePaste;
 
@@ -7693,32 +7881,11 @@ CREATE POLICY "admin_versoes" ON noticia_versoes FOR ALL TO authenticated USING 
       }
 
       function rteInsertLink() {
-        rteSaveSelection();
-        const sel = window.getSelection();
-        const selectedText = sel && !sel.isCollapsed ? sel.toString() : '';
-        document.getElementById('rte-link-text').value = selectedText;
-        document.getElementById('rte-link-url').value = '';
-        const popup = document.getElementById('rte-link-popup');
-        popup.style.display = 'block';
-        popup.style.left = '50%'; popup.style.top = '50%';
-        popup.style.transform = 'translate(-50%, -50%)';
-        document.getElementById('rte-link-url').focus();
+        RTE.n.insertLink();
       }
 
       function rteConfirmLink() {
-        const url = document.getElementById('rte-link-url').value.trim();
-        const text = document.getElementById('rte-link-text').value.trim();
-        if (!url) { toast('Digite a URL.', 'error'); return; }
-        rteRestoreSelection();
-        if (text) {
-          const sel = window.getSelection();
-          if (sel && sel.isCollapsed) document.execCommand('insertHTML', false, `<a href="${url}" target="_blank">${text}</a>`);
-          else document.execCommand('createLink', false, url);
-        } else {
-          document.execCommand('createLink', false, url);
-        }
-        syncRteToHidden();
-        document.getElementById('rte-link-popup').style.display = 'none';
+        RTE.n.confirmLink();
       }
 
       function rteInsertTable() {
@@ -7745,9 +7912,7 @@ CREATE POLICY "admin_versoes" ON noticia_versoes FOR ALL TO authenticated USING 
       }
 
       function rteClearFormat() {
-        rteRestoreSelection();
-        document.execCommand('removeFormat');
-        syncRteToHidden();
+        RTE.n.clearFormat();
       }
 
       function updateRteToolbarState() {
@@ -9559,7 +9724,7 @@ document.addEventListener('DOMContentLoaded',function(){
       EDITOR DE VAGAS (fullscreen) — espelho do editor de avisos
       ══════════════════════════════════════════ */
       let veAnexos = []; // [{nome, url, tipo}]
-      let veSavedSel = null;
+      // (veSavedSel removido: a seleção agora é gerenciada por RTE.ve em closure.)
 
       function openVagaEditorNew() {
         editingId.vagas = null;
@@ -9597,107 +9762,19 @@ document.addEventListener('DOMContentLoaded',function(){
         veRenderAnexos();
       }
 
-      // RTE helpers para o editor de vagas
-      function veRteSaveSelection() {
-        const sel = window.getSelection();
-        if (sel && sel.rangeCount) veSavedSel = sel.getRangeAt(0).cloneRange();
-      }
-
-      function veRteRestoreSelection() {
-        const rte = document.getElementById('ve-rte-body');
-        rte.focus();
-        if (veSavedSel) {
-          const sel = window.getSelection();
-          sel.removeAllRanges();
-          sel.addRange(veSavedSel);
-        }
-      }
-
-      function veRteExec(cmd, val) {
-        veRteRestoreSelection();
-        document.execCommand(cmd, false, val || null);
-        veSync();
-      }
-
-      function veRteFontSize(px) {
-        veRteRestoreSelection();
-        const sel = window.getSelection();
-        if (sel && sel.rangeCount && !sel.isCollapsed) {
-          try {
-            const range = sel.getRangeAt(0);
-            const fragment = range.extractContents();
-            const span = document.createElement('span');
-            span.style.fontSize = px + 'px';
-            span.appendChild(fragment);
-            range.insertNode(span);
-            const newRange = document.createRange();
-            newRange.selectNodeContents(span);
-            sel.removeAllRanges();
-            sel.addRange(newRange);
-          } catch (err) {
-            document.execCommand('fontSize', false, '3');
-            document.querySelectorAll('#ve-rte-body font[size="3"]').forEach(f => {
-              f.removeAttribute('size');
-              f.style.fontSize = px + 'px';
-            });
-          }
-        } else {
-          document.execCommand('fontSize', false, '3');
-          document.querySelectorAll('#ve-rte-body font[size="3"]').forEach(f => {
-            f.removeAttribute('size');
-            f.style.fontSize = px + 'px';
-          });
-        }
-        veSync();
-      }
-
-      function veRteBlock(tag) {
-        document.getElementById('ve-rte-body').focus();
-        document.execCommand('formatBlock', false, tag);
-        veSync();
-      }
-
-      function veRteClearFormat() {
-        document.getElementById('ve-rte-body').focus();
-        document.execCommand('removeFormat', false, null);
-        veSync();
-      }
-
-      function veRteInsertLink() {
-        veRteSaveSelection();
-        const sel = window.getSelection();
-        const txt = sel && !sel.isCollapsed ? sel.toString() : '';
-        document.getElementById('ve-rte-link-text').value = txt;
-        document.getElementById('ve-rte-link-url').value = '';
-        const popup = document.getElementById('ve-rte-link-popup');
-        popup.style.cssText += ';display:block;top:50%;left:50%;transform:translate(-50%,-50%);';
-        document.getElementById('ve-rte-link-url').focus();
-      }
-
-      function veRteConfirmLink() {
-        const url = document.getElementById('ve-rte-link-url').value.trim();
-        const txt = document.getElementById('ve-rte-link-text').value.trim();
-        if (!url) return;
-        veRteRestoreSelection();
-        const sel = window.getSelection();
-        if (txt && sel && sel.isCollapsed) {
-          document.execCommand('insertHTML', false, `<a href="${url}" target="_blank"
-                style="color:var(--accent)">${txt}</a>`);
-        } else {
-          document.execCommand('createLink', false, url);
-          if (sel && sel.anchorNode) {
-            const anchor = sel.anchorNode.parentElement?.closest('a') || sel.focusNode?.parentElement?.closest('a');
-            if (anchor) { anchor.target = '_blank'; anchor.style.color = 'var(--accent)'; }
-          }
-        }
-        document.getElementById('ve-rte-link-popup').style.display = 'none';
-        veSync();
-      }
-
-      function veRteInsertDivider() {
-        document.getElementById('ve-rte-body').focus();
-        document.execCommand('insertHTML', false, '<hr style="border:none;border-top:1px solid rgba(255,255,255,.12);margin:1.5rem 0;"><p><br></p>'); veSync();
-      }
+      /* ══════════════════════════════════════════════════════════════
+         WRAPPERS DE COMPATIBILIDADE — editor de vagas (ve)
+         (Implementação está em makeRTE / RTE.ve, mais acima.)
+         ════════════════════════════════════════════════════════════ */
+      const veRteSaveSelection = () => RTE.ve.saveSelection();
+      const veRteRestoreSelection = () => RTE.ve.restoreSelection();
+      const veRteExec = (cmd, val) => RTE.ve.exec(cmd, val);
+      const veRteFontSize = (px) => RTE.ve.fontSize(px);
+      const veRteBlock = (tag) => RTE.ve.block(tag);
+      const veRteClearFormat = () => RTE.ve.clearFormat();
+      const veRteInsertLink = () => RTE.ve.insertLink();
+      const veRteConfirmLink = () => RTE.ve.confirmLink();
+      const veRteInsertDivider = () => RTE.ve.insertDivider();
 
       function veSync() {
         document.getElementById('v-descricao').value = document.getElementById('ve-rte-body').innerHTML;
@@ -9710,7 +9787,8 @@ document.addEventListener('DOMContentLoaded',function(){
         if (!sel || sel.isCollapsed) return;
         e.preventDefault();
         e.stopPropagation();
-        if (sel.rangeCount) veSavedSel = sel.getRangeAt(0).cloneRange();
+        // Salva via factory — os comandos do menu vão restaurar de lá.
+        RTE.ve.saveSelection();
         const menu = document.getElementById('ve-context-menu');
         menu.style.display = 'block';
         const mx = Math.min(e.clientX, window.innerWidth - 245);
