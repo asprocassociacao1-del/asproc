@@ -2967,6 +2967,476 @@
       color: var(--text);
       border-color: var(--border-hover);
     }
+
+    /* ════════════════════════════════════════════════
+       PAINEL LATERAL DE LINKS (slide-in à direita)
+    ════════════════════════════════════════════════ */
+    .rte-links-panel {
+      position: fixed;
+      top: 60px;
+      right: 0;
+      width: 380px;
+      max-width: 90vw;
+      height: calc(100vh - 60px);
+      background: var(--bg2);
+      border-left: 1px solid var(--border);
+      box-shadow: -4px 0 24px rgba(0, 0, 0, .4);
+      z-index: 9990;
+      transform: translateX(100%);
+      transition: transform .3s cubic-bezier(.4, 0, .2, 1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .rte-links-panel.open {
+      transform: translateX(0);
+    }
+
+    .rte-links-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .rte-links-header h4 {
+      font-size: .88rem;
+      font-weight: 600;
+      color: var(--text);
+      margin: 0;
+    }
+
+    .rte-links-summary {
+      padding: .75rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: .8rem;
+      font-size: .72rem;
+      color: var(--text-muted);
+    }
+
+    .rte-links-summary span strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .rte-links-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: .85rem;
+    }
+
+    .rte-links-empty {
+      padding: 2rem 1rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: .82rem;
+    }
+
+    .rte-link-item {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--border);
+      border-radius: 6px;
+      padding: .7rem .85rem;
+      margin-bottom: .55rem;
+      transition: border-color var(--transition);
+    }
+
+    .rte-link-item.status-ok {
+      border-left-color: var(--green);
+    }
+
+    .rte-link-item.status-broken {
+      border-left-color: var(--red);
+    }
+
+    .rte-link-item.status-warning {
+      border-left-color: var(--amber);
+    }
+
+    .rte-link-item.status-checking {
+      border-left-color: var(--accent);
+    }
+
+    .rte-link-status {
+      display: inline-flex;
+      align-items: center;
+      gap: .25rem;
+      font-size: .65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-bottom: .35rem;
+    }
+
+    .rte-link-item.status-ok .rte-link-status {
+      color: var(--green);
+    }
+
+    .rte-link-item.status-broken .rte-link-status {
+      color: var(--red);
+    }
+
+    .rte-link-item.status-warning .rte-link-status {
+      color: var(--amber);
+    }
+
+    .rte-link-item.status-checking .rte-link-status {
+      color: var(--accent);
+    }
+
+    .rte-link-text {
+      font-size: .82rem;
+      color: var(--text);
+      font-weight: 500;
+      line-height: 1.35;
+      margin-bottom: .25rem;
+      word-break: break-word;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .rte-link-url {
+      font-size: .68rem;
+      color: var(--text-muted);
+      font-family: ui-monospace, SFMono-Regular, monospace;
+      word-break: break-all;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      margin-bottom: .55rem;
+    }
+
+    .rte-link-actions {
+      display: flex;
+      gap: .3rem;
+      flex-wrap: wrap;
+    }
+
+    .rte-link-actions button {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--text-muted);
+      font-size: .68rem;
+      padding: .25rem .55rem;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all var(--transition);
+    }
+
+    .rte-link-actions button:hover {
+      color: var(--text);
+      border-color: var(--border-hover);
+    }
+
+    .rte-link-actions button.danger:hover {
+      color: var(--red);
+      border-color: var(--red);
+    }
+
+    /* ════════════════════════════════════════════════
+       MODAL DE IMAGENS QUEBRADAS (bloqueia save)
+    ════════════════════════════════════════════════ */
+    .rte-broken-img-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 10500;
+      background: rgba(0, 0, 0, .75);
+      backdrop-filter: blur(3px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .rte-broken-img-overlay.open {
+      display: flex;
+    }
+
+    .rte-broken-img-modal {
+      background: var(--bg2);
+      border: 1px solid var(--red);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, .5);
+      width: 500px;
+      max-width: 100%;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .rte-broken-img-header {
+      padding: 1.1rem 1.25rem .95rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .rte-broken-img-header .title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--red);
+      margin-bottom: .35rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .rte-broken-img-header .subtitle {
+      font-size: .78rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    .rte-broken-img-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: .85rem 1.25rem;
+    }
+
+    .rte-broken-img-item {
+      display: flex;
+      gap: .75rem;
+      align-items: center;
+      padding: .65rem;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-bottom: .55rem;
+    }
+
+    .rte-broken-img-thumb {
+      width: 56px;
+      height: 56px;
+      flex-shrink: 0;
+      background: var(--bg);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--red);
+      font-size: 1.5rem;
+    }
+
+    .rte-broken-img-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .rte-broken-img-info .url {
+      font-size: .7rem;
+      color: var(--text-muted);
+      font-family: ui-monospace, SFMono-Regular, monospace;
+      word-break: break-all;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      margin-bottom: .3rem;
+    }
+
+    .rte-broken-img-info .reason {
+      font-size: .7rem;
+      color: var(--red);
+    }
+
+    .rte-broken-img-footer {
+      padding: .85rem 1.25rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: .55rem;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    /* ════════════════════════════════════════════════
+       ESTATÍSTICAS DE LEITURA (badge na status bar)
+    ════════════════════════════════════════════════ */
+    .rte-readability {
+      display: inline-flex;
+      align-items: center;
+      gap: .3rem;
+      padding: .15rem .55rem;
+      border-radius: 99px;
+      font-size: .65rem;
+      font-weight: 600;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      cursor: help;
+    }
+
+    .rte-readability.easy {
+      color: var(--green);
+      border-color: var(--green);
+    }
+
+    .rte-readability.medium {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .rte-readability.hard {
+      color: var(--amber);
+      border-color: var(--amber);
+    }
+
+    .rte-readability.veryhard {
+      color: var(--red);
+      border-color: var(--red);
+    }
+
+    /* ════════════════════════════════════════════════
+       MODAL CUSTOMIZADO COMPARTILHADO (Tabela / YouTube / Embed)
+    ════════════════════════════════════════════════ */
+    .rte-custom-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 10300;
+      background: rgba(0, 0, 0, .65);
+      backdrop-filter: blur(2px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .rte-custom-overlay.open {
+      display: flex;
+    }
+
+    .rte-custom-modal {
+      background: var(--bg2);
+      border: 1px solid var(--border-hover);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, .5);
+      width: 460px;
+      max-width: 100%;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .rte-custom-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .rte-custom-header .title {
+      font-size: .92rem;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .rte-custom-close {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      cursor: pointer;
+      padding: .2rem .4rem;
+      border-radius: 4px;
+      transition: all var(--transition);
+    }
+
+    .rte-custom-close:hover {
+      color: var(--text);
+      background: var(--bg3);
+    }
+
+    .rte-custom-body {
+      padding: 1rem 1.25rem;
+      overflow-y: auto;
+    }
+
+    .rte-custom-field {
+      margin-bottom: .9rem;
+    }
+
+    .rte-custom-field label {
+      display: block;
+      font-size: .72rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: .35rem;
+    }
+
+    .rte-custom-field .hint {
+      font-size: .68rem;
+      color: var(--text-muted);
+      margin-top: .25rem;
+    }
+
+    .rte-custom-input {
+      width: 100%;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: .85rem;
+      padding: .5rem .65rem;
+      outline: none;
+      transition: border-color var(--transition);
+      font-family: inherit;
+    }
+
+    .rte-custom-input:focus {
+      border-color: var(--accent);
+    }
+
+    .rte-custom-row {
+      display: flex;
+      gap: .65rem;
+    }
+
+    .rte-custom-row .rte-custom-field {
+      flex: 1;
+    }
+
+    .rte-table-preview {
+      background: var(--bg3);
+      border-radius: 6px;
+      padding: .75rem;
+      margin-top: .55rem;
+      overflow: auto;
+    }
+
+    .rte-table-preview table {
+      border-collapse: collapse;
+      font-size: .7rem;
+      width: 100%;
+    }
+
+    .rte-table-preview th,
+    .rte-table-preview td {
+      border: 1px solid var(--border);
+      padding: .25rem .5rem;
+      text-align: left;
+    }
+
+    .rte-table-preview th {
+      background: var(--bg);
+      font-weight: 600;
+    }
+
+    .rte-custom-footer {
+      padding: .85rem 1.25rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: .5rem;
+      justify-content: flex-end;
+    }
   </style>
 </head>
 
@@ -3642,6 +4112,8 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
       <button class="btn btn-secondary btn-sm" onclick="closeNewsEditor()">← Voltar</button>
       <span class="ne-topbar-title" id="ne-topbar-title">Nova Notícia</span>
       <span id="ne-autosave-indicator" title="Auto-save a cada 30s">💾 Rascunho</span>
+      <button class="rte-tutorial-trigger" onclick="RTE_LINKS.open('n')" title="Ver e revisar todos os links">🔗
+        Links</button>
       <button class="rte-tutorial-trigger" onclick="RTE_TUTORIAL.start('n')" title="Abrir tutorial do editor">❔
         Tutorial</button>
       <button class="btn btn-secondary btn-sm" onclick="neToggleVersionPanel()">🕐 Versões</button>
@@ -4095,6 +4567,8 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
       <span id="rte-autosave-ve"
         style="font-size:.7rem;color:var(--text-muted);margin-left:.5rem;transition:color .3s;">💾 Auto-save
         ativo</span>
+      <button class="rte-tutorial-trigger" onclick="RTE_LINKS.open('ve')" title="Ver e revisar todos os links">🔗
+        Links</button>
       <button class="rte-tutorial-trigger" onclick="RTE_TUTORIAL.start('ve')" title="Abrir tutorial do editor">❔
         Tutorial</button>
       <button class="btn btn-secondary btn-sm" onclick="baixarModeloVaga()"
@@ -4725,6 +5199,8 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
       <span id="rte-autosave-ae"
         style="font-size:.7rem;color:var(--text-muted);margin-left:.5rem;transition:color .3s;">💾 Auto-save
         ativo</span>
+      <button class="rte-tutorial-trigger" onclick="RTE_LINKS.open('ae')" title="Ver e revisar todos os links">🔗
+        Links</button>
       <button class="rte-tutorial-trigger" onclick="RTE_TUTORIAL.start('ae')" title="Abrir tutorial do editor">❔
         Tutorial</button>
       <button class="btn btn-secondary btn-sm" onclick="baixarModeloAviso()"
@@ -5952,6 +6428,14 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
         const urlExterna = document.getElementById('n-url').value.trim() || null;
         const dbPayload = Object.assign({}, data._dbData, { url_externa: urlExterna });
         if (!dbPayload.titulo || !dbPayload.resumo) { toast('Preencha título e resumo.', 'error'); return; }
+        // Verifica imagens quebradas — bloqueia se houver e o usuário cancelar
+        if (window.RTE_IMG_CHECK) {
+          toast('🔍 Verificando imagens…', 'info');
+          const canProceed = await RTE_IMG_CHECK.guardSave('n');
+          if (!canProceed) return; // usuário escolheu revisar manualmente
+          syncRteToHidden(); // re-sync caso imagens tenham sido removidas
+          dbPayload.conteudo = document.getElementById('n-conteudo').value;
+        }
         await withBtn('btn-save-noticia', '⏳ Salvando…', async () => {
           try {
             const isEdit = !!editingId.noticias;
@@ -6038,8 +6522,16 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
 
       async function saveVaga(forcePublish) {
         const titulo = document.getElementById('v-titulo').value.trim();
-        const descricao = document.getElementById('ve-rte-body').innerHTML.trim();
+        let descricao = document.getElementById('ve-rte-body').innerHTML.trim();
         if (!titulo) { toast('Preencha o título da vaga.', 'error'); return; }
+        // Verifica imagens quebradas — bloqueia se houver e o usuário cancelar
+        if (window.RTE_IMG_CHECK) {
+          toast('🔍 Verificando imagens…', 'info');
+          const canProceed = await RTE_IMG_CHECK.guardSave('ve');
+          if (!canProceed) return;
+          // Re-lê descrição caso imagens tenham sido removidas
+          descricao = document.getElementById('ve-rte-body').innerHTML.trim();
+        }
         const btnId = forcePublish ? 'btn-save-vaga-pub' : 'btn-save-vaga-draft';
         const btnLabel = forcePublish ? '⏳ Publicando…' : '⏳ Salvando…';
         await withBtn(btnId, btnLabel, async () => {
@@ -6206,8 +6698,15 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
 
       async function saveAviso(forcePublish) {
         const titulo = document.getElementById('a-titulo').value.trim();
-        const descricao = document.getElementById('ae-rte-body').innerHTML.trim();
+        let descricao = document.getElementById('ae-rte-body').innerHTML.trim();
         if (!titulo || !descricao) { toast('Preencha título e conteúdo.', 'error'); return; }
+        // Verifica imagens quebradas — bloqueia se houver e o usuário cancelar
+        if (window.RTE_IMG_CHECK) {
+          toast('🔍 Verificando imagens…', 'info');
+          const canProceed = await RTE_IMG_CHECK.guardSave('ae');
+          if (!canProceed) return;
+          descricao = document.getElementById('ae-rte-body').innerHTML.trim();
+        }
         const btnId = forcePublish ? 'btn-save-aviso-pub' : 'btn-save-aviso-draft';
         const btnLabel = forcePublish ? '⏳ Publicando…' : '⏳ Salvando…';
         await withBtn(btnId, btnLabel, async () => {
@@ -6974,10 +7473,11 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
       ];
 
       // ── Helpers que os comandos do slash usam (versões genéricas) ──
-      function rteSlashInsertTable(rte) {
-        const rows = parseInt(prompt('Número de linhas:', '3') || '3');
-        const cols = parseInt(prompt('Número de colunas:', '3') || '3');
-        if (!rows || !cols || rows < 1 || cols < 1) return;
+      async function rteSlashInsertTable(rte) {
+        const data = await RTE_MODAL.openTable();
+        if (!data) return;
+        const { rows, cols } = data;
+        rte.restoreSelection && rte.restoreSelection();
         let html = '<table style="border-collapse:collapse;width:100%;margin:1rem 0;"><thead><tr>';
         for (let c = 0; c < cols; c++) html += '<th style="border:1px solid #444;padding:.45rem .75rem;background:#1c2333;font-weight:600;">Coluna ' + (c + 1) + '</th>';
         html += '</tr></thead><tbody>';
@@ -6991,34 +7491,36 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         rte.sync();
       }
 
-      function rteSlashInsertYouTube(rte) {
-        const input = prompt('Cole a URL ou ID do vídeo do YouTube:');
-        if (!input) return;
-        let videoId = input.trim();
-        const m = videoId.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?\s]+)/);
-        if (m) videoId = m[1];
-        if (!videoId) { if (typeof toast === 'function') toast('URL do YouTube inválida.', 'error'); return; }
+      async function rteSlashInsertYouTube(rte) {
+        const data = await RTE_MODAL.openYouTube();
+        if (!data) return;
+        rte.restoreSelection && rte.restoreSelection();
         const html =
           '<div class="yt-embed-wrap" style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:10px;background:#000;margin:1.5rem 0;">' +
-          '<iframe src="https://www.youtube.com/embed/' + videoId +
+          '<iframe src="https://www.youtube.com/embed/' + data.videoId +
           '" style="position:absolute;inset:0;width:100%;height:100%;border:none;" allowfullscreen loading="lazy"></iframe>' +
           '</div><p><br></p>';
         document.execCommand('insertHTML', false, html);
         rte.sync();
       }
 
-      function rteSlashInsertEmbed(rte) {
-        const url = prompt('Cole a URL do embed (Vimeo, Google Maps, etc.):');
-        if (!url) return;
-        // Validação leve — bloqueia esquemas perigosos
-        if (!/^https?:/i.test(url.trim())) {
-          if (typeof toast === 'function') toast('Use uma URL https://', 'error');
-          return;
+      async function rteSlashInsertEmbed(rte) {
+        const data = await RTE_MODAL.openEmbed();
+        if (!data) return;
+        rte.restoreSelection && rte.restoreSelection();
+        const safe = data.url.replace(/"/g, '&quot;');
+        let wrapStyle;
+        if (data.height) {
+          wrapStyle = 'height:' + data.height + 'px;overflow:hidden;border-radius:10px;margin:1.5rem 0;background:#000;';
+        } else {
+          wrapStyle = 'position:relative;padding-bottom:' + data.ratio + '%;height:0;overflow:hidden;border-radius:10px;margin:1.5rem 0;background:#000;';
         }
-        const safe = url.trim().replace(/"/g, '&quot;');
+        const iframeStyle = data.height
+          ? 'width:100%;height:100%;border:none;'
+          : 'position:absolute;inset:0;width:100%;height:100%;border:none;';
         const html =
-          '<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:10px;margin:1.5rem 0;background:#000;">' +
-          '<iframe src="' + safe + '" style="position:absolute;inset:0;width:100%;height:100%;border:none;" allowfullscreen loading="lazy"></iframe>' +
+          '<div style="' + wrapStyle + '">' +
+          '<iframe src="' + safe + '" style="' + iframeStyle + '" allowfullscreen loading="lazy"></iframe>' +
           '</div><p><br></p>';
         document.execCommand('insertHTML', false, html);
         rte.sync();
@@ -7944,7 +8446,7 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
             },
             {
               title: 'Pronto para criar! 🎉',
-              body: 'Você pode reabrir este tour a qualquer momento pelo botão <kbd>❔ Tutorial</kbd> na topbar. Bons textos!',
+              body: 'Botão <kbd>🔗 Links</kbd> na topbar mostra todos os links do conteúdo com status (ok/quebrado) — útil revisar antes de publicar. Ao salvar, o sistema verifica se há imagens com URL quebrada. E uma estatística de leitura (Flesch + tempo) aparece na barra de status à medida que você escreve. Você pode reabrir este tour pelo botão <kbd>❔ Tutorial</kbd>. Bons textos!',
               placement: 'center',
               isLast: true,
             },
@@ -8170,6 +8672,679 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         },
       };
       window.RTE_TUTORIAL = RTE_TUTORIAL;
+
+      /* ══════════════════════════════════════════════════════════════
+         RTE_IMG_CHECK — verifica imagens quebradas antes de salvar
+         ──────────────────────────────────────────────────────────────
+         Estratégia: cria <img> em memória e escuta load/error com
+         timeout de 8s por imagem. Tudo em paralelo (Promise.all).
+         Retorna { ok: bool, broken: [{src, reason, imgEl}] }.
+
+         Limitações:
+           • Imagens com CORS restrito: o load pode ter sucesso mesmo
+             que o servidor responda 4xx em alguns cenários (browser
+             cacheia). Aceitamos isso — preferimos falso-positivo a
+             falso-negativo.
+           • data: URLs sempre passam (são embutidos).
+           • URLs relativas são resolvidas contra location.origin.
+         ════════════════════════════════════════════════════════════ */
+      const RTE_IMG_CHECK = {
+        TIMEOUT_MS: 8000,
+
+        // Verifica todas as imagens em um body de editor
+        async checkBody(bodyEl) {
+          if (!bodyEl) return { ok: true, broken: [] };
+          const imgs = Array.from(bodyEl.querySelectorAll('img'));
+          if (imgs.length === 0) return { ok: true, broken: [] };
+
+          const results = await Promise.all(imgs.map(img => this._testOne(img)));
+          const broken = results.filter(r => !r.ok);
+          return { ok: broken.length === 0, broken, total: imgs.length };
+        },
+
+        _testOne(imgEl) {
+          return new Promise(resolve => {
+            const src = imgEl.getAttribute('src') || '';
+            // data: e blob: são embutidas — assumimos OK
+            if (/^(data:|blob:)/i.test(src)) {
+              return resolve({ ok: true, src, imgEl });
+            }
+            if (!src) {
+              return resolve({ ok: false, src: '(vazio)', reason: 'Sem URL (atributo src vazio)', imgEl });
+            }
+
+            // Usa um Image novo para garantir um carregamento limpo
+            const probe = new Image();
+            let done = false;
+            const finish = (result) => {
+              if (done) return;
+              done = true;
+              clearTimeout(t);
+              resolve(result);
+            };
+
+            const t = setTimeout(() => {
+              finish({ ok: false, src, reason: 'Tempo esgotado (' + (this.TIMEOUT_MS / 1000) + 's)', imgEl });
+            }, this.TIMEOUT_MS);
+
+            probe.onload = () => {
+              // naturalWidth=0 indica imagem inválida em alguns browsers
+              if (probe.naturalWidth === 0) {
+                finish({ ok: false, src, reason: 'Imagem inválida ou vazia', imgEl });
+              } else {
+                finish({ ok: true, src, imgEl });
+              }
+            };
+            probe.onerror = () => {
+              finish({ ok: false, src, reason: 'Não foi possível carregar (404, CORS ou rede)', imgEl });
+            };
+            probe.src = src;
+          });
+        },
+
+        // Modal bloqueia o save listando imagens quebradas.
+        // Retorna Promise<boolean>: true = usuário escolheu prosseguir,
+        // false = cancelou (e o save não deve acontecer).
+        showBlockingModal(broken, bodyEl, editorId) {
+          return new Promise(resolve => {
+            this._ensureModal();
+            const overlay = document.getElementById('rte-broken-img-overlay');
+            const listEl = document.getElementById('rte-broken-img-list');
+
+            listEl.innerHTML = broken.map((b, i) => {
+              const safeSrc = (b.src || '').replace(/"/g, '&quot;');
+              return '<div class="rte-broken-img-item" data-idx="' + i + '">' +
+                '<div class="rte-broken-img-thumb">⚠️</div>' +
+                '<div class="rte-broken-img-info">' +
+                '<div class="url" title="' + safeSrc + '">' + escHtml(b.src || '(sem URL)') + '</div>' +
+                '<div class="reason">' + escHtml(b.reason || 'Erro desconhecido') + '</div>' +
+                '</div>' +
+                '</div>';
+            }).join('');
+
+            // Wire dos botões. Removemos handlers antigos clonando o footer.
+            const footer = document.getElementById('rte-broken-img-footer');
+            const newFooter = footer.cloneNode(true);
+            footer.parentNode.replaceChild(newFooter, footer);
+            document.getElementById('btn-broken-cancel').onclick = () => {
+              this._close();
+              resolve(false);
+            };
+            document.getElementById('btn-broken-remove').onclick = () => {
+              // Remove todas as <img> quebradas do body
+              broken.forEach(b => { try { b.imgEl && b.imgEl.remove(); } catch (_) { } });
+              // Sync ao hidden
+              if (editorId && window.RTE && RTE[editorId]) RTE[editorId].sync();
+              this._close();
+              resolve(true);
+            };
+            document.getElementById('btn-broken-anyway').onclick = () => {
+              this._close();
+              resolve(true);
+            };
+
+            overlay.classList.add('open');
+          });
+        },
+
+        _close() {
+          const overlay = document.getElementById('rte-broken-img-overlay');
+          if (overlay) overlay.classList.remove('open');
+        },
+
+        _ensureModal() {
+          if (document.getElementById('rte-broken-img-overlay')) return;
+          const ov = document.createElement('div');
+          ov.id = 'rte-broken-img-overlay';
+          ov.className = 'rte-broken-img-overlay';
+          ov.innerHTML =
+            '<div class="rte-broken-img-modal" role="dialog" aria-modal="true" aria-labelledby="rte-broken-title">' +
+            '<div class="rte-broken-img-header">' +
+            '<div class="title" id="rte-broken-title">⚠️ Imagens com problema</div>' +
+            '<div class="subtitle">As imagens abaixo não puderam ser carregadas. Elas podem aparecer como ícone quebrado para os leitores do site. Escolha o que fazer antes de publicar:</div>' +
+            '</div>' +
+            '<div class="rte-broken-img-list" id="rte-broken-img-list"></div>' +
+            '<div class="rte-broken-img-footer" id="rte-broken-img-footer">' +
+            '<button class="rte-tutorial-btn" id="btn-broken-cancel">Cancelar (revisar manualmente)</button>' +
+            '<button class="rte-tutorial-btn" id="btn-broken-anyway">Salvar mesmo assim</button>' +
+            '<button class="rte-tutorial-btn primary" id="btn-broken-remove" style="background:var(--red);border-color:var(--red);">🗑 Remover imagens e salvar</button>' +
+            '</div>' +
+            '</div>';
+          document.body.appendChild(ov);
+        },
+
+        // Wrapper helper: usado pelas funções de save.
+        // Retorna Promise<boolean>: true = pode prosseguir, false = abortar
+        async guardSave(editorId) {
+          const map = { n: 'n-rte-body', ve: 've-rte-body', ae: 'ae-rte-body' };
+          const body = document.getElementById(map[editorId]);
+          if (!body) return true;
+          const result = await this.checkBody(body);
+          if (result.ok) return true;
+          // Há imagens quebradas — pergunta ao usuário
+          return await this.showBlockingModal(result.broken, body, editorId);
+        },
+      };
+      window.RTE_IMG_CHECK = RTE_IMG_CHECK;
+
+      /* ══════════════════════════════════════════════════════════════
+         RTE_LINKS — painel lateral com todos os links da edição
+         ──────────────────────────────────────────────────────────────
+         • Slide-in à direita (estilo do painel de Versões)
+         • Lista os <a href> do conteúdo com texto + URL
+         • Verifica cada um em paralelo (mesmo padrão do IMG_CHECK)
+         • Botões por link: Abrir, Copiar URL, Remover
+         • Atualiza automaticamente ao reabrir o painel
+         ════════════════════════════════════════════════════════════ */
+      const RTE_LINKS = {
+        currentEditor: null,
+
+        _ensurePanel() {
+          if (document.getElementById('rte-links-panel')) return;
+          const panel = document.createElement('div');
+          panel.id = 'rte-links-panel';
+          panel.className = 'rte-links-panel';
+          panel.innerHTML =
+            '<div class="rte-links-header">' +
+            '<h4>🔗 Links da edição</h4>' +
+            '<button class="rte-custom-close" onclick="RTE_LINKS.close()" aria-label="Fechar">✕</button>' +
+            '</div>' +
+            '<div class="rte-links-summary" id="rte-links-summary"></div>' +
+            '<div class="rte-links-list" id="rte-links-list">' +
+            '<div class="rte-links-empty">Carregando…</div>' +
+            '</div>';
+          document.body.appendChild(panel);
+        },
+
+        open(editorId) {
+          this._ensurePanel();
+          this.currentEditor = editorId;
+          const panel = document.getElementById('rte-links-panel');
+          panel.classList.add('open');
+          this.refresh();
+        },
+
+        close() {
+          const panel = document.getElementById('rte-links-panel');
+          if (panel) panel.classList.remove('open');
+          this.currentEditor = null;
+        },
+
+        isOpen() {
+          const panel = document.getElementById('rte-links-panel');
+          return panel && panel.classList.contains('open');
+        },
+
+        async refresh() {
+          const editorId = this.currentEditor;
+          if (!editorId) return;
+          const bodyMap = { n: 'n-rte-body', ve: 've-rte-body', ae: 'ae-rte-body' };
+          const body = document.getElementById(bodyMap[editorId]);
+          if (!body) return;
+
+          const anchors = Array.from(body.querySelectorAll('a[href]'));
+          const list = document.getElementById('rte-links-list');
+          const summary = document.getElementById('rte-links-summary');
+
+          if (anchors.length === 0) {
+            summary.innerHTML = '<span>Nenhum link encontrado</span>';
+            list.innerHTML = '<div class="rte-links-empty">📭<br><br>Este conteúdo ainda não tem links.<br><br><small>Insira links com <kbd>Ctrl+K</kbd> ou pelo slash menu (<kbd>/link</kbd>).</small></div>';
+            return;
+          }
+
+          // Render inicial: todos como "checking"
+          const items = anchors.map((a, i) => ({
+            idx: i,
+            text: (a.textContent || '').trim() || '(sem texto)',
+            href: a.getAttribute('href') || '',
+            target: a.getAttribute('target') || '',
+            rel: a.getAttribute('rel') || '',
+            anchor: a,
+            status: 'checking',
+            reason: null,
+          }));
+
+          this._render(items);
+          summary.innerHTML =
+            '<span><strong>' + items.length + '</strong> total</span>' +
+            '<span><strong id="rte-links-ok">…</strong> ok</span>' +
+            '<span><strong id="rte-links-bad">…</strong> com problema</span>';
+
+          // Checa cada um em paralelo
+          await Promise.all(items.map(async (item) => {
+            const status = await this._checkLink(item.href);
+            item.status = status.status;
+            item.reason = status.reason;
+          }));
+
+          // Conta e re-renderiza
+          const okCount = items.filter(i => i.status === 'ok').length;
+          const badCount = items.filter(i => i.status === 'broken' || i.status === 'warning').length;
+          const okEl = document.getElementById('rte-links-ok');
+          const badEl = document.getElementById('rte-links-bad');
+          if (okEl) okEl.textContent = okCount;
+          if (badEl) badEl.textContent = badCount;
+          this._render(items);
+        },
+
+        async _checkLink(href) {
+          if (!href) return { status: 'warning', reason: 'Sem URL' };
+          if (/^javascript:/i.test(href)) return { status: 'broken', reason: 'URL javascript: (perigoso)' };
+          if (/^#/.test(href)) return { status: 'ok', reason: 'Âncora interna' };
+          if (/^mailto:/i.test(href)) return { status: 'ok', reason: 'E-mail' };
+          if (/^tel:/i.test(href)) return { status: 'ok', reason: 'Telefone' };
+          if (/^(\/|\.)/i.test(href)) return { status: 'warning', reason: 'URL relativa (não verificável aqui)' };
+          if (!/^https?:/i.test(href)) return { status: 'warning', reason: 'Esquema não reconhecido' };
+
+          // Para URLs http(s) — fazer fetch HEAD com no-cors. Como no-cors
+          // SEMPRE retorna status=0, não conseguimos saber se é 404. A única
+          // verificação possível sem CORS é: se o fetch lança, link inválido.
+          try {
+            // AbortController para timeout
+            const ctrl = new AbortController();
+            const t = setTimeout(() => ctrl.abort(), 6000);
+            await fetch(href, { method: 'HEAD', mode: 'no-cors', signal: ctrl.signal });
+            clearTimeout(t);
+            return { status: 'ok', reason: 'Acessível (CORS impede verificação detalhada)' };
+          } catch (e) {
+            if (e.name === 'AbortError') return { status: 'warning', reason: 'Tempo esgotado' };
+            return { status: 'broken', reason: 'Falha de rede ou domínio inválido' };
+          }
+        },
+
+        _render(items) {
+          const list = document.getElementById('rte-links-list');
+          if (!list) return;
+          list.innerHTML = items.map(item => {
+            const statusLabel = {
+              ok: '✓ OK',
+              broken: '✕ Erro',
+              warning: '⚠ Atenção',
+              checking: '⏳ Verificando…',
+            }[item.status] || item.status;
+            const reason = item.reason ? ' · ' + escHtml(item.reason) : '';
+            const openable = /^(https?:|mailto:|tel:)/i.test(item.href);
+            return '<div class="rte-link-item status-' + item.status + '" data-idx="' + item.idx + '">' +
+              '<div class="rte-link-status">' + statusLabel + reason + '</div>' +
+              '<div class="rte-link-text">' + escHtml(item.text) + '</div>' +
+              '<div class="rte-link-url">' + escHtml(item.href) + '</div>' +
+              '<div class="rte-link-actions">' +
+              (openable ? '<button data-act="open" data-idx="' + item.idx + '">↗ Abrir</button>' : '') +
+              '<button data-act="copy" data-idx="' + item.idx + '">⎘ Copiar</button>' +
+              '<button data-act="scroll" data-idx="' + item.idx + '">⊙ Ver no texto</button>' +
+              '<button class="danger" data-act="remove" data-idx="' + item.idx + '">🗑 Remover</button>' +
+              '</div>' +
+              '</div>';
+          }).join('');
+          this._cachedItems = items;
+          // Delegação: um único listener no list
+          if (!list.dataset.delegated) {
+            list.dataset.delegated = '1';
+            list.addEventListener('click', (e) => {
+              const btn = e.target.closest('button[data-act]');
+              if (!btn) return;
+              const act = btn.dataset.act;
+              const idx = parseInt(btn.dataset.idx);
+              const item = this._cachedItems && this._cachedItems[idx];
+              if (!item) return;
+              if (act === 'open') this.openLink(item.href);
+              if (act === 'copy') this.copyLink(item.href);
+              if (act === 'scroll') this.scrollTo(idx);
+              if (act === 'remove') this.removeLink(idx);
+            });
+          }
+        },
+
+        openLink(href) {
+          try { window.open(href, '_blank', 'noopener,noreferrer'); }
+          catch (_) { }
+        },
+
+        async copyLink(href) {
+          try {
+            await navigator.clipboard.writeText(href);
+            if (typeof toast === 'function') toast('📋 URL copiada', 'success');
+          } catch (e) {
+            if (typeof toast === 'function') toast('❌ Falha ao copiar', 'error');
+          }
+        },
+
+        scrollTo(idx) {
+          const items = this._cachedItems;
+          if (!items || !items[idx] || !items[idx].anchor) return;
+          const a = items[idx].anchor;
+          a.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // Destaque temporário
+          const orig = a.style.backgroundColor;
+          a.style.backgroundColor = 'var(--amber-soft, rgba(245,158,11,.3))';
+          setTimeout(() => { a.style.backgroundColor = orig; }, 1500);
+        },
+
+        removeLink(idx) {
+          const items = this._cachedItems;
+          if (!items || !items[idx] || !items[idx].anchor) return;
+          const a = items[idx].anchor;
+          // Substitui o <a> pelo seu próprio texto
+          const tn = document.createTextNode(a.textContent || '');
+          a.parentNode.replaceChild(tn, a);
+          // Sync e refresh
+          const editorId = this.currentEditor;
+          if (editorId && window.RTE && RTE[editorId]) RTE[editorId].sync();
+          if (typeof toast === 'function') toast('Link removido (texto preservado)', 'success');
+          this.refresh();
+        },
+      };
+      window.RTE_LINKS = RTE_LINKS;
+
+      /* ══════════════════════════════════════════════════════════════
+         RTE_STATS — estatísticas de leitura (tempo, Flesch PT-BR)
+         ──────────────────────────────────────────────────────────────
+         • Tempo de leitura: palavras / 200wpm (média de leitura adulta
+           em português)
+         • Flesch para PT-BR — fórmula adaptada de Martins et al. (1996):
+              IFP = 248,835 − (1,015 × ASL) − (84,6 × ASW)
+           onde ASL = palavras/sentenças e ASW = sílabas/palavra.
+           Faixas (Pasqualini, 2018):
+              ≥75    muito fácil
+              50-74  fácil
+              25-49  médio
+              <25    difícil
+         • Sílabas em PT-BR: contagem aproximada por vogais agrupadas
+           (heurística suficiente para ordem de grandeza)
+         ════════════════════════════════════════════════════════════ */
+      const RTE_STATS = {
+        compute(text) {
+          if (!text || !text.trim()) {
+            return { words: 0, sentences: 0, syllables: 0, minutes: 0, flesch: 0, level: 'none' };
+          }
+          const cleaned = text.replace(/\s+/g, ' ').trim();
+          const words = cleaned.split(/\s+/).filter(Boolean);
+          const wordCount = words.length;
+
+          // Sentenças: divisão por . ! ? (suporte a múltiplos pontos consecutivos)
+          const sentences = cleaned.split(/[.!?]+(?:\s|$)/).filter(s => s.trim().length > 0);
+          const sentCount = Math.max(1, sentences.length);
+
+          // Sílabas (heurística para PT-BR)
+          let syllables = 0;
+          for (const w of words) syllables += this._countSyllables(w);
+
+          const asl = wordCount / sentCount;
+          const asw = syllables / Math.max(1, wordCount);
+          const fleschRaw = 248.835 - (1.015 * asl) - (84.6 * asw);
+          const flesch = Math.max(0, Math.min(100, Math.round(fleschRaw)));
+
+          let level;
+          if (flesch >= 75) level = 'easy';
+          else if (flesch >= 50) level = 'medium';
+          else if (flesch >= 25) level = 'hard';
+          else level = 'veryhard';
+
+          const minutes = Math.max(1, Math.round(wordCount / 200));
+
+          return {
+            words: wordCount,
+            sentences: sentCount,
+            syllables,
+            minutes,
+            flesch,
+            level,
+          };
+        },
+
+        _countSyllables(word) {
+          // PT-BR: cada grupo de vogais ≈ 1 sílaba
+          // Vogais: a e i o u + acentuadas
+          const w = word.toLowerCase().normalize('NFC');
+          const m = w.match(/[aeiouáéíóúâêîôûãõà]+/g);
+          // Mínimo 1 sílaba se a palavra tem alguma letra
+          return Math.max(1, m ? m.length : (/[a-zà-ú]/i.test(w) ? 1 : 0));
+        },
+
+        levelLabel(level) {
+          return {
+            none: 'sem texto',
+            easy: 'fácil',
+            medium: 'médio',
+            hard: 'difícil',
+            veryhard: 'muito difícil',
+          }[level] || level;
+        },
+
+        levelTooltip(stats) {
+          const labels = {
+            easy: 'Texto fácil de ler — ideal para artigos jornalísticos.',
+            medium: 'Texto de dificuldade média — bom para divulgação geral.',
+            hard: 'Texto difícil — pode afastar leitores casuais.',
+            veryhard: 'Texto muito difícil — apenas para público acadêmico.',
+            none: 'Sem texto para analisar.',
+          };
+          return (labels[stats.level] || '') +
+            '\n\nÍndice Flesch (PT-BR): ' + stats.flesch +
+            '\nPalavras: ' + stats.words +
+            '\nFrases: ' + stats.sentences +
+            '\nMédia: ' + (stats.words ? (stats.words / stats.sentences).toFixed(1) : 0) + ' palavras/frase';
+        },
+      };
+      window.RTE_STATS = RTE_STATS;
+
+      /* ══════════════════════════════════════════════════════════════
+         RTE_MODAL — modais customizados (Tabela / YouTube / Embed)
+         ──────────────────────────────────────────────────────────────
+         Substitui os prompt() nativos por modais elegantes com preview.
+         API: RTE_MODAL.open(config) → Promise<dados ou null>
+         ════════════════════════════════════════════════════════════ */
+      const RTE_MODAL = {
+        _ensure() {
+          if (document.getElementById('rte-custom-overlay')) return;
+          const ov = document.createElement('div');
+          ov.id = 'rte-custom-overlay';
+          ov.className = 'rte-custom-overlay';
+          ov.innerHTML = '<div class="rte-custom-modal" id="rte-custom-modal" role="dialog" aria-modal="true"></div>';
+          document.body.appendChild(ov);
+          ov.addEventListener('mousedown', (e) => {
+            if (e.target === ov) this._cancel();
+          });
+        },
+
+        _cancel() {
+          const ov = document.getElementById('rte-custom-overlay');
+          if (ov) ov.classList.remove('open');
+          if (this._currentResolve) {
+            this._currentResolve(null);
+            this._currentResolve = null;
+          }
+        },
+
+        _confirm(data) {
+          const ov = document.getElementById('rte-custom-overlay');
+          if (ov) ov.classList.remove('open');
+          if (this._currentResolve) {
+            this._currentResolve(data);
+            this._currentResolve = null;
+          }
+        },
+
+        // ── Tabela ──────────────────────────────────────────────
+        openTable() {
+          this._ensure();
+          const modal = document.getElementById('rte-custom-modal');
+          modal.innerHTML =
+            '<div class="rte-custom-header">' +
+            '<div class="title">⊞ Inserir tabela</div>' +
+            '<button class="rte-custom-close" onclick="RTE_MODAL._cancel()" aria-label="Fechar">✕</button>' +
+            '</div>' +
+            '<div class="rte-custom-body">' +
+            '<div class="rte-custom-row">' +
+            '<div class="rte-custom-field">' +
+            '<label>Linhas (incl. cabeçalho)</label>' +
+            '<input type="number" class="rte-custom-input" id="rte-table-rows" min="2" max="20" value="3">' +
+            '</div>' +
+            '<div class="rte-custom-field">' +
+            '<label>Colunas</label>' +
+            '<input type="number" class="rte-custom-input" id="rte-table-cols" min="1" max="10" value="3">' +
+            '</div>' +
+            '</div>' +
+            '<div class="rte-custom-field">' +
+            '<label>Preview</label>' +
+            '<div class="rte-table-preview" id="rte-table-preview"></div>' +
+            '</div>' +
+            '</div>' +
+            '<div class="rte-custom-footer">' +
+            '<button class="rte-tutorial-btn" onclick="RTE_MODAL._cancel()">Cancelar</button>' +
+            '<button class="rte-tutorial-btn primary" id="rte-table-confirm">Inserir</button>' +
+            '</div>';
+
+          const rowsInput = document.getElementById('rte-table-rows');
+          const colsInput = document.getElementById('rte-table-cols');
+          const renderPreview = () => {
+            const r = Math.max(2, Math.min(20, parseInt(rowsInput.value) || 3));
+            const c = Math.max(1, Math.min(10, parseInt(colsInput.value) || 3));
+            let html = '<table><thead><tr>';
+            for (let i = 0; i < c; i++) html += '<th>Col ' + (i + 1) + '</th>';
+            html += '</tr></thead><tbody>';
+            for (let i = 0; i < r - 1; i++) {
+              html += '<tr>';
+              for (let j = 0; j < c; j++) html += '<td>—</td>';
+              html += '</tr>';
+            }
+            html += '</tbody></table>';
+            document.getElementById('rte-table-preview').innerHTML = html;
+          };
+          rowsInput.oninput = renderPreview;
+          colsInput.oninput = renderPreview;
+          renderPreview();
+
+          document.getElementById('rte-table-confirm').onclick = () => {
+            const rows = Math.max(2, Math.min(20, parseInt(rowsInput.value) || 3));
+            const cols = Math.max(1, Math.min(10, parseInt(colsInput.value) || 3));
+            this._confirm({ rows, cols });
+          };
+
+          document.getElementById('rte-custom-overlay').classList.add('open');
+          setTimeout(() => rowsInput.focus(), 50);
+          return new Promise(resolve => { this._currentResolve = resolve; });
+        },
+
+        // ── YouTube ──────────────────────────────────────────────
+        openYouTube() {
+          this._ensure();
+          const modal = document.getElementById('rte-custom-modal');
+          modal.innerHTML =
+            '<div class="rte-custom-header">' +
+            '<div class="title">▶ Inserir vídeo do YouTube</div>' +
+            '<button class="rte-custom-close" onclick="RTE_MODAL._cancel()" aria-label="Fechar">✕</button>' +
+            '</div>' +
+            '<div class="rte-custom-body">' +
+            '<div class="rte-custom-field">' +
+            '<label>URL do vídeo ou ID</label>' +
+            '<input type="text" class="rte-custom-input" id="rte-yt-url" placeholder="https://youtube.com/watch?v=… ou só o ID" autocomplete="off">' +
+            '<div class="hint">Aceita URLs do youtube.com, youtu.be ou apenas o ID de 11 caracteres.</div>' +
+            '</div>' +
+            '<div class="rte-custom-field" id="rte-yt-preview-wrap" style="display:none;">' +
+            '<label>Preview</label>' +
+            '<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:6px;background:#000;">' +
+            '<iframe id="rte-yt-preview" src="" style="position:absolute;inset:0;width:100%;height:100%;border:none;" allowfullscreen></iframe>' +
+            '</div>' +
+            '</div>' +
+            '</div>' +
+            '<div class="rte-custom-footer">' +
+            '<button class="rte-tutorial-btn" onclick="RTE_MODAL._cancel()">Cancelar</button>' +
+            '<button class="rte-tutorial-btn primary" id="rte-yt-confirm" disabled>Inserir</button>' +
+            '</div>';
+
+          const input = document.getElementById('rte-yt-url');
+          const wrap = document.getElementById('rte-yt-preview-wrap');
+          const iframe = document.getElementById('rte-yt-preview');
+          const btn = document.getElementById('rte-yt-confirm');
+
+          const extractId = (s) => {
+            const t = (s || '').trim();
+            if (!t) return null;
+            // ID puro (11 chars alfanuméricos/-_)
+            if (/^[A-Za-z0-9_-]{11}$/.test(t)) return t;
+            const m = t.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+            return m ? m[1] : null;
+          };
+
+          input.oninput = () => {
+            const id = extractId(input.value);
+            if (id) {
+              btn.disabled = false;
+              iframe.src = 'https://www.youtube.com/embed/' + id;
+              wrap.style.display = 'block';
+            } else {
+              btn.disabled = true;
+              iframe.src = '';
+              wrap.style.display = 'none';
+            }
+          };
+
+          btn.onclick = () => {
+            const id = extractId(input.value);
+            if (id) this._confirm({ videoId: id });
+          };
+
+          document.getElementById('rte-custom-overlay').classList.add('open');
+          setTimeout(() => input.focus(), 50);
+          return new Promise(resolve => { this._currentResolve = resolve; });
+        },
+
+        // ── Embed genérico ────────────────────────────────────────
+        openEmbed() {
+          this._ensure();
+          const modal = document.getElementById('rte-custom-modal');
+          modal.innerHTML =
+            '<div class="rte-custom-header">' +
+            '<div class="title">⎘ Incorporar conteúdo (iframe)</div>' +
+            '<button class="rte-custom-close" onclick="RTE_MODAL._cancel()" aria-label="Fechar">✕</button>' +
+            '</div>' +
+            '<div class="rte-custom-body">' +
+            '<div class="rte-custom-field">' +
+            '<label>URL do conteúdo</label>' +
+            '<input type="url" class="rte-custom-input" id="rte-embed-url" placeholder="https://…" autocomplete="off">' +
+            '<div class="hint">Aceita https:// apenas. Bom para Vimeo, Google Maps, formulários do Google, Spotify, etc.</div>' +
+            '</div>' +
+            '<div class="rte-custom-row">' +
+            '<div class="rte-custom-field">' +
+            '<label>Proporção</label>' +
+            '<select class="rte-custom-input" id="rte-embed-ratio">' +
+            '<option value="56.25">16:9 (vídeo padrão)</option>' +
+            '<option value="75">4:3 (clássico)</option>' +
+            '<option value="100">1:1 (quadrado)</option>' +
+            '<option value="177.78">9:16 (vertical)</option>' +
+            '</select>' +
+            '</div>' +
+            '<div class="rte-custom-field">' +
+            '<label>Altura fixa (opcional, em px)</label>' +
+            '<input type="number" class="rte-custom-input" id="rte-embed-h" placeholder="auto" min="100" max="900">' +
+            '</div>' +
+            '</div>' +
+            '</div>' +
+            '<div class="rte-custom-footer">' +
+            '<button class="rte-tutorial-btn" onclick="RTE_MODAL._cancel()">Cancelar</button>' +
+            '<button class="rte-tutorial-btn primary" id="rte-embed-confirm">Inserir</button>' +
+            '</div>';
+
+          const input = document.getElementById('rte-embed-url');
+          document.getElementById('rte-embed-confirm').onclick = () => {
+            const url = (input.value || '').trim();
+            if (!/^https:\/\//i.test(url)) {
+              if (typeof toast === 'function') toast('URL deve começar com https://', 'error');
+              return;
+            }
+            const ratio = parseFloat(document.getElementById('rte-embed-ratio').value);
+            const heightRaw = document.getElementById('rte-embed-h').value;
+            const height = heightRaw ? parseInt(heightRaw) : null;
+            this._confirm({ url, ratio, height });
+          };
+
+          document.getElementById('rte-custom-overlay').classList.add('open');
+          setTimeout(() => input.focus(), 50);
+          return new Promise(resolve => { this._currentResolve = resolve; });
+        },
+      };
+      window.RTE_MODAL = RTE_MODAL;
 
       // Inicialização: anexa shortcuts/slash quando o DOM estiver pronto
       // e os bodies já existirem.
@@ -9495,9 +10670,26 @@ CREATE POLICY "admin_versoes" ON noticia_versoes FOR ALL TO authenticated USING 
           ? body.innerText
           : body.textContent || '';
         const chars = text.replace(/[\n\r]/g, '').length;
-        const words = text.trim() ? text.trim().split(/\s+/).filter(w => w.length > 0).length : 0;
-        const readMin = Math.ceil(words / 200);
-        counter.textContent = `${words.toLocaleString('pt-BR')} palavras · ${chars.toLocaleString('pt-BR')} caracteres${readMin > 0 ? ' · ~' + readMin + ' min de leitura' : ''}`;
+
+        // Estatísticas avançadas (RTE_STATS)
+        const stats = window.RTE_STATS ? RTE_STATS.compute(text) : null;
+        const words = stats ? stats.words : (text.trim() ? text.trim().split(/\s+/).filter(w => w.length > 0).length : 0);
+        const readMin = stats ? stats.minutes : Math.ceil(words / 200);
+
+        // Texto base
+        let html = words.toLocaleString('pt-BR') + ' palavras · ' +
+          chars.toLocaleString('pt-BR') + ' caracteres';
+        if (words > 0) html += ' · ⏱ ' + readMin + ' min de leitura';
+
+        // Badge de legibilidade (Flesch)
+        if (stats && stats.words >= 20) {
+          const label = RTE_STATS.levelLabel(stats.level);
+          const tooltip = RTE_STATS.levelTooltip(stats).replace(/"/g, '&quot;').replace(/\n/g, '&#10;');
+          html += ' <span class="rte-readability ' + stats.level + '" title="' + tooltip + '">📊 ' +
+            label + ' (Flesch ' + stats.flesch + ')</span>';
+        }
+
+        counter.innerHTML = html;
       }
 
       function updateImgPreview() {
@@ -10094,16 +11286,12 @@ CREATE POLICY "admin_versoes" ON noticia_versoes FOR ALL TO authenticated USING 
       }
       window.nHideCtx = nHideCtx;
 
-      function rteInsertYouTube() {
-        const input = prompt('Cole a URL ou ID do vídeo do YouTube:');
-        if (!input) return;
-        let videoId = input.trim();
-        const m = videoId.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?\s]+)/);
-        if (m) videoId = m[1];
-        if (!videoId) { toast('URL do YouTube inválida.', 'error'); return; }
+      async function rteInsertYouTube() {
+        const data = await RTE_MODAL.openYouTube();
+        if (!data) return;
         rteRestoreSelection();
         const embedHTML = `<div class="yt-embed-wrap" style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:10px;background:#000;margin:1.5rem 0;">
-      <iframe src="https://www.youtube.com/embed/${videoId}" style="position:absolute;inset:0;width:100%;height:100%;border:none;" allowfullscreen loading="lazy"></iframe>
+      <iframe src="https://www.youtube.com/embed/${data.videoId}" style="position:absolute;inset:0;width:100%;height:100%;border:none;" allowfullscreen loading="lazy"></iframe>
     </div>`;
         document.execCommand('insertHTML', false, embedHTML);
         syncRteToHidden();
@@ -10117,9 +11305,10 @@ CREATE POLICY "admin_versoes" ON noticia_versoes FOR ALL TO authenticated USING 
         RTE.n.confirmLink();
       }
 
-      function rteInsertTable() {
-        const rows = parseInt(prompt('Número de linhas:', '3') || '3');
-        const cols = parseInt(prompt('Número de colunas:', '3') || '3');
+      async function rteInsertTable() {
+        const data = await RTE_MODAL.openTable();
+        if (!data) return;
+        const { rows, cols } = data;
         let table = '<table style="border-collapse:collapse;width:100%;margin:1rem 0;"><thead><tr>';
         for (let c = 0; c < cols; c++) table += `<th style="border:1px solid #444;padding:.45rem .75rem;background:#1c2333;font-weight:600;">Coluna ${c + 1}</th>`;
         table += '</tr></thead><tbody>';
