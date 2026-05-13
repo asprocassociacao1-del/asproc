@@ -2171,11 +2171,16 @@
       color: var(--text-muted);
       pointer-events: none;
       transition: color var(--transition);
+      max-width: 60%;
+      text-align: right;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     /* Give the title input extra right padding so text doesn't overlap counter */
     .ne-title-wrap .ne-title-input {
-      padding-right: 4rem;
+      padding-right: 11rem;
     }
 
     .ne-title-counter.warn {
@@ -2183,6 +2188,23 @@
     }
 
     .ne-title-counter.over {
+      color: var(--red);
+    }
+
+    /* Quando ne-title-counter herda comportamento do RTE_SEO */
+    .ne-title-counter.rte-seo-counter.short {
+      color: var(--text-muted);
+    }
+
+    .ne-title-counter.rte-seo-counter.ideal {
+      color: var(--green);
+    }
+
+    .ne-title-counter.rte-seo-counter.warn {
+      color: var(--amber);
+    }
+
+    .ne-title-counter.rte-seo-counter.over {
       color: var(--red);
     }
 
@@ -2660,6 +2682,290 @@
       color: #000;
       outline: 2px solid var(--amber);
       outline-offset: 1px;
+    }
+
+    /* ════════════════════════════════════════════════
+       CONTADOR SEO — para título e resumo
+       Cores:
+         cinza  → ainda curto, ainda não chegou na faixa
+         verde  → DENTRO da faixa ideal SEO
+         âmbar  → próximo do limite (alerta)
+         vermelho → passou do limite
+    ════════════════════════════════════════════════ */
+    .rte-seo-counter {
+      display: inline-block;
+      font-size: .68rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      transition: color var(--transition);
+      white-space: nowrap;
+    }
+
+    .rte-seo-counter.short {
+      color: var(--text-muted);
+    }
+
+    .rte-seo-counter.ideal {
+      color: var(--green);
+    }
+
+    .rte-seo-counter.warn {
+      color: var(--amber);
+    }
+
+    .rte-seo-counter.over {
+      color: var(--red);
+    }
+
+    .rte-seo-counter-block {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: -.3rem 0 .55rem;
+      padding: 0 .15rem;
+      font-size: .68rem;
+      color: var(--text-muted);
+    }
+
+    .rte-seo-counter-block .rte-seo-hint {
+      font-size: .65rem;
+      color: var(--text-dim);
+      opacity: .8;
+    }
+
+    /* ════════════════════════════════════════════════
+       DRAG HANDLE em imagens do RTE
+    ════════════════════════════════════════════════ */
+    .rte-body img {
+      cursor: grab;
+    }
+
+    .rte-body img:active {
+      cursor: grabbing;
+    }
+
+    .rte-body img.rte-dragging {
+      opacity: .35;
+    }
+
+    .rte-body .rte-drop-indicator {
+      height: 3px;
+      background: var(--accent);
+      margin: .5rem 0;
+      border-radius: 2px;
+      box-shadow: 0 0 8px var(--accent);
+      animation: dropIndicatorPulse 1s infinite alternate;
+      pointer-events: none;
+    }
+
+    @keyframes dropIndicatorPulse {
+      from {
+        opacity: .7;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* ════════════════════════════════════════════════
+       TUTORIAL INTERATIVO (onboarding)
+    ════════════════════════════════════════════════ */
+    #rte-tutorial-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9700;
+      background: rgba(0, 0, 0, .68);
+      backdrop-filter: blur(2px);
+      display: none;
+      animation: tutFadeIn .25s ease;
+    }
+
+    #rte-tutorial-overlay.open {
+      display: block;
+    }
+
+    @keyframes tutFadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .rte-tutorial-spotlight {
+      position: absolute;
+      border-radius: 8px;
+      box-shadow:
+        0 0 0 4px rgba(59, 130, 246, .55),
+        0 0 0 9999px rgba(0, 0, 0, .68);
+      pointer-events: none;
+      transition: all .35s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    .rte-tutorial-box {
+      position: absolute;
+      background: var(--bg2);
+      border: 1px solid var(--border-hover);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 18px 60px rgba(0, 0, 0, .55);
+      width: 360px;
+      max-width: calc(100vw - 2rem);
+      padding: 1.1rem 1.2rem 1rem;
+      transition: top .35s cubic-bezier(.4, 0, .2, 1), left .35s cubic-bezier(.4, 0, .2, 1);
+      font-family: inherit;
+    }
+
+    .rte-tutorial-step {
+      font-size: .68rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      margin-bottom: .3rem;
+    }
+
+    .rte-tutorial-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: .45rem;
+      line-height: 1.25;
+    }
+
+    .rte-tutorial-body {
+      font-size: .82rem;
+      color: var(--text-dim);
+      line-height: 1.55;
+      margin-bottom: .9rem;
+    }
+
+    .rte-tutorial-body kbd {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 6px;
+      font-size: .73rem;
+      font-family: ui-monospace, SFMono-Regular, monospace;
+      color: var(--text);
+    }
+
+    .rte-tutorial-footer {
+      display: flex;
+      align-items: center;
+      gap: .55rem;
+      justify-content: space-between;
+    }
+
+    .rte-tutorial-dots {
+      display: flex;
+      gap: .3rem;
+      align-items: center;
+    }
+
+    .rte-tutorial-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--border-hover);
+      transition: background var(--transition), transform var(--transition);
+    }
+
+    .rte-tutorial-dot.active {
+      background: var(--accent);
+      transform: scale(1.4);
+    }
+
+    .rte-tutorial-actions {
+      display: flex;
+      gap: .35rem;
+    }
+
+    .rte-tutorial-btn {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: .78rem;
+      padding: .42rem .85rem;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 500;
+      transition: all var(--transition);
+    }
+
+    .rte-tutorial-btn:hover {
+      border-color: var(--border-hover);
+    }
+
+    .rte-tutorial-btn.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .rte-tutorial-btn.primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .rte-tutorial-skip {
+      font-size: .7rem;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      padding: .35rem .5rem;
+      border-radius: 4px;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .rte-tutorial-skip:hover {
+      color: var(--text);
+    }
+
+    .rte-tutorial-checkbox {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      font-size: .72rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      margin-top: .65rem;
+      padding-top: .65rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .rte-tutorial-checkbox input {
+      accent-color: var(--accent);
+      width: 13px;
+      height: 13px;
+      cursor: pointer;
+    }
+
+    /* Botão "Tutorial" na topbar dos editores */
+    .rte-tutorial-trigger {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-muted);
+      font-size: .72rem;
+      padding: .35rem .65rem;
+      cursor: pointer;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: .3rem;
+      transition: all var(--transition);
+    }
+
+    .rte-tutorial-trigger:hover {
+      color: var(--text);
+      border-color: var(--border-hover);
     }
   </style>
 </head>
@@ -3336,6 +3642,8 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
       <button class="btn btn-secondary btn-sm" onclick="closeNewsEditor()">← Voltar</button>
       <span class="ne-topbar-title" id="ne-topbar-title">Nova Notícia</span>
       <span id="ne-autosave-indicator" title="Auto-save a cada 30s">💾 Rascunho</span>
+      <button class="rte-tutorial-trigger" onclick="RTE_TUTORIAL.start('n')" title="Abrir tutorial do editor">❔
+        Tutorial</button>
       <button class="btn btn-secondary btn-sm" onclick="neToggleVersionPanel()">🕐 Versões</button>
       <button class="btn btn-secondary btn-sm" onclick="previewNoticiaPage()">👁 Preview</button>
       <button class="btn btn-secondary btn-sm" onclick="downloadNoticiaPage()">⬇ Baixar</button>
@@ -3787,6 +4095,8 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
       <span id="rte-autosave-ve"
         style="font-size:.7rem;color:var(--text-muted);margin-left:.5rem;transition:color .3s;">💾 Auto-save
         ativo</span>
+      <button class="rte-tutorial-trigger" onclick="RTE_TUTORIAL.start('ve')" title="Abrir tutorial do editor">❔
+        Tutorial</button>
       <button class="btn btn-secondary btn-sm" onclick="baixarModeloVaga()"
         title="Baixa um modelo .doc com a estrutura ideal para criar vagas e importar de volta">📄 Modelo Word</button>
       <label class="btn btn-secondary btn-sm" id="btn-import-word-vaga-label"
@@ -4415,6 +4725,8 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
       <span id="rte-autosave-ae"
         style="font-size:.7rem;color:var(--text-muted);margin-left:.5rem;transition:color .3s;">💾 Auto-save
         ativo</span>
+      <button class="rte-tutorial-trigger" onclick="RTE_TUTORIAL.start('ae')" title="Abrir tutorial do editor">❔
+        Tutorial</button>
       <button class="btn btn-secondary btn-sm" onclick="baixarModeloAviso()"
         title="Baixa um modelo .doc com a estrutura ideal para criar avisos e importar de volta">📄 Modelo Word</button>
       <label class="btn btn-secondary btn-sm" id="btn-import-word-aviso-label"
@@ -5842,6 +6154,9 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
         // Inicia autosave (oferece restaurar se houver rascunho)
         setTimeout(() => {
           if (window.RTE_AUTOSAVE) RTE_AUTOSAVE.start('ae');
+          if (window.RTE_SEO) RTE_SEO.setupAll();
+          if (window.RTE_DRAG_IMG) RTE_DRAG_IMG.setupAll();
+          if (window.RTE_TUTORIAL) RTE_TUTORIAL.autoStartIfNew('ae');
         }, 200);
       }
 
@@ -7321,13 +7636,614 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
       };
       window.RTE_FIND = RTE_FIND;
 
+      /* ══════════════════════════════════════════════════════════════
+         RTE_SEO — contadores de caracteres com feedback SEO
+         ──────────────────────────────────────────────────────────────
+         Faixas (baseadas em melhores práticas Google SERP):
+           • Título:    ideal 50-60, alerta 60-70, longo demais >70
+           • Resumo:    ideal 120-160, alerta 160-180, longo demais >180
+         A cor do contador muda conforme a faixa.
+         ════════════════════════════════════════════════════════════ */
+      const RTE_SEO = {
+        SPECS: {
+          title: { idealMin: 50, idealMax: 60, warnMax: 70, label: 'caracteres', hint: 'ideal 50-60 para SEO' },
+          meta: { idealMin: 120, idealMax: 160, warnMax: 180, label: 'caracteres', hint: 'ideal 120-160 para meta description' },
+        },
+
+        // Anexa o sistema SEO a um input/textarea com seu contador
+        // attach(inputEl, counterEl, 'title' | 'meta')
+        attach(inputEl, counterEl, type) {
+          if (!inputEl || !counterEl) return;
+          if (inputEl.dataset.seoReady === '1') {
+            // Já anexado — só atualiza
+            this.update(inputEl, counterEl, type);
+            return;
+          }
+          inputEl.dataset.seoReady = '1';
+          const handler = () => this.update(inputEl, counterEl, type);
+          inputEl.addEventListener('input', handler);
+          inputEl.addEventListener('change', handler);
+          // Atualização inicial
+          this.update(inputEl, counterEl, type);
+        },
+
+        update(inputEl, counterEl, type) {
+          const spec = this.SPECS[type];
+          if (!spec) return;
+          const len = (inputEl.value || '').length;
+          let state, msg;
+          if (len === 0) {
+            state = 'short';
+            msg = '0 ' + spec.label + ' · ' + spec.hint;
+          } else if (len < spec.idealMin) {
+            state = 'short';
+            const falta = spec.idealMin - len;
+            msg = len + ' / ' + spec.idealMin + '-' + spec.idealMax + ' · faltam ' + falta + ' p/ o ideal';
+          } else if (len <= spec.idealMax) {
+            state = 'ideal';
+            msg = len + ' caracteres · ✓ ideal para SEO';
+          } else if (len <= spec.warnMax) {
+            state = 'warn';
+            msg = len + ' caracteres · um pouco longo (recomendado até ' + spec.idealMax + ')';
+          } else {
+            state = 'over';
+            msg = len + ' caracteres · longo demais para SEO (>' + spec.warnMax + ')';
+          }
+          counterEl.textContent = msg;
+          counterEl.className = 'rte-seo-counter ' + state;
+        },
+
+        // Plugar nos 3 editores. Cria os elementos do contador se não existirem.
+        setupAll() {
+          const editors = [
+            { titulo: 'n-titulo', resumo: 'n-resumo' },
+            { titulo: 'v-titulo', resumo: 'v-resumo' },
+            { titulo: 'a-titulo', resumo: 'a-resumo' },
+          ];
+          editors.forEach(({ titulo, resumo }) => {
+            this.ensureCounter(titulo, 'title');
+            this.ensureCounter(resumo, 'meta');
+          });
+        },
+
+        ensureCounter(inputId, type) {
+          const input = document.getElementById(inputId);
+          if (!input) return;
+
+          // Para o editor n, já existe #ne-title-counter — vamos reaproveitar
+          // ele com o novo sistema (a função neTitleCounter foi sobrescrita).
+          if (inputId === 'n-titulo') {
+            const existing = document.getElementById('ne-title-counter');
+            if (existing) {
+              existing.classList.add('rte-seo-counter');
+              this.attach(input, existing, type);
+              return;
+            }
+          }
+
+          const counterId = inputId + '-seo';
+          let counter = document.getElementById(counterId);
+          if (!counter) {
+            counter = document.createElement('div');
+            counter.id = counterId;
+            counter.className = 'rte-seo-counter-block';
+            const inner = document.createElement('span');
+            inner.className = 'rte-seo-counter';
+            inner.id = counterId + '-text';
+            counter.appendChild(inner);
+            // Insere depois do input/textarea
+            input.parentNode.insertBefore(counter, input.nextSibling);
+          }
+          const textEl = document.getElementById(counterId + '-text') || counter;
+          this.attach(input, textEl, type);
+        },
+      };
+      window.RTE_SEO = RTE_SEO;
+
+      /* ══════════════════════════════════════════════════════════════
+         RTE_DRAG_IMG — reordenar imagens dentro do editor via drag
+         ──────────────────────────────────────────────────────────────
+         Usa HTML5 drag-and-drop nativo.
+         • Marca <img> como draggable=true ao se anexar ao body
+         • Mostra indicador de drop entre blocos
+         • Ao soltar, move a imagem para a nova posição
+         ════════════════════════════════════════════════════════════ */
+      const RTE_DRAG_IMG = {
+        dragImg: null,           // imagem sendo arrastada
+        dragOrigEditor: null,
+        dropIndicator: null,
+
+        setupBody(body) {
+          if (!body || body.dataset.dragImgReady === '1') return;
+          body.dataset.dragImgReady = '1';
+
+          // 1) Toda imagem dentro do body ganha draggable=true
+          //    Aplicar agora e a cada nova imagem inserida.
+          this._markAllImages(body);
+          // Observer leve: a cada input/paste, marca novas imagens
+          body.addEventListener('input', () => this._markAllImages(body));
+
+          // 2) Eventos de drag — usamos capture porque <img> não tem
+          //    bubble confiável para drag em todos os browsers.
+          body.addEventListener('dragstart', (e) => {
+            if (e.target.tagName !== 'IMG') return;
+            this.dragImg = e.target;
+            this.dragOrigEditor = body;
+            e.target.classList.add('rte-dragging');
+            // Necessário para alguns browsers aceitarem o drag
+            try { e.dataTransfer.setData('text/rte-drag-img', '1'); } catch (_) { }
+            e.dataTransfer.effectAllowed = 'move';
+          });
+
+          body.addEventListener('dragend', (e) => {
+            if (e.target.tagName === 'IMG') e.target.classList.remove('rte-dragging');
+            this._clearIndicator();
+            this.dragImg = null;
+            this.dragOrigEditor = null;
+          });
+
+          body.addEventListener('dragover', (e) => {
+            if (!this.dragImg || this.dragOrigEditor !== body) return;
+            e.preventDefault(); // permite drop
+            e.dataTransfer.dropEffect = 'move';
+            this._showIndicator(e, body);
+          });
+
+          body.addEventListener('dragleave', (e) => {
+            // Só limpa se saiu DO BODY (não de um filho)
+            if (e.target === body) this._clearIndicator();
+          });
+
+          body.addEventListener('drop', (e) => {
+            if (!this.dragImg || this.dragOrigEditor !== body) return;
+            e.preventDefault();
+            e.stopPropagation();
+            const dropTarget = this._findDropTarget(e, body);
+            if (dropTarget) {
+              // Move a imagem para o ponto de drop
+              const { ref, where } = dropTarget;
+              if (where === 'before') ref.parentNode.insertBefore(this.dragImg, ref);
+              else ref.parentNode.insertBefore(this.dragImg, ref.nextSibling);
+            }
+            this._clearIndicator();
+            // Sync ao editor correspondente
+            const editorId = body.id.split('-')[0]; // n / ve / ae
+            if (window.RTE && RTE[editorId]) RTE[editorId].sync();
+            if (typeof toast === 'function') toast('🖼️ Imagem reposicionada', 'success');
+          });
+        },
+
+        _markAllImages(body) {
+          body.querySelectorAll('img').forEach(img => {
+            if (!img.hasAttribute('draggable')) img.setAttribute('draggable', 'true');
+            img.title = img.title || 'Arraste para reposicionar';
+          });
+        },
+
+        _showIndicator(e, body) {
+          this._clearIndicator();
+          const target = this._findDropTarget(e, body);
+          if (!target) return;
+          const ind = document.createElement('div');
+          ind.className = 'rte-drop-indicator';
+          ind.contentEditable = 'false';
+          if (target.where === 'before') target.ref.parentNode.insertBefore(ind, target.ref);
+          else target.ref.parentNode.insertBefore(ind, target.ref.nextSibling);
+          this.dropIndicator = ind;
+        },
+
+        _clearIndicator() {
+          if (this.dropIndicator) {
+            this.dropIndicator.remove();
+            this.dropIndicator = null;
+          }
+        },
+
+        _findDropTarget(e, body) {
+          // Encontra o elemento de bloco mais próximo da posição do mouse
+          const x = e.clientX, y = e.clientY;
+          const children = Array.from(body.children).filter(c => !c.classList.contains('rte-drop-indicator'));
+          if (children.length === 0) return null;
+          for (const child of children) {
+            const rect = child.getBoundingClientRect();
+            const midY = rect.top + rect.height / 2;
+            if (y < midY) return { ref: child, where: 'before' };
+          }
+          // Depois do último
+          return { ref: children[children.length - 1], where: 'after' };
+        },
+
+        setupAll() {
+          ['n-rte-body', 've-rte-body', 'ae-rte-body'].forEach(id => {
+            const body = document.getElementById(id);
+            if (body) this.setupBody(body);
+          });
+        },
+      };
+      window.RTE_DRAG_IMG = RTE_DRAG_IMG;
+
+      /* ══════════════════════════════════════════════════════════════
+         RTE_TUTORIAL — onboarding interativo
+         ──────────────────────────────────────────────────────────────
+         • 10 passos comuns aos 3 editores
+         • Auto-dispara na 1ª vez de CADA editor (3 flags independentes
+           em localStorage: rte-tutorial-seen-{n,ve,ae})
+         • Botão "❔ Tutorial" na topbar reabre manualmente
+         • Checkbox "Não mostrar novamente" persiste a flag
+         ════════════════════════════════════════════════════════════ */
+      const RTE_TUTORIAL = {
+        currentEditor: null,
+        currentStep: 0,
+        steps: [], // populado em build()
+
+        // Define a sequência de passos. Cada step tem:
+        //   target: ID do elemento a destacar (depende do editor) OU
+        //           função que recebe editorId e retorna ID
+        //   title, body (HTML simples permitido)
+        //   placement: 'auto' | 'top' | 'bottom' | 'left' | 'right' | 'center'
+        build(editorId) {
+          // bodyId, toolbarId, statusBarSelector mudam por editor
+          const map = {
+            n: { body: 'n-rte-body', toolbar: 'rte-toolbar', titulo: 'n-titulo', autosave: 'ne-autosave-indicator', topbarSel: '.ne-topbar' },
+            ve: { body: 've-rte-body', toolbar: 've-rte-toolbar', titulo: 'v-titulo', autosave: 'rte-autosave-ve', topbarSel: '#vaga-editor-overlay .ne-topbar' },
+            ae: { body: 'ae-rte-body', toolbar: 'ae-rte-toolbar', titulo: 'a-titulo', autosave: 'rte-autosave-ae', topbarSel: '#aviso-editor-overlay .ne-topbar' },
+          };
+          const M = map[editorId];
+
+          return [
+            {
+              title: 'Bem-vindo ao editor! 👋',
+              body: 'Este tour de 10 passos mostra os recursos principais. Você pode pular a qualquer momento, ou reabrir clicando no botão <kbd>❔ Tutorial</kbd> na topbar.',
+              placement: 'center',
+            },
+            {
+              target: M.titulo,
+              title: 'Título com feedback SEO',
+              body: 'Logo abaixo do título aparece um contador inteligente: <span style="color:var(--green)">verde</span> = faixa ideal (50-60 caracteres), <span style="color:var(--amber)">âmbar</span> = aceitável, <span style="color:var(--red)">vermelho</span> = longo demais para mecanismos de busca.',
+              placement: 'bottom',
+            },
+            {
+              target: M.toolbar,
+              title: 'Barra de ferramentas',
+              body: 'Formatação básica está aqui: <b>negrito</b>, <i>itálico</i>, listas, citações, cor, imagens, links… Mas você raramente vai precisar dela — use atalhos e markdown nos próximos passos.',
+              placement: 'bottom',
+            },
+            {
+              target: M.body,
+              title: 'Markdown shortcuts',
+              body: 'Digite <kbd>#</kbd> + espaço para virar Título 1, <kbd>##</kbd> + espaço para Título 2. Também funciona: <kbd>-</kbd> espaço (lista), <kbd>1.</kbd> espaço (numerada), <kbd>&gt;</kbd> espaço (citação), <kbd>---</kbd> espaço (divisor).',
+              placement: 'top',
+            },
+            {
+              target: M.body,
+              title: 'Slash menu — o jeito mais rápido',
+              body: 'Digite <kbd>/</kbd> em uma linha vazia. Abre um menu com 18 comandos: títulos, listas, imagem, YouTube, embed, tabela, callouts coloridos (info/atenção/sucesso/erro)… Filtre digitando: <code>/info</code> mostra só os relevantes.',
+              placement: 'top',
+            },
+            {
+              title: 'Atalhos essenciais ⌨️',
+              body: '<kbd>Ctrl+K</kbd> insere link &nbsp;·&nbsp; <kbd>Ctrl+F</kbd> busca dentro do texto &nbsp;·&nbsp; <kbd>Ctrl+H</kbd> buscar e substituir &nbsp;·&nbsp; <kbd>Ctrl+\\</kbd> limpa formatação &nbsp;·&nbsp; <kbd>Ctrl+Shift+7/8</kbd> listas &nbsp;·&nbsp; <kbd>Ctrl+Alt+1/2/3</kbd> H1/H2/H3.',
+              placement: 'center',
+            },
+            {
+              target: M.body,
+              title: 'Imagens com drag-and-drop',
+              body: 'Cole imagens direto do clipboard (<kbd>Ctrl+V</kbd>) ou arraste arquivos para dentro do editor. <strong>Para reordenar:</strong> clique e arraste qualquer imagem já inserida — uma linha azul indica onde ela vai cair.',
+              placement: 'top',
+            },
+            {
+              target: M.autosave,
+              title: 'Auto-save automático 💾',
+              body: 'Tudo que você digita é salvo no navegador a cada 2 segundos. Se a página fechar acidentalmente, ao reabrir o editor uma caixinha pergunta se quer restaurar o rascunho. Salvar definitivamente limpa o rascunho.',
+              placement: 'bottom',
+            },
+            {
+              title: 'Buscar dentro do conteúdo',
+              body: 'Aperte <kbd>Ctrl+F</kbd> para abrir o painel de busca. Setas <kbd>↑</kbd>/<kbd>↓</kbd> ou <kbd>Enter</kbd>/<kbd>Shift+Enter</kbd> navegam pelos resultados. <kbd>Ctrl+H</kbd> abre o modo "buscar e substituir" com botões individual e "Substituir todos".',
+              placement: 'center',
+            },
+            {
+              title: 'Pronto para criar! 🎉',
+              body: 'Você pode reabrir este tour a qualquer momento pelo botão <kbd>❔ Tutorial</kbd> na topbar. Bons textos!',
+              placement: 'center',
+              isLast: true,
+            },
+          ];
+        },
+
+        flagKey(editorId) { return 'rte-tutorial-seen-' + editorId; },
+
+        wasSeen(editorId) {
+          try { return localStorage.getItem(this.flagKey(editorId)) === '1'; }
+          catch (e) { return false; }
+        },
+
+        markSeen(editorId) {
+          try { localStorage.setItem(this.flagKey(editorId), '1'); } catch (e) { }
+        },
+
+        unmarkSeen(editorId) {
+          try { localStorage.removeItem(this.flagKey(editorId)); } catch (e) { }
+        },
+
+        autoStartIfNew(editorId) {
+          if (this.wasSeen(editorId)) return;
+          // Pequeno delay para o editor renderizar completamente
+          setTimeout(() => this.start(editorId), 600);
+        },
+
+        start(editorId) {
+          this.currentEditor = editorId;
+          this.steps = this.build(editorId);
+          this.currentStep = 0;
+          this._ensureOverlay();
+          this._render();
+        },
+
+        _ensureOverlay() {
+          let ov = document.getElementById('rte-tutorial-overlay');
+          if (!ov) {
+            ov = document.createElement('div');
+            ov.id = 'rte-tutorial-overlay';
+            ov.innerHTML =
+              '<div class="rte-tutorial-spotlight" id="rte-tutorial-spotlight"></div>' +
+              '<div class="rte-tutorial-box" id="rte-tutorial-box"></div>';
+            document.body.appendChild(ov);
+            // Click no fundo NÃO fecha (evita acidente). Use Esc ou botão.
+            window.addEventListener('keydown', (e) => {
+              if (!this.isOpen()) return;
+              if (e.key === 'Escape') { e.preventDefault(); this.close(false); }
+              if (e.key === 'ArrowRight') { e.preventDefault(); this.next(); }
+              if (e.key === 'ArrowLeft') { e.preventDefault(); this.prev(); }
+            });
+            // Reposiciona em resize ou quando o conteúdo abaixo rola
+            const reposition = () => {
+              if (!this.isOpen()) return;
+              const step = this.steps[this.currentStep];
+              const spot = document.getElementById('rte-tutorial-spotlight');
+              const box = document.getElementById('rte-tutorial-box');
+              if (step && spot && box) this._renderPositions(step, spot, box);
+            };
+            window.addEventListener('resize', reposition);
+            window.addEventListener('scroll', reposition, true);
+          }
+        },
+
+        isOpen() {
+          const ov = document.getElementById('rte-tutorial-overlay');
+          return ov && ov.classList.contains('open');
+        },
+
+        _render() {
+          const ov = document.getElementById('rte-tutorial-overlay');
+          const spot = document.getElementById('rte-tutorial-spotlight');
+          const box = document.getElementById('rte-tutorial-box');
+          const step = this.steps[this.currentStep];
+          if (!step || !ov || !box) return;
+
+          ov.classList.add('open');
+
+          // Se o alvo está fora da viewport, traz para a tela primeiro
+          if (step.target && step.placement !== 'center') {
+            const el = document.getElementById(step.target);
+            if (el) {
+              const r = el.getBoundingClientRect();
+              const outOfView = r.bottom < 0 || r.top > window.innerHeight ||
+                r.right < 0 || r.left > window.innerWidth;
+              if (outOfView) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // Re-tenta posicionar após o scroll terminar
+                setTimeout(() => this._renderPositions(step, spot, box), 350);
+                this._renderContent(step, box);
+                return;
+              }
+            }
+          }
+
+          this._renderContent(step, box);
+          this._renderPositions(step, spot, box);
+        },
+
+        _renderPositions(step, spot, box) {
+          // Spotlight
+          if (step.target && step.placement !== 'center') {
+            const el = document.getElementById(step.target);
+            if (el) {
+              const r = el.getBoundingClientRect();
+              const pad = 6;
+              spot.style.display = 'block';
+              spot.style.top = (r.top - pad) + 'px';
+              spot.style.left = (r.left - pad) + 'px';
+              spot.style.width = (r.width + pad * 2) + 'px';
+              spot.style.height = (r.height + pad * 2) + 'px';
+            } else {
+              spot.style.display = 'none';
+            }
+          } else {
+            spot.style.display = 'none';
+          }
+          // Posiciona a caixa de texto
+          this._positionBox(step, box);
+        },
+
+        _renderContent(step, box) {
+          const total = this.steps.length;
+          const dotsHtml = this.steps.map((_, i) =>
+            '<div class="rte-tutorial-dot' + (i === this.currentStep ? ' active' : '') + '"></div>'
+          ).join('');
+          const isLast = this.currentStep === total - 1;
+          const isFirst = this.currentStep === 0;
+
+          box.innerHTML =
+            '<div class="rte-tutorial-step">Passo ' + (this.currentStep + 1) + ' de ' + total + '</div>' +
+            '<div class="rte-tutorial-title">' + step.title + '</div>' +
+            '<div class="rte-tutorial-body">' + step.body + '</div>' +
+            '<div class="rte-tutorial-footer">' +
+            '<div class="rte-tutorial-dots">' + dotsHtml + '</div>' +
+            '<div class="rte-tutorial-actions">' +
+            (isFirst
+              ? '<button class="rte-tutorial-skip" onclick="RTE_TUTORIAL.close(true)">Pular tour</button>'
+              : '<button class="rte-tutorial-btn" onclick="RTE_TUTORIAL.prev()">← Voltar</button>'
+            ) +
+            (isLast
+              ? '<button class="rte-tutorial-btn primary" onclick="RTE_TUTORIAL.close(true)">Concluir ✓</button>'
+              : '<button class="rte-tutorial-btn primary" onclick="RTE_TUTORIAL.next()">Próximo →</button>'
+            ) +
+            '</div>' +
+            '</div>' +
+            (isFirst
+              ? '<label class="rte-tutorial-checkbox">' +
+              '<input type="checkbox" id="rte-tutorial-dont-show" ' +
+              (this.wasSeen(this.currentEditor) ? 'checked' : '') + '>' +
+              '<span>Não mostrar novamente para este editor</span>' +
+              '</label>'
+              : ''
+            );
+        },
+
+        _positionBox(step, box) {
+          const W = window.innerWidth, H = window.innerHeight;
+          const BW = 360, BH = box.offsetHeight || 220; // estimativa
+          // Reset positioning attrs
+          box.style.transform = '';
+
+          if (!step.target || step.placement === 'center') {
+            box.style.top = ((H - BH) / 2) + 'px';
+            box.style.left = ((W - BW) / 2) + 'px';
+            return;
+          }
+          const el = document.getElementById(step.target);
+          if (!el) {
+            box.style.top = ((H - BH) / 2) + 'px';
+            box.style.left = ((W - BW) / 2) + 'px';
+            return;
+          }
+          const r = el.getBoundingClientRect();
+          let top, left;
+          // Default placement: tenta abaixo, depois acima, depois centralizado
+          const spaceBelow = H - r.bottom;
+          const spaceAbove = r.top;
+          const useBelow = (step.placement === 'bottom') ||
+            (step.placement === 'auto' && spaceBelow >= BH + 20) ||
+            (step.placement !== 'top' && spaceBelow >= BH + 20);
+
+          if (useBelow) {
+            top = r.bottom + 14;
+            left = Math.min(W - BW - 16, Math.max(16, r.left + r.width / 2 - BW / 2));
+          } else if (spaceAbove >= BH + 20) {
+            top = r.top - BH - 14;
+            left = Math.min(W - BW - 16, Math.max(16, r.left + r.width / 2 - BW / 2));
+          } else {
+            // Sem espaço suficiente — centraliza
+            top = (H - BH) / 2;
+            left = (W - BW) / 2;
+          }
+          box.style.top = Math.max(12, top) + 'px';
+          box.style.left = Math.max(12, left) + 'px';
+        },
+
+        next() {
+          if (this.currentStep < this.steps.length - 1) {
+            this.currentStep++;
+            this._render();
+          }
+        },
+        prev() {
+          if (this.currentStep > 0) {
+            this.currentStep--;
+            this._render();
+          }
+        },
+
+        close(markAsSeen) {
+          const ov = document.getElementById('rte-tutorial-overlay');
+          if (!ov) return;
+          ov.classList.remove('open');
+
+          // Verifica checkbox "não mostrar novamente" se estava visível
+          const cb = document.getElementById('rte-tutorial-dont-show');
+          if (markAsSeen || (cb && cb.checked)) {
+            if (this.currentEditor) this.markSeen(this.currentEditor);
+          }
+          this.currentEditor = null;
+          this.currentStep = 0;
+        },
+      };
+      window.RTE_TUTORIAL = RTE_TUTORIAL;
+
       // Inicialização: anexa shortcuts/slash quando o DOM estiver pronto
       // e os bodies já existirem.
       function rteSetupAllKeyboards() {
         ['n', 've', 'ae'].forEach(id => {
           if (document.getElementById(id + '-rte-body')) rteSetupKeyboard(RTE[id]);
         });
+        // Anexa contadores SEO e drag-handle de imagens
+        if (window.RTE_SEO) RTE_SEO.setupAll();
+        if (window.RTE_DRAG_IMG) RTE_DRAG_IMG.setupAll();
+        rteSetupAriaLabels();
       }
+
+      /* ══════════════════════════════════════════════════════════════
+         ACESSIBILIDADE — aria-labels nas toolbars dos 3 editores
+         ──────────────────────────────────────────────────────────────
+         Lemos o atributo `title` de cada controle (já presente) e
+         espelhamos como aria-label, que é o que leitores de tela usam.
+         Botões de execCommand viram toggle (aria-pressed). Aplica em
+         todas as toolbars conhecidas: #rte-toolbar (n), #ve-rte-toolbar,
+         #ae-rte-toolbar.
+         ════════════════════════════════════════════════════════════ */
+      function rteSetupAriaLabels() {
+        const toolbarIds = ['rte-toolbar', 've-rte-toolbar', 'ae-rte-toolbar'];
+        for (const tid of toolbarIds) {
+          const tb = document.getElementById(tid);
+          if (!tb || tb.dataset.ariaReady === '1') continue;
+          tb.dataset.ariaReady = '1';
+          tb.setAttribute('role', 'toolbar');
+          tb.setAttribute('aria-label', 'Barra de ferramentas do editor');
+
+          tb.querySelectorAll('button, select, input').forEach(el => {
+            // 1) aria-label vem do title (que já é descritivo)
+            const title = el.getAttribute('title');
+            if (title && !el.hasAttribute('aria-label')) {
+              el.setAttribute('aria-label', title);
+            }
+            // 2) Toggle buttons (negrito/itálico/etc.) ganham aria-pressed
+            const onclick = el.getAttribute('onclick') || '';
+            const m = onclick.match(/Exec\(['"]([^'"]+)['"]/);
+            if (m && el.tagName === 'BUTTON') {
+              const cmd = m[1];
+              // Comandos que são toggle de estado (não one-shot como undo)
+              const toggles = ['bold', 'italic', 'underline', 'strikeThrough',
+                'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
+                'insertUnorderedList', 'insertOrderedList'];
+              if (toggles.includes(cmd)) {
+                el.setAttribute('aria-pressed', 'false');
+                el.dataset.toggleCmd = cmd;
+              }
+            }
+            // 3) Inputs sem label visível → tipo descritivo
+            if (el.tagName === 'INPUT' && el.type === 'color' && !el.hasAttribute('aria-label')) {
+              el.setAttribute('aria-label', 'Seletor de cor');
+            }
+          });
+        }
+
+        // Atualiza estado aria-pressed quando o cursor muda
+        if (!window._rteAriaTrackerSet) {
+          window._rteAriaTrackerSet = true;
+          document.addEventListener('selectionchange', () => {
+            try {
+              document.querySelectorAll('[data-toggle-cmd]').forEach(btn => {
+                const cmd = btn.dataset.toggleCmd;
+                const active = document.queryCommandState && document.queryCommandState(cmd);
+                btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+                btn.classList.toggle('active', !!active);
+              });
+            } catch (_) { /* queryCommandState pode lançar em alguns casos */ }
+          });
+        }
+      }
+
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', rteSetupAllKeyboards);
       } else {
@@ -8250,6 +9166,10 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
           // Dispara contadores uma vez após o editor estar visível
           updateWordCount();
           neTitleCounter(document.getElementById('n-titulo'));
+          // Novos módulos
+          if (window.RTE_SEO) RTE_SEO.setupAll();
+          if (window.RTE_DRAG_IMG) RTE_DRAG_IMG.setupAll();
+          if (window.RTE_TUTORIAL) RTE_TUTORIAL.autoStartIfNew('n');
         }, 120);
       }
 
@@ -8268,14 +9188,20 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
       ══════════════════════════════════════════ */
       const NE_TITLE_LIMIT = 100;
 
+      // Wrapper: delega ao novo sistema RTE_SEO (mantém compat com oninput=…)
       function neTitleCounter(input) {
-        const len = (input.value || '').length;
         const counter = document.getElementById('ne-title-counter');
         if (!counter) return;
-        counter.textContent = `${len}/${NE_TITLE_LIMIT}`;
-        counter.className = 'ne-title-counter';
-        if (len > NE_TITLE_LIMIT) counter.classList.add('over');
-        else if (len > NE_TITLE_LIMIT * 0.85) counter.classList.add('warn');
+        if (window.RTE_SEO) {
+          RTE_SEO.attach(input, counter, 'title');
+        } else {
+          // Fallback (antes do RTE_SEO carregar)
+          const len = (input.value || '').length;
+          counter.textContent = len + '/' + NE_TITLE_LIMIT;
+          counter.className = 'ne-title-counter';
+          if (len > NE_TITLE_LIMIT) counter.classList.add('over');
+          else if (len > NE_TITLE_LIMIT * 0.85) counter.classList.add('warn');
+        }
       }
 
       /* ══════════════════════════════════════════
@@ -11056,6 +11982,9 @@ document.addEventListener('DOMContentLoaded',function(){
         document.body.style.overflow = 'hidden';
         setTimeout(() => {
           if (window.RTE_AUTOSAVE) RTE_AUTOSAVE.start('ve');
+          if (window.RTE_SEO) RTE_SEO.setupAll();
+          if (window.RTE_DRAG_IMG) RTE_DRAG_IMG.setupAll();
+          if (window.RTE_TUTORIAL) RTE_TUTORIAL.autoStartIfNew('ve');
         }, 200);
       }
 
