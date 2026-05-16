@@ -49,6 +49,33 @@
       padding: 0;
     }
 
+    /* ── EDITOR EXPAND (tela cheia do RTE) ── */
+    #news-editor-overlay.rte-expanded .ne-preview-panel {
+      display: none;
+    }
+
+    #news-editor-overlay.rte-expanded .ne-body {
+      grid-template-columns: 1fr;
+    }
+
+    #news-editor-overlay.rte-expanded .ne-editor-panel {
+      max-width: 900px;
+      margin: 0 auto;
+      width: 100%;
+      border-right: none;
+    }
+
+    #news-editor-overlay.rte-expanded .rte-body {
+      max-height: calc(100vh - 220px);
+      min-height: 520px;
+    }
+
+    #btn-expand-editor.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-color: rgba(59, 130, 246, .3);
+    }
+
     /* Proteção global contra overflow de texto sem espaço */
     [contenteditable] {
       overflow-wrap: break-word !important;
@@ -4143,6 +4170,8 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
       </button>
       <button class="btn btn-amber btn-sm" id="btn-ai-format" onclick="aiAutoFormat()"
         title="Formata o conteúdo automaticamente com IA">✨ Auto-formatar</button>
+      <button class="btn btn-secondary btn-sm" id="btn-expand-editor" onclick="toggleEditorExpand()"
+        title="Expandir/Recolher editor para tela cheia">⛶ Expandir</button>
       <button class="btn btn-success btn-sm" id="btn-gh-publish" onclick="publishToGithub()">🚀 Publicar no
         site</button>
       <button class="btn btn-primary btn-sm" id="btn-save-noticia" onclick="saveNoticia()">💾 Salvar</button>
@@ -10827,6 +10856,16 @@ CREATE POLICY "admin_versoes" ON noticia_versoes FOR ALL TO authenticated USING 
 
       function syncRteToHidden() {
         document.getElementById('n-conteudo').value = document.getElementById('n-rte-body').innerHTML;
+
+        /* ── Expandir / recolher RTE para tela cheia ── */
+        function toggleEditorExpand() {
+          const overlay = document.getElementById('news-editor-overlay');
+          const btn = document.getElementById('btn-expand-editor');
+          const expanded = overlay.classList.toggle('rte-expanded');
+          btn.textContent = expanded ? '⛶ Recolher' : '⛶ Expandir';
+          btn.classList.toggle('active', expanded);
+        }
+        window.toggleEditorExpand = toggleEditorExpand;
       }
 
       /* ── RTE ── */
@@ -11652,6 +11691,13 @@ nav.scrolled{height:58px;background:rgba(8,14,8,.96);}
 .art-body pre{background:#070f07;color:var(--verde-neon);padding:1.3rem 1.5rem;border-radius:12px;overflow-x:auto;font-size:.87rem;border:1px solid rgba(123,201,92,.12);}
 .art-body .yt-embed-wrap{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:14px;background:#000;margin:2rem 0;box-shadow:0 8px 40px rgba(0,0,0,.5);}
 .art-body .yt-embed-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none;}
+/* ── CALLOUTS (caixas de destaque) ── */
+.art-body .rte-callout{display:flex;gap:.85rem;padding:1rem 1.25rem;margin:1.5rem 0;border-radius:10px;border-left:4px solid;background:rgba(59,130,246,.1);border-color:#3b82f6;}
+.art-body .rte-callout[data-type="warning"]{background:rgba(245,158,11,.1);border-color:#f59e0b;}
+.art-body .rte-callout[data-type="success"]{background:rgba(16,185,129,.1);border-color:#10b981;}
+.art-body .rte-callout[data-type="danger"]{background:rgba(239,68,68,.1);border-color:#ef4444;}
+.art-body .rte-callout .rte-callout-icon{font-size:1.25rem;flex-shrink:0;line-height:1.5;}
+.art-body .rte-callout .rte-callout-content{flex:1;min-width:0;color:var(--texto);line-height:1.65;font-size:.97rem;}
 
 /* ── SHARE BAR ── */
 .share-bar{margin:2.5rem 0 0;padding:1.6rem 0 1.6rem;border-top:1px solid rgba(255,255,255,.07);border-bottom:1px solid rgba(255,255,255,.07);}
@@ -13921,14 +13967,15 @@ ${conteudoModelo}
           k === 'word/_rels/document.xml.rels' || k.endsWith('/_rels/document.xml.rels')
         );
         const imgMap = {}; // rId → data URL
+        const linkMap = {}; // rId → URL (hyperlinks reais do Word)
         if (relsKey) {
           const relsStr = _uint8ToString(files[relsKey]);
+          // Mapeia imagens
           const relRx = /Relationship[^>]+Id="([^"]+)"[^>]+Type="[^"]*\/image"[^>]+Target="([^"]+)"/g;
           let m;
           while ((m = relRx.exec(relsStr)) !== null) {
             const rId = m[1];
-            let target = m[2].replace(/^\//, ''); // remove leading /
-            // Target pode ser relativo a word/ ou absoluto
+            let target = m[2].replace(/^\//, '');
             const candidates = [
               'word/' + target,
               target,
@@ -13943,15 +13990,58 @@ ${conteudoModelo}
               }
             }
           }
+          // Mapeia hyperlinks (URLs reais)
+          const linkRx = /Relationship[^>]+Id="([^"]+)"[^>]+Type="[^"]*\/hyperlink"[^>]+Target="([^"]+)"/g;
+          let lm;
+          while ((lm = linkRx.exec(relsStr)) !== null) {
+            linkMap[lm[1]] = lm[2];
+          }
+          // Alternativa: regex com atributos em qualquer ordem
+          const linkRx2 = /Relationship[^>]*Id="([^"]+)"[^>]*TargetMode="External"[^>]*Target="([^"]+)"/g;
+          let lm2;
+          while ((lm2 = linkRx2.exec(relsStr)) !== null) {
+            if (!linkMap[lm2[1]]) linkMap[lm2[1]] = lm2[2];
+          }
+        }
+
+        // Lê numeração (word/numbering.xml) para detectar listas ordenadas
+        const numXmlKey = Object.keys(files).find(k => k === 'word/numbering.xml' || k.endsWith('/numbering.xml'));
+        const orderedNumIds = new Set(); // numIds que são listas ordenadas
+        if (numXmlKey) {
+          try {
+            const numStr = _uint8ToString(files[numXmlKey]);
+            const numDoc = (new DOMParser()).parseFromString(numStr, 'application/xml');
+            const abstractNums = numDoc.querySelectorAll('abstractNum');
+            const abstractOrdered = new Set();
+            abstractNums.forEach(an => {
+              const lvl = an.querySelector('lvl');
+              if (lvl) {
+                const numFmt = lvl.querySelector('numFmt');
+                const fmtVal = numFmt ? (numFmt.getAttribute('w:val') || numFmt.getAttributeNS('http://schemas.openxmlformats.org/wordprocessingml/2006/main', 'val') || '') : '';
+                if (!['bullet', 'none', ''].includes(fmtVal)) {
+                  abstractOrdered.add(an.getAttribute('w:abstractNumId') || an.getAttributeNS('http://schemas.openxmlformats.org/wordprocessingml/2006/main', 'abstractNumId') || '');
+                }
+              }
+            });
+            const nums = numDoc.querySelectorAll('num');
+            nums.forEach(num => {
+              const numId = num.getAttribute('w:numId') || num.getAttributeNS('http://schemas.openxmlformats.org/wordprocessingml/2006/main', 'numId') || '';
+              const abstractRef = num.querySelector('abstractNumId');
+              const abstractId = abstractRef ? (abstractRef.getAttribute('w:val') || abstractRef.getAttributeNS('http://schemas.openxmlformats.org/wordprocessingml/2006/main', 'val') || '') : '';
+              if (abstractOrdered.has(abstractId)) orderedNumIds.add(numId);
+            });
+          } catch (e) { /* ignora erros no parsing de numeração */ }
         }
 
         // Transforma o XML do Word em HTML limpo
-        const html = _wordXmlToHtml(xmlStr, imgMap);
+        const html = _wordXmlToHtml(xmlStr, imgMap, linkMap, orderedNumIds);
         return html;
       }
 
       /* ── Converte word/document.xml em HTML ── */
-      function _wordXmlToHtml(xmlStr, imgMap) {
+      function _wordXmlToHtml(xmlStr, imgMap, linkMap, orderedNumIds) {
+        linkMap = linkMap || {};
+        orderedNumIds = orderedNumIds || new Set();
         // Usa DOMParser para parsear o XML
         const parser = new DOMParser();
         const doc = parser.parseFromString(xmlStr, 'application/xml');
@@ -13998,6 +14088,25 @@ ${conteudoModelo}
           const italic = rPr && (first(rPr, 'i') || first(rPr, 'iCs'));
           const under = rPr && first(rPr, 'u');
           const strike = rPr && first(rPr, 'strike');
+          // Cor de fonte
+          let fontColor = '';
+          if (rPr) {
+            const colorEl = first(rPr, 'color');
+            if (colorEl) {
+              const cv = attr(colorEl, 'val');
+              if (cv && cv !== 'auto' && cv !== '000000') fontColor = '#' + cv;
+            }
+          }
+          // Highlight / mark
+          let highlight = '';
+          if (rPr) {
+            const hlEl = first(rPr, 'highlight');
+            if (hlEl) {
+              const hv = attr(hlEl, 'val');
+              const hlMap = { yellow: '#fef08a', green: '#bbf7d0', cyan: '#a5f3fc', magenta: '#f5d0fe', blue: '#bfdbfe', red: '#fecaca', darkBlue: '#93c5fd', darkCyan: '#6ee7b7', darkGreen: '#86efac', darkMagenta: '#d8b4fe', darkRed: '#fca5a5', darkYellow: '#fde68a', darkGray: '#d1d5db', lightGray: '#e5e7eb' };
+              if (hlMap[hv]) highlight = hlMap[hv];
+            }
+          }
 
           // Imagem embutida (w:drawing → a:blip)
           const drawing = first(run, 'drawing');
@@ -14035,6 +14144,11 @@ ${conteudoModelo}
           if (italic) text = `<em>${text}</em>`;
           if (under && attr(under, 'val') !== 'none') text = `<u>${text}</u>`;
           if (strike) text = `<s>${text}</s>`;
+          // Aplica cor de fonte e highlight
+          const spanStyles = [];
+          if (fontColor) spanStyles.push(`color:${fontColor}`);
+          if (highlight) spanStyles.push(`background:${highlight};padding:0 2px;border-radius:2px`);
+          if (spanStyles.length) text = `<span style="${spanStyles.join(';')}">${text}</span>`;
           return text;
         }
 
@@ -14063,9 +14177,11 @@ ${conteudoModelo}
           if (!numPr) return null;
           const ilvl = first(numPr, 'ilvl');
           const numId = first(numPr, 'numId');
+          const nid = numId ? (attr(numId, 'val') || '') : '0';
           return {
             level: ilvl ? parseInt(attr(ilvl, 'val') || '0') : 0,
-            numId: numId ? attr(numId, 'val') : '0',
+            numId: nid,
+            ordered: orderedNumIds.has(nid),
           };
         }
 
@@ -14089,12 +14205,12 @@ ${conteudoModelo}
             if (child.localName === 'r') {
               inner += processRun(child);
             } else if (child.localName === 'hyperlink') {
-              // w:hyperlink
-              const href = child.getAttributeNS
-                ? child.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships', 'id') || ''
-                : '';
+              // w:hyperlink — busca URL real nas relações
+              const rIdAttr = child.getAttribute('r:id') ||
+                (child.getAttributeNS ? child.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships', 'id') : '') || '';
+              const url = (rIdAttr && linkMap[rIdAttr]) ? linkMap[rIdAttr] : '#';
               const linkText = [...child.children].filter(c => c.localName === 'r').map(processRun).join('');
-              inner += linkText ? `<a href="#">${linkText}</a>` : linkText;
+              inner += linkText ? `<a href="${url.replace(/"/g, '&quot;')}" target="_blank" rel="noopener">${linkText}</a>` : linkText;
             } else if (child.localName === 'ins') {
               // tracked insertion
               const rs = [...child.children].filter(c => c.localName === 'r');
@@ -14175,9 +14291,9 @@ ${conteudoModelo}
               }
 
               // Abre nova lista se necessário
-              const isOrdered = false; // simplificação: usa ul sempre
+              const isOrdered = li.ordered;
               if (listStack.length === 0 || listStack[listStack.length - 1].level < li.level) {
-                const ltag = 'ul';
+                const ltag = isOrdered ? 'ol' : 'ul';
                 htmlParts.push(`<${ltag} style="margin:.4rem 0 .4rem 1.5rem;">`);
                 listStack.push({ numId: li.numId, level: li.level, tag: ltag });
               }
