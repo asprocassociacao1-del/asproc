@@ -465,21 +465,30 @@
             border-color: var(--verde-claro)
         }
 
-        /* FEATURED */
+        /* FEATURED — Editorial Split Layout */
         .feat-card {
-            position: relative;
-            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             border-radius: 20px;
-            min-height: 400px;
-            display: flex;
-            align-items: flex-end;
+            overflow: hidden;
             cursor: pointer;
             margin-bottom: 1.6rem;
-            transition: transform .4s
+            background: var(--cinza);
+            border: 1px solid rgba(123, 201, 92, .13);
+            min-height: 420px;
+            transition: box-shadow .4s, border-color .4s
         }
 
         .feat-card:hover {
-            transform: scale(1.01)
+            box-shadow: 0 24px 60px rgba(0,0,0,.55);
+            border-color: rgba(123, 201, 92, .3)
+        }
+
+        /* Image side */
+        .feat-img-wrap {
+            position: relative;
+            overflow: hidden;
+            min-height: 320px
         }
 
         .feat-bg {
@@ -487,76 +496,162 @@
             inset: 0;
             background-size: cover;
             background-position: center;
-            transition: transform .6s
+            transition: transform .7s cubic-bezier(.25,.46,.45,.94)
         }
 
         .feat-card:hover .feat-bg {
-            transform: scale(1.04)
+            transform: scale(1.06)
         }
 
-        .feat-ov {
+        /* Subtle side gradient to blend into content */
+        .feat-img-wrap::after {
+            content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(to top, rgba(15, 26, 15, .92) 0%, rgba(0, 0, 0, .1) 55%)
+            background: linear-gradient(to right, transparent 60%, var(--cinza) 100%)
         }
 
+        /* Breaking news ribbon */
+        .feat-ribbon {
+            position: absolute;
+            top: 18px;
+            left: 0;
+            background: var(--verde-claro);
+            color: #fff;
+            font-size: .6rem;
+            font-weight: 800;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            padding: .28rem .9rem .28rem .7rem;
+            border-radius: 0 30px 30px 0;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: .4rem
+        }
+
+        .feat-ribbon::before {
+            content: '';
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--verde-neon);
+            animation: blink 1.4s ease-in-out infinite
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1 }
+            50% { opacity: .2 }
+        }
+
+        /* Content side */
         .feat-body {
-            position: relative;
-            z-index: 1;
-            padding: 2rem 2.4rem
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 2.4rem 2.6rem 2.4rem 2rem;
+            position: relative
+        }
+
+        /* Decorative vertical accent line */
+        .feat-body::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 15%;
+            height: 70%;
+            width: 3px;
+            background: linear-gradient(to bottom, transparent, var(--verde-neon), transparent);
+            border-radius: 4px
         }
 
         .feat-cat {
-            display: inline-block;
-            background: var(--verde-claro);
-            color: #fff;
-            font-size: .62rem;
+            display: inline-flex;
+            align-items: center;
+            gap: .4rem;
+            background: rgba(123, 201, 92, .12);
+            border: 1px solid rgba(123, 201, 92, .3);
+            color: var(--verde-neon);
+            font-size: .61rem;
             font-weight: 700;
-            letter-spacing: .12em;
+            letter-spacing: .14em;
             text-transform: uppercase;
-            padding: .22rem .65rem;
+            padding: .25rem .75rem;
             border-radius: 20px;
-            margin-bottom: .7rem
+            margin-bottom: 1rem;
+            width: fit-content
         }
 
         .feat-date {
-            font-size: .68rem;
-            color: var(--verde-neon);
-            font-weight: 600;
+            font-size: .66rem;
+            color: rgba(245,240,232,.4);
+            font-weight: 500;
             letter-spacing: .1em;
             text-transform: uppercase;
-            margin-bottom: .4rem
+            margin-bottom: .65rem
         }
 
         .feat-title {
             font-family: 'Fraunces', serif;
-            font-size: clamp(1.4rem, 3vw, 2rem);
+            font-size: clamp(1.35rem, 2.2vw, 1.9rem);
             font-weight: 900;
-            line-height: 1.2;
-            margin-bottom: .8rem
+            line-height: 1.18;
+            margin-bottom: 1rem;
+            color: var(--branco)
         }
 
         .feat-exc {
-            font-size: .9rem;
-            color: rgba(255, 255, 255, .7);
-            line-height: 1.65;
-            max-width: 650px;
-            margin-bottom: 1rem
+            font-size: .875rem;
+            color: rgba(255, 255, 255, .6);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+            flex-grow: 1
         }
 
         .feat-link {
-            color: var(--verde-neon);
-            text-decoration: none;
-            font-weight: 700;
-            font-size: .85rem;
             display: inline-flex;
             align-items: center;
-            gap: .35rem;
-            transition: gap .3s
+            gap: .5rem;
+            background: var(--verde-claro);
+            color: #fff;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: .82rem;
+            padding: .6rem 1.3rem;
+            border-radius: 30px;
+            width: fit-content;
+            transition: background .3s, gap .3s, transform .25s
         }
 
         .feat-link:hover {
-            gap: .7rem
+            background: var(--verde-neon);
+            color: var(--escuro);
+            gap: .8rem;
+            transform: translateY(-2px)
+        }
+
+        /* Mobile: stack vertically */
+        @media (max-width: 768px) {
+            .feat-card {
+                grid-template-columns: 1fr;
+                min-height: auto
+            }
+
+            .feat-img-wrap {
+                min-height: 220px
+            }
+
+            .feat-img-wrap::after {
+                background: linear-gradient(to bottom, transparent 60%, var(--cinza) 100%)
+            }
+
+            .feat-body {
+                padding: 1.6rem
+            }
+
+            .feat-body::before {
+                display: none
+            }
         }
 
         /* MAIN GRID */
@@ -1189,9 +1284,12 @@
         <!-- DESTAQUE -->
         <div class="feat-card reveal" id="noticia-destaque" data-tag="olea"
             onclick="window.open('https://asproc.org.br/','_blank')">
-            <div class="feat-bg" style="background-image:url('images/noticias-bg-02.webp')">
+            <!-- Image side -->
+            <div class="feat-img-wrap">
+                <div class="feat-bg" style="background-image:url('images/noticias-bg-02.webp')"></div>
+                <div class="feat-ribbon">Destaque</div>
             </div>
-            <div class="feat-ov"></div>
+            <!-- Content side -->
             <div class="feat-body">
                 <span class="feat-cat">Oleaginosas</span>
                 <div class="feat-date">Fevereiro 2026</div>
