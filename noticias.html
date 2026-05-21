@@ -662,38 +662,103 @@
             align-items: start
         }
 
+        /* ── EDITORIAL CARD GRID ─────────────────────────────────────
+           Alternating rhythm: large card (full-width, image-top) then
+           two compact cards side by side, then large again, etc.
+           First card in every group of 3 gets .nc--hero for the big look.
+        ────────────────────────────────────────────────────────────── */
         .ng {
             display: grid;
-            grid-template-columns: 1fr;
-            gap: 1.1rem
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem
         }
 
-        /* Card redesign — editorial horizontal split */
+        /* ── BASE CARD ── */
         .nc {
             background: var(--cinza);
-            border-radius: 16px;
+            border-radius: 18px;
             overflow: hidden;
-            border: 1px solid rgba(123, 201, 92, .08);
+            border: 1px solid rgba(123, 201, 92, .07);
             cursor: pointer;
-            transition: transform .35s, box-shadow .35s, border-color .35s;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            min-height: 200px;
-            position: relative
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            transition: transform .38s cubic-bezier(.23,1,.32,1),
+                        box-shadow .38s cubic-bezier(.23,1,.32,1),
+                        border-color .3s
         }
 
         .nc:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, .55);
+            transform: translateY(-6px) scale(1.01);
+            box-shadow: 0 24px 60px rgba(0,0,0,.65),
+                        0 0 0 1px rgba(123,201,92,.18);
             border-color: rgba(123, 201, 92, .22)
         }
 
-        /* Image panel — left side */
+        /* ── HERO CARD (spans 2 cols, landscape layout) ── */
+        .nc--hero {
+            grid-column: 1 / -1;
+            flex-direction: row;
+            min-height: 220px
+        }
+
+        .nc--hero .nc-img {
+            width: 45%;
+            flex-shrink: 0;
+            min-height: 220px
+        }
+
+        .nc--hero .nc-body {
+            padding: 1.8rem 1.8rem 1.8rem 1.4rem
+        }
+
+        .nc--hero .nc-title {
+            font-size: 1.2rem;
+            line-height: 1.28
+        }
+
+        .nc--hero .nc-exc {
+            display: block
+        }
+
+        /* ── IMAGE PANEL ── */
         .nc-img {
             position: relative;
             overflow: hidden;
             background: var(--cinza2);
-            min-height: 200px
+            min-height: 180px;
+            flex-shrink: 0
+        }
+
+        /* Tinted overlay that becomes the card bg when no image */
+        .nc-img::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(160deg,
+                rgba(45,106,45,.18) 0%,
+                rgba(15,26,15,.0) 60%);
+            z-index: 1;
+            pointer-events: none
+        }
+
+        /* Bottom fade into card body color */
+        .nc-img::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 55%;
+            background: linear-gradient(to bottom, transparent, var(--cinza));
+            pointer-events: none;
+            z-index: 1
+        }
+
+        /* Hero cards: fade right instead */
+        .nc--hero .nc-img::after {
+            bottom: 0; top: 0;
+            right: 0; left: auto;
+            width: 30%; height: 100%;
+            background: linear-gradient(to right, transparent, var(--cinza))
         }
 
         .nc-img img {
@@ -701,136 +766,157 @@
             inset: 0;
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: cover;
             object-position: center;
-            transition: transform .55s cubic-bezier(.25,.46,.45,.94);
-            display: block;
-            background: var(--cinza2)
+            transition: transform .6s cubic-bezier(.25,.46,.45,.94),
+                        filter .4s;
+            display: block
         }
 
         .nc:hover .nc-img img {
-            transform: scale(1.05)
-        }
-
-        /* Subtle right-side gradient blending into content */
-        .nc-img::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to right, transparent 55%, var(--cinza) 100%);
-            pointer-events: none
+            transform: scale(1.07);
+            filter: brightness(1.08) saturate(1.1)
         }
 
         .nc-img-placeholder {
-            width: 100%;
-            height: 100%;
+            position: absolute;
+            inset: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.5rem;
-            opacity: .25;
-            position: absolute;
-            inset: 0
+            font-size: 2.8rem;
+            opacity: .15
         }
 
+        /* ── CATEGORY PILL ── */
         .nc-cat {
             position: absolute;
-            top: 10px;
-            left: 10px;
-            background: rgba(74, 158, 63, .85);
-            backdrop-filter: blur(6px);
-            color: #fff;
-            font-size: .58rem;
-            font-weight: 700;
-            letter-spacing: .11em;
+            top: 12px;
+            left: 12px;
+            z-index: 3;
+            background: rgba(15, 26, 15, .72);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(123, 201, 92, .35);
+            color: var(--verde-neon);
+            font-size: .56rem;
+            font-weight: 800;
+            letter-spacing: .14em;
             text-transform: uppercase;
-            padding: .22rem .62rem;
+            padding: .22rem .65rem;
             border-radius: 20px;
-            z-index: 3
+            display: flex;
+            align-items: center;
+            gap: .35rem
         }
 
-        /* Content panel — right side */
+        .nc-cat::before {
+            content: '';
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--verde-neon);
+            flex-shrink: 0
+        }
+
+        /* ── CARD BODY ── */
         .nc-body {
-            padding: 1.3rem 1.4rem 1.3rem 1rem;
+            padding: 1.1rem 1.2rem 1.2rem;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            position: relative
-        }
-
-        /* Decorative accent line mirroring the destaque */
-        .nc-body::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 20%;
-            height: 60%;
-            width: 2px;
-            background: linear-gradient(to bottom, transparent, var(--verde-neon), transparent);
-            border-radius: 4px
+            flex: 1
         }
 
         .nc-date {
-            font-size: .62rem;
-            color: var(--verde-neon);
+            font-size: .58rem;
+            color: rgba(245,240,232,.38);
             font-weight: 600;
-            letter-spacing: .1em;
+            letter-spacing: .12em;
             text-transform: uppercase;
-            margin-bottom: .45rem
+            margin-bottom: .5rem
         }
 
         .nc-title {
             font-family: 'Fraunces', serif;
-            font-size: .95rem;
+            font-size: .92rem;
             font-weight: 700;
-            line-height: 1.35;
+            line-height: 1.32;
             color: var(--branco);
-            margin-bottom: .55rem
+            margin-bottom: .5rem;
+            /* Clamp to 3 lines on small cards */
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden
         }
 
         .nc-exc {
-            font-size: .78rem;
-            color: rgba(245, 240, 232, .52);
+            font-size: .75rem;
+            color: rgba(245, 240, 232, .48);
             line-height: 1.65;
-            margin-bottom: .9rem;
-            flex-grow: 1
+            margin-bottom: .85rem;
+            flex-grow: 1;
+            display: none /* hidden on small cards, shown on hero */
         }
 
+        /* ── READ-MORE LINK ── */
         .nc-link {
-            font-size: .75rem;
+            margin-top: auto;
+            font-size: .7rem;
             color: var(--verde-neon);
-            font-weight: 600;
+            font-weight: 700;
+            letter-spacing: .05em;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: .3rem;
-            transition: gap .3s;
-            width: fit-content
+            width: fit-content;
+            padding: .3rem .75rem .3rem 0;
+            border-bottom: 1px solid rgba(123,201,92,.2);
+            transition: gap .28s, border-color .28s, color .28s
         }
 
-        .nc-link:hover {
-            gap: .65rem
+        .nc:hover .nc-link {
+            gap: .6rem;
+            border-color: var(--verde-neon)
         }
 
-        /* Responsive: stack on narrow screens */
+        /* ── READING-TIME CHIP ── */
+        .nc-readtime {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            z-index: 3;
+            font-size: .55rem;
+            font-weight: 700;
+            letter-spacing: .08em;
+            color: rgba(245,240,232,.45);
+            background: rgba(15,26,15,.6);
+            backdrop-filter: blur(8px);
+            border-radius: 20px;
+            padding: .2rem .55rem
+        }
+
+        /* ── RESPONSIVE ── */
         @media (max-width: 900px) {
-            .nc {
+            .ng {
                 grid-template-columns: 1fr
             }
-
-            .nc-img {
+            .nc--hero {
+                flex-direction: column
+            }
+            .nc--hero .nc-img {
+                width: 100%;
                 min-height: 200px
             }
-
-            .nc-img img {
-                object-fit: cover
+            .nc--hero .nc-img::after {
+                width: 100%; height: 40%;
+                background: linear-gradient(to bottom, transparent, var(--cinza));
+                top: auto; bottom: 0; left: 0; right: 0
             }
-
-            .nc-img::after {
-                background: linear-gradient(to bottom, transparent 55%, var(--cinza) 100%)
+            .nc--hero .nc-body {
+                padding: 1.2rem 1.2rem 1.3rem
             }
-
-            .nc-body::before {
+            .nc--hero .nc-exc {
                 display: none
             }
         }
@@ -1833,7 +1919,7 @@
                     destaque.style.display = 'none';
                 }
                 const cards = page === 1 ? data.slice(1) : data;
-                grid.innerHTML = cards.map(n => {
+                grid.innerHTML = cards.map((n, idx) => {
                     const imgUrl = n.imagem_url || '';
                     const imgHtml = imgUrl
                         ? `<img src="${imgUrl}" alt="${_esc(n.titulo)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">`
@@ -1841,8 +1927,14 @@
                     const placeholderStyle = imgUrl ? 'display:none' : 'display:flex';
                     const linkUrl = n.url_externa ? _url(n.url_externa) : '#';
                     const linkTarget = n.url_externa ? '_blank' : '_self';
+                    // Hero card: every 3rd starting at 0 (0, 3, 6…)
+                    const isHero = idx % 3 === 0;
+                    const heroClass = isHero ? ' nc--hero' : '';
+                    // Estimate reading time from resumo
+                    const words = ((n.resumo || '') + ' ' + (n.titulo || '')).split(/\s+/).length;
+                    const mins = Math.max(1, Math.ceil(words / 200));
                     return `
-                    <div class="nc" data-tag="${_esc(n.categoria)}" style="cursor:pointer;opacity:1;transform:none;"
+                    <div class="nc${heroClass}" data-tag="${_esc(n.categoria)}" style="cursor:pointer;opacity:1;transform:none;"
                          onclick="window.open('${linkUrl}','${linkTarget}')">
                         <div class="nc-img">
                             <span class="nc-cat">${_esc(_CAT_LABEL[n.categoria] || n.categoria)}</span>
@@ -1855,6 +1947,7 @@
                             <div class="nc-exc">${_esc(n.resumo || '')}</div>
                             <span class="nc-link">Ler mais →</span>
                         </div>
+                        <span class="nc-readtime">${mins} min</span>
                     </div>`;
                 }).join('');
                 // Animação de entrada suave nos cards — sem IntersectionObserver
