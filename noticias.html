@@ -664,41 +664,61 @@
 
         .ng {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.3rem
+            grid-template-columns: 1fr;
+            gap: 1.1rem
         }
 
+        /* Card redesign — editorial horizontal split */
         .nc {
             background: var(--cinza);
-            border-radius: 14px;
+            border-radius: 16px;
             overflow: hidden;
             border: 1px solid rgba(123, 201, 92, .08);
             cursor: pointer;
-            transition: transform .35s, box-shadow .35s
+            transition: transform .35s, box-shadow .35s, border-color .35s;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 200px;
+            position: relative
         }
 
         .nc:hover {
-            transform: translateY(-7px);
-            box-shadow: 0 18px 45px rgba(0, 0, 0, .5)
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, .55);
+            border-color: rgba(123, 201, 92, .22)
         }
 
+        /* Image panel — left side */
         .nc-img {
-            height: 175px;
-            overflow: hidden;
             position: relative;
-            background: var(--cinza2)
+            overflow: hidden;
+            background: var(--cinza2);
+            min-height: 200px
         }
 
         .nc-img img {
+            position: absolute;
+            inset: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            transition: transform .5s;
-            display: block
+            object-fit: contain;
+            object-position: center;
+            transition: transform .55s cubic-bezier(.25,.46,.45,.94);
+            display: block;
+            background: var(--cinza2)
         }
 
         .nc:hover .nc-img img {
-            transform: scale(1.07)
+            transform: scale(1.05)
+        }
+
+        /* Subtle right-side gradient blending into content */
+        .nc-img::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to right, transparent 55%, var(--cinza) 100%);
+            pointer-events: none
         }
 
         .nc-img-placeholder {
@@ -708,66 +728,111 @@
             align-items: center;
             justify-content: center;
             font-size: 2.5rem;
-            opacity: .25
+            opacity: .25;
+            position: absolute;
+            inset: 0
         }
 
         .nc-cat {
             position: absolute;
-            top: 9px;
-            left: 9px;
-            background: var(--verde-claro);
+            top: 10px;
+            left: 10px;
+            background: rgba(74, 158, 63, .85);
+            backdrop-filter: blur(6px);
             color: #fff;
-            font-size: .59rem;
+            font-size: .58rem;
             font-weight: 700;
             letter-spacing: .11em;
             text-transform: uppercase;
-            padding: .2rem .58rem;
+            padding: .22rem .62rem;
             border-radius: 20px;
-            z-index: 2
+            z-index: 3
         }
 
+        /* Content panel — right side */
         .nc-body {
-            padding: 1.15rem
+            padding: 1.3rem 1.4rem 1.3rem 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative
+        }
+
+        /* Decorative accent line mirroring the destaque */
+        .nc-body::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 20%;
+            height: 60%;
+            width: 2px;
+            background: linear-gradient(to bottom, transparent, var(--verde-neon), transparent);
+            border-radius: 4px
         }
 
         .nc-date {
-            font-size: .65rem;
+            font-size: .62rem;
             color: var(--verde-neon);
             font-weight: 600;
             letter-spacing: .1em;
             text-transform: uppercase;
-            margin-bottom: .4rem
+            margin-bottom: .45rem
         }
 
         .nc-title {
             font-family: 'Fraunces', serif;
-            font-size: .98rem;
+            font-size: .95rem;
             font-weight: 700;
             line-height: 1.35;
             color: var(--branco);
-            margin-bottom: .5rem
+            margin-bottom: .55rem
         }
 
         .nc-exc {
-            font-size: .8rem;
-            color: rgba(245, 240, 232, .55);
+            font-size: .78rem;
+            color: rgba(245, 240, 232, .52);
             line-height: 1.65;
-            margin-bottom: .9rem
+            margin-bottom: .9rem;
+            flex-grow: 1
         }
 
         .nc-link {
-            font-size: .77rem;
+            font-size: .75rem;
             color: var(--verde-neon);
             font-weight: 600;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: .3rem;
-            transition: gap .3s
+            transition: gap .3s;
+            width: fit-content
         }
 
         .nc-link:hover {
             gap: .65rem
+        }
+
+        /* Responsive: stack on narrow screens */
+        @media (max-width: 900px) {
+            .nc {
+                grid-template-columns: 1fr
+            }
+
+            .nc-img {
+                min-height: 200px
+            }
+
+            .nc-img img {
+                object-fit: cover
+            }
+
+            .nc-img::after {
+                background: linear-gradient(to bottom, transparent 55%, var(--cinza) 100%)
+            }
+
+            .nc-body::before {
+                display: none
+            }
         }
 
         /* SIDEBAR */
@@ -1454,7 +1519,7 @@
     <footer>
         <div class="fg">
             <div class="footer-brand">
-                <img loading="lazy" src="images/noticia-extra-08.webp" alt="ASPROC">
+                <img loading="lazy" src="images/trabalhe-img-2.webp" alt="ASPROC">
                 <p>Uma luta organizada de produtores agroextrativistas pela sobrevivência na floresta e a conservação
                     ambiental.</p>
                 <div class="sl">
@@ -1771,7 +1836,7 @@
                 grid.innerHTML = cards.map(n => {
                     const imgUrl = n.imagem_url || '';
                     const imgHtml = imgUrl
-                        ? `<img src="${imgUrl}" alt="${_esc(n.titulo)}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">`
+                        ? `<img src="${imgUrl}" alt="${_esc(n.titulo)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">`
                         : '';
                     const placeholderStyle = imgUrl ? 'display:none' : 'display:flex';
                     const linkUrl = n.url_externa ? _url(n.url_externa) : '#';
