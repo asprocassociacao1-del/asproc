@@ -3555,7 +3555,7 @@
         </div>
 
         <div class="nav-group-label">Sistema</div>
-        <div class="nav-item" id="nav-usuarios" onclick="goTo('usuarios',this)">
+        <div class="nav-item" id="nav-item-usuarios" onclick="goTo('usuarios',this)">
           <span class="nav-icon">👥</span> Usuários
           <span class="nav-badge" id="badge-usuarios">–</span>
         </div>
@@ -3569,7 +3569,7 @@
           <div class="user-avatar" id="user-avatar">A</div>
           <div class="user-info">
             <strong id="user-name">Admin</strong>
-            <span>Administrador</span>
+            <span id="user-nivel-badge" style="font-size:.68rem;font-weight:600;">Carregando…</span>
           </div>
         </div>
         <button class="btn-logout" onclick="doLogout()">Sair da conta</button>
@@ -5960,7 +5960,7 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
         usuarios: ['Usuários', 'Gerencie os administradores e seus níveis de acesso'],
       };
 
-      function goTo(section, el) {
+      async function goTo(section, el) {
         if (section === 'textos') {
           const camposEl = document.getElementById('textos-campos');
           if (!camposEl || !camposEl.innerHTML.trim()) setTimeout(loadTextos, 80);
@@ -5972,9 +5972,15 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
           setTimeout(loadMensagens, 80);
         }
         // Restrição: apenas super_admin acessa usuários
-        if (section === 'usuarios' && _currentUserNivel && _currentUserNivel !== 'super_admin') {
-          toast('⛔ Apenas Super Admins podem gerenciar usuários.', 'error');
-          return;
+        if (section === 'usuarios') {
+          // Se o nível ainda não foi carregado, aguarda a resolução
+          if (_currentUserNivel === null) {
+            await resolveCurrentUserNivel();
+          }
+          if (_currentUserNivel !== 'super_admin') {
+            toast('⛔ Apenas Super Admins podem gerenciar usuários.', 'error');
+            return;
+          }
         }
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -6084,11 +6090,54 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
         return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
       }
 
-      function initApp() {
+      async function initApp() {
+        // Carrega o nível do usuário atual ANTES de qualquer outra coisa.
+        // Isso garante que restrições de UI (candidaturas, config, etc.)
+        // já estejam corretas desde o primeiro carregamento.
+        await resolveCurrentUserNivel();
         loadGhTokenFromSupabase();
         loadConfigFields();
         loadDashboard();
         loadSection('noticias'); loadSection('vagas'); loadSection('avisos'); loadCandidaturas(); loadMensagens();
+      }
+
+      /**
+       * Descobre e armazena o nível do usuário logado consultando admin_usuarios.
+       * Deve ser chamada logo após o login/restauração de sessão.
+       */
+      async function resolveCurrentUserNivel() {
+        try {
+          const me = AuthStore.getUser();
+          if (!me) return;
+          const rows = await sbSelect('admin_usuarios', `select=nivel,ativo&id=eq.${me.id}&limit=1`);
+          if (rows && rows.length && rows[0].ativo) {
+            _currentUserNivel = rows[0].nivel;
+          } else {
+            // Fallback: tenta por e-mail (caso o UUID não bata)
+            const byEmail = await sbSelect('admin_usuarios', `select=nivel,ativo&email=eq.${encodeURIComponent(me.email)}&limit=1`);
+            if (byEmail && byEmail.length && byEmail[0].ativo) {
+              _currentUserNivel = byEmail[0].nivel;
+            }
+          }
+          // Atualiza badge de nível na sidebar
+          const nivelBadgeEl = document.getElementById('user-nivel-badge');
+          if (nivelBadgeEl) {
+            const labelMap = {
+              super_admin: { txt: '👑 Super Admin', color: '#8b5cf6' },
+              admin:       { txt: '🔵 Admin',       color: '#3b82f6' },
+              editor:      { txt: '✏️ Editor',      color: '#10b981' },
+            };
+            const info = labelMap[_currentUserNivel] || { txt: _currentUserNivel || '?', color: '#6b7a99' };
+            nivelBadgeEl.textContent = info.txt;
+            nivelBadgeEl.style.color = info.color;
+          }
+          // Esconde item de menu "Usuários" para quem não é super_admin
+          const navUsuarios = document.getElementById('nav-item-usuarios');
+          if (navUsuarios) navUsuarios.style.display = _currentUserNivel === 'super_admin' ? '' : 'none';
+        } catch (e) {
+          // Silencioso — não bloqueia o carregamento do app
+          console.warn('Não foi possível carregar o nível do usuário:', e.message);
+        }
       }
 
       async function loadConfigFields() {
@@ -6211,11 +6260,11 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
           const rows = await sbSelect('admin_usuarios', 'select=*&order=created_at.asc') || [];
           document.getElementById('badge-usuarios').textContent = rows.length;
 
-          // Descobrir nível do usuário atual
+          // Sincroniza nível do usuário atual a partir da lista carregada
           const me = AuthStore.getUser();
           if (me) {
             const myRow = rows.find(r => r.id === me.id || r.email === me.email);
-            _currentUserNivel = myRow ? myRow.nivel : null;
+            if (myRow) _currentUserNivel = myRow.nivel;
           }
 
           // Mostrar/ocultar botão novo usuário conforme permissão
@@ -6227,9 +6276,9 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
           table.style.display = 'table';
 
           const nivelLabel = {
-            super_admin: '<span style="background:rgba(139,92,246,.15);color:#8b5cf6;border:1px solid rgba(139,92,246,.3);border-radius:99px;padding:.18rem .65rem;font-size:.72rem;font-weight:700;">👑 Super Admin</span>',
-            admin: '<span style="background:rgba(59,130,246,.15);color:#3b82f6;border:1px solid rgba(59,130,246,.3);border-radius:99px;padding:.18rem .65rem;font-size:.72rem;font-weight:700;">🔵 Admin</span>',
-            editor: '<span style="background:rgba(16,185,129,.15);color:#10b981;border:1px solid rgba(16,185,129,.3);border-radius:99px;padding:.18rem .65rem;font-size:.72rem;font-weight:700;">✏️ Editor</span>',
+            super_admin: '<span title="Acesso irrestrito: gerencia usuários, configurações e conteúdo" style="background:rgba(139,92,246,.15);color:#8b5cf6;border:1px solid rgba(139,92,246,.3);border-radius:99px;padding:.18rem .65rem;font-size:.72rem;font-weight:700;cursor:help;">👑 Super Admin</span>',
+            admin:       '<span title="Cria, edita e publica conteúdo. Vê candidaturas e mensagens." style="background:rgba(59,130,246,.15);color:#3b82f6;border:1px solid rgba(59,130,246,.3);border-radius:99px;padding:.18rem .65rem;font-size:.72rem;font-weight:700;cursor:help;">🔵 Admin</span>',
+            editor:      '<span title="Cria e edita conteúdo. Não pode publicar nem ver candidaturas." style="background:rgba(16,185,129,.15);color:#10b981;border:1px solid rgba(16,185,129,.3);border-radius:99px;padding:.18rem .65rem;font-size:.72rem;font-weight:700;cursor:help;">✏️ Editor</span>',
           };
 
           tbody.innerHTML = rows.map(u => `
@@ -6292,6 +6341,39 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
       function closeModalUsuario() {
         document.getElementById('modal-usuario-overlay').style.display = 'none';
       }
+
+      // Atualiza a descrição exibida abaixo do select de nível
+      (function setupNivelDescricao() {
+        const descricoes = {
+          editor: '✏️ Pode criar e editar notícias, vagas e avisos. <strong>Não</strong> pode publicar, excluir, ver candidaturas recebidas nem acessar configurações.',
+          admin:  '🔵 Pode criar, editar, publicar e excluir conteúdo. Visualiza candidaturas e mensagens de contato. <strong>Não</strong> gerencia usuários.',
+          super_admin: '👑 Acesso irrestrito: gerencia usuários, configurações do site, backups e todo o conteúdo.',
+        };
+        document.addEventListener('change', function(e) {
+          if (e.target && e.target.id === 'modal-usuario-nivel') {
+            const box = document.getElementById('nivel-descricao');
+            if (box) box.innerHTML = descricoes[e.target.value] || '';
+          }
+        });
+        // Preenche ao abrir o modal
+        const origOpen = window.openModalUsuario;
+        window.openModalUsuario = function() {
+          origOpen && origOpen();
+          setTimeout(() => {
+            const sel = document.getElementById('modal-usuario-nivel');
+            const box = document.getElementById('nivel-descricao');
+            if (sel && box) box.innerHTML = descricoes[sel.value] || '';
+          }, 50);
+        };
+        const origEdit = window.openModalUsuarioEdit;
+        window.openModalUsuarioEdit = function(u) {
+          origEdit && origEdit(u);
+          setTimeout(() => {
+            const box = document.getElementById('nivel-descricao');
+            if (box) box.innerHTML = descricoes[u.nivel] || '';
+          }, 50);
+        };
+      })();
 
       async function salvarUsuario() {
         const btn = document.getElementById('btn-salvar-usuario');
@@ -15503,10 +15585,11 @@ ${corpo}
         <div class="form-field">
           <label>Nível de acesso</label>
           <select id="modal-usuario-nivel">
-            <option value="editor">✏️ Editor — apenas criar/editar conteúdo</option>
-            <option value="admin">🔵 Admin — acesso total exceto usuários</option>
-            <option value="super_admin">👑 Super Admin — acesso completo</option>
+            <option value="editor">✏️ Editor — cria e edita notícias, vagas e avisos (não publica)</option>
+            <option value="admin">🔵 Admin — publica conteúdo, vê candidaturas e mensagens</option>
+            <option value="super_admin">👑 Super Admin — acesso completo, inclui gerenciar usuários</option>
           </select>
+          <div id="nivel-descricao" style="margin-top:.5rem;font-size:.75rem;color:var(--text-muted);background:var(--bg3);border-radius:6px;padding:.5rem .75rem;line-height:1.55;"></div>
         </div>
 
         <div class="form-field" id="field-ativo-usuario" style="display:none;">
