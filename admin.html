@@ -7703,10 +7703,8 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
 
           // 4) Abrir slash menu ao digitar "/"
           if (e.key === '/' && !RTE_SLASH.isOpen()) {
-            const before = rteGetTextBeforeCaret(1);
-            if (before === '' || /\s/.test(before)) {
-              setTimeout(() => RTE_SLASH.open(rte), 0);
-            }
+            // Abre em qualquer posição (início de linha, após espaço, ou no meio do texto)
+            setTimeout(() => RTE_SLASH.open(rte), 0);
           }
 
           // 5) ESC fecha o slash menu (redundante mas defensivo)
@@ -13828,10 +13826,33 @@ document.addEventListener('DOMContentLoaded',function(){
 
 <p>Continue aqui o desenvolvimento da notícia. Adicione detalhes, contexto histórico, declarações de fontes e informações complementares relevantes. Você pode usar <strong>negrito para destacar</strong> informações importantes ou <em>itálico para citações</em> e termos técnicos.</p>
 
+<p style="background:#EFF6FF;border:1pt solid #BFDBFE;padding:10pt;border-radius:4pt;font-size:10pt;color:#1E40AF;text-align:center;">
+  🖼️ <strong>[IMAGEM 1]</strong><br>
+  Insira aqui a primeira foto após importar o documento.<br>
+  <em>Use o botão 🖼 Imagem no editor para adicionar a foto nesta posição.</em>
+</p>
+
 <h2>Subtítulo da Segunda Seção</h2>
 <p>Acrescente mais um parágrafo com informações complementares, dados estatísticos ou contexto institucional sobre a ASPROC e sua missão junto às comunidades ribeirinhas do Médio Juruá, Amazonas.</p>
 
-<p>Encerre o artigo com uma conclusão ou perspectiva futura sobre o tema abordado.</p>
+<p>Escreva mais detalhes aqui. Este parágrafo pode trazer citações de líderes comunitários, parceiros ou gestores públicos envolvidos no tema. Use <em>itálico para aspas e citações diretas</em>.</p>
+
+<p style="background:#EFF6FF;border:1pt solid #BFDBFE;padding:10pt;border-radius:4pt;font-size:10pt;color:#1E40AF;text-align:center;">
+  🖼️ <strong>[IMAGEM 2]</strong><br>
+  Insira aqui a segunda foto após importar o documento.<br>
+  <em>Use o botão 🖼 Imagem no editor para adicionar a foto nesta posição.</em>
+</p>
+
+<h2>Subtítulo da Terceira Seção</h2>
+<p>Acrescente uma terceira seção com perspectivas, próximos passos ou o impacto esperado das ações descritas. Finalize o artigo com uma conclusão que reforce a missão da ASPROC.</p>
+
+<p>Encerre o artigo com uma conclusão ou perspectiva futura sobre o tema abordado. Lembre-se de revisar o texto antes de publicar.</p>
+
+<p style="background:#EFF6FF;border:1pt solid #BFDBFE;padding:10pt;border-radius:4pt;font-size:10pt;color:#1E40AF;text-align:center;">
+  🖼️ <strong>[IMAGEM 3]</strong><br>
+  Insira aqui a terceira foto após importar o documento.<br>
+  <em>Use o botão 🖼 Imagem no editor para adicionar a foto nesta posição.</em>
+</p>
 
 <hr>
 <p style="font-size:10pt;color:#888;font-style:italic;">
@@ -13840,7 +13861,7 @@ document.addEventListener('DOMContentLoaded',function(){
   • O primeiro parágrafo de texto simples vira o resumo automaticamente.<br>
   • Use "Título 2" para criar subtítulos de seção no corpo.<br>
   • Negrito, itálico e listas são preservados na importação.<br>
-  • Imagens precisam ser adicionadas pelo editor após importar (botão 🖼 Imagem).<br>
+  • Os blocos azuis [IMAGEM 1], [IMAGEM 2] e [IMAGEM 3] indicam onde inserir fotos após importar.<br>
   • Após preencher, salve e importe pelo botão "⬆ Importar Word" no editor.
 </p>`;
 
@@ -15492,7 +15513,11 @@ ${corpo}
         for (var j = 0; j < done.length; j++) {
           var it = done[j];
           var ms = 'display:block;margin:' + (mm[al] || '1rem auto') + ';';
-          var h = '<img src="' + it.src + '" alt="' + escHtml(it.alt) + '" style="' + ms + 'max-width:' + w + ';height:auto;border-radius:8px;">';
+          // Envolve num container com aspect-ratio fixo para que a imagem ocupe
+          // sempre o quadrado/retângulo inteiro (igual à foto em destaque do site).
+          var wrapStyle = ms + 'max-width:' + w + ';width:' + (w.endsWith('%') ? w : '100%') + ';aspect-ratio:16/9;overflow:hidden;border-radius:8px;background:#000;';
+          var imgStyle = 'width:100%;height:100%;object-fit:cover;display:block;';
+          var h = '<div style="' + wrapStyle + '"><img src="' + it.src + '" alt="' + escHtml(it.alt) + '" style="' + imgStyle + '"></div>';
           if (cap) h += '<p style="text-align:center;font-size:.82rem;color:#6b7a99;margin:.15rem 0 1rem;font-style:italic;">' + escHtml(it.alt) + '</p>';
           document.execCommand('insertHTML', false, h);
         }
