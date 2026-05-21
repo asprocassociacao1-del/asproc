@@ -6308,16 +6308,20 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
       function openModalUsuario() {
         _usuarioEditingId = null;
         document.getElementById('modal-usuario-title').textContent = 'Novo Usuário';
-        document.getElementById('btn-salvar-usuario').textContent = 'Criar Usuário';
+        document.getElementById('btn-salvar-usuario').textContent = 'Registrar Usuário';
         document.getElementById('modal-usuario-id').value = '';
         document.getElementById('modal-usuario-nome').value = '';
         document.getElementById('modal-usuario-email').value = '';
-        document.getElementById('modal-usuario-senha').value = '';
+        if (document.getElementById('modal-usuario-uuid')) document.getElementById('modal-usuario-uuid').value = '';
         document.getElementById('modal-usuario-nivel').value = 'editor';
         document.getElementById('modal-usuario-erro').style.display = 'none';
+        // Mostrar campos de criação, ocultar campo de status
         document.getElementById('field-email-usuario').style.display = 'block';
-        document.getElementById('field-senha-usuario').style.display = 'block';
+        document.getElementById('field-uuid-usuario').style.display = 'block';
+        document.getElementById('field-instrucoes-usuario').style.display = 'block';
         document.getElementById('field-ativo-usuario').style.display = 'none';
+        const box = document.getElementById('nivel-descricao');
+        if (box) box.innerHTML = '✏️ Pode criar e editar notícias, vagas e avisos. <strong>Não</strong> pode publicar, excluir, ver candidaturas nem acessar configurações.';
         var mu = document.getElementById('modal-usuario-overlay'); mu.style.display = 'flex'; mu.style.alignItems = 'center'; mu.style.justifyContent = 'center';
       }
 
@@ -6328,13 +6332,21 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
         document.getElementById('modal-usuario-id').value = u.id;
         document.getElementById('modal-usuario-nome').value = u.nome;
         document.getElementById('modal-usuario-email').value = u.email;
-        document.getElementById('modal-usuario-senha').value = '';
         document.getElementById('modal-usuario-nivel').value = u.nivel;
         document.getElementById('modal-usuario-ativo').value = String(u.ativo);
         document.getElementById('modal-usuario-erro').style.display = 'none';
-        document.getElementById('field-email-usuario').style.display = 'none'; // email não editável
-        document.getElementById('field-senha-usuario').style.display = 'none'; // senha via Supabase Auth
+        // No modo edição: ocultar e-mail, UUID e instruções; mostrar status
+        document.getElementById('field-email-usuario').style.display = 'none';
+        document.getElementById('field-uuid-usuario').style.display = 'none';
+        document.getElementById('field-instrucoes-usuario').style.display = 'none';
         document.getElementById('field-ativo-usuario').style.display = 'block';
+        const descricoes = {
+          editor: '✏️ Pode criar e editar notícias, vagas e avisos. <strong>Não</strong> pode publicar, excluir, ver candidaturas nem acessar configurações.',
+          admin: '🔵 Pode criar, editar, publicar e excluir conteúdo. Visualiza candidaturas e mensagens. <strong>Não</strong> gerencia usuários.',
+          super_admin: '👑 Acesso irrestrito: gerencia usuários, configurações do site, backups e todo o conteúdo.',
+        };
+        const box = document.getElementById('nivel-descricao');
+        if (box) box.innerHTML = descricoes[u.nivel] || '';
         var mu = document.getElementById('modal-usuario-overlay'); mu.style.display = 'flex'; mu.style.alignItems = 'center'; mu.style.justifyContent = 'center';
       }
 
@@ -6342,84 +6354,58 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
         document.getElementById('modal-usuario-overlay').style.display = 'none';
       }
 
-      // Atualiza a descrição exibida abaixo do select de nível
-      (function setupNivelDescricao() {
-        const descricoes = {
-          editor: '✏️ Pode criar e editar notícias, vagas e avisos. <strong>Não</strong> pode publicar, excluir, ver candidaturas recebidas nem acessar configurações.',
-          admin:  '🔵 Pode criar, editar, publicar e excluir conteúdo. Visualiza candidaturas e mensagens de contato. <strong>Não</strong> gerencia usuários.',
-          super_admin: '👑 Acesso irrestrito: gerencia usuários, configurações do site, backups e todo o conteúdo.',
-        };
-        document.addEventListener('change', function(e) {
-          if (e.target && e.target.id === 'modal-usuario-nivel') {
-            const box = document.getElementById('nivel-descricao');
-            if (box) box.innerHTML = descricoes[e.target.value] || '';
-          }
-        });
-        // Preenche ao abrir o modal
-        const origOpen = window.openModalUsuario;
-        window.openModalUsuario = function() {
-          origOpen && origOpen();
-          setTimeout(() => {
-            const sel = document.getElementById('modal-usuario-nivel');
-            const box = document.getElementById('nivel-descricao');
-            if (sel && box) box.innerHTML = descricoes[sel.value] || '';
-          }, 50);
-        };
-        const origEdit = window.openModalUsuarioEdit;
-        window.openModalUsuarioEdit = function(u) {
-          origEdit && origEdit(u);
-          setTimeout(() => {
-            const box = document.getElementById('nivel-descricao');
-            if (box) box.innerHTML = descricoes[u.nivel] || '';
-          }, 50);
-        };
-      })();
+      // Atualiza descrição ao mudar o select de nível
+      document.addEventListener('change', function(e) {
+        if (e.target && e.target.id === 'modal-usuario-nivel') {
+          const descricoes = {
+            editor: '✏️ Pode criar e editar notícias, vagas e avisos. <strong>Não</strong> pode publicar, excluir, ver candidaturas nem acessar configurações.',
+            admin: '🔵 Pode criar, editar, publicar e excluir conteúdo. Visualiza candidaturas e mensagens. <strong>Não</strong> gerencia usuários.',
+            super_admin: '👑 Acesso irrestrito: gerencia usuários, configurações do site, backups e todo o conteúdo.',
+          };
+          const box = document.getElementById('nivel-descricao');
+          if (box) box.innerHTML = descricoes[e.target.value] || '';
+        }
+      });
 
       async function salvarUsuario() {
         const btn = document.getElementById('btn-salvar-usuario');
         const erro = document.getElementById('modal-usuario-erro');
         const nome = document.getElementById('modal-usuario-nome').value.trim();
         const email = document.getElementById('modal-usuario-email').value.trim();
-        const senha = document.getElementById('modal-usuario-senha').value;
+        const uuid = (document.getElementById('modal-usuario-uuid')?.value || '').trim();
         const nivel = document.getElementById('modal-usuario-nivel').value;
-        const ativo = document.getElementById('modal-usuario-ativo').value === 'true';
+        const ativo = (document.getElementById('modal-usuario-ativo').value || 'true') === 'true';
         erro.style.display = 'none';
 
-        if (!nome) { erro.textContent = 'Informe o nome.'; erro.style.display = 'block'; return; }
+        if (!nome) { erro.textContent = 'Informe o nome completo.'; erro.style.display = 'block'; return; }
 
         btn.disabled = true;
-        btn.textContent = _usuarioEditingId ? 'Salvando…' : 'Criando…';
+        btn.textContent = _usuarioEditingId ? 'Salvando…' : 'Registrando…';
 
         try {
           if (_usuarioEditingId) {
-            // Editar: apenas atualiza nome, nivel e ativo na tabela
+            // ── EDITAR: atualiza nome, nivel e ativo ──────────────────
             await sbFetch('admin_usuarios', `id=eq.${_usuarioEditingId}`, {
               method: 'PATCH',
               body: JSON.stringify({ nome, nivel, ativo, updated_at: new Date().toISOString() })
             });
             toast('✅ Usuário atualizado!', 'success');
+
           } else {
-            // Criar: usa Supabase Admin API via função RPC ou inserção direta
+            // ── CRIAR: valida campos obrigatórios ─────────────────────
             if (!email) { throw new Error('Informe o e-mail.'); }
-            if (senha.length < 8) { throw new Error('A senha deve ter no mínimo 8 caracteres.'); }
-
-            const { url, key } = getSupabase();
-            // Cria o usuário no Supabase Auth usando a service role não disponível aqui
-            // Usamos signUp público — o usuário recebe e-mail de confirmação
-            const res = await fetch(`${url}/auth/v1/signup`, {
-              method: 'POST',
-              headers: { 'apikey': key, 'Content-Type': 'application/json' },
-              body: JSON.stringify({ email, password: senha })
-            });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.msg || data.error_description || 'Erro ao criar usuário no Auth.');
-            if (!data.user && !data.id) throw new Error('Usuário não foi criado. Verifique se o e-mail já está cadastrado.');
-
-            const userId = data.user?.id || data.id;
-
-            // Insere na tabela admin_usuarios
-            await sbInsert('admin_usuarios', { id: userId, email, nome, nivel, ativo: true });
-            toast('✅ Usuário criado! Um e-mail de confirmação foi enviado.', 'success');
+            if (!uuid)  { throw new Error('Cole o UUID do usuário (obtido no Supabase Auth).'); }
+            // Valida formato UUID
+            if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(uuid)) {
+              throw new Error('UUID inválido. Copie exatamente do painel Supabase Authentication → Users.');
+            }
+            // Verifica se já existe
+            const existe = await sbSelect('admin_usuarios', `select=id&id=eq.${uuid}&limit=1`);
+            if (existe && existe.length) {
+              throw new Error('Este UUID já está registrado. O usuário já tem acesso ao painel.');
+            }
+            await sbInsert('admin_usuarios', { id: uuid, email, nome, nivel, ativo: true });
+            toast('✅ Usuário registrado com sucesso!', 'success');
           }
 
           closeModalUsuario();
@@ -6429,7 +6415,7 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
           erro.style.display = 'block';
         } finally {
           btn.disabled = false;
-          btn.textContent = _usuarioEditingId ? 'Salvar alterações' : 'Criar Usuário';
+          btn.textContent = _usuarioEditingId ? 'Salvar alterações' : 'Registrar Usuário';
         }
       }
 
@@ -15563,23 +15549,30 @@ ${corpo}
       <div style="padding:1.5rem;display:flex;flex-direction:column;gap:1rem;">
         <input type="hidden" id="modal-usuario-id">
 
+        <!-- Instruções para novo usuário (ocultas no modo edição) -->
+        <div id="field-instrucoes-usuario" style="background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);border-radius:8px;padding:.85rem 1rem;font-size:.8rem;color:var(--text-dim);line-height:1.65;">
+          <strong style="color:var(--accent);display:block;margin-bottom:.4rem;">📋 Como adicionar um novo usuário:</strong>
+          1. Acesse o <a href="https://supabase.com/dashboard" target="_blank" style="color:var(--accent);">painel do Supabase</a> → <strong>Authentication → Users → Add user</strong><br>
+          2. Crie o usuário com e-mail e senha<br>
+          3. Copie o <strong>UUID</strong> gerado (coluna UID)<br>
+          4. Cole o UUID no campo abaixo e preencha os demais dados
+        </div>
+
         <div class="form-field">
           <label>Nome completo</label>
-          <input type="text" id="modal-usuario-nome" placeholder="Ex: João Silva">
+          <input type="text" id="modal-usuario-nome" placeholder="Ex: Laura Sousa">
         </div>
 
         <div class="form-field" id="field-email-usuario">
           <label>E-mail</label>
           <input type="email" id="modal-usuario-email" placeholder="usuario@asproc.org.br">
-          <div style="font-size:.72rem;color:var(--text-muted);margin-top:.35rem;">⚠️ Um convite será enviado para este
-            e-mail.</div>
+          <div style="font-size:.72rem;color:var(--text-muted);margin-top:.35rem;">⚠️ Deve ser o mesmo e-mail cadastrado no Supabase Auth.</div>
         </div>
 
-        <div class="form-field" id="field-senha-usuario">
-          <label>Senha provisória</label>
-          <input type="password" id="modal-usuario-senha" placeholder="Mínimo 8 caracteres">
-          <div style="font-size:.72rem;color:var(--text-muted);margin-top:.35rem;">O usuário poderá alterar a senha após
-            o primeiro acesso.</div>
+        <div class="form-field" id="field-uuid-usuario">
+          <label>UUID do usuário <span style="color:var(--red);">*</span></label>
+          <input type="text" id="modal-usuario-uuid" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" style="font-family:monospace;font-size:.83rem;letter-spacing:.02em;">
+          <div style="font-size:.72rem;color:var(--text-muted);margin-top:.35rem;">Cole o UID copiado do painel Supabase → Authentication → Users.</div>
         </div>
 
         <div class="form-field">
