@@ -5806,6 +5806,9 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
       })();
 
       let currentUser = null, currentSection = 'dashboard', editingId = {};
+      // Expõe ao escopo global para o módulo SCHED (está em outro <script>)
+      window._adminEditingId = editingId;
+      window._adminCurrentUser = () => currentUser;
 
       async function doLogin() {
         const email = document.getElementById('login-email').value.trim();
@@ -5840,7 +5843,9 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
         const name = user.email.split('@')[0];
         document.getElementById('user-name').textContent = name;
         document.getElementById('user-avatar').textContent = name[0].toUpperCase();
-        initApp();
+        initApp().then(() => {
+          if (typeof schedBootstrap === 'function') setTimeout(schedBootstrap, 300);
+        });
       }
 
       function doLogout() {
@@ -10271,6 +10276,9 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         if (duration > 0) setTimeout(() => el.remove(), duration);
         return el; // permite remover manualmente (ex: toasts de loading)
       }
+      // Expõe funções necessárias ao módulo SCHED (outro <script>)
+      window.toast = toast;
+      window._adminLoadFns = () => ({ loadNoticias, loadVagas, loadAvisos, loadDashboard });
 
       /** Toast com spinner animado — retorna função para fechar */
       function toastLoading(msg) {
@@ -16049,7 +16057,11 @@ CREATE INDEX IF NOT EXISTS idx_agend_status_pub
             await this.loadAll();
           }
           // Recarrega as seções afetadas
-          loadNoticias(); loadVagas(); loadAvisos(); loadDashboard();
+          const _fns = typeof window._adminLoadFns === 'function' ? window._adminLoadFns() : {};
+          if (_fns.loadNoticias) _fns.loadNoticias();
+          if (_fns.loadVagas) _fns.loadVagas();
+          if (_fns.loadAvisos) _fns.loadAvisos();
+          if (_fns.loadDashboard) _fns.loadDashboard();
         } catch (e) {
           console.warn('[SCHED] Erro na verificação automática:', e.message);
         }
@@ -16075,8 +16087,9 @@ CREATE INDEX IF NOT EXISTS idx_agend_status_pub
           });
 
           const labelMap = { noticias: 'Notícia', vagas: 'Vaga', avisos: 'Aviso' };
-          if (typeof toast === 'function') {
-            toast(`🚀 ${labelMap[ag.tabela] || ag.tabela} "${ag.titulo || '(sem título)'}" publicada automaticamente!`, 'success', 5000);
+          const _toast = window.toast || (typeof toast !== 'undefined' ? toast : null);
+          if (_toast) {
+            _toast(`🚀 ${labelMap[ag.tabela] || ag.tabela} "${ag.titulo || '(sem título)'}" publicada automaticamente!`, 'success', 5000);
           }
           console.log('[SCHED] Publicado:', ag.tabela, ag.registro_id, ag.titulo);
         } catch (e) {
@@ -16164,18 +16177,19 @@ CREATE INDEX IF NOT EXISTS idx_agend_status_pub
             titulo,
             publicar_em: dtSelected.toISOString(),
             status: 'pendente',
-            criado_por: (typeof currentUser !== 'undefined' && currentUser?.email) || 'admin',
+            criado_por: (typeof window._adminCurrentUser === 'function' && window._adminCurrentUser()?.email) || (typeof currentUser !== 'undefined' && currentUser?.email) || 'admin',
           });
 
           // Formata data/hora BR para exibir no toast
           const dtBR = dtSelected.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
-          if (typeof toast === 'function') toast(`🗓️ Agendado para ${dtBR}!`, 'success');
+          if (typeof window.toast === 'function') window.toast(`🗓️ Agendado para ${dtBR}!`, 'success');
 
           this.closeModal();
           // Recarrega seção para mostrar status atualizado
-          if (tabela === 'noticias') loadNoticias();
-          if (tabela === 'vagas') loadVagas();
-          if (tabela === 'avisos') loadAvisos();
+          const fns = typeof window._adminLoadFns === 'function' ? window._adminLoadFns() : {};
+          if (tabela === 'noticias' && fns.loadNoticias) fns.loadNoticias();
+          if (tabela === 'vagas' && fns.loadVagas) fns.loadVagas();
+          if (tabela === 'avisos' && fns.loadAvisos) fns.loadAvisos();
 
         } catch (e) {
           errEl.textContent = 'Erro ao agendar: ' + e.message;
@@ -16318,27 +16332,30 @@ CREATE INDEX IF NOT EXISTS idx_agend_status_pub
 
       async cancelar(agId) {
         if (!confirm('Cancelar este agendamento?')) return;
+        const _t = window.toast || (typeof toast !== 'undefined' ? toast : null);
         try {
           await sbUpdate('publicacoes_agendadas', agId, { status: 'cancelado' });
-          if (typeof toast === 'function') toast('🗑 Agendamento cancelado.', 'info');
+          if (_t) _t('🗑 Agendamento cancelado.', 'info');
           await this.loadAll();
         } catch (e) {
-          if (typeof toast === 'function') toast('❌ Erro: ' + e.message, 'error');
+          if (_t) _t('❌ Erro: ' + e.message, 'error');
         }
       },
 
       reagendar(agId, tabela, registroId, titulo) {
         // Cancela o agendamento atual e abre o modal para reagendar
+        const _t = window.toast || (typeof toast !== 'undefined' ? toast : null);
         sbUpdate('publicacoes_agendadas', agId, { status: 'cancelado' })
           .then(() => this.openModal(tabela, registroId, titulo))
-          .catch(e => { if (typeof toast === 'function') toast('❌ Erro: ' + e.message, 'error'); });
+          .catch(e => { if (_t) _t('❌ Erro: ' + e.message, 'error'); });
       },
 
       copySQL() {
         const sql = document.getElementById('sched-sql-copy').textContent;
+        const _t = window.toast || (typeof toast !== 'undefined' ? toast : null);
         navigator.clipboard.writeText(sql)
-          .then(() => { if (typeof toast === 'function') toast('📋 SQL copiado!', 'success'); })
-          .catch(() => { if (typeof toast === 'function') toast('Use Ctrl+A + Ctrl+C na caixa do SQL.', 'info'); });
+          .then(() => { if (_t) _t('📋 SQL copiado!', 'success'); })
+          .catch(() => { if (_t) _t('Use Ctrl+A + Ctrl+C na caixa do SQL.', 'info'); });
       },
     };
 
@@ -16373,12 +16390,13 @@ CREATE INDEX IF NOT EXISTS idx_agend_status_pub
         btn.title = 'Agendar publicação automática';
         btn.onclick = async () => {
           // Salva primeiro como rascunho
-          if (!editingId.noticias) {
+          const eid = (window._adminEditingId || {});
+          if (!eid.noticias) {
             toast('Salve a notícia primeiro antes de agendar.', 'error');
             return;
           }
           const titulo = document.getElementById('n-titulo').value.trim();
-          schedOpenModal('noticias', editingId.noticias, titulo);
+          schedOpenModal('noticias', eid.noticias, titulo);
         };
         btnSaveNoticia.insertAdjacentElement('afterend', btn);
       }
@@ -16393,12 +16411,13 @@ CREATE INDEX IF NOT EXISTS idx_agend_status_pub
         btn.innerHTML = '🗓️ Agendar';
         btn.title = 'Agendar publicação automática';
         btn.onclick = async () => {
-          if (!editingId.vagas) {
+          const eid = (window._adminEditingId || {});
+          if (!eid.vagas) {
             toast('Salve a vaga primeiro antes de agendar.', 'error');
             return;
           }
           const titulo = document.getElementById('v-titulo').value.trim();
-          schedOpenModal('vagas', editingId.vagas, titulo);
+          schedOpenModal('vagas', eid.vagas, titulo);
         };
         btnSaveVaga.insertAdjacentElement('afterend', btn);
       }
@@ -16413,12 +16432,13 @@ CREATE INDEX IF NOT EXISTS idx_agend_status_pub
         btn.innerHTML = '🗓️ Agendar';
         btn.title = 'Agendar publicação automática';
         btn.onclick = async () => {
-          if (!editingId.avisos) {
+          const eid = (window._adminEditingId || {});
+          if (!eid.avisos) {
             toast('Salve o aviso primeiro antes de agendar.', 'error');
             return;
           }
           const titulo = document.getElementById('a-titulo').value.trim();
-          schedOpenModal('avisos', editingId.avisos, titulo);
+          schedOpenModal('avisos', eid.avisos, titulo);
         };
         btnSaveAviso.insertAdjacentElement('afterend', btn);
       }
@@ -16462,27 +16482,39 @@ CREATE INDEX IF NOT EXISTS idx_agend_status_pub
     }
 
     // ── Inicia o scheduler assim que o app estiver pronto ──────────
+    // Exposta como global para ser chamada pelo showApp() do app principal
     function schedBootstrap() {
+      if (schedBootstrap._rodou) return; // evita dupla execução
+      schedBootstrap._rodou = true;
       SCHED.init();
       schedInjectButtons();
       schedAtualizarBadge();
-      // Re-injeta botões quando editores são abertos (podem não existir ainda no DOM)
-      setInterval(schedInjectButtons, 3000);
+      // Re-injeta botões sempre que editores forem abertos (DOM pode mudar)
+      setInterval(schedInjectButtons, 2000);
+      console.log('[SCHED] Bootstrap concluído.');
     }
+    schedBootstrap._rodou = false;
 
-    // Aguarda checkSession() ter rodado (app inicializado)
-    const _origInitApp = window.initApp;
-    if (typeof initApp === 'function') {
-      const origFn = initApp;
-      window.initApp = async function () {
-        await origFn();
-        setTimeout(schedBootstrap, 500);
-      };
-    } else {
-      // Fallback: aguarda 2s após DOMContentLoaded
-      document.addEventListener('DOMContentLoaded', () => setTimeout(schedBootstrap, 2000));
-      setTimeout(schedBootstrap, 3000);
-    }
+    // Fallback extra: se o app já estiver visível (sessão restaurada antes deste script),
+    // dispara o bootstrap automaticamente.
+    (function aguardarApp() {
+      const app = document.getElementById('app');
+      if (app && app.style.display !== 'none' && app.style.display !== '') {
+        // App já está aberto — inicia imediatamente
+        setTimeout(schedBootstrap, 400);
+      } else {
+        // Ainda não abriu — tenta a cada 500ms até estar pronto
+        const t = setInterval(() => {
+          const a = document.getElementById('app');
+          if (a && a.style.display !== 'none' && a.style.display !== '') {
+            clearInterval(t);
+            setTimeout(schedBootstrap, 400);
+          }
+        }, 500);
+        // Limite de 30s para não rodar para sempre
+        setTimeout(() => clearInterval(t), 30000);
+      }
+    })();
   </script>
 
 </body>
