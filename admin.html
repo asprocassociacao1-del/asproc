@@ -5713,6 +5713,11 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
       async function sbInsert(table, data) { return sbFetch(table, '', { method: 'POST', body: JSON.stringify(data) }); }
       async function sbUpdate(table, id, data) { return sbFetch(table, `id=eq.${id}`, { method: 'PATCH', body: JSON.stringify(data) }); }
       async function sbDelete(table, id) { return sbFetch(table, `id=eq.${id}`, { method: 'DELETE' }); }
+      // Expõe ao escopo global para o módulo SCHED (outro <script>)
+      window.sbSelect = sbSelect;
+      window.sbInsert = sbInsert;
+      window.sbUpdate = sbUpdate;
+      window.sbDelete = sbDelete;
       async function sbCount(table, params = '') {
         const { url, key } = getSupabase();
         if (!url || !key) return 0;
@@ -6094,8 +6099,7 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
       function escHtml(str) {
         return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
       }
-
-      async function initApp() {
+      window.escHtml = escHtml; async function initApp() {
         // Carrega o nível do usuário atual ANTES de qualquer outra coisa.
         // Isso garante que restrições de UI (candidaturas, config, etc.)
         // já estejam corretas desde o primeiro carregamento.
@@ -16022,6 +16026,14 @@ CREATE INDEX IF NOT EXISTS idx_agend_status_pub
        Funciona como um "cron" no browser: verifica a cada 30s se
        alguma publicação agendada atingiu o horário e publica.
     ══════════════════════════════════════════════════════════════ */
+
+    // Aliases que resolvem as funções do app principal (outro <script>/DOMContentLoaded)
+    // Usam lazy-binding: resolvem no momento da chamada, não na declaração.
+    const sbSelect = (...a) => window.sbSelect(...a);
+    const sbInsert = (...a) => window.sbInsert(...a);
+    const sbUpdate = (...a) => window.sbUpdate(...a);
+    const sbDelete = (...a) => window.sbDelete && window.sbDelete(...a);
+    const escHtml = (s) => (window.escHtml ? window.escHtml(s) : String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])));
     const SCHED = {
       _timer: null,
       _tabAtiva: 'pendentes',
