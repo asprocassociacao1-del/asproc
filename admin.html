@@ -6124,8 +6124,8 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
           if (nivelBadgeEl) {
             const labelMap = {
               super_admin: { txt: '👑 Super Admin', color: '#8b5cf6' },
-              admin:       { txt: '🔵 Admin',       color: '#3b82f6' },
-              editor:      { txt: '✏️ Editor',      color: '#10b981' },
+              admin: { txt: '🔵 Admin', color: '#3b82f6' },
+              editor: { txt: '✏️ Editor', color: '#10b981' },
             };
             const info = labelMap[_currentUserNivel] || { txt: _currentUserNivel || '?', color: '#6b7a99' };
             nivelBadgeEl.textContent = info.txt;
@@ -6277,8 +6277,8 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
 
           const nivelLabel = {
             super_admin: '<span title="Acesso irrestrito: gerencia usuários, configurações e conteúdo" style="background:rgba(139,92,246,.15);color:#8b5cf6;border:1px solid rgba(139,92,246,.3);border-radius:99px;padding:.18rem .65rem;font-size:.72rem;font-weight:700;cursor:help;">👑 Super Admin</span>',
-            admin:       '<span title="Cria, edita e publica conteúdo. Vê candidaturas e mensagens." style="background:rgba(59,130,246,.15);color:#3b82f6;border:1px solid rgba(59,130,246,.3);border-radius:99px;padding:.18rem .65rem;font-size:.72rem;font-weight:700;cursor:help;">🔵 Admin</span>',
-            editor:      '<span title="Cria e edita conteúdo. Não pode publicar nem ver candidaturas." style="background:rgba(16,185,129,.15);color:#10b981;border:1px solid rgba(16,185,129,.3);border-radius:99px;padding:.18rem .65rem;font-size:.72rem;font-weight:700;cursor:help;">✏️ Editor</span>',
+            admin: '<span title="Cria, edita e publica conteúdo. Vê candidaturas e mensagens." style="background:rgba(59,130,246,.15);color:#3b82f6;border:1px solid rgba(59,130,246,.3);border-radius:99px;padding:.18rem .65rem;font-size:.72rem;font-weight:700;cursor:help;">🔵 Admin</span>',
+            editor: '<span title="Cria e edita conteúdo. Não pode publicar nem ver candidaturas." style="background:rgba(16,185,129,.15);color:#10b981;border:1px solid rgba(16,185,129,.3);border-radius:99px;padding:.18rem .65rem;font-size:.72rem;font-weight:700;cursor:help;">✏️ Editor</span>',
           };
 
           tbody.innerHTML = rows.map(u => `
@@ -6355,7 +6355,7 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
       }
 
       // Atualiza descrição ao mudar o select de nível
-      document.addEventListener('change', function(e) {
+      document.addEventListener('change', function (e) {
         if (e.target && e.target.id === 'modal-usuario-nivel') {
           const descricoes = {
             editor: '✏️ Pode criar e editar notícias, vagas e avisos. <strong>Não</strong> pode publicar, excluir, ver candidaturas nem acessar configurações.',
@@ -6394,7 +6394,7 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
           } else {
             // ── CRIAR: valida campos obrigatórios ─────────────────────
             if (!email) { throw new Error('Informe o e-mail.'); }
-            if (!uuid)  { throw new Error('Cole o UUID do usuário (obtido no Supabase Auth).'); }
+            if (!uuid) { throw new Error('Cole o UUID do usuário (obtido no Supabase Auth).'); }
             // Valida formato UUID
             if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(uuid)) {
               throw new Error('UUID inválido. Copie exatamente do painel Supabase Authentication → Users.');
@@ -15575,9 +15575,12 @@ ${corpo}
         <input type="hidden" id="modal-usuario-id">
 
         <!-- Instruções para novo usuário (ocultas no modo edição) -->
-        <div id="field-instrucoes-usuario" style="background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);border-radius:8px;padding:.85rem 1rem;font-size:.8rem;color:var(--text-dim);line-height:1.65;">
-          <strong style="color:var(--accent);display:block;margin-bottom:.4rem;">📋 Como adicionar um novo usuário:</strong>
-          1. Acesse o <a href="https://supabase.com/dashboard" target="_blank" style="color:var(--accent);">painel do Supabase</a> → <strong>Authentication → Users → Add user</strong><br>
+        <div id="field-instrucoes-usuario"
+          style="background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);border-radius:8px;padding:.85rem 1rem;font-size:.8rem;color:var(--text-dim);line-height:1.65;">
+          <strong style="color:var(--accent);display:block;margin-bottom:.4rem;">📋 Como adicionar um novo
+            usuário:</strong>
+          1. Acesse o <a href="https://supabase.com/dashboard" target="_blank" style="color:var(--accent);">painel do
+            Supabase</a> → <strong>Authentication → Users → Add user</strong><br>
           2. Crie o usuário com e-mail e senha<br>
           3. Copie o <strong>UUID</strong> gerado (coluna UID)<br>
           4. Cole o UUID no campo abaixo e preencha os demais dados
@@ -15591,13 +15594,16 @@ ${corpo}
         <div class="form-field" id="field-email-usuario">
           <label>E-mail</label>
           <input type="email" id="modal-usuario-email" placeholder="usuario@asproc.org.br">
-          <div style="font-size:.72rem;color:var(--text-muted);margin-top:.35rem;">⚠️ Deve ser o mesmo e-mail cadastrado no Supabase Auth.</div>
+          <div style="font-size:.72rem;color:var(--text-muted);margin-top:.35rem;">⚠️ Deve ser o mesmo e-mail cadastrado
+            no Supabase Auth.</div>
         </div>
 
         <div class="form-field" id="field-uuid-usuario">
           <label>UUID do usuário <span style="color:var(--red);">*</span></label>
-          <input type="text" id="modal-usuario-uuid" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" style="font-family:monospace;font-size:.83rem;letter-spacing:.02em;">
-          <div style="font-size:.72rem;color:var(--text-muted);margin-top:.35rem;">Cole o UID copiado do painel Supabase → Authentication → Users.</div>
+          <input type="text" id="modal-usuario-uuid" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+            style="font-family:monospace;font-size:.83rem;letter-spacing:.02em;">
+          <div style="font-size:.72rem;color:var(--text-muted);margin-top:.35rem;">Cole o UID copiado do painel Supabase
+            → Authentication → Users.</div>
         </div>
 
         <div class="form-field">
@@ -15607,7 +15613,9 @@ ${corpo}
             <option value="admin">🔵 Admin — publica conteúdo, vê candidaturas e mensagens</option>
             <option value="super_admin">👑 Super Admin — acesso completo, inclui gerenciar usuários</option>
           </select>
-          <div id="nivel-descricao" style="margin-top:.5rem;font-size:.75rem;color:var(--text-muted);background:var(--bg3);border-radius:6px;padding:.5rem .75rem;line-height:1.55;"></div>
+          <div id="nivel-descricao"
+            style="margin-top:.5rem;font-size:.75rem;color:var(--text-muted);background:var(--bg3);border-radius:6px;padding:.5rem .75rem;line-height:1.55;">
+          </div>
         </div>
 
         <div class="form-field" id="field-ativo-usuario" style="display:none;">
@@ -15735,6 +15743,747 @@ ${corpo}
       </div>
     </div>
   </div>
+
+  <!-- ════════════════════════════════════════════════════════════
+       SISTEMA DE AGENDAMENTO DE PUBLICAÇÕES — ASPROC
+       Integra-se ao admin.html existente sem alterar nenhuma função.
+       ════════════════════════════════════════════════════════════ -->
+
+  <!-- MODAL DE AGENDAMENTO -->
+  <div id="sched-modal-overlay"
+    style="display:none;position:fixed;inset:0;z-index:9500;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:1rem;">
+    <div
+      style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;width:100%;max-width:440px;box-shadow:0 24px 80px rgba(0,0,0,.7);overflow:hidden;">
+      <div
+        style="display:flex;align-items:center;gap:.75rem;padding:1.1rem 1.25rem;border-bottom:1px solid var(--border);">
+        <span style="font-size:1.2rem;">🗓️</span>
+        <div style="flex:1;">
+          <div style="font-size:.92rem;font-weight:600;color:var(--text);">Agendar Publicação</div>
+          <div id="sched-modal-subtitle" style="font-size:.72rem;color:var(--text-muted);margin-top:.1rem;"></div>
+        </div>
+        <button onclick="schedCloseModal()"
+          style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;width:28px;height:28px;color:var(--text-muted);cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;font-family:inherit;">✕</button>
+      </div>
+      <div style="padding:1.5rem;display:flex;flex-direction:column;gap:1rem;">
+        <input type="hidden" id="sched-modal-table">
+        <input type="hidden" id="sched-modal-id">
+
+        <div
+          style="background:rgba(59,130,246,.07);border:1px solid rgba(59,130,246,.18);border-radius:8px;padding:.85rem 1rem;font-size:.8rem;color:var(--text-dim);line-height:1.65;">
+          📌 O conteúdo será salvo <strong style="color:var(--text);">agora como rascunho</strong> e publicado
+          automaticamente na data e hora escolhidas.
+        </div>
+
+        <div>
+          <label
+            style="display:block;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.45rem;">Data
+            e hora da publicação</label>
+          <input type="datetime-local" id="sched-modal-datetime"
+            style="width:100%;padding:.65rem .9rem;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-family:'Inter',sans-serif;font-size:.9rem;outline:none;transition:border-color .18s;"
+            onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+          <div style="font-size:.7rem;color:var(--text-muted);margin-top:.35rem;">⏰ Horário de Brasília (UTC-3). Mínimo:
+            5 minutos no futuro.</div>
+        </div>
+
+        <div id="sched-modal-err"
+          style="display:none;background:var(--red-soft);border:1px solid rgba(239,68,68,.2);border-radius:6px;padding:.6rem .85rem;font-size:.82rem;color:var(--red);">
+        </div>
+      </div>
+      <div
+        style="display:flex;justify-content:flex-end;gap:.5rem;padding:1rem 1.25rem;border-top:1px solid var(--border);background:rgba(0,0,0,.1);">
+        <button onclick="schedCloseModal()"
+          style="background:transparent;border:1px solid var(--border);border-radius:var(--radius);color:var(--text-muted);font-size:.85rem;padding:.5rem 1rem;cursor:pointer;font-family:inherit;">Cancelar</button>
+        <button id="sched-modal-confirm-btn" onclick="schedConfirm()"
+          style="background:var(--purple);border:none;border-radius:var(--radius);color:#fff;font-size:.85rem;font-weight:600;padding:.5rem 1.25rem;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:.4rem;">
+          🗓️ Confirmar Agendamento
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAINEL DE AGENDAMENTOS -->
+  <div id="sched-panel-overlay"
+    style="display:none;position:fixed;inset:0;z-index:9400;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:1rem;">
+    <div
+      style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;width:100%;max-width:700px;max-height:85vh;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(0,0,0,.7);">
+      <div
+        style="display:flex;align-items:center;gap:.75rem;padding:1.1rem 1.25rem;border-bottom:1px solid var(--border);flex-shrink:0;">
+        <span style="font-size:1.2rem;">📅</span>
+        <div style="flex:1;">
+          <div style="font-size:.95rem;font-weight:600;color:var(--text);">Publicações Agendadas</div>
+          <div style="font-size:.72rem;color:var(--text-muted);margin-top:.1rem;">Monitora e publica automaticamente
+            quando chega o horário</div>
+        </div>
+        <div id="sched-panel-status"
+          style="font-size:.72rem;color:var(--green);background:var(--green-soft);border:1px solid rgba(16,185,129,.2);border-radius:99px;padding:.2rem .65rem;display:flex;align-items:center;gap:.35rem;">
+          <span
+            style="width:6px;height:6px;background:var(--green);border-radius:50%;animation:schedPulse 2s infinite;display:inline-block;"></span>
+          Monitorando
+        </div>
+        <button onclick="schedClosePanel()"
+          style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;width:28px;height:28px;color:var(--text-muted);cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;font-family:inherit;">✕</button>
+      </div>
+
+      <!-- Tabs -->
+      <div
+        style="display:flex;gap:.25rem;padding:.75rem 1.25rem .25rem;border-bottom:1px solid var(--border);flex-shrink:0;">
+        <button class="sched-tab active" data-tab="pendentes" onclick="schedSwitchTab('pendentes')"
+          style="background:var(--accent-soft);color:var(--accent);border:1px solid rgba(59,130,246,.25);border-radius:6px;padding:.35rem .75rem;font-size:.8rem;font-weight:600;cursor:pointer;font-family:inherit;">⏳
+          Pendentes</button>
+        <button class="sched-tab" data-tab="publicados" onclick="schedSwitchTab('publicados')"
+          style="background:transparent;color:var(--text-muted);border:1px solid var(--border);border-radius:6px;padding:.35rem .75rem;font-size:.8rem;font-weight:600;cursor:pointer;font-family:inherit;">✅
+          Publicados</button>
+        <button class="sched-tab" data-tab="cancelados" onclick="schedSwitchTab('cancelados')"
+          style="background:transparent;color:var(--text-muted);border:1px solid var(--border);border-radius:6px;padding:.35rem .75rem;font-size:.8rem;font-weight:600;cursor:pointer;font-family:inherit;">🗑
+          Cancelados</button>
+        <button onclick="schedLoadAll()"
+          style="margin-left:auto;background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--text-muted);font-size:.78rem;padding:.3rem .65rem;cursor:pointer;font-family:inherit;"
+          title="Atualizar lista">↺ Atualizar</button>
+      </div>
+
+      <div id="sched-panel-body" style="overflow-y:auto;flex:1;padding:1rem 1.25rem;min-height:200px;">
+        <div style="text-align:center;padding:2.5rem 0;color:var(--text-muted);font-size:.85rem;">⏳ Carregando…</div>
+      </div>
+
+      <!-- SQL Helper -->
+      <div style="flex-shrink:0;padding:.75rem 1.25rem;border-top:1px solid var(--border);background:rgba(0,0,0,.1);">
+        <details style="font-size:.75rem;color:var(--text-muted);">
+          <summary style="cursor:pointer;color:var(--text-dim);font-weight:600;">🛠 SQL de criação da tabela (executar
+            1x no Supabase)</summary>
+          <pre id="sched-sql-copy"
+            style="margin-top:.6rem;padding:.75rem;background:var(--bg3);border-radius:6px;font-size:.7rem;overflow-x:auto;white-space:pre;user-select:all;border:1px solid var(--border);">-- Execute este SQL no Supabase → SQL Editor:
+
+CREATE TABLE IF NOT EXISTS publicacoes_agendadas (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  tabela text NOT NULL CHECK (tabela IN ('noticias','vagas','avisos')),
+  registro_id text NOT NULL,
+  titulo text,
+  publicar_em timestamptz NOT NULL,
+  status text NOT NULL DEFAULT 'pendente' CHECK (status IN ('pendente','publicado','cancelado','erro')),
+  criado_por text,
+  criado_em timestamptz DEFAULT now(),
+  publicado_em timestamptz,
+  erro_msg text
+);
+
+ALTER TABLE publicacoes_agendadas ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "admin_agendamentos" ON publicacoes_agendadas
+  FOR ALL TO authenticated USING (true) WITH CHECK (true);
+
+-- Índice para o job de verificação ser rápido:
+CREATE INDEX IF NOT EXISTS idx_agend_status_pub
+  ON publicacoes_agendadas(status, publicar_em)
+  WHERE status = 'pendente';
+
+-- ──────────────────────────────────────────────
+-- OPCIONAL: pg_cron (publica mesmo sem admin aberto)
+-- Execute em Supabase → Extensions → ative pg_cron,
+-- depois cole este SQL:
+-- ──────────────────────────────────────────────
+-- SELECT cron.schedule(
+--   'publicar-agendados',
+--   '* * * * *',
+--   $$
+--     UPDATE noticias SET publicado = true
+--     WHERE id::text IN (
+--       SELECT registro_id FROM publicacoes_agendadas
+--       WHERE status = 'pendente' AND publicar_em <= now() AND tabela = 'noticias'
+--     );
+--     UPDATE vagas SET status = 'aberta'
+--     WHERE id::text IN (
+--       SELECT registro_id FROM publicacoes_agendadas
+--       WHERE status = 'pendente' AND publicar_em <= now() AND tabela = 'vagas'
+--     );
+--     UPDATE avisos SET publicado = true
+--     WHERE id::text IN (
+--       SELECT registro_id FROM publicacoes_agendadas
+--       WHERE status = 'pendente' AND publicar_em <= now() AND tabela = 'avisos'
+--     );
+--     UPDATE publicacoes_agendadas
+--       SET status = 'publicado', publicado_em = now()
+--     WHERE status = 'pendente' AND publicar_em <= now();
+--   $$
+-- );</pre>
+          <button onclick="schedCopySQL()"
+            style="margin-top:.4rem;background:var(--accent-soft);border:1px solid rgba(59,130,246,.25);border-radius:5px;color:var(--accent);font-size:.72rem;padding:.3rem .65rem;cursor:pointer;font-family:inherit;">📋
+            Copiar SQL</button>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    @keyframes schedPulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: .35;
+      }
+    }
+
+    .sched-tab.active {
+      background: var(--accent-soft) !important;
+      color: var(--accent) !important;
+      border-color: rgba(59, 130, 246, .25) !important;
+    }
+
+    .sched-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: .85rem 1rem;
+      margin-bottom: .6rem;
+      transition: border-color .18s;
+    }
+
+    .sched-card:hover {
+      border-color: var(--border-hover);
+    }
+
+    .sched-card-head {
+      display: flex;
+      align-items: flex-start;
+      gap: .65rem;
+    }
+
+    .sched-card-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .95rem;
+      flex-shrink: 0;
+    }
+
+    .sched-card-title {
+      flex: 1;
+      font-size: .88rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .sched-card-meta {
+      font-size: .72rem;
+      color: var(--text-muted);
+      margin-top: .3rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: .4rem .8rem;
+    }
+
+    .sched-countdown {
+      font-size: .75rem;
+      font-weight: 700;
+      color: var(--amber);
+      background: var(--amber-soft);
+      border: 1px solid rgba(245, 158, 11, .2);
+      border-radius: 6px;
+      padding: .2rem .55rem;
+      white-space: nowrap;
+    }
+
+    .sched-countdown.soon {
+      color: var(--red);
+      background: var(--red-soft);
+      border-color: rgba(239, 68, 68, .2);
+    }
+
+    .sched-countdown.done {
+      color: var(--green);
+      background: var(--green-soft);
+      border-color: rgba(16, 185, 129, .2);
+    }
+
+    .sched-card-actions {
+      display: flex;
+      gap: .4rem;
+      margin-top: .65rem;
+    }
+  </style>
+
+  <script>
+    /* ══════════════════════════════════════════════════════════════
+       SCHEDULER — Sistema de Agendamento de Publicações
+       Funciona como um "cron" no browser: verifica a cada 30s se
+       alguma publicação agendada atingiu o horário e publica.
+    ══════════════════════════════════════════════════════════════ */
+    const SCHED = {
+      _timer: null,
+      _tabAtiva: 'pendentes',
+      _agendamentos: [],
+      _countdownTimers: [],
+
+      // ── Inicia o monitoramento automático ──────────────────────
+      init() {
+        this.verificarEPublicar(); // roda imediatamente ao abrir o admin
+        this._timer = setInterval(() => this.verificarEPublicar(), 30_000); // a cada 30s
+        console.log('[SCHED] Monitoramento iniciado (intervalo: 30s)');
+      },
+
+      stop() {
+        if (this._timer) { clearInterval(this._timer); this._timer = null; }
+      },
+
+      // ── Core: busca pendentes e publica os que chegaram no prazo ──
+      async verificarEPublicar() {
+        try {
+          const pendentes = await sbSelect(
+            'publicacoes_agendadas',
+            `select=*&status=eq.pendente&publicar_em=lte.${new Date().toISOString()}&order=publicar_em.asc`
+          );
+          if (!pendentes || !pendentes.length) return;
+
+          for (const ag of pendentes) {
+            await this._publicar(ag);
+          }
+
+          // Atualiza listas se o painel estiver aberto
+          if (document.getElementById('sched-panel-overlay').style.display !== 'none') {
+            await this.loadAll();
+          }
+          // Recarrega as seções afetadas
+          loadNoticias(); loadVagas(); loadAvisos(); loadDashboard();
+        } catch (e) {
+          console.warn('[SCHED] Erro na verificação automática:', e.message);
+        }
+      },
+
+      async _publicar(ag) {
+        try {
+          // Publica o conteúdo na tabela correta
+          const updates = {
+            noticias: { publicado: true },
+            vagas: { status: 'aberta' },
+            avisos: { publicado: true },
+          };
+          const update = updates[ag.tabela];
+          if (!update) throw new Error('Tabela desconhecida: ' + ag.tabela);
+
+          await sbUpdate(ag.tabela, ag.registro_id, update);
+
+          // Marca agendamento como publicado
+          await sbUpdate('publicacoes_agendadas', ag.id, {
+            status: 'publicado',
+            publicado_em: new Date().toISOString(),
+          });
+
+          const labelMap = { noticias: 'Notícia', vagas: 'Vaga', avisos: 'Aviso' };
+          if (typeof toast === 'function') {
+            toast(`🚀 ${labelMap[ag.tabela] || ag.tabela} "${ag.titulo || '(sem título)'}" publicada automaticamente!`, 'success', 5000);
+          }
+          console.log('[SCHED] Publicado:', ag.tabela, ag.registro_id, ag.titulo);
+        } catch (e) {
+          console.error('[SCHED] Erro ao publicar:', ag, e.message);
+          try {
+            await sbUpdate('publicacoes_agendadas', ag.id, {
+              status: 'erro',
+              erro_msg: e.message,
+            });
+          } catch (_) { }
+        }
+      },
+
+      // ── Abre modal de agendamento para um registro específico ──
+      openModal(tabela, id, titulo) {
+        const overlay = document.getElementById('sched-modal-overlay');
+        const labelMap = { noticias: 'notícia', vagas: 'vaga', avisos: 'aviso' };
+        document.getElementById('sched-modal-subtitle').textContent =
+          `${labelMap[tabela] || tabela}: "${(titulo || '').substring(0, 50)}"`;
+        document.getElementById('sched-modal-table').value = tabela;
+        document.getElementById('sched-modal-id').value = id;
+        document.getElementById('sched-modal-err').style.display = 'none';
+
+        // Pré-preenche com daqui 1h
+        const now = new Date();
+        now.setHours(now.getHours() + 1, 0, 0, 0);
+        const pad = n => String(n).padStart(2, '0');
+        const local = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
+        document.getElementById('sched-modal-datetime').value = local;
+
+        overlay.style.display = 'flex';
+      },
+
+      async confirm() {
+        const tabela = document.getElementById('sched-modal-table').value;
+        const id = document.getElementById('sched-modal-id').value;
+        const dtVal = document.getElementById('sched-modal-datetime').value;
+        const errEl = document.getElementById('sched-modal-err');
+        errEl.style.display = 'none';
+
+        if (!dtVal) { errEl.textContent = 'Escolha a data e hora.'; errEl.style.display = 'block'; return; }
+
+        const dtSelected = new Date(dtVal);
+        const now = new Date();
+        if (dtSelected <= new Date(now.getTime() + 4 * 60 * 1000)) {
+          errEl.textContent = 'O horário deve ser pelo menos 5 minutos no futuro.';
+          errEl.style.display = 'block'; return;
+        }
+
+        // Busca título do registro
+        let titulo = '';
+        try {
+          const rows = await sbSelect(tabela, `select=titulo&id=eq.${id}&limit=1`);
+          titulo = rows && rows[0] ? (rows[0].titulo || '') : '';
+        } catch (_) { }
+
+        const btn = document.getElementById('sched-modal-confirm-btn');
+        const orig = btn.innerHTML;
+        btn.innerHTML = '⏳ Agendando…';
+        btn.disabled = true;
+
+        try {
+          // 1. Garante que o conteúdo está salvo e não publicado ainda
+          if (tabela === 'noticias') {
+            await sbUpdate('noticias', id, { publicado: false });
+          } else if (tabela === 'vagas') {
+            await sbUpdate('vagas', id, { status: 'rascunho' });
+          } else if (tabela === 'avisos') {
+            await sbUpdate('avisos', id, { publicado: false });
+          }
+
+          // 2. Cancela agendamentos anteriores pendentes para este registro
+          const existentes = await sbSelect(
+            'publicacoes_agendadas',
+            `select=id&registro_id=eq.${id}&tabela=eq.${tabela}&status=eq.pendente`
+          ).catch(() => []);
+          for (const ex of (existentes || [])) {
+            await sbUpdate('publicacoes_agendadas', ex.id, { status: 'cancelado' }).catch(() => { });
+          }
+
+          // 3. Cria o novo agendamento
+          await sbInsert('publicacoes_agendadas', {
+            tabela,
+            registro_id: id,
+            titulo,
+            publicar_em: dtSelected.toISOString(),
+            status: 'pendente',
+            criado_por: (typeof currentUser !== 'undefined' && currentUser?.email) || 'admin',
+          });
+
+          // Formata data/hora BR para exibir no toast
+          const dtBR = dtSelected.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+          if (typeof toast === 'function') toast(`🗓️ Agendado para ${dtBR}!`, 'success');
+
+          this.closeModal();
+          // Recarrega seção para mostrar status atualizado
+          if (tabela === 'noticias') loadNoticias();
+          if (tabela === 'vagas') loadVagas();
+          if (tabela === 'avisos') loadAvisos();
+
+        } catch (e) {
+          errEl.textContent = 'Erro ao agendar: ' + e.message;
+          errEl.style.display = 'block';
+          console.error('[SCHED] Erro ao criar agendamento:', e);
+        } finally {
+          btn.innerHTML = orig;
+          btn.disabled = false;
+        }
+      },
+
+      closeModal() {
+        document.getElementById('sched-modal-overlay').style.display = 'none';
+      },
+
+      // ── Painel de listagem de agendamentos ────────────────────
+      async openPanel() {
+        document.getElementById('sched-panel-overlay').style.display = 'flex';
+        await this.loadAll();
+      },
+
+      closePanel() {
+        document.getElementById('sched-panel-overlay').style.display = 'none';
+        this._countdownTimers.forEach(t => clearInterval(t));
+        this._countdownTimers = [];
+      },
+
+      switchTab(tab) {
+        this._tabAtiva = tab;
+        document.querySelectorAll('.sched-tab').forEach(btn => {
+          const isActive = btn.dataset.tab === tab;
+          btn.classList.toggle('active', isActive);
+          btn.style.background = isActive ? 'var(--accent-soft)' : 'transparent';
+          btn.style.color = isActive ? 'var(--accent)' : 'var(--text-muted)';
+          btn.style.borderColor = isActive ? 'rgba(59,130,246,.25)' : 'var(--border)';
+        });
+        this._renderPanel();
+      },
+
+      async loadAll() {
+        const body = document.getElementById('sched-panel-body');
+        body.innerHTML = '<div style="text-align:center;padding:2.5rem 0;color:var(--text-muted);font-size:.85rem;">⏳ Carregando…</div>';
+        try {
+          this._agendamentos = await sbSelect(
+            'publicacoes_agendadas',
+            'select=*&order=publicar_em.desc&limit=100'
+          ) || [];
+          this._renderPanel();
+        } catch (e) {
+          body.innerHTML = `<div style="text-align:center;padding:2rem;color:var(--red);font-size:.85rem;">
+          ❌ Erro ao carregar: ${escHtml(e.message)}<br>
+          <small style="color:var(--text-muted);">Execute o SQL de criação da tabela (veja abaixo).</small>
+        </div>`;
+        }
+      },
+
+      _renderPanel() {
+        this._countdownTimers.forEach(t => clearInterval(t));
+        this._countdownTimers = [];
+
+        const body = document.getElementById('sched-panel-body');
+        const lista = this._agendamentos.filter(a => a.status === this._tabAtiva);
+
+        if (!lista.length) {
+          const msgs = {
+            pendentes: '📭 Nenhuma publicação aguardando agendamento.',
+            publicados: '📭 Nenhuma publicação foi publicada via agendamento ainda.',
+            cancelados: '📭 Nenhum agendamento cancelado.',
+          };
+          body.innerHTML = `<div style="text-align:center;padding:2.5rem 0;color:var(--text-muted);font-size:.85rem;">${msgs[this._tabAtiva] || 'Nenhum registro.'}</div>`;
+          return;
+        }
+
+        const iconMap = { noticias: '📰', vagas: '💼', avisos: '📢' };
+        const colorMap = { noticias: 'var(--accent-soft)', vagas: 'var(--purple-soft)', avisos: 'var(--amber-soft)' };
+        const colorTxt = { noticias: 'var(--accent)', vagas: 'var(--purple)', avisos: 'var(--amber)' };
+        const labelMap = { noticias: 'Notícia', vagas: 'Vaga', avisos: 'Aviso' };
+
+        body.innerHTML = lista.map((ag, i) => {
+          const dtPub = new Date(ag.publicar_em);
+          const dtPubBR = dtPub.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+          const icon = iconMap[ag.tabela] || '📄';
+          const bgColor = colorMap[ag.tabela] || 'var(--bg3)';
+          const txtColor = colorTxt[ag.tabela] || 'var(--text)';
+
+          let statusHtml = '';
+          if (ag.status === 'pendente') {
+            statusHtml = `<span class="sched-countdown" id="sched-cd-${ag.id}">calculando…</span>`;
+          } else if (ag.status === 'publicado') {
+            const dtPubEm = ag.publicado_em ? new Date(ag.publicado_em).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }) : '?';
+            statusHtml = `<span class="sched-countdown done">✅ Publicado em ${dtPubEm}</span>`;
+          } else if (ag.status === 'cancelado') {
+            statusHtml = `<span class="sched-countdown" style="color:var(--text-muted);background:var(--bg3);border-color:var(--border);">🗑 Cancelado</span>`;
+          } else if (ag.status === 'erro') {
+            statusHtml = `<span class="sched-countdown soon">❌ Erro: ${escHtml((ag.erro_msg || '').substring(0, 40))}</span>`;
+          }
+
+          const actions = ag.status === 'pendente' ? `
+          <div class="sched-card-actions">
+            <button class="btn btn-secondary btn-xs" onclick="SCHED.reagendar('${ag.id}','${ag.tabela}','${ag.registro_id}',${JSON.stringify(ag.titulo || '')})">🗓 Reagendar</button>
+            <button class="btn btn-danger btn-xs" onclick="SCHED.cancelar('${ag.id}')">✕ Cancelar</button>
+          </div>` : '';
+
+          return `
+          <div class="sched-card">
+            <div class="sched-card-head">
+              <div class="sched-card-icon" style="background:${bgColor};color:${txtColor};">${icon}</div>
+              <div style="flex:1;">
+                <div class="sched-card-title">${escHtml(ag.titulo || '(sem título)')}</div>
+                <div class="sched-card-meta">
+                  <span style="color:${txtColor};">${labelMap[ag.tabela] || ag.tabela}</span>
+                  <span>📅 ${dtPubBR}</span>
+                  ${ag.criado_por ? `<span>👤 ${escHtml(ag.criado_por)}</span>` : ''}
+                </div>
+              </div>
+              ${statusHtml}
+            </div>
+            ${actions}
+          </div>`;
+        }).join('');
+
+        // Inicia contagem regressiva para os pendentes
+        lista.filter(ag => ag.status === 'pendente').forEach(ag => {
+          const el = document.getElementById('sched-cd-' + ag.id);
+          if (!el) return;
+          const update = () => {
+            const diff = new Date(ag.publicar_em) - new Date();
+            if (diff <= 0) { el.textContent = '🚀 Publicando…'; el.classList.add('done'); return; }
+            const h = Math.floor(diff / 3600000);
+            const m = Math.floor((diff % 3600000) / 60000);
+            const s = Math.floor((diff % 60000) / 1000);
+            el.textContent = h > 0 ? `⏱ ${h}h ${m}m` : m > 0 ? `⏱ ${m}m ${s}s` : `⏱ ${s}s`;
+            if (diff < 300000) el.classList.add('soon'); else el.classList.remove('soon');
+          };
+          update();
+          const t = setInterval(update, 1000);
+          this._countdownTimers.push(t);
+        });
+      },
+
+      async cancelar(agId) {
+        if (!confirm('Cancelar este agendamento?')) return;
+        try {
+          await sbUpdate('publicacoes_agendadas', agId, { status: 'cancelado' });
+          if (typeof toast === 'function') toast('🗑 Agendamento cancelado.', 'info');
+          await this.loadAll();
+        } catch (e) {
+          if (typeof toast === 'function') toast('❌ Erro: ' + e.message, 'error');
+        }
+      },
+
+      reagendar(agId, tabela, registroId, titulo) {
+        // Cancela o agendamento atual e abre o modal para reagendar
+        sbUpdate('publicacoes_agendadas', agId, { status: 'cancelado' })
+          .then(() => this.openModal(tabela, registroId, titulo))
+          .catch(e => { if (typeof toast === 'function') toast('❌ Erro: ' + e.message, 'error'); });
+      },
+
+      copySQL() {
+        const sql = document.getElementById('sched-sql-copy').textContent;
+        navigator.clipboard.writeText(sql)
+          .then(() => { if (typeof toast === 'function') toast('📋 SQL copiado!', 'success'); })
+          .catch(() => { if (typeof toast === 'function') toast('Use Ctrl+A + Ctrl+C na caixa do SQL.', 'info'); });
+      },
+    };
+
+    // ── Funções globais chamadas pelos onclick do HTML ──────────────
+    function schedOpenModal(tabela, id, titulo) { SCHED.openModal(tabela, id, titulo); }
+    function schedCloseModal() { SCHED.closeModal(); }
+    function schedConfirm() { SCHED.confirm(); }
+    function schedOpenPanel() { SCHED.openPanel(); }
+    function schedClosePanel() { SCHED.closePanel(); }
+    function schedSwitchTab(tab) { SCHED.switchTab(tab); }
+    function schedLoadAll() { SCHED.loadAll(); }
+    function schedCopySQL() { SCHED.copySQL(); }
+
+    // ── Fecha overlays ao clicar fora ──────────────────────────────
+    document.getElementById('sched-modal-overlay').addEventListener('click', function (e) {
+      if (e.target === this) schedCloseModal();
+    });
+    document.getElementById('sched-panel-overlay').addEventListener('click', function (e) {
+      if (e.target === this) schedClosePanel();
+    });
+
+    // ── Injeta botões de agendamento nos editores APÓS carregamento ─
+    function schedInjectButtons() {
+      // ── Editor de Notícias: botão ao lado de "Salvar rascunho" ──
+      const btnSaveNoticia = document.getElementById('btn-save-noticia');
+      if (btnSaveNoticia && !document.getElementById('btn-agendar-noticia')) {
+        const btn = document.createElement('button');
+        btn.id = 'btn-agendar-noticia';
+        btn.className = 'btn btn-sm';
+        btn.style.cssText = 'background:var(--purple-soft);color:var(--purple);border:1px solid rgba(139,92,246,.25);font-size:.8rem;';
+        btn.innerHTML = '🗓️ Agendar';
+        btn.title = 'Agendar publicação automática';
+        btn.onclick = async () => {
+          // Salva primeiro como rascunho
+          if (!editingId.noticias) {
+            toast('Salve a notícia primeiro antes de agendar.', 'error');
+            return;
+          }
+          const titulo = document.getElementById('n-titulo').value.trim();
+          schedOpenModal('noticias', editingId.noticias, titulo);
+        };
+        btnSaveNoticia.insertAdjacentElement('afterend', btn);
+      }
+
+      // ── Editor de Vagas ──
+      const btnSaveVaga = document.getElementById('btn-save-vaga-draft');
+      if (btnSaveVaga && !document.getElementById('btn-agendar-vaga')) {
+        const btn = document.createElement('button');
+        btn.id = 'btn-agendar-vaga';
+        btn.className = 'btn btn-sm';
+        btn.style.cssText = 'background:var(--purple-soft);color:var(--purple);border:1px solid rgba(139,92,246,.25);font-size:.8rem;';
+        btn.innerHTML = '🗓️ Agendar';
+        btn.title = 'Agendar publicação automática';
+        btn.onclick = async () => {
+          if (!editingId.vagas) {
+            toast('Salve a vaga primeiro antes de agendar.', 'error');
+            return;
+          }
+          const titulo = document.getElementById('v-titulo').value.trim();
+          schedOpenModal('vagas', editingId.vagas, titulo);
+        };
+        btnSaveVaga.insertAdjacentElement('afterend', btn);
+      }
+
+      // ── Editor de Avisos ──
+      const btnSaveAviso = document.getElementById('btn-save-aviso-draft');
+      if (btnSaveAviso && !document.getElementById('btn-agendar-aviso')) {
+        const btn = document.createElement('button');
+        btn.id = 'btn-agendar-aviso';
+        btn.className = 'btn btn-sm';
+        btn.style.cssText = 'background:var(--purple-soft);color:var(--purple);border:1px solid rgba(139,92,246,.25);font-size:.8rem;';
+        btn.innerHTML = '🗓️ Agendar';
+        btn.title = 'Agendar publicação automática';
+        btn.onclick = async () => {
+          if (!editingId.avisos) {
+            toast('Salve o aviso primeiro antes de agendar.', 'error');
+            return;
+          }
+          const titulo = document.getElementById('a-titulo').value.trim();
+          schedOpenModal('avisos', editingId.avisos, titulo);
+        };
+        btnSaveAviso.insertAdjacentElement('afterend', btn);
+      }
+
+      // ── Botão "Agendamentos" na sidebar ──
+      const sidebar = document.querySelector('.sidebar-nav');
+      if (sidebar && !document.getElementById('nav-item-agendamentos')) {
+        // Encontra o grupo "Conteúdo" para inserir após
+        const grupos = sidebar.querySelectorAll('.nav-group-label');
+        let targetGroup = null;
+        grupos.forEach(g => { if (g.textContent.trim().toLowerCase().includes('conteúdo') || g.textContent.trim().toLowerCase().includes('conteudo')) targetGroup = g; });
+
+        const navItem = document.createElement('div');
+        navItem.id = 'nav-item-agendamentos';
+        navItem.className = 'nav-item';
+        navItem.style.cursor = 'pointer';
+        navItem.innerHTML = `<span class="nav-icon">🗓️</span> Agendados <span class="nav-badge" id="badge-agendamentos" style="background:var(--purple-soft);color:var(--purple);border-color:rgba(139,92,246,.25);">0</span>`;
+        navItem.onclick = () => schedOpenPanel();
+
+        if (targetGroup) {
+          // Insere após o último nav-item do grupo de conteúdo
+          let el = targetGroup.nextElementSibling;
+          let lastItem = targetGroup;
+          while (el && el.classList.contains('nav-item')) { lastItem = el; el = el.nextElementSibling; }
+          lastItem.insertAdjacentElement('afterend', navItem);
+        } else {
+          sidebar.appendChild(navItem);
+        }
+
+        // Atualiza badge com total de agendamentos pendentes
+        schedAtualizarBadge();
+      }
+    }
+
+    async function schedAtualizarBadge() {
+      try {
+        const rows = await sbSelect('publicacoes_agendadas', 'select=id&status=eq.pendente');
+        const badge = document.getElementById('badge-agendamentos');
+        if (badge) badge.textContent = (rows || []).length;
+      } catch (_) { }
+    }
+
+    // ── Inicia o scheduler assim que o app estiver pronto ──────────
+    function schedBootstrap() {
+      SCHED.init();
+      schedInjectButtons();
+      schedAtualizarBadge();
+      // Re-injeta botões quando editores são abertos (podem não existir ainda no DOM)
+      setInterval(schedInjectButtons, 3000);
+    }
+
+    // Aguarda checkSession() ter rodado (app inicializado)
+    const _origInitApp = window.initApp;
+    if (typeof initApp === 'function') {
+      const origFn = initApp;
+      window.initApp = async function () {
+        await origFn();
+        setTimeout(schedBootstrap, 500);
+      };
+    } else {
+      // Fallback: aguarda 2s após DOMContentLoaded
+      document.addEventListener('DOMContentLoaded', () => setTimeout(schedBootstrap, 2000));
+      setTimeout(schedBootstrap, 3000);
+    }
+  </script>
 
 </body>
 
