@@ -3179,32 +3179,40 @@
             }
         }
 
+        function _clearGoogCookies() {
+            const domain = location.hostname;
+            const expires = 'expires=Thu, 01 Jan 1970 00:00:00 UTC';
+            ['', '.' + domain].forEach(d => {
+                document.cookie = 'googtrans=; ' + expires + '; path=/; domain=' + (d || domain);
+            });
+        }
+
+        function _setGoogCookie(val) {
+            const domain = location.hostname;
+            [domain, '.' + domain].forEach(d => {
+                document.cookie = 'googtrans=' + val + '; path=/; domain=' + d;
+            });
+        }
+
         function setLang(lang) {
             currentLang = lang;
             document.documentElement.lang = lang === 'pt' ? 'pt-BR' : lang;
 
-            // Marca botão ativo
-            document.querySelectorAll('.lang-btn').forEach((btn, i) => {
-                btn.classList.toggle('active', ['pt', 'en', 'es'][i] === lang);
+            // Marca botão ativo (funciona mesmo com DOM traduzido)
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                const btnLang = btn.getAttribute('onclick').match(/'(\w+)'/)[1];
+                btn.classList.toggle('active', btnLang === lang);
             });
 
-            // Mapeia código para o padrão do Google Translate
-            const gtLang = { pt: 'pt', en: 'en', es: 'es' }[lang] || 'pt';
+            // Limpa todos os cookies do Google Translate primeiro
+            _clearGoogCookies();
 
             if (lang === 'pt') {
-                // Volta ao português: remove cookie do Google Translate e recarrega
-                const domain = location.hostname;
-                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + domain;
-                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.' + domain;
-                document.cookie = 'googtrans=/pt/pt; path=/; domain=' + domain;
-                document.cookie = 'googtrans=/pt/pt; path=/; domain=.' + domain;
+                // Para voltar ao português, limpa e recarrega sem cookie de tradução
                 location.reload();
             } else {
-                // Define o cookie do Google Translate e recarrega
-                const domain = location.hostname;
-                const val = '/pt/' + gtLang;
-                document.cookie = 'googtrans=' + val + '; path=/; domain=' + domain;
-                document.cookie = 'googtrans=' + val + '; path=/; domain=.' + domain;
+                // Define o novo cookie e recarrega
+                _setGoogCookie('/pt/' + lang);
                 location.reload();
             }
         }
@@ -3212,10 +3220,11 @@
         // Detecta idioma atual pelo cookie e marca botão ativo
         (function () {
             const match = document.cookie.match(/googtrans=\/pt\/(\w+)/);
-            const activeLang = match ? match[1] : 'pt';
+            const activeLang = (match && match[1] !== 'pt') ? match[1] : 'pt';
             currentLang = activeLang;
-            document.querySelectorAll('.lang-btn').forEach((btn, i) => {
-                btn.classList.toggle('active', ['pt', 'en', 'es'][i] === activeLang);
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                const btnLang = btn.getAttribute('onclick').match(/'(\w+)'/)[1];
+                btn.classList.toggle('active', btnLang === activeLang);
             });
         })();
 
