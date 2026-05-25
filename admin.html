@@ -16263,7 +16263,8 @@ CREATE INDEX IF NOT EXISTS idx_agend_status_pub
         this._countdownTimers = [];
 
         const body = document.getElementById('sched-panel-body');
-        const lista = this._agendamentos.filter(a => a.status === this._tabAtiva);
+        const tabToStatus = { pendentes: 'pendente', publicados: 'publicado', cancelados: 'cancelado' };
+        const lista = this._agendamentos.filter(a => a.status === (tabToStatus[this._tabAtiva] || this._tabAtiva));
 
         if (!lista.length) {
           const msgs = {
