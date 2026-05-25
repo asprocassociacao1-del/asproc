@@ -16168,7 +16168,7 @@ CREATE INDEX IF NOT EXISTS idx_agend_status_pub
           if (tabela === 'noticias') {
             await sbUpdate('noticias', id, { publicado: false });
           } else if (tabela === 'vagas') {
-            await sbUpdate('vagas', id, { status: 'rascunho' });
+            await sbUpdate('vagas', id, { status: 'suspensa' }); // 'rascunho' não existe no CHECK; usa 'suspensa' até a publicação automática
           } else if (tabela === 'avisos') {
             await sbUpdate('avisos', id, { publicado: false });
           }
