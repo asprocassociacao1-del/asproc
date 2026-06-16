@@ -2823,15 +2823,11 @@
            SLIDER
         ============================== */
         /* ==============================
-           SLIDER — controlled autoplay
+           SLIDER — autoplay 3s
         ============================== */
         let currentSlide = 0;
         const slides = document.querySelectorAll('.slide');
         const dots = document.querySelectorAll('.dot');
-        const INTERVAL = 5500;
-        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        let autoplayTimer = null;
-        let isPaused = false;
 
         function goToSlide(n) {
             slides[currentSlide].classList.remove('active');
@@ -2839,60 +2835,13 @@
             currentSlide = (n + slides.length) % slides.length;
             slides[currentSlide].classList.add('active');
             dots[currentSlide].classList.add('active');
-            // Update aria-live region
             const liveEl = document.getElementById('slider-live');
             if (liveEl) liveEl.textContent = 'Slide ' + (currentSlide + 1) + ' de ' + slides.length;
         }
         function nextSlide() { goToSlide(currentSlide + 1); }
         function prevSlide() { goToSlide(currentSlide - 1); }
 
-        function startAutoplay() {
-            if (reducedMotion || isPaused) return;
-            stopAutoplay();
-            autoplayTimer = setInterval(nextSlide, INTERVAL);
-        }
-        function stopAutoplay() {
-            if (autoplayTimer) { clearInterval(autoplayTimer); autoplayTimer = null; }
-        }
-
-        function togglePause() {
-            isPaused = !isPaused;
-            const btn = document.getElementById('slider-pause-btn');
-            if (isPaused) {
-                stopAutoplay();
-                btn.setAttribute('aria-label', 'Retomar apresentação');
-                btn.innerHTML = '&#9654;'; // play icon
-                btn.classList.add('paused');
-            } else {
-                startAutoplay();
-                btn.setAttribute('aria-label', 'Pausar apresentação');
-                btn.innerHTML = '&#10074;&#10074;'; // pause icon
-                btn.classList.remove('paused');
-            }
-        }
-
-        // Pause on hover (desktop) and on focus within slider
-        const heroEl = document.querySelector('.hero');
-        heroEl.addEventListener('mouseenter', stopAutoplay);
-        heroEl.addEventListener('mouseleave', () => { if (!isPaused) startAutoplay(); });
-        heroEl.addEventListener('focusin', stopAutoplay);
-        heroEl.addEventListener('focusout', e => {
-            if (!heroEl.contains(e.relatedTarget) && !isPaused) startAutoplay();
-        });
-
-        // Pause on touch (mobile — user is interacting)
-        heroEl.addEventListener('touchstart', stopAutoplay, { passive: true });
-        heroEl.addEventListener('touchend', () => { if (!isPaused) setTimeout(startAutoplay, 2000); }, { passive: true });
-
-        // Keyboard: arrows navigate slider when focused inside it
-        heroEl.addEventListener('keydown', e => {
-            if (e.key === 'ArrowRight') { nextSlide(); stopAutoplay(); }
-            if (e.key === 'ArrowLeft') { prevSlide(); stopAutoplay(); }
-        });
-
-        // Start (skip if user prefers reduced motion)
-        if (!reducedMotion) startAutoplay();
-        else { /* static — show slide 1 only, no transitions */ }
+        setInterval(nextSlide, 3000);
 
         /* ==============================
            SCROLL REVEAL
