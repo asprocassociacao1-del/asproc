@@ -10074,13 +10074,31 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
       }
 
       async function openCandidateCv(rawUrl) {
+        let cvWindow = null;
         try {
+          cvWindow = window.open('', '_blank');
+          if (cvWindow) {
+            cvWindow.document.write('<!doctype html><title>Abrindo curriculo...</title><p style="font-family:Arial,sans-serif;padding:24px">Abrindo curriculo com seguranca...</p>');
+            cvWindow.opener = null;
+          }
           const signedUrl = await createCandidateSignedUrl(rawUrl);
-          window.open(signedUrl, '_blank', 'noopener');
+          if (cvWindow) {
+            cvWindow.location.href = signedUrl;
+          } else {
+            const link = document.createElement('a');
+            link.href = signedUrl;
+            link.target = '_blank';
+            link.rel = 'noopener';
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+          }
         } catch (e) {
+          if (cvWindow && !cvWindow.closed) cvWindow.close();
           toast('Erro ao abrir currículo: ' + e.message, 'error');
         }
       }
+      window.openCandidateCv = openCandidateCv;
 
       function viewCandidatura(id) {
         const c = allCandidaturas.find(x => String(x.id) === String(id));
