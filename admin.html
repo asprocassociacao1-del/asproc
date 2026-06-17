@@ -1395,6 +1395,56 @@
       margin-left: auto;
     }
 
+    .cand-summary-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: .75rem;
+      margin: .85rem 0 1rem;
+    }
+
+    .cand-summary-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: .8rem .95rem;
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
+      transition: border-color var(--transition), background var(--transition), transform var(--transition);
+    }
+
+    .cand-summary-card:hover {
+      border-color: var(--border-hover);
+      background: var(--bg3);
+      transform: translateY(-1px);
+    }
+
+    .cand-summary-card.active {
+      border-color: rgba(59, 130, 246, .55);
+      box-shadow: 0 0 0 1px rgba(59, 130, 246, .18);
+    }
+
+    .cand-summary-label {
+      font-size: .66rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .cand-summary-value {
+      margin-top: .35rem;
+      font-size: 1.35rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .cand-summary-hint {
+      margin-top: .35rem;
+      font-size: .72rem;
+      color: var(--text-muted);
+    }
+
     .cand-date-input {
       background: var(--bg3);
       border: 1px solid var(--border);
@@ -1561,6 +1611,10 @@
 
       .cand-detail-info-grid {
         grid-template-columns: 1fr;
+      }
+
+      .cand-summary-row {
+        grid-template-columns: 1fr 1fr;
       }
 
       #toast-container {
@@ -3926,6 +3980,28 @@
                 <button class="btn btn-secondary btn-sm" onclick="loadCandidaturas()" title="Recarregar">↺</button>
               </div>
             </div>
+          </div>
+          <div class="cand-summary-row" id="cand-summary" aria-label="Resumo das candidaturas">
+            <button type="button" class="cand-summary-card" data-cand-summary="novo" onclick="setCandStatusFilter('novo')">
+              <div class="cand-summary-label">Novas</div>
+              <div class="cand-summary-value" id="cand-count-novo">0</div>
+              <div class="cand-summary-hint">Aguardando triagem</div>
+            </button>
+            <button type="button" class="cand-summary-card" data-cand-summary="em_analise" onclick="setCandStatusFilter('em_analise')">
+              <div class="cand-summary-label">Em análise</div>
+              <div class="cand-summary-value" id="cand-count-em_analise">0</div>
+              <div class="cand-summary-hint">Em acompanhamento</div>
+            </button>
+            <button type="button" class="cand-summary-card" data-cand-summary="aprovado" onclick="setCandStatusFilter('aprovado')">
+              <div class="cand-summary-label">Aprovadas</div>
+              <div class="cand-summary-value" id="cand-count-aprovado">0</div>
+              <div class="cand-summary-hint">Prontas para contato</div>
+            </button>
+            <button type="button" class="cand-summary-card" data-cand-summary="reprovado" onclick="setCandStatusFilter('reprovado')">
+              <div class="cand-summary-label">Reprovadas</div>
+              <div class="cand-summary-value" id="cand-count-reprovado">0</div>
+              <div class="cand-summary-hint">Encerradas</div>
+            </button>
           </div>
           <div id="cand-loading" class="loading">
             <div class="spinner"></div>
@@ -10010,8 +10086,40 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
 
         const h3 = document.getElementById('cand-header-title');
         if (h3) h3.textContent = `Candidaturas recebidas (${filtered.length})`;
+        updateCandSummary(statusFilter);
         renderCandidaturas(filtered);
       }
+
+      function updateCandSummary(activeStatus = '') {
+        const counts = { novo: 0, em_analise: 0, aprovado: 0, reprovado: 0 };
+        allCandidaturas.forEach(c => {
+          const status = normalizeStatus(c.status);
+          if (Object.prototype.hasOwnProperty.call(counts, status)) counts[status]++;
+        });
+        Object.entries(counts).forEach(([status, count]) => {
+          const value = document.getElementById('cand-count-' + status);
+          if (value) value.textContent = count;
+          const card = document.querySelector('[data-cand-summary="' + status + '"]');
+          if (card) card.classList.toggle('active', activeStatus === status);
+        });
+      }
+
+      function setCandStatusFilter(status) {
+        const select = document.getElementById('cand-status-filter');
+        if (!select) return;
+        select.value = select.value === status ? '' : status;
+        applyCandFilters();
+      }
+      window.setCandStatusFilter = setCandStatusFilter;
+
+      function clearCandFilters() {
+        ['cand-status-filter', 'cand-search-filter', 'cand-vaga-filter', 'cand-date-from', 'cand-date-to'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.value = '';
+        });
+        applyCandFilters();
+      }
+      window.clearCandFilters = clearCandFilters;
 
       /** Popula o select de vagas com base nas candidaturas carregadas */
       function candPopulateVagaFilter() {
@@ -10047,8 +10155,12 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         const container = document.getElementById('cand-list');
         const empty = document.getElementById('cand-empty');
         if (!list.length) {
+          const hasFilters = ['cand-status-filter', 'cand-search-filter', 'cand-vaga-filter', 'cand-date-from', 'cand-date-to']
+            .some(id => ((document.getElementById(id) || {}).value || '').trim());
           empty.style.display = 'block';
-          empty.innerHTML = '<div class="es-icon">📋</div><p>Nenhuma candidatura encontrada.</p>';
+          empty.innerHTML = hasFilters
+            ? '<div class="es-icon">🔎</div><p>Nenhuma candidatura encontrada com os filtros atuais.</p><button class="btn btn-secondary btn-sm" onclick="clearCandFilters()">Limpar filtros</button>'
+            : '<div class="es-icon">📋</div><p>Nenhuma candidatura encontrada.</p>';
           container.innerHTML = '';
           return;
         }
