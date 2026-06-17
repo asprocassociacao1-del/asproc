@@ -1402,6 +1402,13 @@
       margin: .85rem 0 1rem;
     }
 
+    .msg-summary-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+      gap: .75rem;
+      margin: .85rem 0 1rem;
+    }
+
     .cand-summary-card {
       background: var(--bg2);
       border: 1px solid var(--border);
@@ -1614,6 +1621,10 @@
       }
 
       .cand-summary-row {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .msg-summary-row {
         grid-template-columns: 1fr 1fr;
       }
 
@@ -4034,6 +4045,38 @@
               </div>
             </div>
           </div>
+          <div class="msg-summary-row" id="msg-summary" aria-label="Resumo das mensagens">
+            <button type="button" class="cand-summary-card" data-msg-summary="" onclick="setMsgAssuntoFilter('')">
+              <div class="cand-summary-label">Todas</div>
+              <div class="cand-summary-value" id="msg-count-total">0</div>
+              <div class="cand-summary-hint">Mensagens recebidas</div>
+            </button>
+            <button type="button" class="cand-summary-card" data-msg-summary="Informações gerais" onclick="setMsgAssuntoFilter('Informações gerais')">
+              <div class="cand-summary-label">Informações</div>
+              <div class="cand-summary-value" id="msg-count-info">0</div>
+              <div class="cand-summary-hint">Dúvidas gerais</div>
+            </button>
+            <button type="button" class="cand-summary-card" data-msg-summary="Parceria" onclick="setMsgAssuntoFilter('Parceria')">
+              <div class="cand-summary-label">Parceria</div>
+              <div class="cand-summary-value" id="msg-count-parceria">0</div>
+              <div class="cand-summary-hint">Oportunidades</div>
+            </button>
+            <button type="button" class="cand-summary-card" data-msg-summary="Imprensa" onclick="setMsgAssuntoFilter('Imprensa')">
+              <div class="cand-summary-label">Imprensa</div>
+              <div class="cand-summary-value" id="msg-count-imprensa">0</div>
+              <div class="cand-summary-hint">Solicitações</div>
+            </button>
+            <button type="button" class="cand-summary-card" data-msg-summary="Voluntariado" onclick="setMsgAssuntoFilter('Voluntariado')">
+              <div class="cand-summary-label">Voluntariado</div>
+              <div class="cand-summary-value" id="msg-count-voluntariado">0</div>
+              <div class="cand-summary-hint">Apoio direto</div>
+            </button>
+            <button type="button" class="cand-summary-card" data-msg-summary="Outro" onclick="setMsgAssuntoFilter('Outro')">
+              <div class="cand-summary-label">Outro</div>
+              <div class="cand-summary-value" id="msg-count-outro">0</div>
+              <div class="cand-summary-hint">Sem categoria</div>
+            </button>
+          </div>
           <div id="msg-loading" class="loading">
             <div class="spinner"></div>
           </div>
@@ -6226,13 +6269,66 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
           const matchAssunto = !assunto || m.assunto === assunto;
           return matchSearch && matchAssunto;
         });
+        updateMsgSummary(assunto);
         renderMensagens(filtered);
       }
+
+      function updateMsgSummary(activeAssunto = '') {
+        const counts = {
+          total: _allMensagens.length,
+          info: 0,
+          parceria: 0,
+          imprensa: 0,
+          voluntariado: 0,
+          outro: 0
+        };
+        _allMensagens.forEach(m => {
+          const assunto = m.assunto || 'Outro';
+          if (assunto === 'Informações gerais') counts.info++;
+          else if (assunto === 'Parceria') counts.parceria++;
+          else if (assunto === 'Imprensa') counts.imprensa++;
+          else if (assunto === 'Voluntariado') counts.voluntariado++;
+          else counts.outro++;
+        });
+        Object.entries(counts).forEach(([key, count]) => {
+          const value = document.getElementById('msg-count-' + key);
+          if (value) value.textContent = count;
+        });
+        document.querySelectorAll('[data-msg-summary]').forEach(card => {
+          card.classList.toggle('active', (card.dataset.msgSummary || '') === activeAssunto);
+        });
+      }
+
+      function setMsgAssuntoFilter(assunto) {
+        const select = document.getElementById('msg-assunto-filter');
+        if (!select) return;
+        select.value = select.value === assunto ? '' : assunto;
+        applyMsgFilters();
+      }
+      window.setMsgAssuntoFilter = setMsgAssuntoFilter;
+
+      function clearMsgFilters() {
+        ['msg-search', 'msg-assunto-filter'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.value = '';
+        });
+        applyMsgFilters();
+      }
+      window.clearMsgFilters = clearMsgFilters;
 
       function renderMensagens(list) {
         const listEl = document.getElementById('msg-list');
         const emptyEl = document.getElementById('msg-empty');
-        if (!list.length) { listEl.innerHTML = ''; emptyEl.style.display = 'flex'; return; }
+        if (!list.length) {
+          const hasFilters = ['msg-search', 'msg-assunto-filter']
+            .some(id => ((document.getElementById(id) || {}).value || '').trim());
+          listEl.innerHTML = '';
+          emptyEl.style.display = 'flex';
+          emptyEl.innerHTML = hasFilters
+            ? '<div class="es-icon">🔎</div><p>Nenhuma mensagem encontrada com os filtros atuais.</p><button class="btn btn-secondary btn-sm" onclick="clearMsgFilters()">Limpar filtros</button>'
+            : '<div class="es-icon">✉️</div><p>Nenhuma mensagem recebida ainda.</p>';
+          return;
+        }
         emptyEl.style.display = 'none';
         listEl.innerHTML = list.map(m => {
           const data = m.created_at ? new Date(m.created_at).toLocaleString('pt-BR') : '—';
