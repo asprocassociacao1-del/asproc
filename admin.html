@@ -1427,10 +1427,63 @@
       background: rgba(16, 185, 129, .22);
     }
 
+    .cand-detail-modal {
+      max-width: 720px;
+      width: min(720px, calc(100vw - 2rem));
+      max-height: min(760px, calc(100vh - 2rem));
+      padding: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cand-detail-head {
+      padding: 1rem 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .cand-detail-body {
+      padding: 0;
+      overflow-y: auto;
+      max-height: none;
+      min-height: 0;
+    }
+
+    .cand-detail-footer {
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: .75rem;
+      flex-shrink: 0;
+      background: rgba(15, 17, 23, .96);
+      border-top: 1px solid var(--border);
+    }
+
+    .cand-detail-actions {
+      display: flex;
+      gap: .5rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .cand-detail-actions .btn {
+      min-height: 38px;
+    }
+
+    .cand-detail-primary {
+      margin-left: auto;
+      justify-content: flex-end;
+    }
+
+    .cand-detail-info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .7rem;
+    }
+
     /* ── TOAST ── */
     #toast-container {
       position: fixed;
-      bottom: 1.5rem;
+      top: 1.25rem;
       right: 1.5rem;
       display: flex;
       flex-direction: column;
@@ -1477,6 +1530,48 @@
       background: #0d1520;
       border: 1px solid rgba(59, 130, 246, .3);
       color: var(--accent);
+    }
+
+    @media (max-width: 720px) {
+      .cand-detail-modal {
+        width: calc(100vw - 1rem);
+        max-height: calc(100vh - 1rem);
+      }
+
+      .cand-detail-head {
+        padding: .9rem 1rem;
+      }
+
+      .cand-detail-footer {
+        padding: .75rem 1rem;
+      }
+
+      .cand-detail-actions,
+      .cand-detail-actions .btn {
+        width: 100%;
+      }
+
+      .cand-detail-actions .btn {
+        justify-content: center;
+      }
+
+      .cand-detail-primary {
+        margin-left: 0;
+      }
+
+      .cand-detail-info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      #toast-container {
+        left: .75rem;
+        right: .75rem;
+        top: .75rem;
+      }
+
+      .toast {
+        max-width: none;
+      }
     }
 
     .toast.warning {
@@ -5625,19 +5720,19 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
 
   <!-- ════ MODAL CANDIDATURA DETALHE ════ -->
   <div class="modal-overlay" id="modal-cand-detail" style="display:none">
-    <div class="modal" style="max-width:580px;padding:0;overflow:hidden">
-      <div class="modal-head" style="padding:1rem 1.5rem">
+    <div class="modal cand-detail-modal">
+      <div class="modal-head cand-detail-head">
         <h3 style="margin:0;font-size:.95rem">Candidatura recebida</h3>
         <button class="modal-close" onclick="closeModal('cand-detail')">✕</button>
       </div>
-      <div class="modal-body" id="cand-detail-body" style="padding:0;overflow-y:auto;max-height:65vh"></div>
-      <div class="modal-footer" style="justify-content:space-between;flex-wrap:wrap;gap:.5rem">
-        <div style="display:flex;gap:.5rem">
+      <div class="modal-body cand-detail-body" id="cand-detail-body"></div>
+      <div class="modal-footer cand-detail-footer">
+        <div class="cand-detail-actions">
           <button class="btn btn-secondary btn-sm" id="cand-em-analise-btn">🔍 Em análise</button>
           <button class="btn btn-danger btn-sm" id="cand-excluir-btn" style="border-color:rgba(239,68,68,.4)">🗑
             Excluir</button>
         </div>
-        <div style="display:flex;gap:.5rem">
+        <div class="cand-detail-actions cand-detail-primary">
           <button class="btn btn-danger btn-sm" id="cand-reprovar-btn">❌ Reprovar</button>
           <button class="btn btn-success btn-sm" id="cand-aprovar-btn">✅ Aprovar</button>
         </div>
@@ -10137,7 +10232,7 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
 
           <!-- Infos -->
           <div style="padding:1.25rem 1.5rem;display:grid;gap:.85rem">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem">
+            <div class="cand-detail-info-grid">
               <div style="background:var(--bg3);border-radius:10px;padding:.8rem 1rem">
                 <div style="font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.3rem">Vaga pretendida</div>
                 <div style="font-size:.88rem;font-weight:600;color:var(--text)">${escHtml(c.vaga || 'Candidatura Espontânea')}</div>
