@@ -10058,7 +10058,7 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
       async function createCandidateSignedUrl(rawUrl) {
         const path = extractCandidateStoragePath(rawUrl);
         if (!path) return rawUrl;
-        const { url, key } = cfg();
+        const { url, key } = getSupabase();
         const token = AuthStore.getToken();
         if (!url || !key || !token) throw new Error('Sessão do admin expirada. Faça login novamente.');
         const encodedPath = path.split('/').map(encodeURIComponent).join('/');
