@@ -1177,6 +1177,17 @@
       margin-bottom: 1rem;
     }
 
+    .backup-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: .65rem;
+    }
+
+    .backup-actions .btn {
+      justify-content: center;
+      width: 100%;
+    }
+
     .alert-box {
       background: var(--amber-soft);
       border: 1px solid rgba(245, 158, 11, .2);
@@ -4251,50 +4262,21 @@
           </div>
 
           <div class="config-block">
-            <h3>📦 Banco de Dados</h3>
-            <p style="font-size:.84rem;color:var(--text-muted);margin-bottom:1rem;">Execute o arquivo <code
-                style="background:var(--bg3);padding:.1rem .4rem;border-radius:4px;font-size:.82rem;">supabase_setup.sql</code>
-              no SQL Editor do Supabase para criar as tabelas.</p>
-            <a href="supabase_setup.sql" download class="btn btn-secondary btn-sm">⬇ Baixar supabase_setup.sql</a>
-            <div
-              style="margin-top:1rem;padding:1rem;background:var(--bg3);border-radius:8px;border:1px solid var(--border);">
-              <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:.75rem;">📬 Para receber as mensagens do
-                formulário de contato, crie também a tabela abaixo no SQL Editor do Supabase:</p>
-              <pre class="code-block" style="font-size:.78rem;white-space:pre;overflow-x:auto;">-- Tabela de mensagens de contato (sobre.html)
-CREATE TABLE IF NOT EXISTS mensagens_contato (
-  id          bigserial PRIMARY KEY,
-  nome        text NOT NULL,
-  email       text NOT NULL,
-  assunto     text,
-  mensagem    text NOT NULL,
-  created_at  timestamptz DEFAULT now()
-);
-
--- Permissão pública para inserir (anon pode enviar mensagem)
-ALTER TABLE mensagens_contato ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "Inserir mensagens" ON mensagens_contato
-  FOR INSERT TO anon WITH CHECK (true);
-
-CREATE POLICY "Admin lê mensagens" ON mensagens_contato
-  FOR SELECT TO authenticated USING (true);
-
-CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
-  FOR DELETE TO authenticated USING (true);</pre>
-              <button class="btn btn-secondary btn-sm" style="margin-top:.6rem;"
-                onclick="navigator.clipboard.writeText(document.querySelector('.code-block').textContent).then(()=>toast('SQL copiado!','success'))">📋
-                Copiar SQL</button>
-            </div>
-          </div>
-
-          <div class="config-block">
-            <h3>🌐 Snippet de integração</h3>
-            <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:1rem;">Adicione no
-              <code>&lt;head&gt;</code> de cada página para integrar com Supabase:
+            <h3>💾 Backups do conteúdo</h3>
+            <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:1rem;line-height:1.5;">
+              Exporte cópias em JSON dos dados principais do site. O backup não altera nada no Supabase.
             </p>
-            <pre class="code-block" id="integration-snippet"></pre>
-            <button class="btn btn-secondary btn-sm" onclick="copySnippet()" style="margin-top:.75rem;">📋 Copiar
-              código</button>
+            <div class="backup-actions">
+              <button class="btn btn-secondary btn-sm" onclick="downloadBackup('noticias',this)">Notícias</button>
+              <button class="btn btn-secondary btn-sm" onclick="downloadBackup('avisos',this)">Avisos</button>
+              <button class="btn btn-secondary btn-sm" onclick="downloadBackup('vagas',this)">Vagas</button>
+              <button class="btn btn-secondary btn-sm" onclick="downloadBackup('candidaturas',this)">Candidatos</button>
+              <button class="btn btn-secondary btn-sm" onclick="downloadBackup('mensagens_contato',this)">Mensagens</button>
+              <button class="btn btn-success btn-sm" onclick="downloadFullBackup(this)">Backup geral</button>
+            </div>
+            <div class="info-box" style="font-size:.78rem;margin-top:1rem;">
+              O backup geral inclui notícias, avisos, vagas, candidaturas, mensagens de contato e newsletters.
+            </div>
           </div>
         </section>
 
@@ -5961,16 +5943,6 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
         return url.startsWith('https://') && key.length > 20;
       }
 
-      // Snippet de integração usa os valores salvos pelo próprio admin
-      function updateIntegrationSnippet() {
-        const { url, key } = getSupabase();
-        const snip = isSupabaseConfigured()
-          ? `<script>\n  const SUPABASE_URL = '${url}';\n  const SUPABASE_KEY = '${key}';\n  async function fetchSupabase(table, params = '') {\n    const r = await fetch(SUPABASE_URL + '/rest/v1/' + table + '?' + params, {\n      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }\n    });\n    return r.json();\n  }\n<\/script>`
-          : '// Configure o Supabase em Configurações para gerar este snippet.';
-        const el = document.getElementById('integration-snippet');
-        if (el) el.textContent = snip;
-      }
-
       async function sbFetch(table, params = '', opts = {}) {
         const { url, key } = getSupabase();
         if (!url || !key) throw new Error('Supabase não configurado.');
@@ -6505,7 +6477,6 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
             if (statusEl) statusEl.style.display = 'none';
           }
         }
-        updateIntegrationSnippet();
       }
 
       function saveConfig() {
@@ -6516,7 +6487,6 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
           return;
         }
         localStorage.setItem(CONFIG_KEY, JSON.stringify({ url, key }));
-        updateIntegrationSnippet();
         toast('✅ Configuração salva!', 'success');
       }
 
@@ -6527,6 +6497,65 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
             await sbSelect('noticias', 'select=id&limit=1');
             toast('✅ Conexão com Supabase OK!', 'success');
           } catch (e) { toast('❌ Falha: ' + e.message, 'error'); }
+        });
+      }
+
+      const BACKUP_TABLE_LABELS = {
+        noticias: 'noticias',
+        avisos: 'avisos',
+        vagas: 'vagas',
+        candidaturas: 'candidatos',
+        mensagens_contato: 'mensagens',
+        newsletters: 'newsletters'
+      };
+
+      function backupDownloadJson(filename, payload) {
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
+      }
+
+      async function fetchBackupTable(table) {
+        return sbFetch(table, 'select=*&limit=5000');
+      }
+
+      async function downloadBackup(table, btn) {
+        const label = BACKUP_TABLE_LABELS[table] || table;
+        await withBtn(btn, 'Gerando...', async () => {
+          const rows = await fetchBackupTable(table);
+          const ts = new Date().toISOString().replace(/[:.]/g, '-');
+          backupDownloadJson(`asproc_backup_${label}_${ts}.json`, {
+            app: 'ASPROC',
+            type: label,
+            table,
+            exported_at: new Date().toISOString(),
+            total: Array.isArray(rows) ? rows.length : 0,
+            data: rows || []
+          });
+          toast(`✅ Backup de ${label} gerado.`, 'success');
+        });
+      }
+
+      async function downloadFullBackup(btn) {
+        const tables = ['noticias', 'avisos', 'vagas', 'candidaturas', 'mensagens_contato', 'newsletters'];
+        await withBtn(btn, 'Gerando...', async () => {
+          const data = {};
+          for (const table of tables) data[table] = await fetchBackupTable(table);
+          const ts = new Date().toISOString().replace(/[:.]/g, '-');
+          backupDownloadJson(`asproc_backup_geral_${ts}.json`, {
+            app: 'ASPROC',
+            type: 'backup_geral',
+            exported_at: new Date().toISOString(),
+            totals: Object.fromEntries(tables.map(t => [t, Array.isArray(data[t]) ? data[t].length : 0])),
+            data
+          });
+          toast('✅ Backup geral gerado.', 'success');
         });
       }
 
@@ -10846,12 +10875,6 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         const [ic, lb, bg, cl, bd] = map[s] || ['❓', s, 'rgba(255,255,255,.08)', 'var(--text-muted)', 'rgba(255,255,255,.15)'];
         return `<span style="display:inline-flex;align-items:center;gap:.3rem;padding:.22rem .65rem;border-radius:99px;font-size:.68rem;font-weight:700;background:${bg};color:${cl};border:1px solid ${bd};white-space:nowrap">${ic} ${lb}</span>`;
       }
-      function copySnippet() {
-        navigator.clipboard.writeText(document.getElementById('integration-snippet').textContent)
-          .then(() => toast('Código copiado!', 'success'))
-          .catch(() => toast('Não foi possível copiar.', 'error'));
-      }
-
       /* ══════════════════════════════════════════
          EDITOR DE NOTÍCIAS
       ══════════════════════════════════════════ */
@@ -15594,6 +15617,8 @@ ${corpo}
       window.deleteCandidatura = deleteCandidatura;
       window.saveConfig = saveConfig;
       window.testConnection = testConnection;
+      window.downloadBackup = downloadBackup;
+      window.downloadFullBackup = downloadFullBackup;
       window.saveGithubToken = saveGithubToken;
       window.testGithubConnection = testGithubConnection;
       window.publishToGithub = publishToGithub;
@@ -15816,7 +15841,6 @@ ${corpo}
         }
       }
       window.copyDeployLink = copyDeployLink;
-      window.copySnippet = copySnippet;
       window.rteExec = rteExec;
       window.updateWordCount = updateWordCount;
       window.rteSetupSelectionTracking = rteSetupSelectionTracking;
