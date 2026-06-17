@@ -10024,12 +10024,61 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         if (foundUrl) {
           const ext = foundUrl.split('?')[0].split('.').pop().toLowerCase();
           const icon = ext === 'pdf' ? '📕' : (ext === 'doc' || ext === 'docx') ? '📘' : '📄';
-          return '<a href="' + escHtml(foundUrl) + '" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:.55rem;padding:.65rem 1.1rem;background:rgba(16,185,129,.09);border:1px solid rgba(16,185,129,.25);border-radius:10px;color:#34d399;font-size:.82rem;font-weight:600;text-decoration:none">' + icon + ' Abrir / Baixar curriculo &nbsp;&#x2197;</a>';
+          return '<button type="button" onclick="openCandidateCv(decodeURIComponent(\\'' + encodeURIComponent(foundUrl) + '\\'))" style="display:inline-flex;align-items:center;gap:.55rem;padding:.65rem 1.1rem;background:rgba(16,185,129,.09);border:1px solid rgba(16,185,129,.25);border-radius:10px;color:#34d399;font-size:.82rem;font-weight:600;text-decoration:none;cursor:pointer">' + icon + ' Abrir / Baixar curriculo &nbsp;&#x2197;</button>';
         }
         // Debug: mostra o valor real de cada campo para identificar onde o curriculo esta salvo
         const debugFields = allKeys.filter(k => k.includes('url') || k.includes('cv') || k.includes('file') || k.includes('doc') || k.includes('arquivo') || k.includes('curriculo') || k.includes('resume') || k.includes('anexo') || k.includes('attach'));
         const debugInfo = debugFields.length ? '<br><span style="font-size:.68rem;opacity:.55">Campos: ' + debugFields.map(k => { const val = c[k]; const display = val === null ? 'null' : val === undefined ? 'undef' : String(val).substring(0, 40); return k + '=' + display; }).join(', ') + '</span>' : '';
         return '<div style="padding:.55rem .8rem;background:var(--bg3);border-radius:8px;font-size:.78rem;color:var(--text-muted)">&#x1F4ED; Nenhum curriculo anexado.' + debugInfo + '</div>';
+      }
+
+      function extractCandidateStoragePath(rawUrl) {
+        if (!rawUrl || typeof rawUrl !== 'string') return null;
+        const url = rawUrl.trim();
+        const markers = [
+          '/storage/v1/object/public/candidaturas/',
+          '/storage/v1/object/candidaturas/'
+        ];
+        for (const marker of markers) {
+          const idx = url.indexOf(marker);
+          if (idx !== -1) {
+            return decodeURIComponent(url.slice(idx + marker.length).split('?')[0]);
+          }
+        }
+        if (url.startsWith('curriculos/')) return url.split('?')[0];
+        return null;
+      }
+
+      async function createCandidateSignedUrl(rawUrl) {
+        const path = extractCandidateStoragePath(rawUrl);
+        if (!path) return rawUrl;
+        const { url, key } = cfg();
+        const token = AuthStore.getToken();
+        if (!url || !key || !token) throw new Error('Sessão do admin expirada. Faça login novamente.');
+        const encodedPath = path.split('/').map(encodeURIComponent).join('/');
+        const res = await fetch(`${url}/storage/v1/object/sign/candidaturas/${encodedPath}`, {
+          method: 'POST',
+          headers: {
+            apikey: key,
+            Authorization: 'Bearer ' + token,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ expiresIn: 600 })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.message || data.error || ('HTTP ' + res.status));
+        const signed = data.signedURL || data.signedUrl || data.signed_url;
+        if (!signed) throw new Error('URL assinada não retornada pelo Storage.');
+        return signed.startsWith('http') ? signed : `${url}/storage/v1${signed}`;
+      }
+
+      async function openCandidateCv(rawUrl) {
+        try {
+          const signedUrl = await createCandidateSignedUrl(rawUrl);
+          window.open(signedUrl, '_blank', 'noopener');
+        } catch (e) {
+          toast('Erro ao abrir currículo: ' + e.message, 'error');
+        }
       }
 
       function viewCandidatura(id) {
