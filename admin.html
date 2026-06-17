@@ -10024,7 +10024,8 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         if (foundUrl) {
           const ext = foundUrl.split('?')[0].split('.').pop().toLowerCase();
           const icon = ext === 'pdf' ? '📕' : (ext === 'doc' || ext === 'docx') ? '📘' : '📄';
-          return '<button type="button" onclick="openCandidateCv(decodeURIComponent(\\'' + encodeURIComponent(foundUrl) + '\\'))" style="display:inline-flex;align-items:center;gap:.55rem;padding:.65rem 1.1rem;background:rgba(16,185,129,.09);border:1px solid rgba(16,185,129,.25);border-radius:10px;color:#34d399;font-size:.82rem;font-weight:600;text-decoration:none;cursor:pointer">' + icon + ' Abrir / Baixar curriculo &nbsp;&#x2197;</button>';
+          const encodedCvUrl = escHtml(encodeURIComponent(foundUrl));
+          return '<button type="button" data-cv-url="' + encodedCvUrl + '" onclick="openCandidateCv(decodeURIComponent(this.dataset.cvUrl))" style="display:inline-flex;align-items:center;gap:.55rem;padding:.65rem 1.1rem;background:rgba(16,185,129,.09);border:1px solid rgba(16,185,129,.25);border-radius:10px;color:#34d399;font-size:.82rem;font-weight:600;text-decoration:none;cursor:pointer">' + icon + ' Abrir / Baixar curriculo &nbsp;&#x2197;</button>';
         }
         // Debug: mostra o valor real de cada campo para identificar onde o curriculo esta salvo
         const debugFields = allKeys.filter(k => k.includes('url') || k.includes('cv') || k.includes('file') || k.includes('doc') || k.includes('arquivo') || k.includes('curriculo') || k.includes('resume') || k.includes('anexo') || k.includes('attach'));
