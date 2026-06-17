@@ -5657,6 +5657,9 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
          do próprio navegador do administrador.
       ══════════════════════════════════════════ */
 
+      const DEFAULT_SUPABASE_URL = 'https://wiatqtiyiznscjyoxxww.supabase.co';
+      const DEFAULT_SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpYXRxdGl5aXpuc2NqeW94eHd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1Njc0MDEsImV4cCI6MjA5MTE0MzQwMX0.xgaaZWX5kG3XowDtpR9Xd8S2S0nV-JTnv4ZwnP33PY8';
+
       // Migração: limpa chaves de versões antigas SEM tocar nos tokens de sessão
       // (remover esse bloco após todos os admins terem migrado para v3)
       if (!localStorage.getItem('asproc_config_v3')) {
@@ -5671,8 +5674,10 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
 
       function getSupabase() {
         const c = getConfig();
-        // Sem fallback hardcoded — retorna vazio se não configurado
-        return { url: (c.url || '').trim(), key: (c.key || '').trim() };
+        return {
+          url: (c.url || DEFAULT_SUPABASE_URL).trim(),
+          key: (c.key || DEFAULT_SUPABASE_KEY).trim()
+        };
       }
 
       function isSupabaseConfigured() {
