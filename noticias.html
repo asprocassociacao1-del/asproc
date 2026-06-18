@@ -1580,10 +1580,14 @@
                     <p style="font-size:.84rem;color:rgba(255,255,255,.7);margin-bottom:1rem;line-height:1.6">Receba as
                         novidades da ASPROC no seu e-mail.</p>
                     <input type="email" id="nl-mail" placeholder="seu@email.com"
+                        autocomplete="email" onkeydown="if(event.key==='Enter'){event.preventDefault();subNL()}"
                         style="width:100%;padding:.65rem 1rem;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;color:#fff;font-family:'DM Sans',sans-serif;outline:none;margin-bottom:.7rem">
-                    <button onclick="subNL()"
+                    <button onclick="subNL()" class="nl-btn" id="nl-btn"
                         style="width:100%;padding:.65rem;background:var(--verde-neon);color:var(--escuro);border:none;border-radius:8px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">Inscrever-se
                         ✓</button>
+                    <div id="nl-status" aria-live="polite"
+                        style="display:none;margin-top:.75rem;font-size:.8rem;line-height:1.45;color:rgba(255,255,255,.72)">
+                    </div>
                     <div id="nl-ok"
                         style="display:none;text-align:center;color:var(--verde-neon);font-weight:700;margin-top:.8rem;font-size:.85rem">
                         Cadastrado! 🎉</div>
@@ -1741,13 +1745,28 @@
 
 
         /* NEWSLETTER */
+        function nlStatus(msg, type) {
+            const el = document.getElementById('nl-status');
+            if (!el) return;
+            el.textContent = msg || '';
+            el.style.display = msg ? 'block' : 'none';
+            el.style.color = type === 'error' ? '#fecaca' : (type === 'success' ? 'var(--verde-neon)' : 'rgba(255,255,255,.72)');
+        }
+
         async function subNL() {
             const input = document.getElementById('nl-mail');
             const email = input.value.trim();
-            if (!email || !email.includes('@')) { showToast('⚠️ Digite um e-mail válido.'); return; }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                nlStatus('Digite um e-mail válido para receber as notícias.', 'error');
+                showToast('⚠️ Digite um e-mail válido.');
+                input.focus();
+                return;
+            }
 
-            const btn = document.querySelector('.nl-btn');
-            if (btn) { btn.disabled = true; btn.textContent = 'Cadastrando...'; }
+            const btn = document.getElementById('nl-btn') || document.querySelector('.nl-btn');
+            if (btn && btn.disabled) return;
+            if (btn) { btn.disabled = true; btn.textContent = 'Cadastrando...'; btn.style.opacity = '.72'; btn.style.cursor = 'wait'; }
+            nlStatus('Enviando cadastro...', '');
 
             try {
                 const res = await fetch(SUPABASE_URL + '/rest/v1/newsletters', {
@@ -1762,19 +1781,23 @@
                 });
 
                 if (res.status === 409) {
+                    nlStatus('Este e-mail já está cadastrado para receber notícias.', 'success');
                     showToast('\u2139\uFE0F Este e-mail já está cadastrado!');
                 } else if (res.ok) {
                     document.getElementById('nl-ok').style.display = 'block';
                     input.value = '';
+                    nlStatus('Cadastro confirmado. Obrigado por acompanhar a ASPROC.', 'success');
                     showToast('\u2705 <strong>Cadastrado!</strong> Você receberá as próximas notícias da ASPROC.');
                 } else {
-                    throw new Error('status ' + res.status);
+                    const err = await res.json().catch(() => ({}));
+                    throw new Error(err.message || 'status ' + res.status);
                 }
             } catch (e) {
                 console.error(e);
+                nlStatus('Não foi possível cadastrar agora. Verifique sua conexão e tente novamente.', 'error');
                 showToast('\u274C Erro ao cadastrar. Tente novamente.');
             } finally {
-                if (btn) { btn.disabled = false; btn.textContent = 'Inscrever-se'; }
+                if (btn) { btn.disabled = false; btn.textContent = 'Inscrever-se ✓'; btn.style.opacity = ''; btn.style.cursor = 'pointer'; }
             }
         }
 

@@ -842,6 +842,25 @@
             box-shadow: 0 0 0 3px rgba(123, 201, 92, .1)
         }
 
+        .fg2.invalid input,
+        .fg2.invalid textarea,
+        .fg2.invalid select {
+            border-color: rgba(239, 68, 68, .75);
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, .12)
+        }
+
+        .field-error {
+            display: none;
+            margin-top: .38rem;
+            color: #ffb4b4;
+            font-size: .76rem;
+            line-height: 1.4
+        }
+
+        .fg2.invalid .field-error {
+            display: block
+        }
+
         .fg2 textarea {
             min-height: 110px
         }
@@ -862,6 +881,12 @@
         .fz:hover {
             border-color: var(--verde-neon);
             background: rgba(123, 201, 92, .05)
+        }
+
+        .fz.dragging,
+        .fz.has-file {
+            border-color: var(--verde-neon);
+            background: rgba(123, 201, 92, .08)
         }
 
         .fz-icon {
@@ -896,6 +921,40 @@
             color: var(--escuro);
             transform: translateY(-2px);
             box-shadow: 0 12px 30px rgba(74, 158, 63, .4)
+        }
+
+        .csub:disabled {
+            opacity: .72;
+            cursor: wait;
+            transform: none;
+            box-shadow: none
+        }
+
+        .form-status {
+            display: none;
+            margin: .85rem 0 0;
+            padding: .8rem .95rem;
+            border-radius: 12px;
+            border: 1px solid rgba(123, 201, 92, .18);
+            background: rgba(123, 201, 92, .08);
+            color: rgba(245, 240, 232, .78);
+            font-size: .82rem;
+            line-height: 1.5
+        }
+
+        .form-status.show {
+            display: block
+        }
+
+        .form-status.error {
+            border-color: rgba(239, 68, 68, .35);
+            background: rgba(239, 68, 68, .08);
+            color: #fecaca
+        }
+
+        .form-status.success {
+            border-color: rgba(123, 201, 92, .35);
+            color: var(--verde-neon)
         }
 
         .form-ok {
@@ -1817,11 +1876,15 @@
                 <h3>Enviar Candidatura</h3>
                 <div id="cf-inner">
                     <div class="fg2"><label>Nome Completo *</label><input type="text" id="cf-nome"
-                            placeholder="Seu nome completo"></div>
+                            placeholder="Seu nome completo" autocomplete="name">
+                        <div class="field-error" id="cf-nome-error"></div>
+                    </div>
                     <div class="fg2"><label>E-mail *</label><input type="email" id="cf-email"
-                            placeholder="seu@email.com"></div>
+                            placeholder="seu@email.com" autocomplete="email">
+                        <div class="field-error" id="cf-email-error"></div>
+                    </div>
                     <div class="fg2"><label>Telefone / WhatsApp</label><input type="tel" id="cf-tel"
-                            placeholder="(92) 9 9999-9999"></div>
+                            placeholder="(92) 9 9999-9999" autocomplete="tel"></div>
                     <div class="fg2"><label>Vaga de Interesse *</label>
                         <select id="cf-vaga">
                             <option value="">Selecionar vaga…</option>
@@ -1829,19 +1892,24 @@
                             <option>Assistente Técnico Rural</option>
                             <option>Candidatura Espontânea</option>
                         </select>
+                        <div class="field-error" id="cf-vaga-error"></div>
                     </div>
                     <div class="fg2"><label>Motivação</label><textarea id="cf-msg"
                             placeholder="Por que você quer trabalhar na ASPROC?"></textarea></div>
                     <div class="fg2"><label>Currículo (PDF / DOC)</label>
-                        <div class="fz" onclick="document.getElementById('cf-file').click()">
+                        <div class="fz" id="cf-dropzone" onclick="document.getElementById('cf-file').click()">
                             <div class="fz-icon">📎</div>
                             <p id="fz-lbl">Clique para anexar ou arraste o arquivo aqui<br><small
                                     style="opacity:.5">.pdf, .doc, .docx — máx. 5 MB</small></p>
                             <input type="file" id="cf-file" accept=".pdf,.doc,.docx" style="display:none"
-                                onchange="document.getElementById('fz-lbl').textContent=this.files[0]?.name||'Clique para anexar'">
+                                onchange="handleCfFile(this)">
                         </div>
+                        <div class="field-error" id="cf-file-error"></div>
                     </div>
-                    <button class="csub" onclick="submitForm()">Enviar Candidatura →</button>
+                    <input type="text" id="cf-site-url" tabindex="-1" autocomplete="off" aria-hidden="true"
+                        style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+                    <button class="csub" id="cf-submit" onclick="submitForm()">Enviar Candidatura →</button>
+                    <div class="form-status" id="cf-status" role="status" aria-live="polite"></div>
                 </div>
                 <div class="form-ok" id="cf-ok">
                     <div style="font-size:3.5rem;margin-bottom:1rem">✅</div>
@@ -1957,22 +2025,95 @@
         var _SB = 'https://wiatqtiyiznscjyoxxww.supabase.co';
         var _KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpYXRxdGl5aXpuc2NqeW94eHd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1Njc0MDEsImV4cCI6MjA5MTE0MzQwMX0.xgaaZWX5kG3XowDtpR9Xd8S2S0nV-JTnv4ZwnP33PY8';
         var _HDR = { apikey: _KEY, Authorization: 'Bearer ' + _KEY };
+        var cfOpenedAt = Date.now();
+
+        function cfStatus(msg, type) {
+            var el = document.getElementById('cf-status');
+            if (!el) return;
+            el.textContent = msg || '';
+            el.className = 'form-status' + (msg ? ' show' : '') + (type ? ' ' + type : '');
+        }
+
+        function cfClearErrors() {
+            ['cf-nome', 'cf-email', 'cf-vaga', 'cf-file'].forEach(function (id) {
+                var field = document.getElementById(id);
+                var wrap = field && field.closest ? field.closest('.fg2') : null;
+                var err = document.getElementById(id + '-error');
+                if (wrap) wrap.classList.remove('invalid');
+                if (err) err.textContent = '';
+            });
+            cfStatus('', '');
+        }
+
+        function cfError(id, msg) {
+            var field = document.getElementById(id);
+            var wrap = field && field.closest ? field.closest('.fg2') : null;
+            var err = document.getElementById(id + '-error');
+            if (wrap) wrap.classList.add('invalid');
+            if (err) err.textContent = msg;
+            if (field && field.focus) field.focus();
+            cfStatus('Revise os campos destacados e tente novamente.', 'error');
+        }
+
+        function cfSetBusy(isBusy, msg) {
+            var btn = document.getElementById('cf-submit') || document.querySelector('.csub');
+            if (!btn) return;
+            btn.disabled = !!isBusy;
+            btn.textContent = isBusy ? (msg || 'Enviando…') : 'Enviar Candidatura →';
+        }
+
+        function handleCfFile(input) {
+            var file = input && input.files && input.files[0];
+            var label = document.getElementById('fz-lbl');
+            var dz = document.getElementById('cf-dropzone');
+            var wrap = input && input.closest ? input.closest('.fg2') : null;
+            var err = document.getElementById('cf-file-error');
+            if (wrap) wrap.classList.remove('invalid');
+            if (err) err.textContent = '';
+            if (!file) {
+                if (label) label.innerHTML = 'Clique para anexar ou arraste o arquivo aqui<br><small style="opacity:.5">.pdf, .doc, .docx — máx. 5 MB</small>';
+                if (dz) dz.classList.remove('has-file');
+                return true;
+            }
+            var okExt = /\.(pdf|doc|docx)$/i.test(file.name);
+            if (!okExt) {
+                cfError('cf-file', 'Envie um arquivo PDF, DOC ou DOCX.');
+                input.value = '';
+                return false;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                cfError('cf-file', 'O currículo deve ter no máximo 5 MB.');
+                input.value = '';
+                return false;
+            }
+            if (label) label.textContent = file.name + ' (' + Math.ceil(file.size / 1024) + ' KB)';
+            if (dz) dz.classList.add('has-file');
+            return true;
+        }
+        window.handleCfFile = handleCfFile;
 
         async function submitForm() {
+            cfClearErrors();
             var nome = (document.getElementById('cf-nome').value || '').trim();
             var email = (document.getElementById('cf-email').value || '').trim();
             var telefone = (document.getElementById('cf-tel').value || '').trim();
             var vaga = (document.getElementById('cf-vaga').value || '').trim();
             var mensagem = (document.getElementById('cf-msg').value || '').trim();
             var fileInput = document.getElementById('cf-file');
-            var btn = document.querySelector('.csub');
+            var honeypot = (document.getElementById('cf-site-url').value || '').trim();
 
-            if (!nome) { alert('Por favor, informe seu nome completo.'); return; }
-            if (!email || !email.includes('@')) { alert('Por favor, informe um e-mail válido.'); return; }
-            if (!vaga) { alert('Por favor, selecione a vaga de interesse.'); return; }
+            if (honeypot) return;
+            if (Date.now() - cfOpenedAt < 1500) {
+                cfStatus('Aguarde um instante antes de enviar.', 'error');
+                return;
+            }
+            if (!nome || nome.length < 3) { cfError('cf-nome', 'Informe seu nome completo.'); return; }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { cfError('cf-email', 'Informe um e-mail válido.'); return; }
+            if (!vaga) { cfError('cf-vaga', 'Selecione a vaga de interesse.'); return; }
+            if (fileInput && fileInput.files[0] && !handleCfFile(fileInput)) return;
 
-            btn.disabled = true;
-            btn.textContent = 'Enviando…';
+            cfSetBusy(true, 'Enviando…');
+            cfStatus('Preparando sua candidatura…', '');
 
             async function doSubmit(curriculo_url) {
                 try {
@@ -1994,27 +2135,23 @@
                         var err = await r.json().catch(function () { return {}; });
                         throw new Error(err.message || ('HTTP ' + r.status));
                     }
+                    cfStatus('Candidatura enviada com sucesso.', 'success');
                     document.getElementById('cf-inner').style.display = 'none';
                     document.getElementById('cf-ok').style.display = 'block';
                 } catch (err) {
                     console.error('[ASPROC] Erro ao enviar candidatura:', err);
-                    alert('Erro ao enviar candidatura. Tente novamente.\n' + err.message);
-                    btn.disabled = false;
-                    btn.textContent = 'Enviar Candidatura →';
+                    cfStatus('Não foi possível enviar agora. Verifique sua conexão e tente novamente. Detalhe: ' + err.message, 'error');
+                    cfSetBusy(false);
                 }
             }
 
             var file = fileInput && fileInput.files[0];
             if (file) {
-                if (file.size > 5 * 1024 * 1024) {
-                    alert('Arquivo muito grande. Máximo: 5 MB.');
-                    btn.disabled = false;
-                    btn.textContent = 'Enviar Candidatura →';
-                    return;
-                }
                 var ext = file.name.split('.').pop();
                 var ns = nome.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9_-]/g, '_');
                 var fn = 'curriculos/' + Date.now() + '_' + ns + '.' + ext;
+                cfSetBusy(true, 'Anexando currículo…');
+                cfStatus('Enviando currículo com segurança…', '');
                 fetch(_SB + '/storage/v1/object/candidaturas/' + fn, {
                     method: 'POST',
                     headers: Object.assign({ 'Content-Type': file.type || 'application/octet-stream', 'x-upsert': 'true' }, _HDR),
@@ -2031,24 +2168,41 @@
                             body: file
                         }).then(function (res2) {
                             if (res2.ok) {
+                                cfSetBusy(true, 'Finalizando envio…');
                                 doSubmit(_SB + '/storage/v1/object/public/candidaturas/' + fn);
                             } else {
-                                alert('Erro ao enviar o currículo. Verifique a conexão e tente novamente.');
-                                btn.disabled = false;
-                                btn.textContent = 'Enviar Candidatura →';
+                                cfStatus('Erro ao anexar o currículo. Verifique a conexão e tente novamente.', 'error');
+                                cfSetBusy(false);
                             }
                         });
                     }
                 }).catch(function (e) {
                     console.warn('[ASPROC] Erro upload:', e);
-                    alert('Erro ao enviar o currículo: ' + e.message);
-                    btn.disabled = false;
-                    btn.textContent = 'Enviar Candidatura →';
+                    cfStatus('Erro ao enviar o currículo: ' + e.message, 'error');
+                    cfSetBusy(false);
                 });
             } else {
+                cfSetBusy(true, 'Finalizando envio…');
                 doSubmit(null);
             }
         }
+
+        (function initCfDropzone() {
+            var dz = document.getElementById('cf-dropzone');
+            var input = document.getElementById('cf-file');
+            if (!dz || !input) return;
+            ['dragenter', 'dragover'].forEach(function (evt) {
+                dz.addEventListener(evt, function (e) { e.preventDefault(); dz.classList.add('dragging'); });
+            });
+            ['dragleave', 'drop'].forEach(function (evt) {
+                dz.addEventListener(evt, function (e) { e.preventDefault(); dz.classList.remove('dragging'); });
+            });
+            dz.addEventListener('drop', function (e) {
+                if (!e.dataTransfer || !e.dataTransfer.files.length) return;
+                input.files = e.dataTransfer.files;
+                handleCfFile(input);
+            });
+        })();
     </script>
 
 
