@@ -2711,6 +2711,206 @@
       margin-bottom: .3rem;
     }
 
+    .ne-live-preview {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: var(--bg);
+      overflow: hidden;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, .18);
+    }
+
+    .ne-live-preview-media {
+      min-height: 128px;
+      background: linear-gradient(135deg, rgba(59, 130, 246, .16), rgba(16, 185, 129, .12));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      font-size: .78rem;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .ne-live-preview-media img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .ne-live-preview-body {
+      padding: .95rem;
+    }
+
+    .ne-live-preview-meta {
+      display: flex;
+      align-items: center;
+      gap: .45rem;
+      flex-wrap: wrap;
+      margin-bottom: .55rem;
+      font-size: .68rem;
+      color: var(--text-muted);
+    }
+
+    .ne-live-preview-pill {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: .14rem .5rem;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .ne-live-preview-title {
+      margin: 0;
+      color: var(--text);
+      font-family: 'Playfair Display', serif;
+      font-size: 1.12rem;
+      line-height: 1.25;
+    }
+
+    .ne-live-preview-summary {
+      margin: .5rem 0 .7rem;
+      color: var(--text-dim);
+      font-size: .82rem;
+      line-height: 1.55;
+    }
+
+    .ne-live-preview-content {
+      max-height: 190px;
+      overflow: hidden;
+      color: var(--text-muted);
+      font-size: .78rem;
+      line-height: 1.65;
+      position: relative;
+    }
+
+    .ne-live-preview-content::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 42px;
+      background: linear-gradient(180deg, transparent, var(--bg));
+      pointer-events: none;
+    }
+
+    .ne-live-preview-content img,
+    .ne-live-preview-content iframe,
+    .ne-live-preview-content table {
+      max-width: 100%;
+    }
+
+    .publish-check-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 12000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      background: rgba(2, 6, 23, .72);
+      backdrop-filter: blur(8px);
+    }
+
+    .publish-check-modal {
+      width: min(560px, 100%);
+      background: var(--bg2);
+      border: 1px solid var(--border-hover);
+      border-radius: 16px;
+      box-shadow: 0 30px 90px rgba(0, 0, 0, .65);
+      overflow: hidden;
+    }
+
+    .publish-check-head,
+    .publish-check-foot {
+      padding: 1rem 1.15rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .publish-check-foot {
+      border-top: 1px solid var(--border);
+      border-bottom: 0;
+      display: flex;
+      justify-content: flex-end;
+      gap: .55rem;
+      flex-wrap: wrap;
+    }
+
+    .publish-check-title {
+      margin: 0;
+      color: var(--text);
+      font-size: 1rem;
+    }
+
+    .publish-check-sub {
+      margin: .25rem 0 0;
+      color: var(--text-muted);
+      font-size: .78rem;
+      line-height: 1.45;
+    }
+
+    .publish-check-body {
+      padding: 1rem 1.15rem;
+      display: grid;
+      gap: .85rem;
+      max-height: 68vh;
+      overflow: auto;
+    }
+
+    .publish-check-summary {
+      padding: .8rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--bg3);
+    }
+
+    .publish-check-summary strong {
+      display: block;
+      color: var(--text);
+      margin-bottom: .28rem;
+      line-height: 1.35;
+    }
+
+    .publish-check-list {
+      display: grid;
+      gap: .4rem;
+    }
+
+    .publish-check-item {
+      padding: .62rem .72rem;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, .02);
+      color: var(--text-dim);
+      font-size: .8rem;
+      line-height: 1.45;
+    }
+
+    .publish-check-item.blocker {
+      border-color: rgba(239, 68, 68, .35);
+      background: var(--red-soft);
+      color: #fecaca;
+    }
+
+    .publish-check-item.warning {
+      border-color: rgba(245, 158, 11, .35);
+      background: var(--amber-soft);
+      color: #fde68a;
+    }
+
+    .publish-check-ok {
+      padding: .72rem .8rem;
+      border-radius: var(--radius);
+      background: var(--green-soft);
+      border: 1px solid rgba(16, 185, 129, .25);
+      color: var(--green);
+      font-size: .82rem;
+      font-weight: 700;
+    }
+
     .deploy-status {
       display: none;
       border-radius: 8px;
@@ -5125,7 +5325,7 @@
       <div class="ne-preview-panel">
         <div class="ne-panel-section">
           <div class="ne-panel-label">Metadados</div>
-          <select class="ne-panel-select" id="n-categoria">
+          <select class="ne-panel-select" id="n-categoria" onchange="updatePreview()">
             <option value="geral">📌 Geral</option>
             <option value="pirarucu">🐟 Pirarucu</option>
             <option value="olea">🌿 Oleaginosas</option>
@@ -5133,9 +5333,9 @@
             <option value="comercio">🛒 Comércio</option>
             <option value="vagas">📋 Vagas</option>
           </select>
-          <input type="date" class="ne-panel-input" id="n-data">
-          <input type="text" class="ne-panel-input" id="n-autor" placeholder="Autor (opcional)">
-          <input type="text" class="ne-panel-input" id="n-tags" placeholder="Tags: borracha, amazônia…">
+          <input type="date" class="ne-panel-input" id="n-data" onchange="updatePreview()">
+          <input type="text" class="ne-panel-input" id="n-autor" placeholder="Autor (opcional)" oninput="updatePreview()">
+          <input type="text" class="ne-panel-input" id="n-tags" placeholder="Tags: borracha, amazônia…" oninput="updatePreview()">
           <label
             style="font-size:.7rem;color:var(--text-muted);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-top:.5rem;display:block;">📌
             Leia Também (slugs fixados)</label>
@@ -5202,7 +5402,7 @@
           </div>
 
           <input type="url" class="ne-panel-input" id="n-imagem" placeholder="URL da imagem…"
-            oninput="updateImgPreview()">
+            oninput="updateImgPreview(); updatePreview()">
 
           <!-- Remover imagem -->
           <button id="btn-remover-img" onclick="removerCapaImagem()"
@@ -5269,6 +5469,24 @@
             <span id="ne-prev-resumo"
               style="font-size:.78rem;display:block;margin-top:.2rem;color:var(--text-muted);">Resumo aparecerá
               aqui…</span>
+          </div>
+        </div>
+
+        <div class="ne-divider"></div>
+
+        <div class="ne-panel-section">
+          <div class="ne-panel-label">Prévia real da página</div>
+          <div class="ne-live-preview">
+            <div class="ne-live-preview-media" id="n-live-img">Imagem de capa</div>
+            <div class="ne-live-preview-body">
+              <div class="ne-live-preview-meta">
+                <span class="ne-live-preview-pill" id="n-live-cat">Geral</span>
+                <span id="n-live-date">Data de publicação</span>
+              </div>
+              <h4 class="ne-live-preview-title" id="n-live-title">Título da notícia…</h4>
+              <p class="ne-live-preview-summary" id="n-live-summary">Resumo aparecerá aqui…</p>
+              <div class="ne-live-preview-content" id="n-live-content">O conteúdo formatado aparecerá aqui enquanto você escreve.</div>
+            </div>
           </div>
         </div>
 
@@ -5442,9 +5660,9 @@
     <div class="ne-body">
       <!-- EDITOR PRINCIPAL -->
       <div class="ne-editor-panel">
-        <input class="ne-title-input" id="v-titulo" type="text" placeholder="Título da vaga…">
+        <input class="ne-title-input" id="v-titulo" type="text" placeholder="Título da vaga…" oninput="veUpdateLivePreview()">
         <textarea class="ne-resumo-input" id="v-resumo" placeholder="Resumo breve (aparece nos cards)…"
-          rows="2"></textarea>
+          rows="2" oninput="veUpdateLivePreview()"></textarea>
 
         <!-- Rich Text Editor -->
         <div class="rte-wrap">
@@ -5525,7 +5743,7 @@
             <button class="rte-btn" onmousedown="event.preventDefault()" onclick="rteInsertImageUrl('ve')"
               title="Inserir imagem por URL">🔗🖼️</button>
           </div>
-          <div id="ve-rte-body" class="rte-body" contenteditable="true" oninput="veSync()"
+          <div id="ve-rte-body" class="rte-body" contenteditable="true" oninput="veSync(); veUpdateLivePreview()"
             oncontextmenu="veContextMenu(event)" onpaste="rteHandlePaste(event,'ve')" ondrop="rteHandleDrop(event,'ve')"
             ondragover="event.preventDefault()">
           </div>
@@ -5539,18 +5757,18 @@
         <!-- Metadados da vaga -->
         <div class="ne-panel-section">
           <div class="ne-panel-label">Dados da Vaga</div>
-          <input type="text" class="ne-panel-input" id="v-local" value="Carauari/AM" placeholder="Local">
-          <select class="ne-panel-select" id="v-regime">
+          <input type="text" class="ne-panel-input" id="v-local" value="Carauari/AM" placeholder="Local" oninput="veUpdateLivePreview()">
+          <select class="ne-panel-select" id="v-regime" onchange="veUpdateLivePreview()">
             <option value="CLT">CLT</option>
             <option value="PJ/Consultoria">PJ / Consultoria</option>
             <option value="Voluntário">Voluntário</option>
             <option value="Estágio">Estágio</option>
           </select>
-          <select class="ne-panel-select" id="v-carga">
+          <select class="ne-panel-select" id="v-carga" onchange="veUpdateLivePreview()">
             <option value="Integral">Integral</option>
             <option value="Parcial">Parcial</option>
           </select>
-          <select class="ne-panel-select" id="v-escolaridade">
+          <select class="ne-panel-select" id="v-escolaridade" onchange="veUpdateLivePreview()">
             <option value="Ensino Médio">Ensino Médio</option>
             <option value="Ensino Superior">Ensino Superior</option>
             <option value="Pós-Graduação">Pós-Graduação</option>
@@ -5558,7 +5776,7 @@
           </select>
           <div style="margin-top:.4rem;">
             <div class="ne-panel-label" style="margin-bottom:.3rem;">Prazo de inscrição</div>
-            <input type="date" class="ne-panel-input" id="v-prazo" style="margin:0;">
+            <input type="date" class="ne-panel-input" id="v-prazo" style="margin:0;" onchange="veUpdateLivePreview()">
           </div>
         </div>
 
@@ -5592,7 +5810,7 @@
             <div style="flex:1;height:1px;background:var(--border);"></div>
           </div>
           <input type="url" class="ne-panel-input" id="v-imagem-url" placeholder="URL da imagem…"
-            oninput="veUpdateImgPreview()">
+            oninput="veUpdateImgPreview(); veUpdateLivePreview()">
           <button id="ve-btn-remover-img" onclick="veRemoverCapa()"
             style="display:none;width:100%;margin-top:.4rem;padding:.4rem;background:var(--red-soft);border:1px solid rgba(239,68,68,.2);border-radius:var(--radius);color:var(--red);font-size:.75rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">
             🗑 Remover imagem
@@ -5639,11 +5857,29 @@
         <!-- Publicação -->
         <div class="ne-panel-section">
           <div class="ne-panel-label">Publicação</div>
-          <select class="ne-panel-select" id="v-status">
+          <select class="ne-panel-select" id="v-status" onchange="veUpdateLivePreview()">
             <option value="aberta">● Aberta</option>
             <option value="encerrada">● Encerrada</option>
             <option value="suspensa">● Suspensa</option>
           </select>
+        </div>
+
+        <div class="ne-divider"></div>
+
+        <div class="ne-panel-section">
+          <div class="ne-panel-label">Prévia real da vaga</div>
+          <div class="ne-live-preview">
+            <div class="ne-live-preview-media" id="v-live-img">Imagem de capa</div>
+            <div class="ne-live-preview-body">
+              <div class="ne-live-preview-meta">
+                <span class="ne-live-preview-pill" id="v-live-status">Aberta</span>
+                <span id="v-live-meta">Carauari/AM · CLT</span>
+              </div>
+              <h4 class="ne-live-preview-title" id="v-live-title">Título da vaga…</h4>
+              <p class="ne-live-preview-summary" id="v-live-summary">Resumo da vaga aparecerá aqui…</p>
+              <div class="ne-live-preview-content" id="v-live-content">A descrição formatada aparecerá aqui enquanto você escreve.</div>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -6064,9 +6300,9 @@
       <!-- EDITOR PRINCIPAL -->
       <div class="ne-editor-panel">
         <input class="ne-title-input" id="a-titulo" type="text" placeholder="Título do aviso…"
-          oninput="aeUpdateWappPreview()">
+          oninput="aeUpdateWappPreview(); aeUpdateLivePreview()">
         <textarea class="ne-resumo-input" id="a-resumo" placeholder="Resumo breve (aparece nos cards)…" rows="2"
-          oninput="aeUpdateWappPreview()"></textarea>
+          oninput="aeUpdateWappPreview(); aeUpdateLivePreview()"></textarea>
 
         <!-- Rich Text Editor -->
         <div class="rte-wrap">
@@ -6147,7 +6383,7 @@
             <button class="rte-btn" onmousedown="event.preventDefault()" onclick="rteInsertImageUrl('ae')"
               title="Inserir imagem por URL">🔗🖼️</button>
           </div>
-          <div id="ae-rte-body" class="rte-body" contenteditable="true" oninput="aeSync()"
+          <div id="ae-rte-body" class="rte-body" contenteditable="true" oninput="aeSync(); aeUpdateLivePreview()"
             oncontextmenu="aeContextMenu(event)" onpaste="rteHandlePaste(event,'ae')" ondrop="rteHandleDrop(event,'ae')"
             ondragover="event.preventDefault()">
           </div>
@@ -6161,14 +6397,14 @@
         <!-- Metadados -->
         <div class="ne-panel-section">
           <div class="ne-panel-label">Metadados</div>
-          <select class="ne-panel-select" id="a-tipo">
+          <select class="ne-panel-select" id="a-tipo" onchange="aeUpdateLivePreview()">
             <option value="info">📋 Informativo</option>
             <option value="doc">📄 Documento</option>
             <option value="urgente">🚨 Urgente</option>
             <option value="reuniao">🤝 Reunião</option>
             <option value="financeiro">💰 Financeiro</option>
           </select>
-          <input type="date" class="ne-panel-input" id="a-data">
+          <input type="date" class="ne-panel-input" id="a-data" onchange="aeUpdateLivePreview()">
         </div>
 
         <div class="ne-divider"></div>
@@ -6201,7 +6437,7 @@
             <div style="flex:1;height:1px;background:var(--border);"></div>
           </div>
           <input type="url" class="ne-panel-input" id="a-capa-url" placeholder="URL da imagem…"
-            oninput="aeUpdateImgPreview();aeUpdateWappPreview()">
+            oninput="aeUpdateImgPreview();aeUpdateWappPreview();aeUpdateLivePreview()">
           <button id="ae-btn-remover-img" onclick="aeRemoverCapa()"
             style="display:none;width:100%;margin-top:.4rem;padding:.4rem;background:var(--red-soft);border:1px solid rgba(239,68,68,.2);border-radius:var(--radius);color:var(--red);font-size:.75rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">
             🗑 Remover imagem
@@ -6277,12 +6513,30 @@
           <div class="ne-panel-label">Publicação</div>
           <div class="toggle-row">
             <span class="toggle-label">🌐 Publicado</span>
-            <label class="toggle"><input type="checkbox" id="a-publicado" checked><span
+            <label class="toggle"><input type="checkbox" id="a-publicado" checked onchange="aeUpdateLivePreview()"><span
                 class="toggle-slider"></span></label>
           </div>
           <div class="toggle-row" style="margin-top:.5rem;">
             <span class="toggle-label">🔴 Urgente / Destaque</span>
-            <label class="toggle"><input type="checkbox" id="a-destaque"><span class="toggle-slider"></span></label>
+            <label class="toggle"><input type="checkbox" id="a-destaque" onchange="aeUpdateLivePreview()"><span class="toggle-slider"></span></label>
+          </div>
+        </div>
+
+        <div class="ne-divider"></div>
+
+        <div class="ne-panel-section">
+          <div class="ne-panel-label">Prévia real do aviso</div>
+          <div class="ne-live-preview">
+            <div class="ne-live-preview-media" id="a-live-img">Imagem de capa</div>
+            <div class="ne-live-preview-body">
+              <div class="ne-live-preview-meta">
+                <span class="ne-live-preview-pill" id="a-live-type">Informativo</span>
+                <span id="a-live-date">Data de publicação</span>
+              </div>
+              <h4 class="ne-live-preview-title" id="a-live-title">Título do aviso…</h4>
+              <p class="ne-live-preview-summary" id="a-live-summary">Resumo do aviso aparecerá aqui…</p>
+              <div class="ne-live-preview-content" id="a-live-content">O conteúdo formatado aparecerá aqui enquanto você escreve.</div>
+            </div>
           </div>
         </div>
 
@@ -7631,6 +7885,7 @@
         veAnexos = Array.isArray(v.anexos) ? [...v.anexos] : (v.edital_url ? [{ nome: 'Edital', url: v.edital_url, tipo: 'pdf' }] : []);
         veRenderAnexos();
         veUpdateImgPreview();
+        veUpdateLivePreview();
         openVagaEditor();
       }
 
@@ -7638,6 +7893,21 @@
         const titulo = document.getElementById('v-titulo').value.trim();
         let descricao = document.getElementById('ve-rte-body').innerHTML.trim();
         if (!titulo) { toast('Preencha o título da vaga.', 'error'); return; }
+        if (forcePublish) {
+          const listaAnexos = veAnexos.length
+            ? veAnexos.map(ax => ({ nome: ax.nome, url: ax.url, tipo: ax.tipo || null }))
+            : null;
+          const review = buildPublishReview('vaga', {
+            titulo,
+            resumo: document.getElementById('v-resumo').value.trim(),
+            text: plainTextFromHtml(descricao),
+            prazo: document.getElementById('v-prazo').value,
+            imagem: document.getElementById('v-imagem-url').value.trim(),
+            edital: listaAnexos ? listaAnexos[0].url : document.getElementById('v-edital').value.trim()
+          });
+          const canPublish = await confirmPublishReview(review);
+          if (!canPublish) return;
+        }
         // Verifica imagens quebradas — bloqueia se houver e o usuário cancelar
         if (window.RTE_IMG_CHECK) {
           toast('🔍 Verificando imagens…', 'info');
@@ -7759,6 +8029,7 @@
         document.body.style.overflow = 'hidden';
         // Inicia autosave (oferece restaurar se houver rascunho)
         setTimeout(() => {
+          aeUpdateLivePreview();
           if (window.RTE_AUTOSAVE) RTE_AUTOSAVE.start('ae');
           if (window.RTE_SEO) RTE_SEO.setupAll();
           if (window.RTE_DRAG_IMG) RTE_DRAG_IMG.setupAll();
@@ -7807,6 +8078,7 @@
         aeRenderAnexos();
         aeUpdateImgPreview();
         aeUpdateWappPreview();
+        aeUpdateLivePreview();
         openAvisoEditor();
       }
 
@@ -7814,6 +8086,17 @@
         const titulo = document.getElementById('a-titulo').value.trim();
         let descricao = document.getElementById('ae-rte-body').innerHTML.trim();
         if (!titulo || !descricao) { toast('Preencha título e conteúdo.', 'error'); return; }
+        if (forcePublish) {
+          const review = buildPublishReview('aviso', {
+            titulo,
+            resumo: document.getElementById('a-resumo').value.trim(),
+            text: plainTextFromHtml(descricao),
+            data: document.getElementById('a-data').value,
+            imagem: document.getElementById('a-capa-url').value.trim()
+          });
+          const canPublish = await confirmPublishReview(review);
+          if (!canPublish) return;
+        }
         // Verifica imagens quebradas — bloqueia se houver e o usuário cancelar
         if (window.RTE_IMG_CHECK) {
           toast('🔍 Verificando imagens…', 'info');
@@ -10718,6 +11001,22 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
       }
       window.aeUpdateWappPreview = aeUpdateWappPreview;
 
+      function aeUpdateLivePreview() {
+        const titulo = document.getElementById('a-titulo').value.trim() || 'Título do aviso…';
+        const resumo = document.getElementById('a-resumo').value.trim() || 'Resumo do aviso aparecerá aqui…';
+        const tipoEl = document.getElementById('a-tipo');
+        const tipo = tipoEl ? tipoEl.options[tipoEl.selectedIndex].text.replace(/^[^\wÀ-ÿ]+/, '').trim() : 'Informativo';
+        const data = document.getElementById('a-data').value;
+        const img = document.getElementById('a-capa-url').value.trim();
+        liveImage('a-live-img', img, 'Imagem de capa');
+        setIf('a-live-type', tipo || 'Informativo');
+        setIf('a-live-date', fmtDateShort(data));
+        setIf('a-live-title', titulo);
+        setIf('a-live-summary', resumo);
+        setHtmlIf('a-live-content', safePreviewHtml(document.getElementById('ae-rte-body').innerHTML));
+      }
+      window.aeUpdateLivePreview = aeUpdateLivePreview;
+
       function aeUpdateImgPreview() {
         const url = document.getElementById('a-capa-url').value.trim();
         const preview = document.getElementById('ae-img-preview');
@@ -10734,6 +11033,7 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
           if (placeholder) placeholder.style.display = '';
           if (remBtn) remBtn.style.display = 'none';
         }
+        aeUpdateLivePreview();
       }
       window.aeUpdateImgPreview = aeUpdateImgPreview;
 
@@ -11573,6 +11873,7 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
           neCheckDraftOnOpen();
           // Dispara contadores uma vez após o editor estar visível
           updateWordCount();
+          updatePreview();
           neTitleCounter(document.getElementById('n-titulo'));
           // Novos módulos
           if (window.RTE_SEO) RTE_SEO.setupAll();
@@ -11881,6 +12182,152 @@ CREATE POLICY "admin_versoes" ON noticia_versoes FOR ALL TO authenticated USING 
         return (str || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-').replace(/-+/g, '-').substring(0, 80);
       }
 
+      function plainTextFromHtml(html) {
+        const tmp = document.createElement('div');
+        tmp.innerHTML = html || '';
+        return (tmp.textContent || '').replace(/\s+/g, ' ').trim();
+      }
+
+      function safePreviewHtml(html) {
+        const tmp = document.createElement('div');
+        tmp.innerHTML = html || '';
+        tmp.querySelectorAll('script,style,object,embed').forEach(el => el.remove());
+        tmp.querySelectorAll('*').forEach(el => {
+          [...el.attributes].forEach(attr => {
+            const name = attr.name.toLowerCase();
+            const val = String(attr.value || '').trim().toLowerCase();
+            if (name.startsWith('on') || val.startsWith('javascript:')) el.removeAttribute(attr.name);
+          });
+        });
+        return tmp.innerHTML || 'O conteúdo formatado aparecerá aqui enquanto você escreve.';
+      }
+
+      function liveImage(targetId, url, emptyText) {
+        const el = document.getElementById(targetId);
+        if (!el) return;
+        if (url) el.innerHTML = `<img src="${escHtml(url)}" alt="">`;
+        else el.textContent = emptyText || 'Imagem de capa';
+      }
+
+      function setIf(id, value) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
+      }
+
+      function setHtmlIf(id, html) {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = html;
+      }
+
+      function fmtDateShort(value) {
+        if (!value) return 'Sem data definida';
+        try { return new Date(value + 'T00:00:00').toLocaleDateString('pt-BR'); }
+        catch { return value; }
+      }
+
+      function validateUrlLike(value) {
+        if (!value) return true;
+        try { new URL(value); return true; } catch { return false; }
+      }
+
+      function currentEditorText(kind) {
+        const id = kind === 'noticia' ? 'n-rte-body' : kind === 'vaga' ? 've-rte-body' : 'ae-rte-body';
+        const el = document.getElementById(id);
+        return plainTextFromHtml(el ? el.innerHTML : '');
+      }
+
+      function buildPublishReview(kind, data) {
+        const blockers = [];
+        const warnings = [];
+        const summary = Object.assign({ kind }, data || {});
+        const text = (data && data.text) || currentEditorText(kind);
+
+        if (!summary.titulo) blockers.push('Informe um título antes de publicar.');
+        if (text.length < 80) blockers.push('O conteúdo está muito curto para publicação.');
+
+        if (kind === 'noticia') {
+          if (!summary.resumo) blockers.push('Informe um resumo para a notícia.');
+          if (!summary.slug) warnings.push('O slug será gerado automaticamente a partir do título.');
+          if (!summary.imagem) warnings.push('A notícia está sem imagem de capa.');
+          if (!summary.data) warnings.push('A data de publicação não foi definida.');
+          if (summary.imagem && !validateUrlLike(summary.imagem)) blockers.push('A URL da imagem de capa parece inválida.');
+        }
+
+        if (kind === 'vaga') {
+          if (!summary.resumo) warnings.push('A vaga está sem resumo para os cards do site.');
+          if (!summary.prazo) warnings.push('A vaga está sem prazo de inscrição.');
+          if (!summary.imagem) warnings.push('A vaga está sem imagem de capa.');
+          if (!summary.edital) warnings.push('Nenhum edital/documento foi anexado.');
+          if (summary.imagem && !validateUrlLike(summary.imagem)) blockers.push('A URL da imagem de capa parece inválida.');
+        }
+
+        if (kind === 'aviso') {
+          if (!summary.resumo) warnings.push('O aviso está sem resumo para listagem e compartilhamento.');
+          if (!summary.data) warnings.push('O aviso está sem data definida.');
+          if (!summary.imagem) warnings.push('O aviso está sem imagem de capa.');
+          if (summary.imagem && !validateUrlLike(summary.imagem)) blockers.push('A URL da imagem de capa parece inválida.');
+        }
+
+        return { kind, blockers, warnings, summary, textLength: text.length };
+      }
+
+      function confirmPublishReview(review) {
+        return new Promise(resolve => {
+          let overlay = document.getElementById('publish-check-overlay');
+          if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'publish-check-overlay';
+            overlay.className = 'publish-check-overlay';
+            document.body.appendChild(overlay);
+          }
+
+          const label = { noticia: 'notícia', vaga: 'vaga', aviso: 'aviso' }[review.kind] || review.kind;
+          const article = review.kind === 'aviso' ? 'do' : 'da';
+          const pronoun = review.kind === 'aviso' ? 'deixá-lo' : 'deixá-la';
+          const hasBlockers = review.blockers.length > 0;
+          const warningsHtml = review.warnings.length
+            ? '<div class="publish-check-list">' + review.warnings.map(w => `<div class="publish-check-item warning">⚠ ${escHtml(w)}</div>`).join('') + '</div>'
+            : '<div class="publish-check-ok">Tudo pronto para publicar.</div>';
+          const blockersHtml = review.blockers.length
+            ? '<div class="publish-check-list">' + review.blockers.map(b => `<div class="publish-check-item blocker">✕ ${escHtml(b)}</div>`).join('') + '</div>'
+            : '';
+
+          overlay.innerHTML = `
+            <div class="publish-check-modal" role="dialog" aria-modal="true">
+              <div class="publish-check-head">
+                <h3 class="publish-check-title">Revisar antes de publicar</h3>
+                <p class="publish-check-sub">Confira os pontos principais ${article} ${escHtml(label)} antes de ${pronoun} visível no site.</p>
+              </div>
+              <div class="publish-check-body">
+                <div class="publish-check-summary">
+                  <strong>${escHtml(review.summary.titulo || 'Sem título')}</strong>
+                  <div style="color:var(--text-muted);font-size:.78rem;line-height:1.45;">
+                    ${escHtml(review.summary.resumo || 'Sem resumo')}<br>
+                    Conteúdo: ${review.textLength.toLocaleString('pt-BR')} caracteres
+                  </div>
+                </div>
+                ${blockersHtml}
+                ${warningsHtml}
+              </div>
+              <div class="publish-check-foot">
+                <button class="btn btn-secondary btn-sm" id="publish-check-cancel">Voltar e revisar</button>
+                ${hasBlockers ? '' : '<button class="btn btn-primary btn-sm" id="publish-check-confirm">Publicar assim</button>'}
+              </div>
+            </div>`;
+          overlay.style.display = 'flex';
+
+          const close = (ok) => {
+            overlay.style.display = 'none';
+            overlay.innerHTML = '';
+            resolve(ok);
+          };
+          document.getElementById('publish-check-cancel').onclick = () => close(false);
+          const confirm = document.getElementById('publish-check-confirm');
+          if (confirm) confirm.onclick = () => close(true);
+          overlay.onclick = (ev) => { if (ev.target === overlay) close(false); };
+        });
+      }
+
       function updatePreview() {
         const t = document.getElementById('n-titulo').value || 'Título da notícia…';
         const r = document.getElementById('n-resumo').value || 'Resumo aparecerá aqui…';
@@ -11891,6 +12338,15 @@ CREATE POLICY "admin_versoes" ON noticia_versoes FOR ALL TO authenticated USING 
           slugEl.value = slugify(t === 'Título da notícia…' ? '' : t);
           slugEl.dataset.autoSlug = 'true';
         }
+        const catEl = document.getElementById('n-categoria');
+        const dateEl = document.getElementById('n-data');
+        const img = document.getElementById('n-imagem').value.trim();
+        liveImage('n-live-img', img, 'Imagem de capa');
+        setIf('n-live-cat', catEl ? catEl.options[catEl.selectedIndex].text.replace(/^[^\wÀ-ÿ]+/, '').trim() : 'Geral');
+        setIf('n-live-date', fmtDateShort(dateEl ? dateEl.value : ''));
+        setIf('n-live-title', t);
+        setIf('n-live-summary', r);
+        setHtmlIf('n-live-content', safePreviewHtml(document.getElementById('n-rte-body').innerHTML));
       }
 
       function updateWordCount() {
@@ -13794,6 +14250,18 @@ document.addEventListener('DOMContentLoaded',function(){
         syncRteToHidden();
         const data = dataOverride || getNoticiaData();
         if (!data.titulo) { toast('Preencha o título antes de publicar.', 'error'); return; }
+        if (!dataOverride) {
+          const review = buildPublishReview('noticia', {
+            titulo: data.titulo,
+            resumo: data.resumo,
+            text: plainTextFromHtml(data.conteudo),
+            slug: data._slug || slugify(data.titulo),
+            imagem: data.imagem_url,
+            data: data.data_pub
+          });
+          const canPublish = await confirmPublishReview(review);
+          if (!canPublish) return;
+        }
         const token = await getGhTokenAsync();
         if (!token) {
           toast('Configure o token do GitHub em Configurações.', 'error'); goTo('configuracoes',
@@ -14412,6 +14880,7 @@ document.addEventListener('DOMContentLoaded',function(){
         veAnexos = [];
         veRenderAnexos();
         veUpdateImgPreview();
+        veUpdateLivePreview();
         openVagaEditor();
       }
 
@@ -14420,6 +14889,7 @@ document.addEventListener('DOMContentLoaded',function(){
         el.style.display = 'flex';
         document.body.style.overflow = 'hidden';
         setTimeout(() => {
+          veUpdateLivePreview();
           if (window.RTE_AUTOSAVE) RTE_AUTOSAVE.start('ve');
           if (window.RTE_SEO) RTE_SEO.setupAll();
           if (window.RTE_DRAG_IMG) RTE_DRAG_IMG.setupAll();
@@ -14563,7 +15033,26 @@ document.addEventListener('DOMContentLoaded',function(){
           if (placeholder) placeholder.style.display = '';
           if (remBtn) remBtn.style.display = 'none';
         }
+        veUpdateLivePreview();
       }
+
+      function veUpdateLivePreview() {
+        const titulo = document.getElementById('v-titulo').value.trim() || 'Título da vaga…';
+        const resumo = document.getElementById('v-resumo').value.trim() || 'Resumo da vaga aparecerá aqui…';
+        const statusEl = document.getElementById('v-status');
+        const status = statusEl ? statusEl.options[statusEl.selectedIndex].text.replace(/^[^\wÀ-ÿ]+/, '').trim() : 'Aberta';
+        const local = document.getElementById('v-local').value.trim() || 'Carauari/AM';
+        const regime = document.getElementById('v-regime').value || 'CLT';
+        const prazo = document.getElementById('v-prazo').value;
+        const img = document.getElementById('v-imagem-url').value.trim();
+        liveImage('v-live-img', img, 'Imagem de capa');
+        setIf('v-live-status', status || 'Aberta');
+        setIf('v-live-meta', `${local} · ${regime}${prazo ? ' · Inscrições até ' + fmtDateShort(prazo) : ''}`);
+        setIf('v-live-title', titulo);
+        setIf('v-live-summary', resumo);
+        setHtmlIf('v-live-content', safePreviewHtml(document.getElementById('ve-rte-body').innerHTML));
+      }
+      window.veUpdateLivePreview = veUpdateLivePreview;
 
       function veRemoverCapa() {
         document.getElementById('v-imagem-url').value = '';
