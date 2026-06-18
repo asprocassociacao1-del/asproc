@@ -3955,6 +3955,10 @@
       display: none;
     }
 
+    .mobile-bottom-nav {
+      display: none;
+    }
+
     @media (max-width: 900px) {
       body.sidebar-mobile-open {
         overflow: hidden;
@@ -4046,7 +4050,52 @@
 
       .page-content {
         max-width: none;
-        padding: .85rem;
+        padding: .85rem .85rem 5.75rem;
+      }
+
+      .mobile-bottom-nav {
+        position: fixed;
+        left: .75rem;
+        right: .75rem;
+        bottom: .75rem;
+        z-index: 180;
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: .2rem;
+        padding: .35rem;
+        background: rgba(15, 23, 42, .92);
+        border: 1px solid var(--border-hover);
+        border-radius: 18px;
+        box-shadow: 0 18px 60px rgba(0, 0, 0, .48);
+        backdrop-filter: blur(18px);
+      }
+
+      .mobile-bottom-btn {
+        min-width: 0;
+        min-height: 52px;
+        border: 0;
+        border-radius: 14px;
+        background: transparent;
+        color: var(--text-muted);
+        font-family: 'Inter', sans-serif;
+        font-size: .67rem;
+        font-weight: 700;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: .16rem;
+        cursor: pointer;
+      }
+
+      .mobile-bottom-btn span {
+        font-size: 1.05rem;
+        line-height: 1;
+      }
+
+      .mobile-bottom-btn.active {
+        background: var(--accent-soft);
+        color: var(--accent);
       }
 
       .stats-grid {
@@ -4061,18 +4110,13 @@
 
       .table-wrap {
         border-radius: 10px;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-      }
-
-      .table-wrap > table,
-      .table-wrap .data-table {
-        min-width: 720px;
+        overflow: visible;
       }
 
       .table-header {
         align-items: stretch;
         padding: .85rem;
+        gap: .55rem;
       }
 
       .table-header h3 {
@@ -4090,11 +4134,111 @@
       .search-input,
       .select-filter {
         width: auto;
-        flex: 1 1 180px;
+        flex: 1 1 170px;
+        min-height: 44px;
+        border-radius: 12px;
       }
+
+      #noticias-table,
+      #vagas-table,
+      #avisos-table,
+      #candidaturas-table,
+      #mensagens-table {
+        display: block !important;
+        min-width: 0;
+        background: transparent;
+      }
+
+      #noticias-table[style*="display: none"],
+      #vagas-table[style*="display: none"],
+      #avisos-table[style*="display: none"],
+      #candidaturas-table[style*="display: none"],
+      #mensagens-table[style*="display: none"] {
+        display: none !important;
+      }
+
+      #noticias-table thead,
+      #vagas-table thead,
+      #avisos-table thead,
+      #candidaturas-table thead,
+      #mensagens-table thead {
+        display: none;
+      }
+
+      #noticias-table tbody,
+      #vagas-table tbody,
+      #avisos-table tbody,
+      #candidaturas-table tbody,
+      #mensagens-table tbody {
+        display: grid;
+        gap: .7rem;
+        padding: .75rem;
+      }
+
+      #noticias-table tr,
+      #vagas-table tr,
+      #avisos-table tr,
+      #candidaturas-table tr,
+      #mensagens-table tr {
+        display: grid;
+        gap: .55rem;
+        padding: .85rem;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        background: var(--bg2);
+      }
+
+      #noticias-table td,
+      #vagas-table td,
+      #avisos-table td,
+      #candidaturas-table td,
+      #mensagens-table td {
+        display: grid;
+        grid-template-columns: minmax(92px, .42fr) 1fr;
+        gap: .7rem;
+        align-items: start;
+        padding: 0;
+        border: 0;
+        font-size: .82rem;
+      }
+
+      #noticias-table td::before,
+      #vagas-table td::before,
+      #avisos-table td::before,
+      #candidaturas-table td::before,
+      #mensagens-table td::before {
+        content: attr(data-mobile-label);
+        color: var(--text-muted);
+        font-size: .68rem;
+        font-weight: 800;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+      }
+
+      #noticias-table td:nth-child(1)::before { content: 'Notícia'; }
+      #noticias-table td:nth-child(2)::before { content: 'Categoria'; }
+      #noticias-table td:nth-child(3)::before { content: 'Data'; }
+      #noticias-table td:nth-child(4)::before { content: 'Status'; }
+      #noticias-table td:nth-child(5)::before { content: 'Ações'; }
+
+      #vagas-table td:nth-child(1)::before { content: 'Vaga'; }
+      #vagas-table td:nth-child(2)::before { content: 'Local'; }
+      #vagas-table td:nth-child(3)::before { content: 'Regime'; }
+      #vagas-table td:nth-child(4)::before { content: 'Prazo'; }
+      #vagas-table td:nth-child(5)::before { content: 'Status'; }
+      #vagas-table td:nth-child(6)::before { content: 'Ações'; }
+
+      #avisos-table td:nth-child(1)::before { content: 'Aviso'; }
+      #avisos-table td:nth-child(2)::before { content: 'Tipo'; }
+      #avisos-table td:nth-child(3)::before { content: 'Data'; }
+      #avisos-table td:nth-child(4)::before { content: 'Status'; }
+      #avisos-table td:nth-child(5)::before { content: 'Ações'; }
 
       .td-actions {
         gap: .45rem;
+        display: flex !important;
+        flex-wrap: wrap;
+        justify-content: flex-start;
       }
 
       .btn {
@@ -4121,8 +4265,9 @@
 
       .modal,
       .rte-custom-modal {
+        width: min(100%, 720px);
         max-height: calc(100dvh - 1.2rem);
-        border-radius: 12px;
+        border-radius: 16px;
       }
 
       .modal-head,
@@ -4233,7 +4378,7 @@
       }
 
       .page-content {
-        padding: .65rem;
+        padding: .65rem .65rem 5.95rem;
       }
 
       .stats-grid,
@@ -4262,6 +4407,23 @@
       .modal-footer,
       .rte-custom-footer {
         flex-direction: column-reverse;
+      }
+
+      .modal-overlay,
+      .rte-custom-overlay {
+        align-items: flex-end;
+        padding: 0;
+      }
+
+      .modal,
+      .rte-custom-modal {
+        width: 100%;
+        max-width: 100%;
+        max-height: 92dvh;
+        border-radius: 18px 18px 0 0;
+        border-left: 0;
+        border-right: 0;
+        border-bottom: 0;
       }
 
       .modal-footer .btn,
@@ -4567,6 +4729,23 @@
       </div>
     </aside>
     <div class="mobile-sidebar-backdrop" onclick="closeSidebar()" aria-hidden="true"></div>
+    <nav class="mobile-bottom-nav" aria-label="Navegação rápida">
+      <button class="mobile-bottom-btn active" data-mobile-section="dashboard" onclick="goTo('dashboard')">
+        <span>▦</span>Início
+      </button>
+      <button class="mobile-bottom-btn" data-mobile-section="noticias" onclick="goTo('noticias')">
+        <span>📰</span>Notícias
+      </button>
+      <button class="mobile-bottom-btn" data-mobile-section="vagas" onclick="goTo('vagas')">
+        <span>💼</span>Vagas
+      </button>
+      <button class="mobile-bottom-btn" data-mobile-section="candidaturas" onclick="goTo('candidaturas')">
+        <span>📋</span>Candidatos
+      </button>
+      <button class="mobile-bottom-btn" data-mobile-section="menu" onclick="toggleSidebar()">
+        <span>☰</span>Mais
+      </button>
+    </nav>
 
     <!-- MAIN -->
     <div class="main-content">
@@ -7058,8 +7237,15 @@
         }
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.querySelectorAll('.mobile-bottom-btn').forEach(n => n.classList.remove('active'));
         document.getElementById('sec-' + section).classList.add('active');
         if (el) el.classList.add('active');
+        else {
+          const sideItem = document.querySelector(`.nav-item[onclick*="'${section}'"]`);
+          if (sideItem) sideItem.classList.add('active');
+        }
+        const mobileBtn = document.querySelector(`.mobile-bottom-btn[data-mobile-section="${section}"]`);
+        if (mobileBtn) mobileBtn.classList.add('active');
         const [title, sub] = sectionTitles[section] || [section, ''];
         document.getElementById('topbar-title').textContent = title;
         document.getElementById('topbar-sub').textContent = sub;
