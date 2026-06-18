@@ -756,6 +756,142 @@
       margin-top: .25rem;
     }
 
+    .site-health-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .site-health-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .site-health-head h3 {
+      font-size: .95rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: .25rem;
+    }
+
+    .site-health-head p {
+      font-size: .78rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    .health-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: .75rem;
+    }
+
+    .health-item {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: .9rem;
+      min-height: 104px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: .7rem;
+    }
+
+    .health-item.ok {
+      border-color: rgba(16, 185, 129, .34);
+      background: rgba(16, 185, 129, .08);
+    }
+
+    .health-item.warn {
+      border-color: rgba(245, 158, 11, .38);
+      background: rgba(245, 158, 11, .08);
+    }
+
+    .health-item.bad {
+      border-color: rgba(239, 68, 68, .42);
+      background: rgba(239, 68, 68, .08);
+    }
+
+    .health-item.loading {
+      opacity: .78;
+    }
+
+    .health-item-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+    }
+
+    .health-label {
+      color: var(--text-muted);
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .health-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      box-shadow: 0 0 0 4px rgba(148, 163, 184, .08);
+      flex: 0 0 auto;
+    }
+
+    .health-item.ok .health-dot {
+      background: var(--green);
+      box-shadow: 0 0 0 4px rgba(16, 185, 129, .12);
+    }
+
+    .health-item.warn .health-dot {
+      background: var(--amber);
+      box-shadow: 0 0 0 4px rgba(245, 158, 11, .13);
+    }
+
+    .health-item.bad .health-dot {
+      background: var(--red);
+      box-shadow: 0 0 0 4px rgba(239, 68, 68, .13);
+    }
+
+    .health-value {
+      color: var(--text);
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .health-detail {
+      color: var(--text-muted);
+      font-size: .75rem;
+      line-height: 1.4;
+    }
+
+    .health-errors {
+      margin-top: .85rem;
+      padding-top: .85rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: .78rem;
+      line-height: 1.5;
+    }
+
+    .health-errors strong {
+      color: var(--text);
+    }
+
+    .health-errors ul {
+      margin: .45rem 0 0;
+      padding-left: 1rem;
+    }
+
     /* ── DASHBOARD CARDS ── */
     .dash-row {
       display: grid;
@@ -4103,6 +4239,26 @@
         gap: .75rem;
       }
 
+      .site-health-card {
+        padding: 1rem;
+        border-radius: 14px;
+      }
+
+      .site-health-head {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .site-health-head .btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .health-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: .65rem;
+      }
+
       .dash-row,
       .form-grid {
         grid-template-columns: 1fr;
@@ -4328,6 +4484,16 @@
 
       .rte-body {
         min-height: 460px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .health-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .health-item {
+        min-height: auto;
       }
     }
 
@@ -4793,6 +4959,82 @@
                 <div class="stat-num" id="stat-cand">–</div>
                 <div class="stat-label">Candidaturas novas</div>
               </div>
+            </div>
+          </div>
+
+          <div class="site-health-card" id="site-health-card" aria-live="polite">
+            <div class="site-health-head">
+              <div>
+                <h3>Central de saúde do site</h3>
+                <p>Checagens rápidas para confirmar conexão, backups, storage, formulários e conteúdo publicado.</p>
+              </div>
+              <button class="btn btn-secondary btn-sm" id="btn-health-refresh" onclick="loadSiteHealth(true)">↻
+                Atualizar</button>
+            </div>
+            <div class="health-grid">
+              <div class="health-item loading" id="health-supabase">
+                <div class="health-item-top">
+                  <span class="health-label">Supabase</span>
+                  <span class="health-dot"></span>
+                </div>
+                <div>
+                  <div class="health-value">Verificando...</div>
+                  <div class="health-detail">Testando conexão com a API.</div>
+                </div>
+              </div>
+              <div class="health-item loading" id="health-backup">
+                <div class="health-item-top">
+                  <span class="health-label">Backup</span>
+                  <span class="health-dot"></span>
+                </div>
+                <div>
+                  <div class="health-value">Sem leitura</div>
+                  <div class="health-detail">Aguardando histórico local.</div>
+                </div>
+              </div>
+              <div class="health-item loading" id="health-storage">
+                <div class="health-item-top">
+                  <span class="health-label">Storage</span>
+                  <span class="health-dot"></span>
+                </div>
+                <div>
+                  <div class="health-value">Verificando...</div>
+                  <div class="health-detail">Conferindo buckets essenciais.</div>
+                </div>
+              </div>
+              <div class="health-item loading" id="health-forms">
+                <div class="health-item-top">
+                  <span class="health-label">Formulários</span>
+                  <span class="health-dot"></span>
+                </div>
+                <div>
+                  <div class="health-value">Verificando...</div>
+                  <div class="health-detail">Contato, newsletter e candidaturas.</div>
+                </div>
+              </div>
+              <div class="health-item loading" id="health-news">
+                <div class="health-item-top">
+                  <span class="health-label">Notícias</span>
+                  <span class="health-dot"></span>
+                </div>
+                <div>
+                  <div class="health-value">...</div>
+                  <div class="health-detail">Publicadas no banco.</div>
+                </div>
+              </div>
+              <div class="health-item loading" id="health-drafts">
+                <div class="health-item-top">
+                  <span class="health-label">Rascunhos</span>
+                  <span class="health-dot"></span>
+                </div>
+                <div>
+                  <div class="health-value">...</div>
+                  <div class="health-detail">Itens ainda não publicados.</div>
+                </div>
+              </div>
+            </div>
+            <div class="health-errors" id="health-errors">
+              <strong>Erros recentes:</strong> verificando agendamentos e falhas recentes.
             </div>
           </div>
 
@@ -7518,6 +7760,15 @@
         a.click();
         document.body.removeChild(a);
         setTimeout(() => URL.revokeObjectURL(url), 5000);
+        try {
+          localStorage.setItem('asproc_last_backup_meta', JSON.stringify({
+            at: new Date().toISOString(),
+            filename,
+            type: payload?.type || 'backup',
+            total: payload?.total || null,
+            totals: payload?.totals || null
+          }));
+        } catch (_) { }
       }
 
       async function fetchBackupTable(table) {
@@ -7647,6 +7898,142 @@
       /* ══════════════════════════════════════════
          DASHBOARD
       ══════════════════════════════════════════ */
+      function setHealthItem(id, state, value, detail) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.classList.remove('loading', 'ok', 'warn', 'bad');
+        el.classList.add(state);
+        const valueEl = el.querySelector('.health-value');
+        const detailEl = el.querySelector('.health-detail');
+        if (valueEl) valueEl.textContent = value;
+        if (detailEl) detailEl.textContent = detail;
+      }
+
+      function formatHealthDate(iso) {
+        if (!iso) return '';
+        const date = new Date(iso);
+        if (Number.isNaN(date.getTime())) return '';
+        return date.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+      }
+
+      function getLastBackupMeta() {
+        try { return JSON.parse(localStorage.getItem('asproc_last_backup_meta')) || null; }
+        catch { return null; }
+      }
+
+      async function checkStorageHealth() {
+        const { url, key } = getSupabase();
+        if (!url || !key) throw new Error('Supabase não configurado.');
+        const baseUrl = url.replace(/\/+$/, '');
+        const authToken = AuthStore.getToken() || key;
+        const res = await fetch(`${baseUrl}/storage/v1/bucket`, {
+          headers: { apikey: key, Authorization: 'Bearer ' + authToken }
+        });
+        if (!res.ok) throw new Error(`Storage respondeu ${res.status}`);
+        const buckets = await res.json().catch(() => []);
+        const ids = (Array.isArray(buckets) ? buckets : []).map(b => b.id || b.name).filter(Boolean);
+        const required = ['imagens', 'candidaturas'];
+        const missing = required.filter(id => !ids.includes(id));
+        return { ids, missing };
+      }
+
+      async function loadSiteHealth(manual = false) {
+        const btn = document.getElementById('btn-health-refresh');
+        if (btn) {
+          btn.disabled = true;
+          btn.textContent = '⏳ Atualizando...';
+        }
+
+        const capturedErrors = [];
+        const backup = getLastBackupMeta();
+        if (backup?.at) {
+          setHealthItem('health-backup', 'ok', formatHealthDate(backup.at), backup.filename || 'Backup gerado neste navegador.');
+        } else {
+          setHealthItem('health-backup', 'warn', 'Nenhum registro local', 'Gere um backup em Configurações para registrar a data aqui.');
+        }
+
+        try {
+          await sbSelect('noticias', 'select=id&limit=1');
+          setHealthItem('health-supabase', 'ok', 'Conectado', 'API e autenticação responderam normalmente.');
+        } catch (e) {
+          capturedErrors.push('Supabase: ' + e.message);
+          setHealthItem('health-supabase', 'bad', 'Falha na conexão', e.message);
+        }
+
+        try {
+          const storage = await checkStorageHealth();
+          if (storage.missing.length) {
+            setHealthItem('health-storage', 'warn', 'Atenção', 'Buckets não listados: ' + storage.missing.join(', ') + '.');
+          } else {
+            setHealthItem('health-storage', 'ok', 'OK', 'Buckets imagens e candidaturas encontrados.');
+          }
+        } catch (e) {
+          capturedErrors.push('Storage: ' + e.message);
+          setHealthItem('health-storage', 'warn', 'Não confirmado', 'Revise buckets/policies se uploads falharem.');
+        }
+
+        try {
+          await Promise.all([
+            sbSelect('mensagens_contato', 'select=id&limit=1'),
+            sbSelect('newsletters', 'select=id&limit=1'),
+            sbSelect('candidaturas', 'select=id&limit=1')
+          ]);
+          setHealthItem('health-forms', 'ok', 'OK', 'Tabelas de contato, newsletter e candidaturas acessíveis.');
+        } catch (e) {
+          capturedErrors.push('Formulários: ' + e.message);
+          setHealthItem('health-forms', 'warn', 'Revisar', 'Alguma tabela de formulário não respondeu.');
+        }
+
+        try {
+          const [published, draftFalse, draftStatus] = await Promise.all([
+            sbCount('noticias', 'publicado=eq.true'),
+            sbCount('noticias', 'publicado=eq.false'),
+            sbCount('noticias', 'status=eq.rascunho')
+          ]);
+          const drafts = Math.max(draftFalse || 0, draftStatus || 0);
+          setHealthItem('health-news', 'ok', String(published), 'Notícias publicadas disponíveis no painel.');
+          setHealthItem('health-drafts', drafts > 0 ? 'warn' : 'ok', String(drafts), drafts > 0 ? 'Revise antes de publicar.' : 'Sem rascunhos pendentes.');
+        } catch (e) {
+          capturedErrors.push('Notícias: ' + e.message);
+          setHealthItem('health-news', 'warn', 'Não lido', 'Não foi possível contar publicações.');
+          setHealthItem('health-drafts', 'warn', 'Não lido', 'Não foi possível contar rascunhos.');
+        }
+
+        try {
+          const recentErrors = await sbSelect(
+            'publicacoes_agendadas',
+            'select=titulo,tabela,erro_msg,created_at&status=eq.erro&order=created_at.desc&limit=3'
+          );
+          const box = document.getElementById('health-errors');
+          if (box) {
+            const rows = Array.isArray(recentErrors) ? recentErrors : [];
+            if (capturedErrors.length || rows.length) {
+              const dbErrors = rows.map(row => {
+                const when = formatHealthDate(row.created_at);
+                return `${row.tabela || 'conteúdo'}: ${row.titulo || 'sem título'}${row.erro_msg ? ' - ' + row.erro_msg : ''}${when ? ' (' + when + ')' : ''}`;
+              });
+              const all = [...capturedErrors, ...dbErrors].slice(0, 5);
+              box.innerHTML = `<strong>Erros recentes:</strong><ul>${all.map(e => `<li>${escHtml(e)}</li>`).join('')}</ul>`;
+            } else {
+              box.innerHTML = '<strong>Erros recentes:</strong> nenhum erro recente encontrado.';
+            }
+          }
+        } catch (e) {
+          const box = document.getElementById('health-errors');
+          if (box) {
+            const all = [...capturedErrors, 'Agendamentos: ' + e.message].slice(0, 5);
+            box.innerHTML = `<strong>Erros recentes:</strong><ul>${all.map(err => `<li>${escHtml(err)}</li>`).join('')}</ul>`;
+          }
+        } finally {
+          if (btn) {
+            btn.disabled = false;
+            btn.textContent = '↻ Atualizar';
+          }
+          if (manual) toast('Central de saúde atualizada.', 'success');
+        }
+      }
+      window.loadSiteHealth = loadSiteHealth;
+
       async function loadDashboard() {
         try {
           const [nCount, vCount, aCount] = await Promise.all([
@@ -7687,6 +8074,8 @@
           }
         } catch (e) {
           document.getElementById('activity-feed').innerHTML = `<p style="font-size:.82rem;color:var(--red)">Erro: ${e.message}</p>`;
+        } finally {
+          loadSiteHealth().catch(e => console.warn('[HEALTH] Falha ao carregar central:', e.message));
         }
       }
 
