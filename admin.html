@@ -1197,6 +1197,30 @@
       width: 100%;
     }
 
+    .backup-import-box {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: var(--bg3);
+      border: 1px dashed var(--border-hover);
+      border-radius: var(--radius);
+    }
+
+    .backup-import-preview {
+      display: none;
+      margin-top: .85rem;
+      padding: .85rem;
+      background: rgba(0, 0, 0, .16);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: .8rem;
+      color: var(--text-dim);
+      line-height: 1.55;
+    }
+
+    .backup-import-preview strong {
+      color: var(--text);
+    }
+
     .alert-box {
       background: var(--amber-soft);
       border: 1px solid rgba(245, 158, 11, .2);
@@ -4300,6 +4324,23 @@
             <div class="info-box" style="font-size:.78rem;margin-top:1rem;">
               O backup geral inclui notícias, avisos, vagas, candidaturas, mensagens de contato e newsletters.
             </div>
+            <div class="backup-import-box">
+              <div style="display:flex;gap:.65rem;align-items:center;justify-content:space-between;flex-wrap:wrap;">
+                <div>
+                  <strong style="display:block;font-size:.86rem;margin-bottom:.2rem;">Importar backup</strong>
+                  <span style="font-size:.78rem;color:var(--text-muted);">Aceita arquivos JSON gerados por este painel.</span>
+                </div>
+                <label class="btn btn-secondary btn-sm" for="backup-import-file" style="cursor:pointer;">Escolher arquivo</label>
+                <input type="file" id="backup-import-file" accept="application/json,.json" style="display:none;"
+                  onchange="previewBackupImport(this)">
+              </div>
+              <div id="backup-import-preview" class="backup-import-preview"></div>
+              <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.85rem;">
+                <button class="btn btn-success btn-sm" id="btn-import-backup" onclick="importSelectedBackup(this)"
+                  disabled>Importar backup validado</button>
+                <button class="btn btn-secondary btn-sm" onclick="resetBackupImport()">Limpar</button>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -5984,13 +6025,16 @@
         const authToken = AuthStore.getToken() || key;
         const headers = {
           'apikey': key, 'Authorization': 'Bearer ' + authToken,
-          'Content-Type': 'application/json', 'Prefer': 'return=representation'
+          'Content-Type': 'application/json', 'Prefer': 'return=representation',
+          ...(opts.headers || {})
         };
         const endpoint = `${url}/rest/v1/${table}${params ? '?' + params : ''}`;
-        const res = await fetch(endpoint, { headers, ...opts });
+        const { headers: _ignoredHeaders, ...fetchOpts } = opts;
+        const res = await fetch(endpoint, { headers, ...fetchOpts });
         if (!res.ok) { const err = await res.json().catch(() => ({})); throw new Error(err.message || `Erro ${res.status}`); }
         if (res.status === 204) return null;
-        return res.json();
+        const text = await res.text();
+        return text ? JSON.parse(text) : null;
       }
       async function sbSelect(table, params = '') { return sbFetch(table, params || 'select=*&order=created_at.desc'); }
       async function sbInsert(table, data) { return sbFetch(table, '', { method: 'POST', body: JSON.stringify(data) }); }
@@ -6538,6 +6582,8 @@
         mensagens_contato: 'mensagens',
         newsletters: 'newsletters'
       };
+      const BACKUP_ALLOWED_TABLES = Object.keys(BACKUP_TABLE_LABELS);
+      let pendingBackupImport = null;
 
       function backupDownloadJson(filename, payload) {
         const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8' });
@@ -6586,6 +6632,92 @@
             data
           });
           toast('✅ Backup geral gerado.', 'success');
+        });
+      }
+
+      function normalizeBackupPayload(payload) {
+        if (!payload || payload.app !== 'ASPROC') throw new Error('Arquivo não reconhecido como backup ASPROC.');
+        const tables = {};
+        if (payload.type === 'backup_geral' && payload.data && typeof payload.data === 'object' && !Array.isArray(payload.data)) {
+          for (const table of BACKUP_ALLOWED_TABLES) {
+            if (Array.isArray(payload.data[table])) tables[table] = payload.data[table];
+          }
+        } else if (payload.table && BACKUP_ALLOWED_TABLES.includes(payload.table) && Array.isArray(payload.data)) {
+          tables[payload.table] = payload.data;
+        }
+        const entries = Object.entries(tables).filter(([, rows]) => rows.length);
+        if (!entries.length) throw new Error('Nenhuma tabela importável encontrada no arquivo.');
+        return Object.fromEntries(entries);
+      }
+
+      async function previewBackupImport(input) {
+        const file = input?.files?.[0];
+        const preview = document.getElementById('backup-import-preview');
+        const btn = document.getElementById('btn-import-backup');
+        pendingBackupImport = null;
+        if (btn) btn.disabled = true;
+        if (!file) return;
+        try {
+          const payload = JSON.parse(await file.text());
+          const tables = normalizeBackupPayload(payload);
+          pendingBackupImport = { fileName: file.name, tables };
+          const total = Object.values(tables).reduce((sum, rows) => sum + rows.length, 0);
+          if (preview) {
+            preview.style.display = 'block';
+            preview.innerHTML = `<strong>${file.name}</strong><br>${Object.entries(tables)
+              .map(([table, rows]) => `${BACKUP_TABLE_LABELS[table] || table}: <strong>${rows.length}</strong> registro(s)`)
+              .join('<br>')}<br><span style="color:var(--amber);">Total: ${total} registro(s). A importação cria ou atualiza, sem apagar dados atuais.</span>`;
+          }
+          if (btn) btn.disabled = false;
+        } catch (e) {
+          if (preview) {
+            preview.style.display = 'block';
+            preview.innerHTML = `<span style="color:var(--red);">Arquivo inválido: ${e.message}</span>`;
+          }
+          toast('❌ Backup inválido: ' + e.message, 'error');
+        }
+      }
+
+      function resetBackupImport() {
+        pendingBackupImport = null;
+        const input = document.getElementById('backup-import-file');
+        const preview = document.getElementById('backup-import-preview');
+        const btn = document.getElementById('btn-import-backup');
+        if (input) input.value = '';
+        if (preview) { preview.style.display = 'none'; preview.innerHTML = ''; }
+        if (btn) btn.disabled = true;
+      }
+
+      async function upsertBackupRows(table, rows) {
+        if (!rows?.length) return 0;
+        const hasId = rows.every(row => row && Object.prototype.hasOwnProperty.call(row, 'id'));
+        let imported = 0;
+        for (let i = 0; i < rows.length; i += 100) {
+          const chunk = rows.slice(i, i + 100);
+          const params = hasId ? 'on_conflict=id' : '';
+          const res = await sbFetch(table, params, {
+            method: 'POST',
+            headers: { Prefer: hasId ? 'resolution=merge-duplicates,return=minimal' : 'return=minimal' },
+            body: JSON.stringify(chunk)
+          });
+          imported += chunk.length;
+        }
+        return imported;
+      }
+
+      async function importSelectedBackup(btn) {
+        if (!pendingBackupImport) { toast('Selecione e valide um backup primeiro.', 'info'); return; }
+        const total = Object.values(pendingBackupImport.tables).reduce((sum, rows) => sum + rows.length, 0);
+        if (!confirm(`Importar ${total} registro(s) de ${pendingBackupImport.fileName}? Registros com o mesmo ID serão atualizados. Nenhum dado atual será apagado.`)) return;
+        await withBtn(btn, 'Importando...', async () => {
+          const importedByTable = {};
+          for (const [table, rows] of Object.entries(pendingBackupImport.tables)) {
+            importedByTable[table] = await upsertBackupRows(table, rows);
+          }
+          const summary = Object.entries(importedByTable).map(([table, count]) => `${BACKUP_TABLE_LABELS[table] || table}: ${count}`).join(', ');
+          toast('✅ Backup importado: ' + summary, 'success');
+          resetBackupImport();
+          try { await loadDashboard(); } catch (_) { }
         });
       }
 
@@ -15650,6 +15782,9 @@ ${corpo}
       window.testConnection = testConnection;
       window.downloadBackup = downloadBackup;
       window.downloadFullBackup = downloadFullBackup;
+      window.previewBackupImport = previewBackupImport;
+      window.importSelectedBackup = importSelectedBackup;
+      window.resetBackupImport = resetBackupImport;
       window.saveGithubToken = saveGithubToken;
       window.testGithubConnection = testGithubConnection;
       window.publishToGithub = publishToGithub;
