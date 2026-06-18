@@ -1830,6 +1830,86 @@
       text-overflow: ellipsis;
     }
 
+    .ne-editor-status {
+      display: inline-flex;
+      align-items: center;
+      max-width: 260px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: .7rem;
+      color: var(--text-muted);
+      opacity: .82;
+    }
+
+    .ne-tools-menu {
+      position: relative;
+    }
+
+    .ne-tools-menu summary {
+      list-style: none;
+    }
+
+    .ne-tools-menu summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .ne-tools-menu[open] summary {
+      background: var(--accent-soft);
+      border-color: rgba(59, 130, 246, .28);
+      color: var(--accent);
+    }
+
+    .ne-tools-panel {
+      position: absolute;
+      right: 0;
+      top: calc(100% + .45rem);
+      z-index: 140;
+      width: 260px;
+      padding: .45rem;
+      background: var(--bg2);
+      border: 1px solid var(--border-hover);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 18px 50px rgba(0, 0, 0, .45);
+      display: grid;
+      gap: .35rem;
+    }
+
+    .ne-tools-panel .btn,
+    .ne-tools-panel label.btn,
+    .ne-tools-panel .rte-tutorial-trigger {
+      width: 100%;
+      justify-content: flex-start;
+      min-height: 36px;
+    }
+
+    #btn-ai-format,
+    #btn-ai-format-vaga,
+    #btn-ai-format-aviso {
+      display: none !important;
+    }
+
+    @media (max-width: 560px) {
+      .ne-tools-menu {
+        position: static;
+      }
+
+      .ne-tools-panel {
+        position: fixed;
+        left: .75rem;
+        right: .75rem;
+        bottom: .75rem;
+        top: auto;
+        width: auto;
+        max-height: 70vh;
+        overflow: auto;
+      }
+
+      .ne-editor-status {
+        max-width: 120px;
+      }
+    }
+
     .ne-body {
       display: grid;
       grid-template-columns: 1fr 300px;
@@ -2477,7 +2557,9 @@
     }
 
     /* ── AUTO-SAVE INDICATOR ── */
-    #ne-autosave-indicator {
+    #ne-autosave-indicator,
+    #rte-autosave-ve,
+    #rte-autosave-ae {
       display: inline-flex;
       align-items: center;
       gap: .35rem;
@@ -2489,13 +2571,17 @@
       transition: all .3s;
     }
 
-    #ne-autosave-indicator.saving {
+    #ne-autosave-indicator.saving,
+    #rte-autosave-ve.saving,
+    #rte-autosave-ae.saving {
       color: var(--accent);
       border-color: rgba(59, 130, 246, .2);
       background: var(--accent-soft);
     }
 
-    #ne-autosave-indicator.saved {
+    #ne-autosave-indicator.saved,
+    #rte-autosave-ve.saved,
+    #rte-autosave-ae.saved {
       color: var(--green);
       border-color: rgba(16, 185, 129, .2);
       background: var(--green-soft);
@@ -2850,12 +2936,14 @@
       border: 1px solid var(--border-hover);
       border-radius: var(--radius-lg);
       box-shadow: 0 12px 40px rgba(0, 0, 0, .5);
-      width: 300px;
-      max-height: 360px;
+      width: min(360px, calc(100vw - 1rem));
+      max-height: min(420px, calc(100vh - 1rem));
       overflow-y: auto;
-      padding: .4rem;
+      padding: .45rem;
       display: none;
       animation: slashFadeIn .12s ease-out;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border-hover) transparent;
     }
 
     .rte-slash-menu.open {
@@ -2880,22 +2968,64 @@
       color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: .08em;
-      padding: .45rem .7rem .25rem;
+      padding: .55rem .7rem .28rem;
+    }
+
+    .rte-slash-top {
+      position: sticky;
+      top: -.45rem;
+      z-index: 2;
+      margin: -.45rem -.45rem .35rem;
+      padding: .7rem .85rem .65rem;
+      background: linear-gradient(180deg, var(--bg3), var(--bg2));
+      border-bottom: 1px solid var(--border);
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+
+    .rte-slash-top strong {
+      display: block;
+      font-size: .82rem;
+      color: var(--text);
+      margin-bottom: .16rem;
+    }
+
+    .rte-slash-top span {
+      display: block;
+      font-size: .7rem;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+
+    .rte-slash-query {
+      display: inline-flex;
+      align-items: center;
+      gap: .2rem;
+      margin-top: .45rem;
+      padding: .18rem .45rem;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(0, 0, 0, .18);
+      color: var(--accent);
+      font-size: .7rem;
+      font-weight: 700;
     }
 
     .rte-slash-item {
       display: flex;
       align-items: center;
       gap: .7rem;
-      padding: .5rem .65rem;
-      border-radius: 6px;
+      padding: .58rem .68rem;
+      border: 1px solid transparent;
+      border-radius: 8px;
       cursor: pointer;
-      transition: background var(--transition);
+      transition: background var(--transition), border-color var(--transition), transform var(--transition);
     }
 
     .rte-slash-item:hover,
     .rte-slash-item.active {
       background: var(--accent-soft);
+      border-color: rgba(59, 130, 246, .22);
+      transform: translateX(2px);
     }
 
     .rte-slash-icon {
@@ -2928,6 +3058,26 @@
       color: var(--text-muted);
       margin-top: .1rem;
       line-height: 1.3;
+    }
+
+    .rte-slash-footer {
+      display: flex;
+      gap: .55rem;
+      flex-wrap: wrap;
+      padding: .55rem .7rem .25rem;
+      font-size: .66rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      margin-top: .35rem;
+    }
+
+    .rte-slash-footer kbd {
+      padding: .04rem .28rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--bg3);
+      color: var(--text-dim);
+      font-family: inherit;
     }
 
     .rte-slash-empty {
@@ -4822,36 +4972,23 @@
     <div class="ne-topbar">
       <button class="btn btn-secondary btn-sm" onclick="closeNewsEditor()">← Voltar</button>
       <span class="ne-topbar-title" id="ne-topbar-title">Nova Notícia</span>
-      <span id="ne-autosave-indicator" title="Auto-save a cada 30s">💾 Rascunho</span>
-      <button class="rte-tutorial-trigger" onclick="RTE_LINKS.open('n')" title="Ver e revisar todos os links">🔗
-        Links</button>
-      <button class="rte-tutorial-trigger" onclick="RTE_TUTORIAL.start('n')" title="Abrir tutorial do editor">❔
-        Tutorial</button>
-      <button class="btn btn-secondary btn-sm" onclick="neToggleVersionPanel()">🕐 Versões</button>
-      <button class="btn btn-secondary btn-sm" onclick="previewNoticiaPage()">👁 Preview</button>
-      <button class="btn btn-secondary btn-sm" onclick="downloadNoticiaPage()">⬇ Baixar</button>
-      <button class="btn btn-secondary btn-sm" onclick="baixarModeloWord()"
-        title="Baixa um modelo .doc com a estrutura ideal para criar notícias e importar de volta">📄 Modelo
-        Word</button>
-      <!-- Importar Word -->
-      <label class="btn btn-secondary btn-sm" id="btn-import-word-label"
-        title="Importar .docx — preenche título, resumo e corpo automaticamente"
-        style="cursor:pointer;display:inline-flex;align-items:center;gap:.35rem;">
-        <svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px;flex-shrink:0;">
-          <path
-            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM8.5 17l1.5-5.5 1.5 5.5h1l1.8-7h-1.1l-1.2 4.8-1.4-4.8H9.4L8 14.8 6.8 10H5.7l1.8 7H8.5z" />
-        </svg>
-        ⬆ Importar Word
-        <input type="file" id="import-word-file" accept=".docx" style="display:none;" onchange="importWordFile(this)">
-      </label>
-      <button class="btn btn-word btn-sm" id="btn-export-word" onclick="exportNoticiaWordFromEditor(this)"
-        title="Exportar para Word (.docx)">
-        <svg class="word-icon" viewBox="0 0 24 24" fill="currentColor" style="width:15px;height:15px;">
-          <path
-            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM8.5 17l1.5-5.5 1.5 5.5h1l1.8-7h-1.1l-1.2 4.8-1.4-4.8H9.4L8 14.8 6.8 10H5.7l1.8 7H8.5z" />
-        </svg>
-        Word
-      </button>
+      <span class="ne-editor-status" id="ne-autosave-indicator" title="Auto-save a cada 30s">Rascunho salvo</span>
+      <details class="ne-tools-menu">
+        <summary class="btn btn-secondary btn-sm">Ferramentas</summary>
+        <div class="ne-tools-panel">
+          <button class="rte-tutorial-trigger" onclick="RTE_LINKS.open('n')" title="Ver e revisar todos os links">🔗 Links</button>
+          <button class="btn btn-secondary btn-sm" onclick="previewNoticiaPage()">👁 Preview</button>
+          <button class="btn btn-secondary btn-sm" onclick="neToggleVersionPanel()">🕐 Versões</button>
+          <button class="rte-tutorial-trigger" onclick="RTE_TUTORIAL.start('n')" title="Abrir tutorial do editor">❔ Tutorial</button>
+          <button class="btn btn-secondary btn-sm" onclick="downloadNoticiaPage()">⬇ Baixar HTML</button>
+          <button class="btn btn-secondary btn-sm" onclick="baixarModeloWord()" title="Baixa um modelo .doc com a estrutura ideal para criar notícias e importar de volta">📄 Modelo Word</button>
+          <label class="btn btn-secondary btn-sm" id="btn-import-word-label" title="Importar .docx — preenche título, resumo e corpo automaticamente" style="cursor:pointer;">
+            ⬆ Importar Word
+            <input type="file" id="import-word-file" accept=".docx" style="display:none;" onchange="importWordFile(this)">
+          </label>
+          <button class="btn btn-word btn-sm" id="btn-export-word" onclick="exportNoticiaWordFromEditor(this)" title="Exportar para Word (.docx)">📄 Exportar Word</button>
+        </div>
+      </details>
       <button class="btn btn-amber btn-sm" id="btn-ai-format" onclick="aiAutoFormat()"
         title="Formata o conteúdo automaticamente com IA">✨ Auto-formatar</button>
       <button class="btn btn-secondary btn-sm" id="btn-expand-editor"
@@ -5278,34 +5415,20 @@
     <div class="ne-topbar">
       <button class="btn btn-secondary btn-sm" onclick="closeVagaEditor()">← Voltar</button>
       <span class="ne-topbar-title" id="ve-topbar-title">Nova Vaga</span>
-      <span id="rte-autosave-ve"
-        style="font-size:.7rem;color:var(--text-muted);margin-left:.5rem;transition:color .3s;">💾 Auto-save
-        ativo</span>
-      <button class="rte-tutorial-trigger" onclick="RTE_LINKS.open('ve')" title="Ver e revisar todos os links">🔗
-        Links</button>
-      <button class="rte-tutorial-trigger" onclick="RTE_TUTORIAL.start('ve')" title="Abrir tutorial do editor">❔
-        Tutorial</button>
-      <button class="btn btn-secondary btn-sm" onclick="baixarModeloVaga()"
-        title="Baixa um modelo .doc com a estrutura ideal para criar vagas e importar de volta">📄 Modelo Word</button>
-      <label class="btn btn-secondary btn-sm" id="btn-import-word-vaga-label"
-        title="Importar .docx — preenche título, resumo e corpo automaticamente"
-        style="cursor:pointer;display:inline-flex;align-items:center;gap:.35rem;">
-        <svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px;flex-shrink:0;">
-          <path
-            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM8.5 17l1.5-5.5 1.5 5.5h1l1.8-7h-1.1l-1.2 4.8-1.4-4.8H9.4L8 14.8 6.8 10H5.7l1.8 7H8.5z" />
-        </svg>
-        ⬆ Importar Word
-        <input type="file" id="import-word-vaga-file" accept=".docx" style="display:none;"
-          onchange="importWordVagaFile(this)">
-      </label>
-      <button class="btn btn-word btn-sm" id="btn-export-word-vaga" onclick="exportVagaWord(this)"
-        title="Exportar para Word (.docx)">
-        <svg class="word-icon" viewBox="0 0 24 24" fill="currentColor" style="width:15px;height:15px;">
-          <path
-            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM8.5 17l1.5-5.5 1.5 5.5h1l1.8-7h-1.1l-1.2 4.8-1.4-4.8H9.4L8 14.8 6.8 10H5.7l1.8 7H8.5z" />
-        </svg>
-        Word
-      </button>
+      <span class="ne-editor-status" id="rte-autosave-ve">Rascunho salvo</span>
+      <details class="ne-tools-menu">
+        <summary class="btn btn-secondary btn-sm">Ferramentas</summary>
+        <div class="ne-tools-panel">
+          <button class="rte-tutorial-trigger" onclick="RTE_LINKS.open('ve')" title="Ver e revisar todos os links">🔗 Links</button>
+          <button class="rte-tutorial-trigger" onclick="RTE_TUTORIAL.start('ve')" title="Abrir tutorial do editor">❔ Tutorial</button>
+          <button class="btn btn-secondary btn-sm" onclick="baixarModeloVaga()" title="Baixa um modelo .doc com a estrutura ideal para criar vagas e importar de volta">📄 Modelo Word</button>
+          <label class="btn btn-secondary btn-sm" id="btn-import-word-vaga-label" title="Importar .docx — preenche título, resumo e corpo automaticamente" style="cursor:pointer;">
+            ⬆ Importar Word
+            <input type="file" id="import-word-vaga-file" accept=".docx" style="display:none;" onchange="importWordVagaFile(this)">
+          </label>
+          <button class="btn btn-word btn-sm" id="btn-export-word-vaga" onclick="exportVagaWord(this)" title="Exportar para Word (.docx)">📄 Exportar Word</button>
+        </div>
+      </details>
       <button class="btn btn-amber btn-sm" id="btn-ai-format-vaga" onclick="aiAutoFormatVaga()"
         title="Formata o conteúdo automaticamente com IA">✨ Auto-formatar</button>
       <button class="btn btn-secondary btn-sm" id="btn-expand-vaga"
@@ -5913,34 +6036,20 @@
     <div class="ne-topbar">
       <button class="btn btn-secondary btn-sm" onclick="closeAvisoEditor()">← Voltar</button>
       <span class="ne-topbar-title" id="ae-topbar-title">Novo Aviso</span>
-      <span id="rte-autosave-ae"
-        style="font-size:.7rem;color:var(--text-muted);margin-left:.5rem;transition:color .3s;">💾 Auto-save
-        ativo</span>
-      <button class="rte-tutorial-trigger" onclick="RTE_LINKS.open('ae')" title="Ver e revisar todos os links">🔗
-        Links</button>
-      <button class="rte-tutorial-trigger" onclick="RTE_TUTORIAL.start('ae')" title="Abrir tutorial do editor">❔
-        Tutorial</button>
-      <button class="btn btn-secondary btn-sm" onclick="baixarModeloAviso()"
-        title="Baixa um modelo .doc com a estrutura ideal para criar avisos e importar de volta">📄 Modelo Word</button>
-      <label class="btn btn-secondary btn-sm" id="btn-import-word-aviso-label"
-        title="Importar .docx — preenche título, resumo e corpo automaticamente"
-        style="cursor:pointer;display:inline-flex;align-items:center;gap:.35rem;">
-        <svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px;flex-shrink:0;">
-          <path
-            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM8.5 17l1.5-5.5 1.5 5.5h1l1.8-7h-1.1l-1.2 4.8-1.4-4.8H9.4L8 14.8 6.8 10H5.7l1.8 7H8.5z" />
-        </svg>
-        ⬆ Importar Word
-        <input type="file" id="import-word-aviso-file" accept=".docx" style="display:none;"
-          onchange="importWordAvisoFile(this)">
-      </label>
-      <button class="btn btn-word btn-sm" id="btn-export-word-aviso" onclick="exportAvisoWord(this)"
-        title="Exportar para Word (.docx)">
-        <svg class="word-icon" viewBox="0 0 24 24" fill="currentColor" style="width:15px;height:15px;">
-          <path
-            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM8.5 17l1.5-5.5 1.5 5.5h1l1.8-7h-1.1l-1.2 4.8-1.4-4.8H9.4L8 14.8 6.8 10H5.7l1.8 7H8.5z" />
-        </svg>
-        Word
-      </button>
+      <span class="ne-editor-status" id="rte-autosave-ae">Rascunho salvo</span>
+      <details class="ne-tools-menu">
+        <summary class="btn btn-secondary btn-sm">Ferramentas</summary>
+        <div class="ne-tools-panel">
+          <button class="rte-tutorial-trigger" onclick="RTE_LINKS.open('ae')" title="Ver e revisar todos os links">🔗 Links</button>
+          <button class="rte-tutorial-trigger" onclick="RTE_TUTORIAL.start('ae')" title="Abrir tutorial do editor">❔ Tutorial</button>
+          <button class="btn btn-secondary btn-sm" onclick="baixarModeloAviso()" title="Baixa um modelo .doc com a estrutura ideal para criar avisos e importar de volta">📄 Modelo Word</button>
+          <label class="btn btn-secondary btn-sm" id="btn-import-word-aviso-label" title="Importar .docx — preenche título, resumo e corpo automaticamente" style="cursor:pointer;">
+            ⬆ Importar Word
+            <input type="file" id="import-word-aviso-file" accept=".docx" style="display:none;" onchange="importWordAvisoFile(this)">
+          </label>
+          <button class="btn btn-word btn-sm" id="btn-export-word-aviso" onclick="exportAvisoWord(this)" title="Exportar para Word (.docx)">📄 Exportar Word</button>
+        </div>
+      </details>
       <button class="btn btn-amber btn-sm" id="btn-ai-format-aviso" onclick="aiAutoFormatAviso()"
         title="Formata o conteúdo automaticamente com IA">✨ Auto-formatar</button>
       <button class="btn btn-secondary btn-sm" id="btn-expand-aviso"
@@ -6338,6 +6447,18 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
+      document.addEventListener('click', function (ev) {
+        document.querySelectorAll('.ne-tools-menu[open]').forEach(function (menu) {
+          if (!menu.contains(ev.target)) menu.removeAttribute('open');
+        });
+
+        const toolAction = ev.target.closest('.ne-tools-panel button, .ne-tools-panel label');
+        if (toolAction) {
+          const menu = toolAction.closest('.ne-tools-menu');
+          if (menu) setTimeout(function () { menu.removeAttribute('open'); }, 0);
+        }
+      });
+
       /* ══════════════════════════════════════════
          CONFIG & SUPABASE
          ─────────────────────────────────────────
@@ -8216,7 +8337,7 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
             }
           }
           // Mantém dentro da viewport
-          const menuW = 300, menuH = 360;
+          const menuW = Math.min(360, window.innerWidth - 16), menuH = Math.min(420, window.innerHeight - 16);
           if (left + menuW > window.innerWidth - 10) left = window.innerWidth - menuW - 10;
           if (top + menuH > window.innerHeight - 10) {
             top = Math.max(10, rect.top - menuH - 4);
@@ -8230,13 +8351,14 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
           const q = this.filterText.toLowerCase().trim();
           this.items = this.commands.filter(c => {
             if (!q) return true;
-            const hay = (c.title + ' ' + (c.keywords || '')).toLowerCase();
+            const hay = (c.title + ' ' + (c.desc || '') + ' ' + (c.keywords || '')).toLowerCase();
             return hay.includes(q);
           });
           if (this.activeIdx >= this.items.length) this.activeIdx = 0;
 
           if (this.items.length === 0) {
             this.menuEl.innerHTML =
+              '<div class="rte-slash-top"><strong>Comandos rápidos</strong><span>Digite depois da barra para filtrar. Ex: /imagem, /link, /tabela.</span><span class="rte-slash-query">/' + escHtml(this.filterText) + '</span></div>' +
               '<div class="rte-slash-header">Sem resultados</div>' +
               '<div class="rte-slash-empty">Nenhum comando para "' + escHtml(this.filterText) + '"</div>';
             return;
@@ -8250,7 +8372,7 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
             groups[g].push({ cmd: c, idx: i });
           });
 
-          let html = '';
+          let html = '<div class="rte-slash-top"><strong>Comandos rápidos</strong><span>Digite para filtrar e use o teclado para escolher.</span><span class="rte-slash-query">/' + escHtml(this.filterText) + '</span></div>';
           Object.keys(groups).forEach(g => {
             html += '<div class="rte-slash-header">' + escHtml(g) + '</div>';
             groups[g].forEach(({ cmd, idx }) => {
@@ -8265,6 +8387,7 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
                 '</div>';
             });
           });
+          html += '<div class="rte-slash-footer"><span><kbd>↑</kbd><kbd>↓</kbd> navegar</span><span><kbd>Enter</kbd> inserir</span><span><kbd>Esc</kbd> fechar</span></div>';
           this.menuEl.innerHTML = html;
 
           // Click handler (delegação)
@@ -8396,7 +8519,7 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
           run: (rte) => rte.block('h3')
         },
         {
-          id: 'p', group: 'Texto', icon: '¶', title: 'Parágrafo', desc: 'Texto comum',
+          id: 'p', group: 'Texto', icon: '¶', title: 'Parágrafo', desc: 'Texto comum', keywords: 'texto comum paragrafo normal',
           run: (rte) => rte.block('p')
         },
         {
@@ -8420,8 +8543,15 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
 
         // ── Mídia ──
         {
-          id: 'image', group: 'Mídia', icon: '🖼️', title: 'Imagem', desc: 'Inserir imagem do computador ou URL', keywords: 'imagem foto img picture',
-          run: (rte) => { if (typeof rteOpenImagePicker === 'function') rteOpenImagePicker(rte.id); }
+          id: 'image', group: 'Mídia', icon: '🖼️', title: 'Imagem', desc: 'Escolher imagem do banco ou enviar arquivo', keywords: 'imagem foto img picture upload midia',
+          run: (rte) => {
+            if (typeof rteOpenImagePicker === 'function') rteOpenImagePicker(rte.id);
+            else if (typeof rteInsertImageUrl === 'function') rteInsertImageUrl(rte.id);
+          }
+        },
+        {
+          id: 'image-url', group: 'Mídia', icon: '🔗🖼️', title: 'Imagem por URL', desc: 'Colar link de uma imagem', keywords: 'imagem url link foto externa',
+          run: (rte) => { if (typeof rteInsertImageUrl === 'function') rteInsertImageUrl(rte.id); }
         },
         {
           id: 'youtube', group: 'Mídia', icon: '▶', title: 'YouTube', desc: 'Embed de vídeo do YouTube', keywords: 'video youtube embed',
@@ -8444,6 +8574,10 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         {
           id: 'divider', group: 'Inserir', icon: '—', title: 'Divisor', desc: 'Linha horizontal', keywords: 'divisor hr separador linha',
           run: (rte) => rte.insertDivider()
+        },
+        {
+          id: 'clear', group: 'Inserir', icon: '✕A', title: 'Limpar formatação', desc: 'Remove estilos do trecho selecionado', keywords: 'limpar formatacao remover estilo clean',
+          run: (rte) => rte.clearFormat()
         },
 
         // ── Callouts ──
@@ -11523,24 +11657,21 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
       function neShowAutoSaveState(state) {
         const el = document.getElementById('ne-autosave-indicator');
         if (!el) return;
-        el.className = 'ne-autosave-indicator';
+        el.className = 'ne-editor-status';
+        el.style.cssText = '';
+        el.onclick = null;
         if (state === 'saving') {
-          el.id = 'ne-autosave-indicator';
-          el.className = '';
-          el.setAttribute('id', 'ne-autosave-indicator');
-          el.textContent = '⏳ Salvando…';
-          el.style.cssText = 'display:inline-flex;align-items:center;gap:.35rem;font-size:.72rem;font-weight:600;color:var(--accent);padding:.25rem .6rem;border-radius:99px;border:1px solid rgba(59,130,246,.2);background:var(--accent-soft);transition:all .3s;';
+          el.classList.add('saving');
+          el.textContent = 'Salvando...';
         } else if (state === 'saved') {
           const now = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-          el.textContent = `✅ Rascunho salvo às ${now}`;
-          el.style.cssText = 'display:inline-flex;align-items:center;gap:.35rem;font-size:.72rem;font-weight:600;color:var(--green);padding:.25rem .6rem;border-radius:99px;border:1px solid rgba(16,185,129,.2);background:var(--green-soft);transition:all .3s;';
+          el.classList.add('saved');
+          el.textContent = `Salvo às ${now}`;
           setTimeout(() => {
-            el.textContent = '💾 Auto-save ativo';
-            el.style.cssText = 'display:inline-flex;align-items:center;gap:.35rem;font-size:.72rem;color:var(--text-muted);padding:.25rem .6rem;border-radius:99px;border:1px solid transparent;transition:all .3s;';
+            if (el.classList.contains('saved')) neShowAutoSaveState('idle');
           }, 3000);
         } else {
-          el.textContent = '💾 Auto-save ativo';
-          el.style.cssText = 'display:inline-flex;align-items:center;gap:.35rem;font-size:.72rem;color:var(--text-muted);padding:.25rem .6rem;border-radius:99px;border:1px solid transparent;transition:all .3s;';
+          el.textContent = 'Rascunho salvo';
         }
       }
 
@@ -11567,8 +11698,10 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
           const savedAt = draft._savedAt ? new Date(draft._savedAt).toLocaleString('pt-BR') : '?';
           const el = document.getElementById('ne-autosave-indicator');
           if (el) {
-            el.textContent = `⚠️ Rascunho de ${savedAt} — clique para restaurar`;
-            el.style.cssText = 'display:inline-flex;align-items:center;gap:.35rem;font-size:.72rem;font-weight:600;color:var(--amber);padding:.25rem .6rem;border-radius:99px;border:1px solid rgba(245,158,11,.2);background:var(--amber-soft);cursor:pointer;transition:all .3s;';
+            el.className = 'ne-editor-status draft-exists';
+            el.style.cssText = '';
+            el.textContent = `Rascunho ${savedAt}`;
+            el.title = 'Clique para restaurar o rascunho salvo';
             el.onclick = () => neRestoreDraft(draft);
           }
         } catch (e) { /* rascunho inválido */ }
