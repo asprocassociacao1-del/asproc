@@ -7937,6 +7937,22 @@
         return { ids, missing };
       }
 
+      async function getRecentScheduleErrors() {
+        try {
+          return await sbSelect(
+            'publicacoes_agendadas',
+            'select=titulo,tabela,erro_msg,criado_em&status=eq.erro&order=criado_em.desc&limit=3'
+          );
+        } catch (e) {
+          const msg = String(e?.message || '');
+          if (!msg.includes('criado_em') && !msg.includes('created_at')) throw e;
+          return sbSelect(
+            'publicacoes_agendadas',
+            'select=titulo,tabela,erro_msg&status=eq.erro&limit=3'
+          );
+        }
+      }
+
       async function loadSiteHealth(manual = false) {
         const btn = document.getElementById('btn-health-refresh');
         if (btn) {
@@ -8000,16 +8016,13 @@
         }
 
         try {
-          const recentErrors = await sbSelect(
-            'publicacoes_agendadas',
-            'select=titulo,tabela,erro_msg,created_at&status=eq.erro&order=created_at.desc&limit=3'
-          );
+          const recentErrors = await getRecentScheduleErrors();
           const box = document.getElementById('health-errors');
           if (box) {
             const rows = Array.isArray(recentErrors) ? recentErrors : [];
             if (capturedErrors.length || rows.length) {
               const dbErrors = rows.map(row => {
-                const when = formatHealthDate(row.created_at);
+                const when = formatHealthDate(row.criado_em);
                 return `${row.tabela || 'conteúdo'}: ${row.titulo || 'sem título'}${row.erro_msg ? ' - ' + row.erro_msg : ''}${when ? ' (' + when + ')' : ''}`;
               });
               const all = [...capturedErrors, ...dbErrors].slice(0, 5);
