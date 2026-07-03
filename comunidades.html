@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Central Comunitária – ASPROC</title>
+  <meta name="description" content="Central comunitária da ASPROC para registros de produção, demandas e avisos das comunidades do Médio Juruá.">
+  <meta property="og:title" content="Central Comunitária – ASPROC">
+  <meta property="og:description" content="Registros de produção, demandas e avisos das comunidades do Médio Juruá.">
+  <meta property="og:image" content="https://www.asproc.org.br/images/sobre-comunidade.webp">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="favicon.ico">
+  <style>
+    :root {
+      --verde-900: #08251d;
+      --verde-800: #0d3f31;
+      --verde-700: #166044;
+      --verde-500: #2f8f5b;
+      --verde-300: #80c86a;
+      --rio: #2f7d95;
+      --barro: #b16d3a;
+      --sol: #f1b950;
+      --texto: #f7f2e8;
+      --texto-2: rgba(247, 242, 232, .72);
+      --linha: rgba(247, 242, 232, .12);
+      --painel: rgba(7, 25, 20, .84);
+      --branco: #fffaf0;
+      --erro: #e36f5d;
+      --ok: #8bd17c;
+      color-scheme: dark;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      background:
+        linear-gradient(180deg, rgba(5, 22, 17, .78), rgba(5, 22, 17, .94)),
+        url("images/sobre-comunidade.webp") center top / cover fixed;
+      color: var(--texto);
+      min-height: 100vh;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      min-height: 68px;
+      padding: .8rem clamp(1rem, 4vw, 3rem);
+      background: rgba(4, 18, 14, .92);
+      border-bottom: 1px solid var(--linha);
+      backdrop-filter: blur(18px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      min-width: 0;
+    }
+
+    .brand img {
+      width: 44px;
+      height: 44px;
+      object-fit: contain;
+    }
+
+    .brand strong {
+      display: block;
+      font-size: .95rem;
+      letter-spacing: .04em;
+    }
+
+    .brand span {
+      display: block;
+      color: var(--texto-2);
+      font-size: .75rem;
+      margin-top: .12rem;
+    }
+
+    .nav {
+      display: flex;
+      gap: .4rem;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav a {
+      padding: .55rem .75rem;
+      border-radius: 6px;
+      color: rgba(247, 242, 232, .82);
+      font-size: .86rem;
+      font-weight: 700;
+    }
+
+    .nav a:hover,
+    .nav .ativo {
+      color: var(--branco);
+      background: rgba(128, 200, 106, .12);
+    }
+
+    .shell {
+      width: min(1180px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: clamp(1rem, 3vw, 2rem) 0 3rem;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, .85fr);
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .hero {
+      display: grid;
+      gap: .9rem;
+      padding: clamp(1.25rem, 3vw, 2rem);
+      background: linear-gradient(135deg, rgba(8, 37, 29, .94), rgba(15, 67, 54, .78));
+      border: 1px solid var(--linha);
+      border-radius: 8px;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, .28);
+    }
+
+    .eyebrow {
+      color: var(--verde-300);
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2rem, 5vw, 4.6rem);
+      line-height: .98;
+      letter-spacing: 0;
+      max-width: 850px;
+    }
+
+    .lead {
+      margin: 0;
+      color: var(--texto-2);
+      font-size: clamp(.98rem, 1.8vw, 1.16rem);
+      line-height: 1.65;
+      max-width: 760px;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: .45rem;
+      margin-top: .25rem;
+    }
+
+    .tab {
+      border: 1px solid var(--linha);
+      background: rgba(255, 250, 240, .055);
+      color: var(--texto);
+      border-radius: 6px;
+      padding: .75rem .6rem;
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .tab[aria-selected="true"] {
+      background: var(--verde-300);
+      border-color: transparent;
+      color: #08251d;
+    }
+
+    .panel {
+      display: none;
+      margin-top: 1rem;
+      background: var(--painel);
+      border: 1px solid var(--linha);
+      border-radius: 8px;
+      padding: clamp(1rem, 2vw, 1.25rem);
+    }
+
+    .panel.active { display: block; }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .85rem;
+    }
+
+    .full { grid-column: 1 / -1; }
+
+    label {
+      display: grid;
+      gap: .35rem;
+      color: rgba(247, 242, 232, .86);
+      font-size: .82rem;
+      font-weight: 800;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      min-height: 44px;
+      border: 1px solid rgba(247, 242, 232, .16);
+      border-radius: 6px;
+      padding: .72rem .78rem;
+      background: rgba(255, 250, 240, .08);
+      color: var(--texto);
+      font: inherit;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 116px;
+      resize: vertical;
+      line-height: 1.45;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--verde-300);
+      box-shadow: 0 0 0 3px rgba(128, 200, 106, .15);
+    }
+
+    select option {
+      background: #10271f;
+      color: var(--texto);
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .75rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      min-height: 46px;
+      border: 0;
+      border-radius: 6px;
+      padding: .78rem 1rem;
+      font: inherit;
+      font-weight: 900;
+      cursor: pointer;
+      background: var(--verde-300);
+      color: #08251d;
+    }
+
+    .btn.secondary {
+      background: rgba(255, 250, 240, .08);
+      color: var(--texto);
+      border: 1px solid var(--linha);
+    }
+
+    .btn:disabled {
+      opacity: .62;
+      cursor: wait;
+    }
+
+    .status {
+      min-height: 1.3rem;
+      color: var(--texto-2);
+      font-size: .86rem;
+      line-height: 1.45;
+    }
+
+    .status.ok { color: var(--ok); }
+    .status.err { color: var(--erro); }
+
+    .side {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .card {
+      background: rgba(7, 25, 20, .86);
+      border: 1px solid var(--linha);
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: 0 18px 48px rgba(0, 0, 0, .22);
+    }
+
+    .card h2,
+    .card h3 {
+      margin: 0 0 .8rem;
+      font-size: 1rem;
+      letter-spacing: 0;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .65rem;
+    }
+
+    .metric {
+      min-height: 88px;
+      border-radius: 7px;
+      padding: .8rem;
+      background: rgba(255, 250, 240, .07);
+      border: 1px solid var(--linha);
+    }
+
+    .metric b {
+      display: block;
+      font-size: 1.6rem;
+      line-height: 1;
+      color: var(--verde-300);
+    }
+
+    .metric span {
+      display: block;
+      color: var(--texto-2);
+      font-size: .78rem;
+      margin-top: .35rem;
+      line-height: 1.35;
+    }
+
+    .avisos-list {
+      display: grid;
+      gap: .65rem;
+    }
+
+    .aviso {
+      display: grid;
+      gap: .35rem;
+      border-left: 3px solid var(--rio);
+      padding: .75rem .8rem;
+      background: rgba(255, 250, 240, .06);
+      border-radius: 6px;
+    }
+
+    .aviso strong {
+      font-size: .92rem;
+      line-height: 1.35;
+    }
+
+    .aviso span {
+      color: var(--texto-2);
+      font-size: .78rem;
+      line-height: 1.45;
+    }
+
+    .empty {
+      color: var(--texto-2);
+      font-size: .9rem;
+      line-height: 1.5;
+    }
+
+    .quick-links {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .55rem;
+    }
+
+    .quick-links a {
+      border: 1px solid var(--linha);
+      background: rgba(255, 250, 240, .07);
+      border-radius: 6px;
+      padding: .72rem;
+      font-size: .84rem;
+      font-weight: 800;
+      color: rgba(247, 242, 232, .86);
+    }
+
+    .quick-links a:hover {
+      border-color: rgba(128, 200, 106, .42);
+      color: var(--branco);
+    }
+
+    footer {
+      width: min(1180px, calc(100% - 2rem));
+      margin: 0 auto;
+      padding: 0 0 2rem;
+      color: rgba(247, 242, 232, .56);
+      font-size: .82rem;
+    }
+
+    @media (max-width: 920px) {
+      .topbar { align-items: flex-start; flex-direction: column; }
+      .nav { justify-content: flex-start; }
+      .workspace { grid-template-columns: 1fr; }
+      .side { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      body { background-attachment: scroll; }
+      .nav a { padding: .5rem .58rem; font-size: .8rem; }
+      .tabs { grid-template-columns: 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+      .metric-grid, .quick-links { grid-template-columns: 1fr; }
+      .actions { align-items: stretch; flex-direction: column; }
+      .btn { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a href="index.html" class="brand" aria-label="Voltar para o início">
+      <img src="asproc_logo.png" alt="ASPROC">
+      <span>
+        <strong>ASPROC</strong>
+        <span>Central Comunitária</span>
+      </span>
+    </a>
+    <nav class="nav" aria-label="Navegação principal">
+      <a href="index.html">Início</a>
+      <a href="sobre.html">Sobre</a>
+      <a href="programas-projetos.html">Projetos</a>
+      <a href="noticias.html">Notícias</a>
+      <a href="avisos.html">Avisos</a>
+      <a href="comunidades.html" class="ativo">Comunidades</a>
+    </nav>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="eyebrow">Médio Juruá em rede</div>
+      <h1>Central Comunitária ASPROC</h1>
+      <p class="lead">Registros simples para fortalecer organização, produção, logística e resposta às demandas das comunidades.</p>
+
+      <div class="tabs" role="tablist" aria-label="Central Comunitária">
+        <button class="tab" type="button" role="tab" aria-selected="true" aria-controls="panel-producao" data-tab="producao">Produção</button>
+        <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="panel-demanda" data-tab="demanda">Demanda</button>
+        <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="panel-avisos" data-tab="avisos">Avisos</button>
+      </div>
+    </section>
+
+    <div class="workspace">
+      <section>
+        <form class="panel active" id="panel-producao" data-panel="producao">
+          <div class="form-grid">
+            <label>Comunidade
+              <input name="comunidade" list="comunidades-list" autocomplete="organization" required>
+            </label>
+            <label>Produto
+              <input name="produto" placeholder="Farinha, polpa, óleo, pescado..." required>
+            </label>
+            <label>Quantidade
+              <input name="quantidade" type="number" min="0" step="0.01" inputmode="decimal">
+            </label>
+            <label>Unidade
+              <select name="unidade">
+                <option value="">Selecionar</option>
+                <option value="kg">kg</option>
+                <option value="sacas">sacas</option>
+                <option value="litros">litros</option>
+                <option value="unidades">unidades</option>
+                <option value="caixas">caixas</option>
+              </select>
+            </label>
+            <label>Produtor ou grupo
+              <input name="produtor_nome" autocomplete="name">
+            </label>
+            <label>Contato
+              <input name="contato" autocomplete="tel" inputmode="tel">
+            </label>
+            <label class="full">Período de referência
+              <input name="periodo_referencia" placeholder="Ex.: safra 2026, julho, próxima coleta">
+            </label>
+            <label class="full">Observações
+              <textarea name="observacoes" placeholder="Detalhes sobre entrega, qualidade, volume previsto ou necessidade de apoio"></textarea>
+            </label>
+          </div>
+          <div class="actions">
+            <button class="btn" type="submit">Enviar registro</button>
+            <div class="status" id="producao-status" aria-live="polite"></div>
+          </div>
+        </form>
+
+        <form class="panel" id="panel-demanda" data-panel="demanda">
+          <div class="form-grid">
+            <label>Nome
+              <input name="nome" autocomplete="name" required>
+            </label>
+            <label>Contato
+              <input name="contato" autocomplete="tel" inputmode="tel">
+            </label>
+            <label>Comunidade
+              <input name="comunidade" list="comunidades-list" autocomplete="organization">
+            </label>
+            <label>Tipo
+              <select name="tipo" required>
+                <option value="apoio_tecnico">Apoio técnico</option>
+                <option value="comercializacao">Comercialização</option>
+                <option value="logistica">Logística</option>
+                <option value="documentos">Documentos</option>
+                <option value="reuniao">Reunião</option>
+                <option value="outro">Outro</option>
+              </select>
+            </label>
+            <label class="full">Mensagem
+              <textarea name="mensagem" required></textarea>
+            </label>
+          </div>
+          <div class="actions">
+            <button class="btn" type="submit">Enviar demanda</button>
+            <div class="status" id="demanda-status" aria-live="polite"></div>
+          </div>
+        </form>
+
+        <section class="panel" id="panel-avisos" data-panel="avisos">
+          <div class="avisos-list" id="avisos-list">
+            <div class="empty">Carregando avisos...</div>
+          </div>
+          <div class="actions">
+            <a class="btn secondary" href="avisos.html">Ver todos os avisos</a>
+            <div class="status" id="avisos-status" aria-live="polite"></div>
+          </div>
+        </section>
+      </section>
+
+      <aside class="side">
+        <section class="card">
+          <h2>Resumo do piloto</h2>
+          <div class="metric-grid">
+            <div class="metric">
+              <b id="metric-comunidades">0</b>
+              <span>comunidades cadastradas para seleção</span>
+            </div>
+            <div class="metric">
+              <b id="metric-avisos">0</b>
+              <span>avisos recentes carregados</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <h3>Acesso rápido</h3>
+          <div class="quick-links">
+            <a href="programas-projetos.html">Projetos</a>
+            <a href="projeto-comercio-ribeirinho.html">Comércio Ribeirinho</a>
+            <a href="projeto-manejo-pirarucu.html">Manejo do Pirarucu</a>
+            <a href="trabalhe-conosco.html">Vagas</a>
+          </div>
+        </section>
+
+        <section class="card">
+          <h3>Base de dados</h3>
+          <p class="empty">Os registros enviados por esta central ficam privados no Supabase e devem ser analisados pela equipe administrativa da ASPROC.</p>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <footer>
+    ASPROC – Associação dos Produtores Rurais de Carauari. Médio Juruá, Amazonas.
+  </footer>
+
+  <datalist id="comunidades-list"></datalist>
+
+  <script>
+    const SB_URL = 'https://wiatqtiyiznscjyoxxww.supabase.co';
+    const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndpYXRxdGl5aXpuc2NqeW94eHd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1Njc0MDEsImV4cCI6MjA5MTE0MzQwMX0.xgaaZWX5kG3XowDtpR9Xd8S2S0nV-JTnv4ZwnP33PY8';
+
+    const headers = {
+      apikey: SB_KEY,
+      Authorization: 'Bearer ' + SB_KEY,
+      'Content-Type': 'application/json'
+    };
+
+    function esc(value) {
+      return String(value || '').replace(/[&<>"']/g, function (ch) {
+        return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch];
+      });
+    }
+
+    function clean(value) {
+      const v = String(value || '').trim();
+      return v || null;
+    }
+
+    function setStatus(id, text, type) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = text || '';
+      el.className = 'status' + (type ? ' ' + type : '');
+    }
+
+    async function sbGet(path) {
+      const res = await fetch(SB_URL + '/rest/v1/' + path, {
+        headers: { apikey: SB_KEY, Authorization: 'Bearer ' + SB_KEY }
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    }
+
+    async function sbPost(table, payload) {
+      const res = await fetch(SB_URL + '/rest/v1/' + table, {
+        method: 'POST',
+        headers: Object.assign({ Prefer: 'return=minimal' }, headers),
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(function () { return {}; });
+        throw new Error(err.message || 'HTTP ' + res.status);
+      }
+    }
+
+    document.querySelectorAll('.tab').forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        const key = tab.dataset.tab;
+        document.querySelectorAll('.tab').forEach(function (btn) {
+          btn.setAttribute('aria-selected', String(btn === tab));
+        });
+        document.querySelectorAll('[data-panel]').forEach(function (panel) {
+          panel.classList.toggle('active', panel.dataset.panel === key);
+        });
+      });
+    });
+
+    document.getElementById('panel-producao').addEventListener('submit', async function (event) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const btn = form.querySelector('button[type="submit"]');
+      const data = new FormData(form);
+      const payload = {
+        comunidade: clean(data.get('comunidade')),
+        produtor_nome: clean(data.get('produtor_nome')),
+        contato: clean(data.get('contato')),
+        produto: clean(data.get('produto')),
+        quantidade: data.get('quantidade') ? Number(data.get('quantidade')) : null,
+        unidade: clean(data.get('unidade')),
+        periodo_referencia: clean(data.get('periodo_referencia')),
+        observacoes: clean(data.get('observacoes'))
+      };
+
+      if (!payload.comunidade || !payload.produto) {
+        setStatus('producao-status', 'Informe comunidade e produto.', 'err');
+        return;
+      }
+
+      btn.disabled = true;
+      setStatus('producao-status', 'Enviando...', '');
+      try {
+        await sbPost('producao_comunitaria', payload);
+        form.reset();
+        setStatus('producao-status', 'Registro recebido pela ASPROC.', 'ok');
+      } catch (err) {
+        setStatus('producao-status', 'Não foi possível enviar. Verifique se o SQL do MVP foi aplicado.', 'err');
+        console.error(err);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    document.getElementById('panel-demanda').addEventListener('submit', async function (event) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const btn = form.querySelector('button[type="submit"]');
+      const data = new FormData(form);
+      const payload = {
+        nome: clean(data.get('nome')),
+        contato: clean(data.get('contato')),
+        comunidade: clean(data.get('comunidade')),
+        tipo: clean(data.get('tipo')) || 'apoio_tecnico',
+        mensagem: clean(data.get('mensagem'))
+      };
+
+      if (!payload.nome || !payload.mensagem) {
+        setStatus('demanda-status', 'Informe nome e mensagem.', 'err');
+        return;
+      }
+
+      btn.disabled = true;
+      setStatus('demanda-status', 'Enviando...', '');
+      try {
+        await sbPost('demandas_comunitarias', payload);
+        form.reset();
+        setStatus('demanda-status', 'Demanda recebida pela ASPROC.', 'ok');
+      } catch (err) {
+        setStatus('demanda-status', 'Não foi possível enviar. Verifique se o SQL do MVP foi aplicado.', 'err');
+        console.error(err);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    async function loadComunidades() {
+      try {
+        const rows = await sbGet('comunidades?select=nome&ativa=eq.true&order=nome.asc');
+        const list = document.getElementById('comunidades-list');
+        list.innerHTML = rows.map(function (row) {
+          return '<option value="' + esc(row.nome) + '"></option>';
+        }).join('');
+        document.getElementById('metric-comunidades').textContent = rows.length;
+      } catch (err) {
+        document.getElementById('metric-comunidades').textContent = '0';
+      }
+    }
+
+    async function loadAvisos() {
+      const box = document.getElementById('avisos-list');
+      try {
+        const rows = await sbGet('avisos?select=id,titulo,resumo,tipo,data_pub,created_at&publicado=eq.true&order=data_pub.desc,created_at.desc&limit=4');
+        document.getElementById('metric-avisos').textContent = rows.length;
+        if (!rows.length) {
+          box.innerHTML = '<div class="empty">Nenhum aviso publicado no momento.</div>';
+          return;
+        }
+        box.innerHTML = rows.map(function (item) {
+          const date = item.data_pub || (item.created_at ? item.created_at.slice(0, 10) : '');
+          return '<a class="aviso" href="avisos.html?aviso=' + encodeURIComponent(item.id) + '">' +
+            '<strong>' + esc(item.titulo) + '</strong>' +
+            '<span>' + esc(item.resumo || item.tipo || 'Aviso ASPROC') + '</span>' +
+            (date ? '<span>' + esc(date.split('-').reverse().join('/')) + '</span>' : '') +
+            '</a>';
+        }).join('');
+      } catch (err) {
+        document.getElementById('metric-avisos').textContent = '0';
+        box.innerHTML = '<div class="empty">Avisos indisponíveis no momento.</div>';
+        setStatus('avisos-status', 'Não foi possível carregar os avisos.', 'err');
+      }
+    }
+
+    loadComunidades();
+    loadAvisos();
+  </script>
+</body>
+</html>
