@@ -50,36 +50,27 @@
     }
 
     /* ── EDITOR EXPAND (tela cheia do RTE) ── */
-    #news-editor-overlay.rte-expanded .ne-preview-panel,
-    #vaga-editor-overlay.rte-expanded .ne-preview-panel,
-    #aviso-editor-overlay.rte-expanded .ne-preview-panel {
+    #news-editor-overlay.rte-expanded .ne-preview-panel {
       display: none;
     }
 
-    #news-editor-overlay.rte-expanded .ne-body,
-    #vaga-editor-overlay.rte-expanded .ne-body,
-    #aviso-editor-overlay.rte-expanded .ne-body {
+    #news-editor-overlay.rte-expanded .ne-body {
       grid-template-columns: 1fr;
     }
 
-    #news-editor-overlay.rte-expanded .ne-editor-panel,
-    #vaga-editor-overlay.rte-expanded .ne-editor-panel,
-    #aviso-editor-overlay.rte-expanded .ne-editor-panel {
-      max-width: min(1120px, calc(100vw - 3rem));
+    #news-editor-overlay.rte-expanded .ne-editor-panel {
+      max-width: 900px;
       margin: 0 auto;
       width: 100%;
       border-right: none;
     }
 
-    #news-editor-overlay.rte-expanded .rte-wrap,
-    #vaga-editor-overlay.rte-expanded .rte-wrap,
-    #aviso-editor-overlay.rte-expanded .rte-wrap {
-      min-height: calc(100vh - 260px);
+    #news-editor-overlay.rte-expanded .rte-body {
+      max-height: calc(100vh - 220px);
+      min-height: 520px;
     }
 
-    #btn-expand-editor.active,
-    #btn-expand-vaga.active,
-    #btn-expand-aviso.active {
+    #btn-expand-editor.active {
       background: var(--accent-soft);
       color: var(--accent);
       border-color: rgba(59, 130, 246, .3);
@@ -756,142 +747,6 @@
       margin-top: .25rem;
     }
 
-    .site-health-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 1.25rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .site-health-head {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 1rem;
-      margin-bottom: 1rem;
-    }
-
-    .site-health-head h3 {
-      font-size: .95rem;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: .25rem;
-    }
-
-    .site-health-head p {
-      font-size: .78rem;
-      color: var(--text-muted);
-      line-height: 1.45;
-    }
-
-    .health-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: .75rem;
-    }
-
-    .health-item {
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: .9rem;
-      min-height: 104px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: .7rem;
-    }
-
-    .health-item.ok {
-      border-color: rgba(16, 185, 129, .34);
-      background: rgba(16, 185, 129, .08);
-    }
-
-    .health-item.warn {
-      border-color: rgba(245, 158, 11, .38);
-      background: rgba(245, 158, 11, .08);
-    }
-
-    .health-item.bad {
-      border-color: rgba(239, 68, 68, .42);
-      background: rgba(239, 68, 68, .08);
-    }
-
-    .health-item.loading {
-      opacity: .78;
-    }
-
-    .health-item-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: .75rem;
-    }
-
-    .health-label {
-      color: var(--text-muted);
-      font-size: .72rem;
-      font-weight: 700;
-      letter-spacing: .04em;
-      text-transform: uppercase;
-    }
-
-    .health-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--text-muted);
-      box-shadow: 0 0 0 4px rgba(148, 163, 184, .08);
-      flex: 0 0 auto;
-    }
-
-    .health-item.ok .health-dot {
-      background: var(--green);
-      box-shadow: 0 0 0 4px rgba(16, 185, 129, .12);
-    }
-
-    .health-item.warn .health-dot {
-      background: var(--amber);
-      box-shadow: 0 0 0 4px rgba(245, 158, 11, .13);
-    }
-
-    .health-item.bad .health-dot {
-      background: var(--red);
-      box-shadow: 0 0 0 4px rgba(239, 68, 68, .13);
-    }
-
-    .health-value {
-      color: var(--text);
-      font-size: 1rem;
-      font-weight: 700;
-      line-height: 1.25;
-    }
-
-    .health-detail {
-      color: var(--text-muted);
-      font-size: .75rem;
-      line-height: 1.4;
-    }
-
-    .health-errors {
-      margin-top: .85rem;
-      padding-top: .85rem;
-      border-top: 1px solid var(--border);
-      color: var(--text-muted);
-      font-size: .78rem;
-      line-height: 1.5;
-    }
-
-    .health-errors strong {
-      color: var(--text);
-    }
-
-    .health-errors ul {
-      margin: .45rem 0 0;
-      padding-left: 1rem;
-    }
-
     /* ── DASHBOARD CARDS ── */
     .dash-row {
       display: grid;
@@ -1322,41 +1177,6 @@
       margin-bottom: 1rem;
     }
 
-    .backup-actions {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-      gap: .65rem;
-    }
-
-    .backup-actions .btn {
-      justify-content: center;
-      width: 100%;
-    }
-
-    .backup-import-box {
-      margin-top: 1rem;
-      padding: 1rem;
-      background: var(--bg3);
-      border: 1px dashed var(--border-hover);
-      border-radius: var(--radius);
-    }
-
-    .backup-import-preview {
-      display: none;
-      margin-top: .85rem;
-      padding: .85rem;
-      background: rgba(0, 0, 0, .16);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      font-size: .8rem;
-      color: var(--text-dim);
-      line-height: 1.55;
-    }
-
-    .backup-import-preview strong {
-      color: var(--text);
-    }
-
     .alert-box {
       background: var(--amber-soft);
       border: 1px solid rgba(245, 158, 11, .2);
@@ -1381,6 +1201,43 @@
       color: var(--accent);
       margin-top: .8rem;
       line-height: 1.5;
+    }
+
+    .menu-visibility-list {
+      display: grid;
+      gap: .65rem;
+    }
+
+    .menu-visibility-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: .85rem 1rem;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    .menu-visibility-row strong {
+      display: block;
+      font-size: .88rem;
+      margin-bottom: .2rem;
+    }
+
+    .menu-visibility-row span {
+      display: block;
+      font-size: .75rem;
+      color: var(--text-muted);
+      word-break: break-word;
+    }
+
+    .menu-visibility-state {
+      min-width: 72px;
+      font-size: .72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-align: right;
     }
 
     .code-block {
@@ -1578,13 +1435,6 @@
     .cand-summary-row {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: .75rem;
-      margin: .85rem 0 1rem;
-    }
-
-    .msg-summary-row {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
       gap: .75rem;
       margin: .85rem 0 1rem;
     }
@@ -1804,10 +1654,6 @@
         grid-template-columns: 1fr 1fr;
       }
 
-      .msg-summary-row {
-        grid-template-columns: 1fr 1fr;
-      }
-
       #toast-container {
         left: .75rem;
         right: .75rem;
@@ -1966,86 +1812,6 @@
       text-overflow: ellipsis;
     }
 
-    .ne-editor-status {
-      display: inline-flex;
-      align-items: center;
-      max-width: 260px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      font-size: .7rem;
-      color: var(--text-muted);
-      opacity: .82;
-    }
-
-    .ne-tools-menu {
-      position: relative;
-    }
-
-    .ne-tools-menu summary {
-      list-style: none;
-    }
-
-    .ne-tools-menu summary::-webkit-details-marker {
-      display: none;
-    }
-
-    .ne-tools-menu[open] summary {
-      background: var(--accent-soft);
-      border-color: rgba(59, 130, 246, .28);
-      color: var(--accent);
-    }
-
-    .ne-tools-panel {
-      position: absolute;
-      right: 0;
-      top: calc(100% + .45rem);
-      z-index: 140;
-      width: 260px;
-      padding: .45rem;
-      background: var(--bg2);
-      border: 1px solid var(--border-hover);
-      border-radius: var(--radius-lg);
-      box-shadow: 0 18px 50px rgba(0, 0, 0, .45);
-      display: grid;
-      gap: .35rem;
-    }
-
-    .ne-tools-panel .btn,
-    .ne-tools-panel label.btn,
-    .ne-tools-panel .rte-tutorial-trigger {
-      width: 100%;
-      justify-content: flex-start;
-      min-height: 36px;
-    }
-
-    #btn-ai-format,
-    #btn-ai-format-vaga,
-    #btn-ai-format-aviso {
-      display: none !important;
-    }
-
-    @media (max-width: 560px) {
-      .ne-tools-menu {
-        position: static;
-      }
-
-      .ne-tools-panel {
-        position: fixed;
-        left: .75rem;
-        right: .75rem;
-        bottom: .75rem;
-        top: auto;
-        width: auto;
-        max-height: 70vh;
-        overflow: auto;
-      }
-
-      .ne-editor-status {
-        max-width: 120px;
-      }
-    }
-
     .ne-body {
       display: grid;
       grid-template-columns: 1fr 300px;
@@ -2063,7 +1829,6 @@
       gap: 1rem;
       overflow-y: auto;
       overflow-x: hidden;
-      scrollbar-gutter: stable;
     }
 
     /* O painel deve ser scrollável internamente */
@@ -2130,13 +1895,9 @@
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       overflow: hidden;
+      /* Cresce com o conteúdo */
       width: 100%;
       max-width: 100%;
-      min-height: clamp(620px, calc(100vh - 285px), 920px);
-      background: var(--bg2);
-      box-shadow: 0 12px 34px rgba(0, 0, 0, .18);
-      display: flex;
-      flex-direction: column;
       transition: border-color var(--transition);
     }
 
@@ -2148,27 +1909,16 @@
     .rte-toolbar {
       background: var(--bg3);
       border-bottom: 1px solid var(--border);
-      padding: .45rem .65rem;
+      padding: .35rem .6rem;
       display: flex;
       align-items: center;
       flex-wrap: wrap;
-      gap: .25rem;
-      row-gap: .38rem;
+      gap: .15rem;
+      row-gap: .3rem;
       flex-shrink: 0;
       position: sticky;
       top: 0;
       z-index: 10;
-      scrollbar-width: thin;
-      scrollbar-color: var(--border-hover) transparent;
-    }
-
-    .rte-toolbar::-webkit-scrollbar {
-      height: 6px;
-    }
-
-    .rte-toolbar::-webkit-scrollbar-thumb {
-      background: var(--border-hover);
-      border-radius: 999px;
     }
 
     .rte-toolbar-group {
@@ -2178,12 +1928,12 @@
     }
 
     .rte-btn {
-      min-width: 34px;
-      height: 34px;
-      padding: 0 .5rem;
+      min-width: 30px;
+      height: 30px;
+      padding: 0 .45rem;
       background: transparent;
       border: 1px solid transparent;
-      border-radius: 7px;
+      border-radius: 5px;
       color: var(--text-dim);
       font-size: .82rem;
       cursor: pointer;
@@ -2202,15 +1952,6 @@
       border-color: var(--border);
     }
 
-    .rte-btn:focus-visible,
-    .rte-select:focus-visible,
-    .rte-fontsize:focus-visible,
-    .rte-color-btn:focus-within {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, .16);
-      outline: none;
-    }
-
     .rte-btn.active {
       background: var(--accent-soft);
       color: var(--accent);
@@ -2226,12 +1967,12 @@
     }
 
     .rte-select {
-      height: 34px;
+      height: 30px;
       padding: 0 .5rem;
       background: rgba(0, 0, 0, .2);
       border: 1px solid var(--border);
       color: var(--text-dim);
-      border-radius: 7px;
+      border-radius: 5px;
       font-size: .78rem;
       cursor: pointer;
       outline: none;
@@ -2247,13 +1988,13 @@
     }
 
     .rte-fontsize {
-      width: 58px;
-      height: 34px;
+      width: 50px;
+      height: 30px;
       padding: 0 .3rem;
       background: rgba(0, 0, 0, .2);
       border: 1px solid var(--border);
       color: var(--text-dim);
-      border-radius: 7px;
+      border-radius: 5px;
       font-size: .78rem;
       outline: none;
       text-align: center;
@@ -2269,9 +2010,9 @@
     }
 
     .rte-color-btn {
-      width: 34px;
-      height: 34px;
-      border-radius: 7px;
+      width: 30px;
+      height: 30px;
+      border-radius: 5px;
       overflow: hidden;
       cursor: pointer;
       border: 1px solid var(--border);
@@ -2296,16 +2037,17 @@
     }
 
     .rte-body {
-      flex: 1 1 auto;
-      min-height: 560px;
-      height: auto;
-      overflow-y: visible;
-      padding: 2.1rem clamp(1.15rem, 3vw, 3rem) 2.6rem;
+      min-height: 420px;
+      max-height: 65vh;
+      overflow-y: auto;
+      /* Permite scroll vertical com mouse/trackpad dentro do editor */
+      padding: 1.75rem 2.25rem;
       color: var(--text);
       font-size: 1rem;
       line-height: 1.9;
       outline: none;
       background: var(--bg2);
+      /* CRÍTICO: impede overflow horizontal */
       overflow-wrap: break-word;
       word-break: break-word;
       word-wrap: break-word;
@@ -2313,8 +2055,9 @@
       width: 100%;
       max-width: 100%;
       box-sizing: border-box;
+      /* Cursor de texto explícito */
       cursor: text;
-      scroll-margin: 6rem;
+      /* Transição suave no foco */
       transition: background var(--transition);
     }
 
@@ -2333,14 +2076,6 @@
       display: block;
       font-style: italic;
       opacity: .5;
-    }
-
-    #ve-rte-body:empty::before {
-      content: 'Escreva a descrição da vaga aqui…';
-    }
-
-    #ae-rte-body:empty::before {
-      content: 'Escreva o conteúdo do aviso aqui…';
     }
 
     .rte-body h1,
@@ -2433,25 +2168,19 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: .75rem;
-      min-height: 38px;
-      padding: .38rem .85rem;
+      padding: .3rem .85rem;
       background: var(--bg3);
       border-top: 1px solid var(--border);
       font-size: .7rem;
       color: var(--text-muted);
       flex-shrink: 0;
-      line-height: 1.45;
       user-select: none;
     }
 
     .rte-status-bar .rte-shortcuts {
       opacity: .55;
       display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      flex-wrap: wrap;
-      gap: .35rem .8rem;
+      gap: .8rem;
     }
 
     .rte-status-bar kbd {
@@ -2693,9 +2422,7 @@
     }
 
     /* ── AUTO-SAVE INDICATOR ── */
-    #ne-autosave-indicator,
-    #rte-autosave-ve,
-    #rte-autosave-ae {
+    #ne-autosave-indicator {
       display: inline-flex;
       align-items: center;
       gap: .35rem;
@@ -2707,17 +2434,13 @@
       transition: all .3s;
     }
 
-    #ne-autosave-indicator.saving,
-    #rte-autosave-ve.saving,
-    #rte-autosave-ae.saving {
+    #ne-autosave-indicator.saving {
       color: var(--accent);
       border-color: rgba(59, 130, 246, .2);
       background: var(--accent-soft);
     }
 
-    #ne-autosave-indicator.saved,
-    #rte-autosave-ve.saved,
-    #rte-autosave-ae.saved {
+    #ne-autosave-indicator.saved {
       color: var(--green);
       border-color: rgba(16, 185, 129, .2);
       background: var(--green-soft);
@@ -2847,206 +2570,6 @@
       margin-bottom: .3rem;
     }
 
-    .ne-live-preview {
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      background: var(--bg);
-      overflow: hidden;
-      box-shadow: 0 10px 28px rgba(0, 0, 0, .18);
-    }
-
-    .ne-live-preview-media {
-      min-height: 128px;
-      background: linear-gradient(135deg, rgba(59, 130, 246, .16), rgba(16, 185, 129, .12));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-muted);
-      font-size: .78rem;
-      text-align: center;
-      overflow: hidden;
-    }
-
-    .ne-live-preview-media img {
-      width: 100%;
-      height: 150px;
-      object-fit: cover;
-      display: block;
-    }
-
-    .ne-live-preview-body {
-      padding: .95rem;
-    }
-
-    .ne-live-preview-meta {
-      display: flex;
-      align-items: center;
-      gap: .45rem;
-      flex-wrap: wrap;
-      margin-bottom: .55rem;
-      font-size: .68rem;
-      color: var(--text-muted);
-    }
-
-    .ne-live-preview-pill {
-      display: inline-flex;
-      align-items: center;
-      border-radius: 999px;
-      padding: .14rem .5rem;
-      background: var(--accent-soft);
-      color: var(--accent);
-      font-weight: 700;
-    }
-
-    .ne-live-preview-title {
-      margin: 0;
-      color: var(--text);
-      font-family: 'Playfair Display', serif;
-      font-size: 1.12rem;
-      line-height: 1.25;
-    }
-
-    .ne-live-preview-summary {
-      margin: .5rem 0 .7rem;
-      color: var(--text-dim);
-      font-size: .82rem;
-      line-height: 1.55;
-    }
-
-    .ne-live-preview-content {
-      max-height: 190px;
-      overflow: hidden;
-      color: var(--text-muted);
-      font-size: .78rem;
-      line-height: 1.65;
-      position: relative;
-    }
-
-    .ne-live-preview-content::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      height: 42px;
-      background: linear-gradient(180deg, transparent, var(--bg));
-      pointer-events: none;
-    }
-
-    .ne-live-preview-content img,
-    .ne-live-preview-content iframe,
-    .ne-live-preview-content table {
-      max-width: 100%;
-    }
-
-    .publish-check-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 12000;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-      background: rgba(2, 6, 23, .72);
-      backdrop-filter: blur(8px);
-    }
-
-    .publish-check-modal {
-      width: min(560px, 100%);
-      background: var(--bg2);
-      border: 1px solid var(--border-hover);
-      border-radius: 16px;
-      box-shadow: 0 30px 90px rgba(0, 0, 0, .65);
-      overflow: hidden;
-    }
-
-    .publish-check-head,
-    .publish-check-foot {
-      padding: 1rem 1.15rem;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .publish-check-foot {
-      border-top: 1px solid var(--border);
-      border-bottom: 0;
-      display: flex;
-      justify-content: flex-end;
-      gap: .55rem;
-      flex-wrap: wrap;
-    }
-
-    .publish-check-title {
-      margin: 0;
-      color: var(--text);
-      font-size: 1rem;
-    }
-
-    .publish-check-sub {
-      margin: .25rem 0 0;
-      color: var(--text-muted);
-      font-size: .78rem;
-      line-height: 1.45;
-    }
-
-    .publish-check-body {
-      padding: 1rem 1.15rem;
-      display: grid;
-      gap: .85rem;
-      max-height: 68vh;
-      overflow: auto;
-    }
-
-    .publish-check-summary {
-      padding: .8rem;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      background: var(--bg3);
-    }
-
-    .publish-check-summary strong {
-      display: block;
-      color: var(--text);
-      margin-bottom: .28rem;
-      line-height: 1.35;
-    }
-
-    .publish-check-list {
-      display: grid;
-      gap: .4rem;
-    }
-
-    .publish-check-item {
-      padding: .62rem .72rem;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      background: rgba(255, 255, 255, .02);
-      color: var(--text-dim);
-      font-size: .8rem;
-      line-height: 1.45;
-    }
-
-    .publish-check-item.blocker {
-      border-color: rgba(239, 68, 68, .35);
-      background: var(--red-soft);
-      color: #fecaca;
-    }
-
-    .publish-check-item.warning {
-      border-color: rgba(245, 158, 11, .35);
-      background: var(--amber-soft);
-      color: #fde68a;
-    }
-
-    .publish-check-ok {
-      padding: .72rem .8rem;
-      border-radius: var(--radius);
-      background: var(--green-soft);
-      border: 1px solid rgba(16, 185, 129, .25);
-      color: var(--green);
-      font-size: .82rem;
-      font-weight: 700;
-    }
-
     .deploy-status {
       display: none;
       border-radius: 8px;
@@ -3089,51 +2612,12 @@
       }
 
       .rte-body {
-        min-height: 520px;
-        padding: 1.4rem 1rem 2rem;
-      }
-
-      .rte-toolbar {
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        overflow-y: hidden;
-        align-items: center;
-        padding: .5rem;
-      }
-
-      .rte-select {
-        max-width: 130px;
-      }
-
-      .rte-sep {
-        margin: 0 .1rem;
-      }
-
-      .rte-status-bar {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .rte-status-bar .rte-shortcuts {
-        justify-content: flex-start;
+        max-height: 50vh;
       }
 
       .ne-preview-panel {
         height: auto;
         overflow: visible;
-      }
-    }
-
-    @media (max-width: 560px) {
-      .rte-btn,
-      .rte-color-btn {
-        min-width: 36px;
-        width: 36px;
-        height: 36px;
-      }
-
-      .rte-status-bar .rte-shortcuts {
-        display: none;
       }
     }
 
@@ -3272,14 +2756,12 @@
       border: 1px solid var(--border-hover);
       border-radius: var(--radius-lg);
       box-shadow: 0 12px 40px rgba(0, 0, 0, .5);
-      width: min(360px, calc(100vw - 1rem));
-      max-height: min(420px, calc(100vh - 1rem));
+      width: 300px;
+      max-height: 360px;
       overflow-y: auto;
-      padding: .45rem;
+      padding: .4rem;
       display: none;
       animation: slashFadeIn .12s ease-out;
-      scrollbar-width: thin;
-      scrollbar-color: var(--border-hover) transparent;
     }
 
     .rte-slash-menu.open {
@@ -3304,64 +2786,22 @@
       color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: .08em;
-      padding: .55rem .7rem .28rem;
-    }
-
-    .rte-slash-top {
-      position: sticky;
-      top: -.45rem;
-      z-index: 2;
-      margin: -.45rem -.45rem .35rem;
-      padding: .7rem .85rem .65rem;
-      background: linear-gradient(180deg, var(--bg3), var(--bg2));
-      border-bottom: 1px solid var(--border);
-      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-    }
-
-    .rte-slash-top strong {
-      display: block;
-      font-size: .82rem;
-      color: var(--text);
-      margin-bottom: .16rem;
-    }
-
-    .rte-slash-top span {
-      display: block;
-      font-size: .7rem;
-      color: var(--text-muted);
-      line-height: 1.35;
-    }
-
-    .rte-slash-query {
-      display: inline-flex;
-      align-items: center;
-      gap: .2rem;
-      margin-top: .45rem;
-      padding: .18rem .45rem;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      background: rgba(0, 0, 0, .18);
-      color: var(--accent);
-      font-size: .7rem;
-      font-weight: 700;
+      padding: .45rem .7rem .25rem;
     }
 
     .rte-slash-item {
       display: flex;
       align-items: center;
       gap: .7rem;
-      padding: .58rem .68rem;
-      border: 1px solid transparent;
-      border-radius: 8px;
+      padding: .5rem .65rem;
+      border-radius: 6px;
       cursor: pointer;
-      transition: background var(--transition), border-color var(--transition), transform var(--transition);
+      transition: background var(--transition);
     }
 
     .rte-slash-item:hover,
     .rte-slash-item.active {
       background: var(--accent-soft);
-      border-color: rgba(59, 130, 246, .22);
-      transform: translateX(2px);
     }
 
     .rte-slash-icon {
@@ -3394,26 +2834,6 @@
       color: var(--text-muted);
       margin-top: .1rem;
       line-height: 1.3;
-    }
-
-    .rte-slash-footer {
-      display: flex;
-      gap: .55rem;
-      flex-wrap: wrap;
-      padding: .55rem .7rem .25rem;
-      font-size: .66rem;
-      color: var(--text-muted);
-      border-top: 1px solid var(--border);
-      margin-top: .35rem;
-    }
-
-    .rte-slash-footer kbd {
-      padding: .04rem .28rem;
-      border-radius: 4px;
-      border: 1px solid var(--border);
-      background: var(--bg3);
-      color: var(--text-dim);
-      font-family: inherit;
     }
 
     .rte-slash-empty {
@@ -4085,559 +3505,6 @@
     }
 
     /* ════════════════════════════════════════════════
-       MOBILE PROFISSIONAL DO ADMIN
-    ════════════════════════════════════════════════ */
-    .mobile-sidebar-backdrop {
-      display: none;
-    }
-
-    .mobile-bottom-nav {
-      display: none;
-    }
-
-    @media (max-width: 900px) {
-      body.sidebar-mobile-open {
-        overflow: hidden;
-      }
-
-      .mobile-sidebar-backdrop {
-        position: fixed;
-        inset: 0;
-        z-index: 190;
-        background: rgba(0, 0, 0, .58);
-        backdrop-filter: blur(3px);
-      }
-
-      .sidebar.open + .mobile-sidebar-backdrop {
-        display: block;
-      }
-
-      .sidebar {
-        width: min(84vw, 320px);
-        z-index: 220;
-      }
-
-      .sidebar-brand {
-        position: sticky;
-        top: 0;
-        z-index: 2;
-        background: var(--bg2);
-      }
-
-      .sidebar-nav {
-        padding-bottom: 1rem;
-      }
-
-      .nav-item {
-        min-height: 42px;
-      }
-
-      .main-content {
-        min-width: 0;
-      }
-
-      .topbar {
-        height: auto;
-        min-height: var(--header-h);
-        align-items: flex-start;
-        flex-wrap: wrap;
-        gap: .65rem;
-        padding: .65rem .85rem;
-      }
-
-      .hamburger {
-        width: 40px;
-        height: 40px;
-        align-items: center;
-        justify-content: center;
-        background: var(--bg3);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        flex-shrink: 0;
-      }
-
-      .topbar-title {
-        min-width: 0;
-        padding-top: .1rem;
-      }
-
-      .topbar-title h1 {
-        font-size: .98rem;
-        line-height: 1.25;
-      }
-
-      .topbar-title p {
-        font-size: .72rem;
-        line-height: 1.25;
-      }
-
-      .topbar-actions {
-        margin-left: auto;
-        justify-content: flex-end;
-        flex-wrap: wrap;
-        gap: .4rem;
-        max-width: 54vw;
-      }
-
-      .topbar-actions .btn {
-        min-height: 36px;
-        justify-content: center;
-      }
-
-      .page-content {
-        max-width: none;
-        padding: .85rem .85rem 5.75rem;
-      }
-
-      .mobile-bottom-nav {
-        position: fixed;
-        left: .75rem;
-        right: .75rem;
-        bottom: .75rem;
-        z-index: 180;
-        display: grid;
-        grid-template-columns: repeat(5, minmax(0, 1fr));
-        gap: .2rem;
-        padding: .35rem;
-        background: rgba(15, 23, 42, .92);
-        border: 1px solid var(--border-hover);
-        border-radius: 18px;
-        box-shadow: 0 18px 60px rgba(0, 0, 0, .48);
-        backdrop-filter: blur(18px);
-      }
-
-      .mobile-bottom-btn {
-        min-width: 0;
-        min-height: 52px;
-        border: 0;
-        border-radius: 14px;
-        background: transparent;
-        color: var(--text-muted);
-        font-family: 'Inter', sans-serif;
-        font-size: .67rem;
-        font-weight: 700;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: .16rem;
-        cursor: pointer;
-      }
-
-      .mobile-bottom-btn span {
-        font-size: 1.05rem;
-        line-height: 1;
-      }
-
-      .mobile-bottom-btn.active {
-        background: var(--accent-soft);
-        color: var(--accent);
-      }
-
-      .stats-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: .75rem;
-      }
-
-      .site-health-card {
-        padding: 1rem;
-        border-radius: 14px;
-      }
-
-      .site-health-head {
-        align-items: stretch;
-        flex-direction: column;
-      }
-
-      .site-health-head .btn {
-        width: 100%;
-        justify-content: center;
-      }
-
-      .health-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: .65rem;
-      }
-
-      .dash-row,
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .table-wrap {
-        border-radius: 10px;
-        overflow: visible;
-      }
-
-      .table-header {
-        align-items: stretch;
-        padding: .85rem;
-        gap: .55rem;
-      }
-
-      .table-header h3 {
-        flex: 1 0 100%;
-        min-width: 0;
-      }
-
-      .search-input,
-      .select-filter,
-      .ne-panel-input,
-      .ne-panel-select {
-        min-height: 38px;
-      }
-
-      .search-input,
-      .select-filter {
-        width: auto;
-        flex: 1 1 170px;
-        min-height: 44px;
-        border-radius: 12px;
-      }
-
-      #noticias-table,
-      #vagas-table,
-      #avisos-table,
-      #candidaturas-table,
-      #mensagens-table {
-        display: block !important;
-        min-width: 0;
-        background: transparent;
-      }
-
-      #noticias-table[style*="display: none"],
-      #vagas-table[style*="display: none"],
-      #avisos-table[style*="display: none"],
-      #candidaturas-table[style*="display: none"],
-      #mensagens-table[style*="display: none"] {
-        display: none !important;
-      }
-
-      #noticias-table thead,
-      #vagas-table thead,
-      #avisos-table thead,
-      #candidaturas-table thead,
-      #mensagens-table thead {
-        display: none;
-      }
-
-      #noticias-table tbody,
-      #vagas-table tbody,
-      #avisos-table tbody,
-      #candidaturas-table tbody,
-      #mensagens-table tbody {
-        display: grid;
-        gap: .7rem;
-        padding: .75rem;
-      }
-
-      #noticias-table tr,
-      #vagas-table tr,
-      #avisos-table tr,
-      #candidaturas-table tr,
-      #mensagens-table tr {
-        display: grid;
-        gap: .55rem;
-        padding: .85rem;
-        border: 1px solid var(--border);
-        border-radius: 14px;
-        background: var(--bg2);
-      }
-
-      #noticias-table td,
-      #vagas-table td,
-      #avisos-table td,
-      #candidaturas-table td,
-      #mensagens-table td {
-        display: grid;
-        grid-template-columns: minmax(92px, .42fr) 1fr;
-        gap: .7rem;
-        align-items: start;
-        padding: 0;
-        border: 0;
-        font-size: .82rem;
-      }
-
-      #noticias-table td::before,
-      #vagas-table td::before,
-      #avisos-table td::before,
-      #candidaturas-table td::before,
-      #mensagens-table td::before {
-        content: attr(data-mobile-label);
-        color: var(--text-muted);
-        font-size: .68rem;
-        font-weight: 800;
-        letter-spacing: .06em;
-        text-transform: uppercase;
-      }
-
-      #noticias-table td:nth-child(1)::before { content: 'Notícia'; }
-      #noticias-table td:nth-child(2)::before { content: 'Categoria'; }
-      #noticias-table td:nth-child(3)::before { content: 'Data'; }
-      #noticias-table td:nth-child(4)::before { content: 'Status'; }
-      #noticias-table td:nth-child(5)::before { content: 'Ações'; }
-
-      #vagas-table td:nth-child(1)::before { content: 'Vaga'; }
-      #vagas-table td:nth-child(2)::before { content: 'Local'; }
-      #vagas-table td:nth-child(3)::before { content: 'Regime'; }
-      #vagas-table td:nth-child(4)::before { content: 'Prazo'; }
-      #vagas-table td:nth-child(5)::before { content: 'Status'; }
-      #vagas-table td:nth-child(6)::before { content: 'Ações'; }
-
-      #avisos-table td:nth-child(1)::before { content: 'Aviso'; }
-      #avisos-table td:nth-child(2)::before { content: 'Tipo'; }
-      #avisos-table td:nth-child(3)::before { content: 'Data'; }
-      #avisos-table td:nth-child(4)::before { content: 'Status'; }
-      #avisos-table td:nth-child(5)::before { content: 'Ações'; }
-
-      .td-actions {
-        gap: .45rem;
-        display: flex !important;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-      }
-
-      .btn {
-        min-height: 38px;
-      }
-
-      .btn-sm {
-        padding: .42rem .7rem;
-      }
-
-      .config-block,
-      .table-wrap {
-        box-shadow: none;
-      }
-
-      .backup-actions {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .modal-overlay,
-      .rte-custom-overlay {
-        padding: .6rem;
-      }
-
-      .modal,
-      .rte-custom-modal {
-        width: min(100%, 720px);
-        max-height: calc(100dvh - 1.2rem);
-        border-radius: 16px;
-      }
-
-      .modal-head,
-      .modal-body,
-      .modal-footer,
-      .rte-custom-header,
-      .rte-custom-body,
-      .rte-custom-footer {
-        padding-left: 1rem;
-        padding-right: 1rem;
-      }
-
-      .ne-topbar {
-        align-items: flex-start;
-        gap: .45rem;
-        max-height: 42dvh;
-        overflow-y: auto;
-        padding: .65rem .75rem;
-      }
-
-      .ne-topbar-title {
-        flex: 1 0 100%;
-        white-space: normal;
-        line-height: 1.3;
-        order: -1;
-      }
-
-      .ne-topbar .btn,
-      .ne-topbar label.btn {
-        min-height: 34px;
-        padding: .38rem .55rem;
-      }
-
-      .ne-body {
-        flex: 1;
-        min-height: 0;
-        height: auto;
-        overflow-y: auto;
-        display: block;
-      }
-
-      .ne-editor-panel {
-        border-right: none;
-        padding: .85rem;
-        overflow: visible;
-      }
-
-      .ne-preview-panel {
-        height: auto;
-        overflow: visible;
-        border-top: 1px solid var(--border);
-        padding: .85rem;
-      }
-
-      .rte-wrap {
-        min-height: min(74dvh, 720px);
-      }
-
-      .rte-body {
-        min-height: 460px;
-      }
-    }
-
-    @media (max-width: 560px) {
-      .health-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .health-item {
-        min-height: auto;
-      }
-    }
-
-    @media (max-width: 560px) {
-      input,
-      select,
-      textarea,
-      .search-input,
-      .select-filter,
-      .ne-panel-input,
-      .ne-panel-select,
-      .rte-select,
-      .rte-fontsize {
-        font-size: 16px;
-      }
-
-      .btn {
-        white-space: normal;
-        text-align: center;
-        line-height: 1.2;
-      }
-
-      .login-box {
-        max-width: calc(100vw - 1.5rem);
-        padding: 1.5rem;
-        border-radius: 14px;
-      }
-
-      .topbar {
-        padding: .6rem .75rem;
-      }
-
-      .topbar-title p {
-        display: none;
-      }
-
-      .topbar-actions {
-        flex: 1 0 100%;
-        max-width: none;
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        margin-left: 0;
-      }
-
-      .topbar-actions .btn {
-        width: 100%;
-        min-width: 0;
-      }
-
-      .page-content {
-        padding: .65rem .65rem 5.95rem;
-      }
-
-      .stats-grid,
-      .backup-actions {
-        grid-template-columns: 1fr;
-      }
-
-      .stat-card,
-      .config-block,
-      .table-wrap,
-      .backup-import-box {
-        border-radius: 10px;
-      }
-
-      .table-header {
-        padding: .75rem;
-      }
-
-      .search-input,
-      .select-filter,
-      .table-header .btn {
-        flex: 1 0 100%;
-        width: 100%;
-      }
-
-      .modal-footer,
-      .rte-custom-footer {
-        flex-direction: column-reverse;
-      }
-
-      .modal-overlay,
-      .rte-custom-overlay {
-        align-items: flex-end;
-        padding: 0;
-      }
-
-      .modal,
-      .rte-custom-modal {
-        width: 100%;
-        max-width: 100%;
-        max-height: 92dvh;
-        border-radius: 18px 18px 0 0;
-        border-left: 0;
-        border-right: 0;
-        border-bottom: 0;
-      }
-
-      .modal-footer .btn,
-      .rte-custom-footer .btn {
-        width: 100%;
-        justify-content: center;
-      }
-
-      .ne-topbar .btn,
-      .ne-topbar label.btn {
-        flex: 1 1 calc(50% - .45rem);
-        justify-content: center;
-        min-width: 0;
-      }
-
-      .ne-title-input {
-        font-size: 1.45rem;
-      }
-
-      .ne-resumo-input {
-        max-height: 180px;
-      }
-
-      .rte-wrap {
-        min-height: 560px;
-      }
-
-      .rte-body {
-        min-height: 420px;
-      }
-
-      .rte-select {
-        max-width: 118px;
-      }
-    }
-
-    @media (max-width: 390px) {
-      .topbar-actions {
-        grid-template-columns: 1fr;
-      }
-
-      .ne-topbar .btn,
-      .ne-topbar label.btn {
-        flex-basis: 100%;
-      }
-    }
-
-    /* ════════════════════════════════════════════════
        MODAL CUSTOMIZADO COMPARTILHADO (Tabela / YouTube / Embed)
     ════════════════════════════════════════════════ */
     .rte-custom-overlay {
@@ -4872,6 +3739,9 @@
         <div class="nav-item" onclick="goTo('textos',this)">
           <span class="nav-icon">✏️</span> Textos do Site
         </div>
+        <div class="nav-item" onclick="goTo('menus',this)">
+          <span class="nav-icon">☰</span> Menus do Site
+        </div>
 
         <div class="nav-group-label">Sistema</div>
         <div class="nav-item" id="nav-item-usuarios" onclick="goTo('usuarios',this)">
@@ -4894,24 +3764,6 @@
         <button class="btn-logout" onclick="doLogout()">Sair da conta</button>
       </div>
     </aside>
-    <div class="mobile-sidebar-backdrop" onclick="closeSidebar()" aria-hidden="true"></div>
-    <nav class="mobile-bottom-nav" aria-label="Navegação rápida">
-      <button class="mobile-bottom-btn active" data-mobile-section="dashboard" onclick="goTo('dashboard')">
-        <span>▦</span>Início
-      </button>
-      <button class="mobile-bottom-btn" data-mobile-section="noticias" onclick="goTo('noticias')">
-        <span>📰</span>Notícias
-      </button>
-      <button class="mobile-bottom-btn" data-mobile-section="vagas" onclick="goTo('vagas')">
-        <span>💼</span>Vagas
-      </button>
-      <button class="mobile-bottom-btn" data-mobile-section="candidaturas" onclick="goTo('candidaturas')">
-        <span>📋</span>Candidatos
-      </button>
-      <button class="mobile-bottom-btn" data-mobile-section="menu" onclick="toggleSidebar()">
-        <span>☰</span>Mais
-      </button>
-    </nav>
 
     <!-- MAIN -->
     <div class="main-content">
@@ -4959,82 +3811,6 @@
                 <div class="stat-num" id="stat-cand">–</div>
                 <div class="stat-label">Candidaturas novas</div>
               </div>
-            </div>
-          </div>
-
-          <div class="site-health-card" id="site-health-card" aria-live="polite">
-            <div class="site-health-head">
-              <div>
-                <h3>Central de saúde do site</h3>
-                <p>Checagens rápidas para confirmar conexão, backups, storage, formulários e conteúdo publicado.</p>
-              </div>
-              <button class="btn btn-secondary btn-sm" id="btn-health-refresh" onclick="loadSiteHealth(true)">↻
-                Atualizar</button>
-            </div>
-            <div class="health-grid">
-              <div class="health-item loading" id="health-supabase">
-                <div class="health-item-top">
-                  <span class="health-label">Supabase</span>
-                  <span class="health-dot"></span>
-                </div>
-                <div>
-                  <div class="health-value">Verificando...</div>
-                  <div class="health-detail">Testando conexão com a API.</div>
-                </div>
-              </div>
-              <div class="health-item loading" id="health-backup">
-                <div class="health-item-top">
-                  <span class="health-label">Backup</span>
-                  <span class="health-dot"></span>
-                </div>
-                <div>
-                  <div class="health-value">Sem leitura</div>
-                  <div class="health-detail">Aguardando histórico local.</div>
-                </div>
-              </div>
-              <div class="health-item loading" id="health-storage">
-                <div class="health-item-top">
-                  <span class="health-label">Storage</span>
-                  <span class="health-dot"></span>
-                </div>
-                <div>
-                  <div class="health-value">Verificando...</div>
-                  <div class="health-detail">Conferindo buckets essenciais.</div>
-                </div>
-              </div>
-              <div class="health-item loading" id="health-forms">
-                <div class="health-item-top">
-                  <span class="health-label">Formulários</span>
-                  <span class="health-dot"></span>
-                </div>
-                <div>
-                  <div class="health-value">Verificando...</div>
-                  <div class="health-detail">Contato, newsletter e candidaturas.</div>
-                </div>
-              </div>
-              <div class="health-item loading" id="health-news">
-                <div class="health-item-top">
-                  <span class="health-label">Notícias</span>
-                  <span class="health-dot"></span>
-                </div>
-                <div>
-                  <div class="health-value">...</div>
-                  <div class="health-detail">Publicadas no banco.</div>
-                </div>
-              </div>
-              <div class="health-item loading" id="health-drafts">
-                <div class="health-item-top">
-                  <span class="health-label">Rascunhos</span>
-                  <span class="health-dot"></span>
-                </div>
-                <div>
-                  <div class="health-value">...</div>
-                  <div class="health-detail">Itens ainda não publicados.</div>
-                </div>
-              </div>
-            </div>
-            <div class="health-errors" id="health-errors">
-              <strong>Erros recentes:</strong> verificando agendamentos e falhas recentes.
             </div>
           </div>
 
@@ -5298,38 +4074,6 @@
               </div>
             </div>
           </div>
-          <div class="msg-summary-row" id="msg-summary" aria-label="Resumo das mensagens">
-            <button type="button" class="cand-summary-card" data-msg-summary="" onclick="setMsgAssuntoFilter('')">
-              <div class="cand-summary-label">Todas</div>
-              <div class="cand-summary-value" id="msg-count-total">0</div>
-              <div class="cand-summary-hint">Mensagens recebidas</div>
-            </button>
-            <button type="button" class="cand-summary-card" data-msg-summary="Informações gerais" onclick="setMsgAssuntoFilter('Informações gerais')">
-              <div class="cand-summary-label">Informações</div>
-              <div class="cand-summary-value" id="msg-count-info">0</div>
-              <div class="cand-summary-hint">Dúvidas gerais</div>
-            </button>
-            <button type="button" class="cand-summary-card" data-msg-summary="Parceria" onclick="setMsgAssuntoFilter('Parceria')">
-              <div class="cand-summary-label">Parceria</div>
-              <div class="cand-summary-value" id="msg-count-parceria">0</div>
-              <div class="cand-summary-hint">Oportunidades</div>
-            </button>
-            <button type="button" class="cand-summary-card" data-msg-summary="Imprensa" onclick="setMsgAssuntoFilter('Imprensa')">
-              <div class="cand-summary-label">Imprensa</div>
-              <div class="cand-summary-value" id="msg-count-imprensa">0</div>
-              <div class="cand-summary-hint">Solicitações</div>
-            </button>
-            <button type="button" class="cand-summary-card" data-msg-summary="Voluntariado" onclick="setMsgAssuntoFilter('Voluntariado')">
-              <div class="cand-summary-label">Voluntariado</div>
-              <div class="cand-summary-value" id="msg-count-voluntariado">0</div>
-              <div class="cand-summary-hint">Apoio direto</div>
-            </button>
-            <button type="button" class="cand-summary-card" data-msg-summary="Outro" onclick="setMsgAssuntoFilter('Outro')">
-              <div class="cand-summary-label">Outro</div>
-              <div class="cand-summary-value" id="msg-count-outro">0</div>
-              <div class="cand-summary-hint">Sem categoria</div>
-            </button>
-          </div>
           <div id="msg-loading" class="loading">
             <div class="spinner"></div>
           </div>
@@ -5442,38 +4186,50 @@
           </div>
 
           <div class="config-block">
-            <h3>💾 Backups do conteúdo</h3>
-            <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:1rem;line-height:1.5;">
-              Exporte cópias em JSON dos dados principais do site. O backup não altera nada no Supabase.
+            <h3>📦 Banco de Dados</h3>
+            <p style="font-size:.84rem;color:var(--text-muted);margin-bottom:1rem;">Execute o arquivo <code
+                style="background:var(--bg3);padding:.1rem .4rem;border-radius:4px;font-size:.82rem;">supabase_setup.sql</code>
+              no SQL Editor do Supabase para criar as tabelas.</p>
+            <a href="supabase_setup.sql" download class="btn btn-secondary btn-sm">⬇ Baixar supabase_setup.sql</a>
+            <div
+              style="margin-top:1rem;padding:1rem;background:var(--bg3);border-radius:8px;border:1px solid var(--border);">
+              <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:.75rem;">📬 Para receber as mensagens do
+                formulário de contato, crie também a tabela abaixo no SQL Editor do Supabase:</p>
+              <pre class="code-block" style="font-size:.78rem;white-space:pre;overflow-x:auto;">-- Tabela de mensagens de contato (sobre.html)
+CREATE TABLE IF NOT EXISTS mensagens_contato (
+  id          bigserial PRIMARY KEY,
+  nome        text NOT NULL,
+  email       text NOT NULL,
+  assunto     text,
+  mensagem    text NOT NULL,
+  created_at  timestamptz DEFAULT now()
+);
+
+-- Permissão pública para inserir (anon pode enviar mensagem)
+ALTER TABLE mensagens_contato ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Inserir mensagens" ON mensagens_contato
+  FOR INSERT TO anon WITH CHECK (true);
+
+CREATE POLICY "Admin lê mensagens" ON mensagens_contato
+  FOR SELECT TO authenticated USING (true);
+
+CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
+  FOR DELETE TO authenticated USING (true);</pre>
+              <button class="btn btn-secondary btn-sm" style="margin-top:.6rem;"
+                onclick="navigator.clipboard.writeText(document.querySelector('.code-block').textContent).then(()=>toast('SQL copiado!','success'))">📋
+                Copiar SQL</button>
+            </div>
+          </div>
+
+          <div class="config-block">
+            <h3>🌐 Snippet de integração</h3>
+            <p style="font-size:.82rem;color:var(--text-muted);margin-bottom:1rem;">Adicione no
+              <code>&lt;head&gt;</code> de cada página para integrar com Supabase:
             </p>
-            <div class="backup-actions">
-              <button class="btn btn-secondary btn-sm" onclick="downloadBackup('noticias',this)">Notícias</button>
-              <button class="btn btn-secondary btn-sm" onclick="downloadBackup('avisos',this)">Avisos</button>
-              <button class="btn btn-secondary btn-sm" onclick="downloadBackup('vagas',this)">Vagas</button>
-              <button class="btn btn-secondary btn-sm" onclick="downloadBackup('candidaturas',this)">Candidatos</button>
-              <button class="btn btn-secondary btn-sm" onclick="downloadBackup('mensagens_contato',this)">Mensagens</button>
-              <button class="btn btn-success btn-sm" onclick="downloadFullBackup(this)">Backup geral</button>
-            </div>
-            <div class="info-box" style="font-size:.78rem;margin-top:1rem;">
-              O backup geral inclui notícias, avisos, vagas, candidaturas, mensagens de contato e newsletters.
-            </div>
-            <div class="backup-import-box">
-              <div style="display:flex;gap:.65rem;align-items:center;justify-content:space-between;flex-wrap:wrap;">
-                <div>
-                  <strong style="display:block;font-size:.86rem;margin-bottom:.2rem;">Importar backup</strong>
-                  <span style="font-size:.78rem;color:var(--text-muted);">Aceita arquivos JSON gerados por este painel.</span>
-                </div>
-                <label class="btn btn-secondary btn-sm" for="backup-import-file" style="cursor:pointer;">Escolher arquivo</label>
-                <input type="file" id="backup-import-file" accept="application/json,.json" style="display:none;"
-                  onchange="previewBackupImport(this)">
-              </div>
-              <div id="backup-import-preview" class="backup-import-preview"></div>
-              <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.85rem;">
-                <button class="btn btn-success btn-sm" id="btn-import-backup" onclick="importSelectedBackup(this)"
-                  disabled>Importar backup validado</button>
-                <button class="btn btn-secondary btn-sm" onclick="resetBackupImport()">Limpar</button>
-              </div>
-            </div>
+            <pre class="code-block" id="integration-snippet"></pre>
+            <button class="btn btn-secondary btn-sm" onclick="copySnippet()" style="margin-top:.75rem;">📋 Copiar
+              código</button>
           </div>
         </section>
 
@@ -5583,6 +4339,40 @@
           </div>
         </section>
 
+        <!-- ════ MENUS DO SITE ════ -->
+        <section class="section" id="sec-menus">
+          <div class="config-block" style="max-width:860px;">
+            <div
+              style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1rem;">
+              <div>
+                <h3 style="margin:0 0 .35rem;">☰ Visibilidade dos Menus</h3>
+                <p style="font-size:.83rem;color:var(--text-muted);margin:0;line-height:1.55;">
+                  Ative ou oculte páginas nos menus públicos do site. A mudança vale para topo e rodapés das páginas
+                  que usam o script <code>asproc-menu-visibility.js</code>.
+                </p>
+              </div>
+              <a href="supabase/menu_visibility_config.sql" download class="btn btn-secondary btn-sm">⬇ SQL de ativação</a>
+            </div>
+
+            <div class="info-box" style="margin-bottom:1rem;">
+              A página <strong>Comunidades</strong> fica oculta por padrão e só aparece quando for habilitada aqui.
+              Depois de salvar, o site público lê a configuração no Supabase.
+            </div>
+
+            <div id="menu-visibility-loading" class="loading" style="padding:1.5rem 0;">
+              <div class="spinner"></div>
+            </div>
+            <div id="menu-visibility-list" class="menu-visibility-list" style="display:none;"></div>
+            <div id="menu-visibility-status"
+              style="display:none;margin-top:1rem;padding:.75rem 1rem;border-radius:8px;font-size:.84rem;"></div>
+            <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-top:1rem;">
+              <button class="btn btn-primary btn-sm" id="btn-save-menu-visibility" onclick="saveMenuVisibility()">Salvar menus</button>
+              <button class="btn btn-secondary btn-sm" onclick="loadMenuVisibility()">Recarregar</button>
+              <a href="comunidades.html" target="_blank" class="btn btn-secondary btn-sm">↗ Ver Comunidades</a>
+            </div>
+          </div>
+        </section>
+
       </div><!-- /page-content -->
     </div><!-- /main-content -->
   </div><!-- /app -->
@@ -5593,27 +4383,39 @@
     <div class="ne-topbar">
       <button class="btn btn-secondary btn-sm" onclick="closeNewsEditor()">← Voltar</button>
       <span class="ne-topbar-title" id="ne-topbar-title">Nova Notícia</span>
-      <span class="ne-editor-status" id="ne-autosave-indicator" title="Auto-save a cada 30s">Rascunho salvo</span>
-      <details class="ne-tools-menu">
-        <summary class="btn btn-secondary btn-sm">Ferramentas</summary>
-        <div class="ne-tools-panel">
-          <button class="rte-tutorial-trigger" onclick="RTE_LINKS.open('n')" title="Ver e revisar todos os links">🔗 Links</button>
-          <button class="btn btn-secondary btn-sm" onclick="previewNoticiaPage()">👁 Preview</button>
-          <button class="btn btn-secondary btn-sm" onclick="neToggleVersionPanel()">🕐 Versões</button>
-          <button class="rte-tutorial-trigger" onclick="RTE_TUTORIAL.start('n')" title="Abrir tutorial do editor">❔ Tutorial</button>
-          <button class="btn btn-secondary btn-sm" onclick="downloadNoticiaPage()">⬇ Baixar HTML</button>
-          <button class="btn btn-secondary btn-sm" onclick="baixarModeloWord()" title="Baixa um modelo .doc com a estrutura ideal para criar notícias e importar de volta">📄 Modelo Word</button>
-          <label class="btn btn-secondary btn-sm" id="btn-import-word-label" title="Importar .docx — preenche título, resumo e corpo automaticamente" style="cursor:pointer;">
-            ⬆ Importar Word
-            <input type="file" id="import-word-file" accept=".docx" style="display:none;" onchange="importWordFile(this)">
-          </label>
-          <button class="btn btn-word btn-sm" id="btn-export-word" onclick="exportNoticiaWordFromEditor(this)" title="Exportar para Word (.docx)">📄 Exportar Word</button>
-        </div>
-      </details>
+      <span id="ne-autosave-indicator" title="Auto-save a cada 30s">💾 Rascunho</span>
+      <button class="rte-tutorial-trigger" onclick="RTE_LINKS.open('n')" title="Ver e revisar todos os links">🔗
+        Links</button>
+      <button class="rte-tutorial-trigger" onclick="RTE_TUTORIAL.start('n')" title="Abrir tutorial do editor">❔
+        Tutorial</button>
+      <button class="btn btn-secondary btn-sm" onclick="neToggleVersionPanel()">🕐 Versões</button>
+      <button class="btn btn-secondary btn-sm" onclick="previewNoticiaPage()">👁 Preview</button>
+      <button class="btn btn-secondary btn-sm" onclick="downloadNoticiaPage()">⬇ Baixar</button>
+      <button class="btn btn-secondary btn-sm" onclick="baixarModeloWord()"
+        title="Baixa um modelo .doc com a estrutura ideal para criar notícias e importar de volta">📄 Modelo
+        Word</button>
+      <!-- Importar Word -->
+      <label class="btn btn-secondary btn-sm" id="btn-import-word-label"
+        title="Importar .docx — preenche título, resumo e corpo automaticamente"
+        style="cursor:pointer;display:inline-flex;align-items:center;gap:.35rem;">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px;flex-shrink:0;">
+          <path
+            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM8.5 17l1.5-5.5 1.5 5.5h1l1.8-7h-1.1l-1.2 4.8-1.4-4.8H9.4L8 14.8 6.8 10H5.7l1.8 7H8.5z" />
+        </svg>
+        ⬆ Importar Word
+        <input type="file" id="import-word-file" accept=".docx" style="display:none;" onchange="importWordFile(this)">
+      </label>
+      <button class="btn btn-word btn-sm" id="btn-export-word" onclick="exportNoticiaWordFromEditor(this)"
+        title="Exportar para Word (.docx)">
+        <svg class="word-icon" viewBox="0 0 24 24" fill="currentColor" style="width:15px;height:15px;">
+          <path
+            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM8.5 17l1.5-5.5 1.5 5.5h1l1.8-7h-1.1l-1.2 4.8-1.4-4.8H9.4L8 14.8 6.8 10H5.7l1.8 7H8.5z" />
+        </svg>
+        Word
+      </button>
       <button class="btn btn-amber btn-sm" id="btn-ai-format" onclick="aiAutoFormat()"
         title="Formata o conteúdo automaticamente com IA">✨ Auto-formatar</button>
-      <button class="btn btn-secondary btn-sm" id="btn-expand-editor"
-        onclick="toggleEditorExpand('news-editor-overlay','btn-expand-editor')"
+      <button class="btn btn-secondary btn-sm" id="btn-expand-editor" onclick="toggleEditorExpand()"
         title="Expandir/Recolher editor para tela cheia">⛶ Expandir</button>
       <button class="btn btn-success btn-sm" id="btn-gh-publish" onclick="publishToGithub()">🚀 Publicar no
         site</button>
@@ -5746,7 +4548,7 @@
       <div class="ne-preview-panel">
         <div class="ne-panel-section">
           <div class="ne-panel-label">Metadados</div>
-          <select class="ne-panel-select" id="n-categoria" onchange="updatePreview()">
+          <select class="ne-panel-select" id="n-categoria">
             <option value="geral">📌 Geral</option>
             <option value="pirarucu">🐟 Pirarucu</option>
             <option value="olea">🌿 Oleaginosas</option>
@@ -5754,9 +4556,9 @@
             <option value="comercio">🛒 Comércio</option>
             <option value="vagas">📋 Vagas</option>
           </select>
-          <input type="date" class="ne-panel-input" id="n-data" onchange="updatePreview()">
-          <input type="text" class="ne-panel-input" id="n-autor" placeholder="Autor (opcional)" oninput="updatePreview()">
-          <input type="text" class="ne-panel-input" id="n-tags" placeholder="Tags: borracha, amazônia…" oninput="updatePreview()">
+          <input type="date" class="ne-panel-input" id="n-data">
+          <input type="text" class="ne-panel-input" id="n-autor" placeholder="Autor (opcional)">
+          <input type="text" class="ne-panel-input" id="n-tags" placeholder="Tags: borracha, amazônia…">
           <label
             style="font-size:.7rem;color:var(--text-muted);font-weight:600;letter-spacing:.06em;text-transform:uppercase;margin-top:.5rem;display:block;">📌
             Leia Também (slugs fixados)</label>
@@ -5823,7 +4625,7 @@
           </div>
 
           <input type="url" class="ne-panel-input" id="n-imagem" placeholder="URL da imagem…"
-            oninput="updateImgPreview(); updatePreview()">
+            oninput="updateImgPreview()">
 
           <!-- Remover imagem -->
           <button id="btn-remover-img" onclick="removerCapaImagem()"
@@ -5890,24 +4692,6 @@
             <span id="ne-prev-resumo"
               style="font-size:.78rem;display:block;margin-top:.2rem;color:var(--text-muted);">Resumo aparecerá
               aqui…</span>
-          </div>
-        </div>
-
-        <div class="ne-divider"></div>
-
-        <div class="ne-panel-section">
-          <div class="ne-panel-label">Prévia real da página</div>
-          <div class="ne-live-preview">
-            <div class="ne-live-preview-media" id="n-live-img">Imagem de capa</div>
-            <div class="ne-live-preview-body">
-              <div class="ne-live-preview-meta">
-                <span class="ne-live-preview-pill" id="n-live-cat">Geral</span>
-                <span id="n-live-date">Data de publicação</span>
-              </div>
-              <h4 class="ne-live-preview-title" id="n-live-title">Título da notícia…</h4>
-              <p class="ne-live-preview-summary" id="n-live-summary">Resumo aparecerá aqui…</p>
-              <div class="ne-live-preview-content" id="n-live-content">O conteúdo formatado aparecerá aqui enquanto você escreve.</div>
-            </div>
           </div>
         </div>
 
@@ -6054,25 +4838,36 @@
     <div class="ne-topbar">
       <button class="btn btn-secondary btn-sm" onclick="closeVagaEditor()">← Voltar</button>
       <span class="ne-topbar-title" id="ve-topbar-title">Nova Vaga</span>
-      <span class="ne-editor-status" id="rte-autosave-ve">Rascunho salvo</span>
-      <details class="ne-tools-menu">
-        <summary class="btn btn-secondary btn-sm">Ferramentas</summary>
-        <div class="ne-tools-panel">
-          <button class="rte-tutorial-trigger" onclick="RTE_LINKS.open('ve')" title="Ver e revisar todos os links">🔗 Links</button>
-          <button class="rte-tutorial-trigger" onclick="RTE_TUTORIAL.start('ve')" title="Abrir tutorial do editor">❔ Tutorial</button>
-          <button class="btn btn-secondary btn-sm" onclick="baixarModeloVaga()" title="Baixa um modelo .doc com a estrutura ideal para criar vagas e importar de volta">📄 Modelo Word</button>
-          <label class="btn btn-secondary btn-sm" id="btn-import-word-vaga-label" title="Importar .docx — preenche título, resumo e corpo automaticamente" style="cursor:pointer;">
-            ⬆ Importar Word
-            <input type="file" id="import-word-vaga-file" accept=".docx" style="display:none;" onchange="importWordVagaFile(this)">
-          </label>
-          <button class="btn btn-word btn-sm" id="btn-export-word-vaga" onclick="exportVagaWord(this)" title="Exportar para Word (.docx)">📄 Exportar Word</button>
-        </div>
-      </details>
+      <span id="rte-autosave-ve"
+        style="font-size:.7rem;color:var(--text-muted);margin-left:.5rem;transition:color .3s;">💾 Auto-save
+        ativo</span>
+      <button class="rte-tutorial-trigger" onclick="RTE_LINKS.open('ve')" title="Ver e revisar todos os links">🔗
+        Links</button>
+      <button class="rte-tutorial-trigger" onclick="RTE_TUTORIAL.start('ve')" title="Abrir tutorial do editor">❔
+        Tutorial</button>
+      <button class="btn btn-secondary btn-sm" onclick="baixarModeloVaga()"
+        title="Baixa um modelo .doc com a estrutura ideal para criar vagas e importar de volta">📄 Modelo Word</button>
+      <label class="btn btn-secondary btn-sm" id="btn-import-word-vaga-label"
+        title="Importar .docx — preenche título, resumo e corpo automaticamente"
+        style="cursor:pointer;display:inline-flex;align-items:center;gap:.35rem;">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px;flex-shrink:0;">
+          <path
+            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM8.5 17l1.5-5.5 1.5 5.5h1l1.8-7h-1.1l-1.2 4.8-1.4-4.8H9.4L8 14.8 6.8 10H5.7l1.8 7H8.5z" />
+        </svg>
+        ⬆ Importar Word
+        <input type="file" id="import-word-vaga-file" accept=".docx" style="display:none;"
+          onchange="importWordVagaFile(this)">
+      </label>
+      <button class="btn btn-word btn-sm" id="btn-export-word-vaga" onclick="exportVagaWord(this)"
+        title="Exportar para Word (.docx)">
+        <svg class="word-icon" viewBox="0 0 24 24" fill="currentColor" style="width:15px;height:15px;">
+          <path
+            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM8.5 17l1.5-5.5 1.5 5.5h1l1.8-7h-1.1l-1.2 4.8-1.4-4.8H9.4L8 14.8 6.8 10H5.7l1.8 7H8.5z" />
+        </svg>
+        Word
+      </button>
       <button class="btn btn-amber btn-sm" id="btn-ai-format-vaga" onclick="aiAutoFormatVaga()"
         title="Formata o conteúdo automaticamente com IA">✨ Auto-formatar</button>
-      <button class="btn btn-secondary btn-sm" id="btn-expand-vaga"
-        onclick="toggleEditorExpand('vaga-editor-overlay','btn-expand-vaga')"
-        title="Expandir/Recolher editor">⛶ Expandir</button>
       <button class="btn btn-secondary btn-sm" id="btn-save-vaga-draft" onclick="saveVaga(false)">💾 Salvar
         rascunho</button>
       <button class="btn btn-primary btn-sm" id="btn-save-vaga-pub" onclick="saveVaga(true)">🌐 Publicar</button>
@@ -6081,9 +4876,9 @@
     <div class="ne-body">
       <!-- EDITOR PRINCIPAL -->
       <div class="ne-editor-panel">
-        <input class="ne-title-input" id="v-titulo" type="text" placeholder="Título da vaga…" oninput="veUpdateLivePreview()">
+        <input class="ne-title-input" id="v-titulo" type="text" placeholder="Título da vaga…">
         <textarea class="ne-resumo-input" id="v-resumo" placeholder="Resumo breve (aparece nos cards)…"
-          rows="2" oninput="veUpdateLivePreview()"></textarea>
+          rows="2"></textarea>
 
         <!-- Rich Text Editor -->
         <div class="rte-wrap">
@@ -6164,9 +4959,9 @@
             <button class="rte-btn" onmousedown="event.preventDefault()" onclick="rteInsertImageUrl('ve')"
               title="Inserir imagem por URL">🔗🖼️</button>
           </div>
-          <div id="ve-rte-body" class="rte-body" contenteditable="true" oninput="veSync(); veUpdateLivePreview()"
+          <div id="ve-rte-body" class="rte-body" contenteditable="true" oninput="veSync()"
             oncontextmenu="veContextMenu(event)" onpaste="rteHandlePaste(event,'ve')" ondrop="rteHandleDrop(event,'ve')"
-            ondragover="event.preventDefault()">
+            ondragover="event.preventDefault()" style="min-height:320px;">
           </div>
         </div>
         <textarea id="v-descricao" style="display:none;"></textarea>
@@ -6178,18 +4973,18 @@
         <!-- Metadados da vaga -->
         <div class="ne-panel-section">
           <div class="ne-panel-label">Dados da Vaga</div>
-          <input type="text" class="ne-panel-input" id="v-local" value="Carauari/AM" placeholder="Local" oninput="veUpdateLivePreview()">
-          <select class="ne-panel-select" id="v-regime" onchange="veUpdateLivePreview()">
+          <input type="text" class="ne-panel-input" id="v-local" value="Carauari/AM" placeholder="Local">
+          <select class="ne-panel-select" id="v-regime">
             <option value="CLT">CLT</option>
             <option value="PJ/Consultoria">PJ / Consultoria</option>
             <option value="Voluntário">Voluntário</option>
             <option value="Estágio">Estágio</option>
           </select>
-          <select class="ne-panel-select" id="v-carga" onchange="veUpdateLivePreview()">
+          <select class="ne-panel-select" id="v-carga">
             <option value="Integral">Integral</option>
             <option value="Parcial">Parcial</option>
           </select>
-          <select class="ne-panel-select" id="v-escolaridade" onchange="veUpdateLivePreview()">
+          <select class="ne-panel-select" id="v-escolaridade">
             <option value="Ensino Médio">Ensino Médio</option>
             <option value="Ensino Superior">Ensino Superior</option>
             <option value="Pós-Graduação">Pós-Graduação</option>
@@ -6197,7 +4992,7 @@
           </select>
           <div style="margin-top:.4rem;">
             <div class="ne-panel-label" style="margin-bottom:.3rem;">Prazo de inscrição</div>
-            <input type="date" class="ne-panel-input" id="v-prazo" style="margin:0;" onchange="veUpdateLivePreview()">
+            <input type="date" class="ne-panel-input" id="v-prazo" style="margin:0;">
           </div>
         </div>
 
@@ -6231,7 +5026,7 @@
             <div style="flex:1;height:1px;background:var(--border);"></div>
           </div>
           <input type="url" class="ne-panel-input" id="v-imagem-url" placeholder="URL da imagem…"
-            oninput="veUpdateImgPreview(); veUpdateLivePreview()">
+            oninput="veUpdateImgPreview()">
           <button id="ve-btn-remover-img" onclick="veRemoverCapa()"
             style="display:none;width:100%;margin-top:.4rem;padding:.4rem;background:var(--red-soft);border:1px solid rgba(239,68,68,.2);border-radius:var(--radius);color:var(--red);font-size:.75rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">
             🗑 Remover imagem
@@ -6278,29 +5073,11 @@
         <!-- Publicação -->
         <div class="ne-panel-section">
           <div class="ne-panel-label">Publicação</div>
-          <select class="ne-panel-select" id="v-status" onchange="veUpdateLivePreview()">
+          <select class="ne-panel-select" id="v-status">
             <option value="aberta">● Aberta</option>
             <option value="encerrada">● Encerrada</option>
             <option value="suspensa">● Suspensa</option>
           </select>
-        </div>
-
-        <div class="ne-divider"></div>
-
-        <div class="ne-panel-section">
-          <div class="ne-panel-label">Prévia real da vaga</div>
-          <div class="ne-live-preview">
-            <div class="ne-live-preview-media" id="v-live-img">Imagem de capa</div>
-            <div class="ne-live-preview-body">
-              <div class="ne-live-preview-meta">
-                <span class="ne-live-preview-pill" id="v-live-status">Aberta</span>
-                <span id="v-live-meta">Carauari/AM · CLT</span>
-              </div>
-              <h4 class="ne-live-preview-title" id="v-live-title">Título da vaga…</h4>
-              <p class="ne-live-preview-summary" id="v-live-summary">Resumo da vaga aparecerá aqui…</p>
-              <div class="ne-live-preview-content" id="v-live-content">A descrição formatada aparecerá aqui enquanto você escreve.</div>
-            </div>
-          </div>
         </div>
 
       </div>
@@ -6693,25 +5470,36 @@
     <div class="ne-topbar">
       <button class="btn btn-secondary btn-sm" onclick="closeAvisoEditor()">← Voltar</button>
       <span class="ne-topbar-title" id="ae-topbar-title">Novo Aviso</span>
-      <span class="ne-editor-status" id="rte-autosave-ae">Rascunho salvo</span>
-      <details class="ne-tools-menu">
-        <summary class="btn btn-secondary btn-sm">Ferramentas</summary>
-        <div class="ne-tools-panel">
-          <button class="rte-tutorial-trigger" onclick="RTE_LINKS.open('ae')" title="Ver e revisar todos os links">🔗 Links</button>
-          <button class="rte-tutorial-trigger" onclick="RTE_TUTORIAL.start('ae')" title="Abrir tutorial do editor">❔ Tutorial</button>
-          <button class="btn btn-secondary btn-sm" onclick="baixarModeloAviso()" title="Baixa um modelo .doc com a estrutura ideal para criar avisos e importar de volta">📄 Modelo Word</button>
-          <label class="btn btn-secondary btn-sm" id="btn-import-word-aviso-label" title="Importar .docx — preenche título, resumo e corpo automaticamente" style="cursor:pointer;">
-            ⬆ Importar Word
-            <input type="file" id="import-word-aviso-file" accept=".docx" style="display:none;" onchange="importWordAvisoFile(this)">
-          </label>
-          <button class="btn btn-word btn-sm" id="btn-export-word-aviso" onclick="exportAvisoWord(this)" title="Exportar para Word (.docx)">📄 Exportar Word</button>
-        </div>
-      </details>
+      <span id="rte-autosave-ae"
+        style="font-size:.7rem;color:var(--text-muted);margin-left:.5rem;transition:color .3s;">💾 Auto-save
+        ativo</span>
+      <button class="rte-tutorial-trigger" onclick="RTE_LINKS.open('ae')" title="Ver e revisar todos os links">🔗
+        Links</button>
+      <button class="rte-tutorial-trigger" onclick="RTE_TUTORIAL.start('ae')" title="Abrir tutorial do editor">❔
+        Tutorial</button>
+      <button class="btn btn-secondary btn-sm" onclick="baixarModeloAviso()"
+        title="Baixa um modelo .doc com a estrutura ideal para criar avisos e importar de volta">📄 Modelo Word</button>
+      <label class="btn btn-secondary btn-sm" id="btn-import-word-aviso-label"
+        title="Importar .docx — preenche título, resumo e corpo automaticamente"
+        style="cursor:pointer;display:inline-flex;align-items:center;gap:.35rem;">
+        <svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px;flex-shrink:0;">
+          <path
+            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM8.5 17l1.5-5.5 1.5 5.5h1l1.8-7h-1.1l-1.2 4.8-1.4-4.8H9.4L8 14.8 6.8 10H5.7l1.8 7H8.5z" />
+        </svg>
+        ⬆ Importar Word
+        <input type="file" id="import-word-aviso-file" accept=".docx" style="display:none;"
+          onchange="importWordAvisoFile(this)">
+      </label>
+      <button class="btn btn-word btn-sm" id="btn-export-word-aviso" onclick="exportAvisoWord(this)"
+        title="Exportar para Word (.docx)">
+        <svg class="word-icon" viewBox="0 0 24 24" fill="currentColor" style="width:15px;height:15px;">
+          <path
+            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM8.5 17l1.5-5.5 1.5 5.5h1l1.8-7h-1.1l-1.2 4.8-1.4-4.8H9.4L8 14.8 6.8 10H5.7l1.8 7H8.5z" />
+        </svg>
+        Word
+      </button>
       <button class="btn btn-amber btn-sm" id="btn-ai-format-aviso" onclick="aiAutoFormatAviso()"
         title="Formata o conteúdo automaticamente com IA">✨ Auto-formatar</button>
-      <button class="btn btn-secondary btn-sm" id="btn-expand-aviso"
-        onclick="toggleEditorExpand('aviso-editor-overlay','btn-expand-aviso')"
-        title="Expandir/Recolher editor">⛶ Expandir</button>
       <button class="btn btn-secondary btn-sm" id="btn-save-aviso-draft" onclick="saveAviso(false)">💾 Salvar
         rascunho</button>
       <button class="btn btn-primary btn-sm" id="btn-save-aviso-pub" onclick="saveAviso(true)">🌐 Publicar</button>
@@ -6721,9 +5509,9 @@
       <!-- EDITOR PRINCIPAL -->
       <div class="ne-editor-panel">
         <input class="ne-title-input" id="a-titulo" type="text" placeholder="Título do aviso…"
-          oninput="aeUpdateWappPreview(); aeUpdateLivePreview()">
+          oninput="aeUpdateWappPreview()">
         <textarea class="ne-resumo-input" id="a-resumo" placeholder="Resumo breve (aparece nos cards)…" rows="2"
-          oninput="aeUpdateWappPreview(); aeUpdateLivePreview()"></textarea>
+          oninput="aeUpdateWappPreview()"></textarea>
 
         <!-- Rich Text Editor -->
         <div class="rte-wrap">
@@ -6804,9 +5592,9 @@
             <button class="rte-btn" onmousedown="event.preventDefault()" onclick="rteInsertImageUrl('ae')"
               title="Inserir imagem por URL">🔗🖼️</button>
           </div>
-          <div id="ae-rte-body" class="rte-body" contenteditable="true" oninput="aeSync(); aeUpdateLivePreview()"
+          <div id="ae-rte-body" class="rte-body" contenteditable="true" oninput="aeSync()"
             oncontextmenu="aeContextMenu(event)" onpaste="rteHandlePaste(event,'ae')" ondrop="rteHandleDrop(event,'ae')"
-            ondragover="event.preventDefault()">
+            ondragover="event.preventDefault()" style="min-height:320px;">
           </div>
         </div>
         <textarea id="a-descricao" style="display:none;"></textarea>
@@ -6818,14 +5606,14 @@
         <!-- Metadados -->
         <div class="ne-panel-section">
           <div class="ne-panel-label">Metadados</div>
-          <select class="ne-panel-select" id="a-tipo" onchange="aeUpdateLivePreview()">
+          <select class="ne-panel-select" id="a-tipo">
             <option value="info">📋 Informativo</option>
             <option value="doc">📄 Documento</option>
             <option value="urgente">🚨 Urgente</option>
             <option value="reuniao">🤝 Reunião</option>
             <option value="financeiro">💰 Financeiro</option>
           </select>
-          <input type="date" class="ne-panel-input" id="a-data" onchange="aeUpdateLivePreview()">
+          <input type="date" class="ne-panel-input" id="a-data">
         </div>
 
         <div class="ne-divider"></div>
@@ -6858,7 +5646,7 @@
             <div style="flex:1;height:1px;background:var(--border);"></div>
           </div>
           <input type="url" class="ne-panel-input" id="a-capa-url" placeholder="URL da imagem…"
-            oninput="aeUpdateImgPreview();aeUpdateWappPreview();aeUpdateLivePreview()">
+            oninput="aeUpdateImgPreview();aeUpdateWappPreview()">
           <button id="ae-btn-remover-img" onclick="aeRemoverCapa()"
             style="display:none;width:100%;margin-top:.4rem;padding:.4rem;background:var(--red-soft);border:1px solid rgba(239,68,68,.2);border-radius:var(--radius);color:var(--red);font-size:.75rem;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;">
             🗑 Remover imagem
@@ -6934,30 +5722,12 @@
           <div class="ne-panel-label">Publicação</div>
           <div class="toggle-row">
             <span class="toggle-label">🌐 Publicado</span>
-            <label class="toggle"><input type="checkbox" id="a-publicado" checked onchange="aeUpdateLivePreview()"><span
+            <label class="toggle"><input type="checkbox" id="a-publicado" checked><span
                 class="toggle-slider"></span></label>
           </div>
           <div class="toggle-row" style="margin-top:.5rem;">
             <span class="toggle-label">🔴 Urgente / Destaque</span>
-            <label class="toggle"><input type="checkbox" id="a-destaque" onchange="aeUpdateLivePreview()"><span class="toggle-slider"></span></label>
-          </div>
-        </div>
-
-        <div class="ne-divider"></div>
-
-        <div class="ne-panel-section">
-          <div class="ne-panel-label">Prévia real do aviso</div>
-          <div class="ne-live-preview">
-            <div class="ne-live-preview-media" id="a-live-img">Imagem de capa</div>
-            <div class="ne-live-preview-body">
-              <div class="ne-live-preview-meta">
-                <span class="ne-live-preview-pill" id="a-live-type">Informativo</span>
-                <span id="a-live-date">Data de publicação</span>
-              </div>
-              <h4 class="ne-live-preview-title" id="a-live-title">Título do aviso…</h4>
-              <p class="ne-live-preview-summary" id="a-live-summary">Resumo do aviso aparecerá aqui…</p>
-              <div class="ne-live-preview-content" id="a-live-content">O conteúdo formatado aparecerá aqui enquanto você escreve.</div>
-            </div>
+            <label class="toggle"><input type="checkbox" id="a-destaque"><span class="toggle-slider"></span></label>
           </div>
         </div>
 
@@ -7122,18 +5892,6 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      document.addEventListener('click', function (ev) {
-        document.querySelectorAll('.ne-tools-menu[open]').forEach(function (menu) {
-          if (!menu.contains(ev.target)) menu.removeAttribute('open');
-        });
-
-        const toolAction = ev.target.closest('.ne-tools-panel button, .ne-tools-panel label');
-        if (toolAction) {
-          const menu = toolAction.closest('.ne-tools-menu');
-          if (menu) setTimeout(function () { menu.removeAttribute('open'); }, 0);
-        }
-      });
-
       /* ══════════════════════════════════════════
          CONFIG & SUPABASE
          ─────────────────────────────────────────
@@ -7172,6 +5930,16 @@
         return url.startsWith('https://') && key.length > 20;
       }
 
+      // Snippet de integração usa os valores salvos pelo próprio admin
+      function updateIntegrationSnippet() {
+        const { url, key } = getSupabase();
+        const snip = isSupabaseConfigured()
+          ? `<script>\n  const SUPABASE_URL = '${url}';\n  const SUPABASE_KEY = '${key}';\n  async function fetchSupabase(table, params = '') {\n    const r = await fetch(SUPABASE_URL + '/rest/v1/' + table + '?' + params, {\n      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }\n    });\n    return r.json();\n  }\n<\/script>`
+          : '// Configure o Supabase em Configurações para gerar este snippet.';
+        const el = document.getElementById('integration-snippet');
+        if (el) el.textContent = snip;
+      }
+
       async function sbFetch(table, params = '', opts = {}) {
         const { url, key } = getSupabase();
         if (!url || !key) throw new Error('Supabase não configurado.');
@@ -7183,16 +5951,13 @@
         const authToken = AuthStore.getToken() || key;
         const headers = {
           'apikey': key, 'Authorization': 'Bearer ' + authToken,
-          'Content-Type': 'application/json', 'Prefer': 'return=representation',
-          ...(opts.headers || {})
+          'Content-Type': 'application/json', 'Prefer': 'return=representation'
         };
         const endpoint = `${url}/rest/v1/${table}${params ? '?' + params : ''}`;
-        const { headers: _ignoredHeaders, ...fetchOpts } = opts;
-        const res = await fetch(endpoint, { headers, ...fetchOpts });
+        const res = await fetch(endpoint, { headers, ...opts });
         if (!res.ok) { const err = await res.json().catch(() => ({})); throw new Error(err.message || `Erro ${res.status}`); }
         if (res.status === 204) return null;
-        const text = await res.text();
-        return text ? JSON.parse(text) : null;
+        return res.json();
       }
       async function sbSelect(table, params = '') { return sbFetch(table, params || 'select=*&order=created_at.desc'); }
       async function sbInsert(table, data) { return sbFetch(table, '', { method: 'POST', body: JSON.stringify(data) }); }
@@ -7203,6 +5968,136 @@
       window.sbInsert = sbInsert;
       window.sbUpdate = sbUpdate;
       window.sbDelete = sbDelete;
+
+      const MENU_VISIBILITY_KEY = 'menu_visibility';
+      const MENU_VISIBILITY_ITEMS = [
+        { key: 'inicio', label: 'Início', href: 'index.html', defaultVisible: true },
+        { key: 'sobre', label: 'Sobre', href: 'sobre.html', defaultVisible: true },
+        { key: 'projetos', label: 'Projetos', href: 'programas-projetos.html', defaultVisible: true },
+        { key: 'noticias', label: 'Notícias', href: 'noticias.html', defaultVisible: true },
+        { key: 'avisos', label: 'Avisos', href: 'avisos.html', defaultVisible: true },
+        { key: 'comunidades', label: 'Comunidades', href: 'comunidades.html', defaultVisible: false },
+        { key: 'trabalhe', label: 'Trabalhe Conosco', href: 'trabalhe-conosco.html', defaultVisible: true },
+        { key: 'loja', label: 'Loja Virtual', href: 'https://loja.asproc.org.br/', defaultVisible: true },
+      ];
+      let menuVisibilityState = {};
+
+      function defaultMenuVisibility() {
+        return MENU_VISIBILITY_ITEMS.reduce((acc, item) => {
+          acc[item.key] = item.defaultVisible !== false;
+          return acc;
+        }, {});
+      }
+
+      function parseMenuVisibilityValue(value) {
+        if (!value) return {};
+        try {
+          const parsed = JSON.parse(value);
+          if (!parsed || typeof parsed !== 'object') return {};
+          return parsed;
+        } catch (_) {
+          return {};
+        }
+      }
+
+      function setMenuVisibilityStatus(msg, type) {
+        const box = document.getElementById('menu-visibility-status');
+        if (!box) return;
+        box.style.display = msg ? 'block' : 'none';
+        box.textContent = msg || '';
+        box.style.background = type === 'error' ? 'var(--red-soft)' : type === 'success' ? 'var(--green-soft)' : 'var(--bg3)';
+        box.style.color = type === 'error' ? 'var(--red)' : type === 'success' ? 'var(--green)' : 'var(--text-muted)';
+        box.style.border = type === 'error' ? '1px solid rgba(239,68,68,.22)' : type === 'success' ? '1px solid rgba(16,185,129,.22)' : '1px solid var(--border)';
+      }
+
+      function renderMenuVisibility() {
+        const list = document.getElementById('menu-visibility-list');
+        const loading = document.getElementById('menu-visibility-loading');
+        if (!list) return;
+        if (loading) loading.style.display = 'none';
+        list.style.display = 'grid';
+        list.innerHTML = MENU_VISIBILITY_ITEMS.map(item => {
+          const checked = menuVisibilityState[item.key] !== false;
+          return `
+            <label class="menu-visibility-row" for="menu-vis-${item.key}">
+              <div>
+                <strong>${escHtml(item.label)}</strong>
+                <span>${escHtml(item.href)}</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:.75rem;">
+                <span class="menu-visibility-state" id="menu-vis-state-${item.key}">${checked ? 'Visível' : 'Oculto'}</span>
+                <span class="toggle">
+                  <input type="checkbox" id="menu-vis-${item.key}" data-menu-key="${item.key}" ${checked ? 'checked' : ''}
+                    onchange="toggleMenuVisibilityLabel(this)">
+                  <span class="toggle-slider"></span>
+                </span>
+              </div>
+            </label>`;
+        }).join('');
+      }
+
+      function toggleMenuVisibilityLabel(input) {
+        const label = document.getElementById('menu-vis-state-' + input.dataset.menuKey);
+        if (label) label.textContent = input.checked ? 'Visível' : 'Oculto';
+      }
+
+      async function loadMenuVisibility() {
+        const loading = document.getElementById('menu-visibility-loading');
+        const list = document.getElementById('menu-visibility-list');
+        if (loading) loading.style.display = 'flex';
+        if (list) list.style.display = 'none';
+        setMenuVisibilityStatus('', '');
+        menuVisibilityState = defaultMenuVisibility();
+        try {
+          const rows = await sbSelect('app_config', `select=value&key=eq.${MENU_VISIBILITY_KEY}&limit=1`);
+          if (rows && rows.length) {
+            menuVisibilityState = Object.assign(menuVisibilityState, parseMenuVisibilityValue(rows[0].value));
+          }
+          renderMenuVisibility();
+        } catch (e) {
+          renderMenuVisibility();
+          setMenuVisibilityStatus('Não foi possível carregar do Supabase. Mostrando os padrões locais.', 'error');
+        }
+      }
+
+      async function saveMenuVisibility() {
+        const btn = document.getElementById('btn-save-menu-visibility');
+        const payload = defaultMenuVisibility();
+        MENU_VISIBILITY_ITEMS.forEach(item => {
+          const input = document.getElementById('menu-vis-' + item.key);
+          if (input) payload[item.key] = !!input.checked;
+        });
+        try {
+          if (btn) { btn.disabled = true; btn.textContent = 'Salvando...'; }
+          const { url, key } = getSupabase();
+          if (!url || !key) throw new Error('Supabase não configurado.');
+          const ok = await ensureValidToken();
+          if (!ok) throw new Error('Sessão expirada. Faça login novamente.');
+          const authToken = AuthStore.getToken() || key;
+          const res = await fetch(`${url}/rest/v1/app_config`, {
+            method: 'POST',
+            headers: {
+              'apikey': key,
+              'Authorization': 'Bearer ' + authToken,
+              'Content-Type': 'application/json',
+              'Prefer': 'resolution=merge-duplicates,return=representation'
+            },
+            body: JSON.stringify({ key: MENU_VISIBILITY_KEY, value: JSON.stringify(payload) })
+          });
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.message || `Erro ${res.status}`);
+          }
+          menuVisibilityState = payload;
+          setMenuVisibilityStatus('Menus salvos. As páginas públicas aplicam a mudança ao carregar.', 'success');
+          toast('✅ Visibilidade dos menus salva!', 'success');
+        } catch (e) {
+          setMenuVisibilityStatus('Erro ao salvar: ' + e.message, 'error');
+          toast('❌ Erro ao salvar menus: ' + e.message, 'error');
+        } finally {
+          if (btn) { btn.disabled = false; btn.textContent = 'Salvar menus'; }
+        }
+      }
       async function sbCount(table, params = '') {
         const { url, key } = getSupabase();
         if (!url || !key) return 0;
@@ -7452,6 +6347,7 @@
         mensagens: ['Mensagens de Contato', 'Mensagens enviadas pelo formulário do site'],
         configuracoes: ['Configurações', 'Configure a integração com o Supabase'],
         logomarca: ['Logomarca', 'Gerencie a identidade visual do site'],
+        menus: ['Menus do Site', 'Controle quais páginas aparecem nos menus públicos'],
         usuarios: ['Usuários', 'Gerencie os administradores e seus níveis de acesso'],
       };
 
@@ -7462,6 +6358,9 @@
         }
         if (section === 'logomarca') {
           setTimeout(loadLogomarca, 80);
+        }
+        if (section === 'menus') {
+          setTimeout(loadMenuVisibility, 80);
         }
         if (section === 'mensagens') {
           setTimeout(loadMensagens, 80);
@@ -7479,15 +6378,8 @@
         }
         document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.querySelectorAll('.mobile-bottom-btn').forEach(n => n.classList.remove('active'));
         document.getElementById('sec-' + section).classList.add('active');
         if (el) el.classList.add('active');
-        else {
-          const sideItem = document.querySelector(`.nav-item[onclick*="'${section}'"]`);
-          if (sideItem) sideItem.classList.add('active');
-        }
-        const mobileBtn = document.querySelector(`.mobile-bottom-btn[data-mobile-section="${section}"]`);
-        if (mobileBtn) mobileBtn.classList.add('active');
         const [title, sub] = sectionTitles[section] || [section, ''];
         document.getElementById('topbar-title').textContent = title;
         document.getElementById('topbar-sub').textContent = sub;
@@ -7542,66 +6434,13 @@
           const matchAssunto = !assunto || m.assunto === assunto;
           return matchSearch && matchAssunto;
         });
-        updateMsgSummary(assunto);
         renderMensagens(filtered);
       }
-
-      function updateMsgSummary(activeAssunto = '') {
-        const counts = {
-          total: _allMensagens.length,
-          info: 0,
-          parceria: 0,
-          imprensa: 0,
-          voluntariado: 0,
-          outro: 0
-        };
-        _allMensagens.forEach(m => {
-          const assunto = m.assunto || 'Outro';
-          if (assunto === 'Informações gerais') counts.info++;
-          else if (assunto === 'Parceria') counts.parceria++;
-          else if (assunto === 'Imprensa') counts.imprensa++;
-          else if (assunto === 'Voluntariado') counts.voluntariado++;
-          else counts.outro++;
-        });
-        Object.entries(counts).forEach(([key, count]) => {
-          const value = document.getElementById('msg-count-' + key);
-          if (value) value.textContent = count;
-        });
-        document.querySelectorAll('[data-msg-summary]').forEach(card => {
-          card.classList.toggle('active', (card.dataset.msgSummary || '') === activeAssunto);
-        });
-      }
-
-      function setMsgAssuntoFilter(assunto) {
-        const select = document.getElementById('msg-assunto-filter');
-        if (!select) return;
-        select.value = select.value === assunto ? '' : assunto;
-        applyMsgFilters();
-      }
-      window.setMsgAssuntoFilter = setMsgAssuntoFilter;
-
-      function clearMsgFilters() {
-        ['msg-search', 'msg-assunto-filter'].forEach(id => {
-          const el = document.getElementById(id);
-          if (el) el.value = '';
-        });
-        applyMsgFilters();
-      }
-      window.clearMsgFilters = clearMsgFilters;
 
       function renderMensagens(list) {
         const listEl = document.getElementById('msg-list');
         const emptyEl = document.getElementById('msg-empty');
-        if (!list.length) {
-          const hasFilters = ['msg-search', 'msg-assunto-filter']
-            .some(id => ((document.getElementById(id) || {}).value || '').trim());
-          listEl.innerHTML = '';
-          emptyEl.style.display = 'flex';
-          emptyEl.innerHTML = hasFilters
-            ? '<div class="es-icon">🔎</div><p>Nenhuma mensagem encontrada com os filtros atuais.</p><button class="btn btn-secondary btn-sm" onclick="clearMsgFilters()">Limpar filtros</button>'
-            : '<div class="es-icon">✉️</div><p>Nenhuma mensagem recebida ainda.</p>';
-          return;
-        }
+        if (!list.length) { listEl.innerHTML = ''; emptyEl.style.display = 'flex'; return; }
         emptyEl.style.display = 'none';
         listEl.innerHTML = list.map(m => {
           const data = m.created_at ? new Date(m.created_at).toLocaleString('pt-BR') : '—';
@@ -7716,6 +6555,7 @@
             if (statusEl) statusEl.style.display = 'none';
           }
         }
+        updateIntegrationSnippet();
       }
 
       function saveConfig() {
@@ -7726,6 +6566,7 @@
           return;
         }
         localStorage.setItem(CONFIG_KEY, JSON.stringify({ url, key }));
+        updateIntegrationSnippet();
         toast('✅ Configuração salva!', 'success');
       }
 
@@ -7739,314 +6580,9 @@
         });
       }
 
-      const BACKUP_TABLE_LABELS = {
-        noticias: 'noticias',
-        avisos: 'avisos',
-        vagas: 'vagas',
-        candidaturas: 'candidatos',
-        mensagens_contato: 'mensagens',
-        newsletters: 'newsletters'
-      };
-      const BACKUP_ALLOWED_TABLES = Object.keys(BACKUP_TABLE_LABELS);
-      let pendingBackupImport = null;
-
-      function backupDownloadJson(filename, payload) {
-        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        setTimeout(() => URL.revokeObjectURL(url), 5000);
-        try {
-          localStorage.setItem('asproc_last_backup_meta', JSON.stringify({
-            at: new Date().toISOString(),
-            filename,
-            type: payload?.type || 'backup',
-            total: payload?.total || null,
-            totals: payload?.totals || null
-          }));
-        } catch (_) { }
-      }
-
-      async function fetchBackupTable(table) {
-        return sbFetch(table, 'select=*&limit=5000');
-      }
-
-      async function downloadBackup(table, btn) {
-        const label = BACKUP_TABLE_LABELS[table] || table;
-        await withBtn(btn, 'Gerando...', async () => {
-          const rows = await fetchBackupTable(table);
-          const ts = new Date().toISOString().replace(/[:.]/g, '-');
-          backupDownloadJson(`asproc_backup_${label}_${ts}.json`, {
-            app: 'ASPROC',
-            type: label,
-            table,
-            exported_at: new Date().toISOString(),
-            total: Array.isArray(rows) ? rows.length : 0,
-            data: rows || []
-          });
-          toast(`✅ Backup de ${label} gerado.`, 'success');
-        });
-      }
-
-      async function downloadFullBackup(btn) {
-        const tables = ['noticias', 'avisos', 'vagas', 'candidaturas', 'mensagens_contato', 'newsletters'];
-        await withBtn(btn, 'Gerando...', async () => {
-          const data = {};
-          for (const table of tables) data[table] = await fetchBackupTable(table);
-          const ts = new Date().toISOString().replace(/[:.]/g, '-');
-          backupDownloadJson(`asproc_backup_geral_${ts}.json`, {
-            app: 'ASPROC',
-            type: 'backup_geral',
-            exported_at: new Date().toISOString(),
-            totals: Object.fromEntries(tables.map(t => [t, Array.isArray(data[t]) ? data[t].length : 0])),
-            data
-          });
-          toast('✅ Backup geral gerado.', 'success');
-        });
-      }
-
-      function normalizeBackupPayload(payload) {
-        if (!payload || payload.app !== 'ASPROC') throw new Error('Arquivo não reconhecido como backup ASPROC.');
-        const tables = {};
-        if (payload.type === 'backup_geral' && payload.data && typeof payload.data === 'object' && !Array.isArray(payload.data)) {
-          for (const table of BACKUP_ALLOWED_TABLES) {
-            if (Array.isArray(payload.data[table])) tables[table] = payload.data[table];
-          }
-        } else if (payload.table && BACKUP_ALLOWED_TABLES.includes(payload.table) && Array.isArray(payload.data)) {
-          tables[payload.table] = payload.data;
-        }
-        const entries = Object.entries(tables).filter(([, rows]) => rows.length);
-        if (!entries.length) throw new Error('Nenhuma tabela importável encontrada no arquivo.');
-        return Object.fromEntries(entries);
-      }
-
-      async function previewBackupImport(input) {
-        const file = input?.files?.[0];
-        const preview = document.getElementById('backup-import-preview');
-        const btn = document.getElementById('btn-import-backup');
-        pendingBackupImport = null;
-        if (btn) btn.disabled = true;
-        if (!file) return;
-        try {
-          const payload = JSON.parse(await file.text());
-          const tables = normalizeBackupPayload(payload);
-          pendingBackupImport = { fileName: file.name, tables };
-          const total = Object.values(tables).reduce((sum, rows) => sum + rows.length, 0);
-          if (preview) {
-            preview.style.display = 'block';
-            preview.innerHTML = `<strong>${file.name}</strong><br>${Object.entries(tables)
-              .map(([table, rows]) => `${BACKUP_TABLE_LABELS[table] || table}: <strong>${rows.length}</strong> registro(s)`)
-              .join('<br>')}<br><span style="color:var(--amber);">Total: ${total} registro(s). A importação cria ou atualiza, sem apagar dados atuais.</span>`;
-          }
-          if (btn) btn.disabled = false;
-        } catch (e) {
-          if (preview) {
-            preview.style.display = 'block';
-            preview.innerHTML = `<span style="color:var(--red);">Arquivo inválido: ${e.message}</span>`;
-          }
-          toast('❌ Backup inválido: ' + e.message, 'error');
-        }
-      }
-
-      function resetBackupImport() {
-        pendingBackupImport = null;
-        const input = document.getElementById('backup-import-file');
-        const preview = document.getElementById('backup-import-preview');
-        const btn = document.getElementById('btn-import-backup');
-        if (input) input.value = '';
-        if (preview) { preview.style.display = 'none'; preview.innerHTML = ''; }
-        if (btn) btn.disabled = true;
-      }
-
-      async function upsertBackupRows(table, rows) {
-        if (!rows?.length) return 0;
-        const hasId = rows.every(row => row && Object.prototype.hasOwnProperty.call(row, 'id'));
-        let imported = 0;
-        for (let i = 0; i < rows.length; i += 100) {
-          const chunk = rows.slice(i, i + 100);
-          const params = hasId ? 'on_conflict=id' : '';
-          const res = await sbFetch(table, params, {
-            method: 'POST',
-            headers: { Prefer: hasId ? 'resolution=merge-duplicates,return=minimal' : 'return=minimal' },
-            body: JSON.stringify(chunk)
-          });
-          imported += chunk.length;
-        }
-        return imported;
-      }
-
-      async function importSelectedBackup(btn) {
-        if (!pendingBackupImport) { toast('Selecione e valide um backup primeiro.', 'info'); return; }
-        const total = Object.values(pendingBackupImport.tables).reduce((sum, rows) => sum + rows.length, 0);
-        if (!confirm(`Importar ${total} registro(s) de ${pendingBackupImport.fileName}? Registros com o mesmo ID serão atualizados. Nenhum dado atual será apagado.`)) return;
-        await withBtn(btn, 'Importando...', async () => {
-          const importedByTable = {};
-          for (const [table, rows] of Object.entries(pendingBackupImport.tables)) {
-            importedByTable[table] = await upsertBackupRows(table, rows);
-          }
-          const summary = Object.entries(importedByTable).map(([table, count]) => `${BACKUP_TABLE_LABELS[table] || table}: ${count}`).join(', ');
-          toast('✅ Backup importado: ' + summary, 'success');
-          resetBackupImport();
-          try { await loadDashboard(); } catch (_) { }
-        });
-      }
-
       /* ══════════════════════════════════════════
          DASHBOARD
       ══════════════════════════════════════════ */
-      function setHealthItem(id, state, value, detail) {
-        const el = document.getElementById(id);
-        if (!el) return;
-        el.classList.remove('loading', 'ok', 'warn', 'bad');
-        el.classList.add(state);
-        const valueEl = el.querySelector('.health-value');
-        const detailEl = el.querySelector('.health-detail');
-        if (valueEl) valueEl.textContent = value;
-        if (detailEl) detailEl.textContent = detail;
-      }
-
-      function formatHealthDate(iso) {
-        if (!iso) return '';
-        const date = new Date(iso);
-        if (Number.isNaN(date.getTime())) return '';
-        return date.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
-      }
-
-      function getLastBackupMeta() {
-        try { return JSON.parse(localStorage.getItem('asproc_last_backup_meta')) || null; }
-        catch { return null; }
-      }
-
-      async function checkStorageHealth() {
-        const { url, key } = getSupabase();
-        if (!url || !key) throw new Error('Supabase não configurado.');
-        const baseUrl = url.replace(/\/+$/, '');
-        const authToken = AuthStore.getToken() || key;
-        const res = await fetch(`${baseUrl}/storage/v1/bucket`, {
-          headers: { apikey: key, Authorization: 'Bearer ' + authToken }
-        });
-        if (!res.ok) throw new Error(`Storage respondeu ${res.status}`);
-        const buckets = await res.json().catch(() => []);
-        const ids = (Array.isArray(buckets) ? buckets : []).map(b => b.id || b.name).filter(Boolean);
-        const required = ['imagens', 'candidaturas'];
-        const missing = required.filter(id => !ids.includes(id));
-        return { ids, missing };
-      }
-
-      async function getRecentScheduleErrors() {
-        try {
-          return await sbSelect(
-            'publicacoes_agendadas',
-            'select=titulo,tabela,erro_msg,criado_em&status=eq.erro&order=criado_em.desc&limit=3'
-          );
-        } catch (e) {
-          const msg = String(e?.message || '');
-          if (!msg.includes('criado_em') && !msg.includes('created_at')) throw e;
-          return sbSelect(
-            'publicacoes_agendadas',
-            'select=titulo,tabela,erro_msg&status=eq.erro&limit=3'
-          );
-        }
-      }
-
-      async function loadSiteHealth(manual = false) {
-        const btn = document.getElementById('btn-health-refresh');
-        if (btn) {
-          btn.disabled = true;
-          btn.textContent = '⏳ Atualizando...';
-        }
-
-        const capturedErrors = [];
-        const backup = getLastBackupMeta();
-        if (backup?.at) {
-          setHealthItem('health-backup', 'ok', formatHealthDate(backup.at), backup.filename || 'Backup gerado neste navegador.');
-        } else {
-          setHealthItem('health-backup', 'warn', 'Nenhum registro local', 'Gere um backup em Configurações para registrar a data aqui.');
-        }
-
-        try {
-          await sbSelect('noticias', 'select=id&limit=1');
-          setHealthItem('health-supabase', 'ok', 'Conectado', 'API e autenticação responderam normalmente.');
-        } catch (e) {
-          capturedErrors.push('Supabase: ' + e.message);
-          setHealthItem('health-supabase', 'bad', 'Falha na conexão', e.message);
-        }
-
-        try {
-          const storage = await checkStorageHealth();
-          if (storage.missing.length) {
-            setHealthItem('health-storage', 'warn', 'Atenção', 'Buckets não listados: ' + storage.missing.join(', ') + '.');
-          } else {
-            setHealthItem('health-storage', 'ok', 'OK', 'Buckets imagens e candidaturas encontrados.');
-          }
-        } catch (e) {
-          capturedErrors.push('Storage: ' + e.message);
-          setHealthItem('health-storage', 'warn', 'Não confirmado', 'Revise buckets/policies se uploads falharem.');
-        }
-
-        try {
-          await Promise.all([
-            sbSelect('mensagens_contato', 'select=id&limit=1'),
-            sbSelect('newsletters', 'select=id&limit=1'),
-            sbSelect('candidaturas', 'select=id&limit=1')
-          ]);
-          setHealthItem('health-forms', 'ok', 'OK', 'Tabelas de contato, newsletter e candidaturas acessíveis.');
-        } catch (e) {
-          capturedErrors.push('Formulários: ' + e.message);
-          setHealthItem('health-forms', 'warn', 'Revisar', 'Alguma tabela de formulário não respondeu.');
-        }
-
-        try {
-          const [published, draftFalse, draftStatus] = await Promise.all([
-            sbCount('noticias', 'publicado=eq.true'),
-            sbCount('noticias', 'publicado=eq.false'),
-            sbCount('noticias', 'status=eq.rascunho')
-          ]);
-          const drafts = Math.max(draftFalse || 0, draftStatus || 0);
-          setHealthItem('health-news', 'ok', String(published), 'Notícias publicadas disponíveis no painel.');
-          setHealthItem('health-drafts', drafts > 0 ? 'warn' : 'ok', String(drafts), drafts > 0 ? 'Revise antes de publicar.' : 'Sem rascunhos pendentes.');
-        } catch (e) {
-          capturedErrors.push('Notícias: ' + e.message);
-          setHealthItem('health-news', 'warn', 'Não lido', 'Não foi possível contar publicações.');
-          setHealthItem('health-drafts', 'warn', 'Não lido', 'Não foi possível contar rascunhos.');
-        }
-
-        try {
-          const recentErrors = await getRecentScheduleErrors();
-          const box = document.getElementById('health-errors');
-          if (box) {
-            const rows = Array.isArray(recentErrors) ? recentErrors : [];
-            if (capturedErrors.length || rows.length) {
-              const dbErrors = rows.map(row => {
-                const when = formatHealthDate(row.criado_em);
-                return `${row.tabela || 'conteúdo'}: ${row.titulo || 'sem título'}${row.erro_msg ? ' - ' + row.erro_msg : ''}${when ? ' (' + when + ')' : ''}`;
-              });
-              const all = [...capturedErrors, ...dbErrors].slice(0, 5);
-              box.innerHTML = `<strong>Erros recentes:</strong><ul>${all.map(e => `<li>${escHtml(e)}</li>`).join('')}</ul>`;
-            } else {
-              box.innerHTML = '<strong>Erros recentes:</strong> nenhum erro recente encontrado.';
-            }
-          }
-        } catch (e) {
-          const box = document.getElementById('health-errors');
-          if (box) {
-            const all = [...capturedErrors, 'Agendamentos: ' + e.message].slice(0, 5);
-            box.innerHTML = `<strong>Erros recentes:</strong><ul>${all.map(err => `<li>${escHtml(err)}</li>`).join('')}</ul>`;
-          }
-        } finally {
-          if (btn) {
-            btn.disabled = false;
-            btn.textContent = '↻ Atualizar';
-          }
-          if (manual) toast('Central de saúde atualizada.', 'success');
-        }
-      }
-      window.loadSiteHealth = loadSiteHealth;
-
       async function loadDashboard() {
         try {
           const [nCount, vCount, aCount] = await Promise.all([
@@ -8087,8 +6623,6 @@
           }
         } catch (e) {
           document.getElementById('activity-feed').innerHTML = `<p style="font-size:.82rem;color:var(--red)">Erro: ${e.message}</p>`;
-        } finally {
-          loadSiteHealth().catch(e => console.warn('[HEALTH] Falha ao carregar central:', e.message));
         }
       }
 
@@ -8473,7 +7007,6 @@
         veAnexos = Array.isArray(v.anexos) ? [...v.anexos] : (v.edital_url ? [{ nome: 'Edital', url: v.edital_url, tipo: 'pdf' }] : []);
         veRenderAnexos();
         veUpdateImgPreview();
-        veUpdateLivePreview();
         openVagaEditor();
       }
 
@@ -8481,21 +7014,6 @@
         const titulo = document.getElementById('v-titulo').value.trim();
         let descricao = document.getElementById('ve-rte-body').innerHTML.trim();
         if (!titulo) { toast('Preencha o título da vaga.', 'error'); return; }
-        if (forcePublish) {
-          const listaAnexos = veAnexos.length
-            ? veAnexos.map(ax => ({ nome: ax.nome, url: ax.url, tipo: ax.tipo || null }))
-            : null;
-          const review = buildPublishReview('vaga', {
-            titulo,
-            resumo: document.getElementById('v-resumo').value.trim(),
-            text: plainTextFromHtml(descricao),
-            prazo: document.getElementById('v-prazo').value,
-            imagem: document.getElementById('v-imagem-url').value.trim(),
-            edital: listaAnexos ? listaAnexos[0].url : document.getElementById('v-edital').value.trim()
-          });
-          const canPublish = await confirmPublishReview(review);
-          if (!canPublish) return;
-        }
         // Verifica imagens quebradas — bloqueia se houver e o usuário cancelar
         if (window.RTE_IMG_CHECK) {
           toast('🔍 Verificando imagens…', 'info');
@@ -8617,7 +7135,6 @@
         document.body.style.overflow = 'hidden';
         // Inicia autosave (oferece restaurar se houver rascunho)
         setTimeout(() => {
-          aeUpdateLivePreview();
           if (window.RTE_AUTOSAVE) RTE_AUTOSAVE.start('ae');
           if (window.RTE_SEO) RTE_SEO.setupAll();
           if (window.RTE_DRAG_IMG) RTE_DRAG_IMG.setupAll();
@@ -8666,7 +7183,6 @@
         aeRenderAnexos();
         aeUpdateImgPreview();
         aeUpdateWappPreview();
-        aeUpdateLivePreview();
         openAvisoEditor();
       }
 
@@ -8674,17 +7190,6 @@
         const titulo = document.getElementById('a-titulo').value.trim();
         let descricao = document.getElementById('ae-rte-body').innerHTML.trim();
         if (!titulo || !descricao) { toast('Preencha título e conteúdo.', 'error'); return; }
-        if (forcePublish) {
-          const review = buildPublishReview('aviso', {
-            titulo,
-            resumo: document.getElementById('a-resumo').value.trim(),
-            text: plainTextFromHtml(descricao),
-            data: document.getElementById('a-data').value,
-            imagem: document.getElementById('a-capa-url').value.trim()
-          });
-          const canPublish = await confirmPublishReview(review);
-          if (!canPublish) return;
-        }
         // Verifica imagens quebradas — bloqueia se houver e o usuário cancelar
         if (window.RTE_IMG_CHECK) {
           toast('🔍 Verificando imagens…', 'info');
@@ -9208,7 +7713,7 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
             }
           }
           // Mantém dentro da viewport
-          const menuW = Math.min(360, window.innerWidth - 16), menuH = Math.min(420, window.innerHeight - 16);
+          const menuW = 300, menuH = 360;
           if (left + menuW > window.innerWidth - 10) left = window.innerWidth - menuW - 10;
           if (top + menuH > window.innerHeight - 10) {
             top = Math.max(10, rect.top - menuH - 4);
@@ -9222,14 +7727,13 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
           const q = this.filterText.toLowerCase().trim();
           this.items = this.commands.filter(c => {
             if (!q) return true;
-            const hay = (c.title + ' ' + (c.desc || '') + ' ' + (c.keywords || '')).toLowerCase();
+            const hay = (c.title + ' ' + (c.keywords || '')).toLowerCase();
             return hay.includes(q);
           });
           if (this.activeIdx >= this.items.length) this.activeIdx = 0;
 
           if (this.items.length === 0) {
             this.menuEl.innerHTML =
-              '<div class="rte-slash-top"><strong>Comandos rápidos</strong><span>Digite depois da barra para filtrar. Ex: /imagem, /link, /tabela.</span><span class="rte-slash-query">/' + escHtml(this.filterText) + '</span></div>' +
               '<div class="rte-slash-header">Sem resultados</div>' +
               '<div class="rte-slash-empty">Nenhum comando para "' + escHtml(this.filterText) + '"</div>';
             return;
@@ -9243,7 +7747,7 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
             groups[g].push({ cmd: c, idx: i });
           });
 
-          let html = '<div class="rte-slash-top"><strong>Comandos rápidos</strong><span>Digite para filtrar e use o teclado para escolher.</span><span class="rte-slash-query">/' + escHtml(this.filterText) + '</span></div>';
+          let html = '';
           Object.keys(groups).forEach(g => {
             html += '<div class="rte-slash-header">' + escHtml(g) + '</div>';
             groups[g].forEach(({ cmd, idx }) => {
@@ -9258,7 +7762,6 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
                 '</div>';
             });
           });
-          html += '<div class="rte-slash-footer"><span><kbd>↑</kbd><kbd>↓</kbd> navegar</span><span><kbd>Enter</kbd> inserir</span><span><kbd>Esc</kbd> fechar</span></div>';
           this.menuEl.innerHTML = html;
 
           // Click handler (delegação)
@@ -9390,7 +7893,7 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
           run: (rte) => rte.block('h3')
         },
         {
-          id: 'p', group: 'Texto', icon: '¶', title: 'Parágrafo', desc: 'Texto comum', keywords: 'texto comum paragrafo normal',
+          id: 'p', group: 'Texto', icon: '¶', title: 'Parágrafo', desc: 'Texto comum',
           run: (rte) => rte.block('p')
         },
         {
@@ -9414,15 +7917,8 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
 
         // ── Mídia ──
         {
-          id: 'image', group: 'Mídia', icon: '🖼️', title: 'Imagem', desc: 'Escolher imagem do banco ou enviar arquivo', keywords: 'imagem foto img picture upload midia',
-          run: (rte) => {
-            if (typeof rteOpenImagePicker === 'function') rteOpenImagePicker(rte.id);
-            else if (typeof rteInsertImageUrl === 'function') rteInsertImageUrl(rte.id);
-          }
-        },
-        {
-          id: 'image-url', group: 'Mídia', icon: '🔗🖼️', title: 'Imagem por URL', desc: 'Colar link de uma imagem', keywords: 'imagem url link foto externa',
-          run: (rte) => { if (typeof rteInsertImageUrl === 'function') rteInsertImageUrl(rte.id); }
+          id: 'image', group: 'Mídia', icon: '🖼️', title: 'Imagem', desc: 'Inserir imagem do computador ou URL', keywords: 'imagem foto img picture',
+          run: (rte) => { if (typeof rteOpenImagePicker === 'function') rteOpenImagePicker(rte.id); }
         },
         {
           id: 'youtube', group: 'Mídia', icon: '▶', title: 'YouTube', desc: 'Embed de vídeo do YouTube', keywords: 'video youtube embed',
@@ -9445,10 +7941,6 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         {
           id: 'divider', group: 'Inserir', icon: '—', title: 'Divisor', desc: 'Linha horizontal', keywords: 'divisor hr separador linha',
           run: (rte) => rte.insertDivider()
-        },
-        {
-          id: 'clear', group: 'Inserir', icon: '✕A', title: 'Limpar formatação', desc: 'Remove estilos do trecho selecionado', keywords: 'limpar formatacao remover estilo clean',
-          run: (rte) => rte.clearFormat()
         },
 
         // ── Callouts ──
@@ -11589,22 +10081,6 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
       }
       window.aeUpdateWappPreview = aeUpdateWappPreview;
 
-      function aeUpdateLivePreview() {
-        const titulo = document.getElementById('a-titulo').value.trim() || 'Título do aviso…';
-        const resumo = document.getElementById('a-resumo').value.trim() || 'Resumo do aviso aparecerá aqui…';
-        const tipoEl = document.getElementById('a-tipo');
-        const tipo = tipoEl ? tipoEl.options[tipoEl.selectedIndex].text.replace(/^[^\wÀ-ÿ]+/, '').trim() : 'Informativo';
-        const data = document.getElementById('a-data').value;
-        const img = document.getElementById('a-capa-url').value.trim();
-        liveImage('a-live-img', img, 'Imagem de capa');
-        setIf('a-live-type', tipo || 'Informativo');
-        setIf('a-live-date', fmtDateShort(data));
-        setIf('a-live-title', titulo);
-        setIf('a-live-summary', resumo);
-        setHtmlIf('a-live-content', safePreviewHtml(document.getElementById('ae-rte-body').innerHTML));
-      }
-      window.aeUpdateLivePreview = aeUpdateLivePreview;
-
       function aeUpdateImgPreview() {
         const url = document.getElementById('a-capa-url').value.trim();
         const preview = document.getElementById('ae-img-preview');
@@ -11621,7 +10097,6 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
           if (placeholder) placeholder.style.display = '';
           if (remBtn) remBtn.style.display = 'none';
         }
-        aeUpdateLivePreview();
       }
       window.aeUpdateImgPreview = aeUpdateImgPreview;
 
@@ -12279,15 +10754,8 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
       /* ══════════════════════════════════════════
          SIDEBAR MOBILE
       ══════════════════════════════════════════ */
-      function toggleSidebar() {
-        const sidebar = document.getElementById('sidebar');
-        const open = sidebar.classList.toggle('open');
-        document.body.classList.toggle('sidebar-mobile-open', open);
-      }
-      function closeSidebar() {
-        document.getElementById('sidebar').classList.remove('open');
-        document.body.classList.remove('sidebar-mobile-open');
-      }
+      function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+      function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); }
 
       /* ══════════════════════════════════════════
          TOAST
@@ -12428,6 +10896,12 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
         const [ic, lb, bg, cl, bd] = map[s] || ['❓', s, 'rgba(255,255,255,.08)', 'var(--text-muted)', 'rgba(255,255,255,.15)'];
         return `<span style="display:inline-flex;align-items:center;gap:.3rem;padding:.22rem .65rem;border-radius:99px;font-size:.68rem;font-weight:700;background:${bg};color:${cl};border:1px solid ${bd};white-space:nowrap">${ic} ${lb}</span>`;
       }
+      function copySnippet() {
+        navigator.clipboard.writeText(document.getElementById('integration-snippet').textContent)
+          .then(() => toast('Código copiado!', 'success'))
+          .catch(() => toast('Não foi possível copiar.', 'error'));
+      }
+
       /* ══════════════════════════════════════════
          EDITOR DE NOTÍCIAS
       ══════════════════════════════════════════ */
@@ -12461,7 +10935,6 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
           neCheckDraftOnOpen();
           // Dispara contadores uma vez após o editor estar visível
           updateWordCount();
-          updatePreview();
           neTitleCounter(document.getElementById('n-titulo'));
           // Novos módulos
           if (window.RTE_SEO) RTE_SEO.setupAll();
@@ -12546,21 +11019,24 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
       function neShowAutoSaveState(state) {
         const el = document.getElementById('ne-autosave-indicator');
         if (!el) return;
-        el.className = 'ne-editor-status';
-        el.style.cssText = '';
-        el.onclick = null;
+        el.className = 'ne-autosave-indicator';
         if (state === 'saving') {
-          el.classList.add('saving');
-          el.textContent = 'Salvando...';
+          el.id = 'ne-autosave-indicator';
+          el.className = '';
+          el.setAttribute('id', 'ne-autosave-indicator');
+          el.textContent = '⏳ Salvando…';
+          el.style.cssText = 'display:inline-flex;align-items:center;gap:.35rem;font-size:.72rem;font-weight:600;color:var(--accent);padding:.25rem .6rem;border-radius:99px;border:1px solid rgba(59,130,246,.2);background:var(--accent-soft);transition:all .3s;';
         } else if (state === 'saved') {
           const now = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-          el.classList.add('saved');
-          el.textContent = `Salvo às ${now}`;
+          el.textContent = `✅ Rascunho salvo às ${now}`;
+          el.style.cssText = 'display:inline-flex;align-items:center;gap:.35rem;font-size:.72rem;font-weight:600;color:var(--green);padding:.25rem .6rem;border-radius:99px;border:1px solid rgba(16,185,129,.2);background:var(--green-soft);transition:all .3s;';
           setTimeout(() => {
-            if (el.classList.contains('saved')) neShowAutoSaveState('idle');
+            el.textContent = '💾 Auto-save ativo';
+            el.style.cssText = 'display:inline-flex;align-items:center;gap:.35rem;font-size:.72rem;color:var(--text-muted);padding:.25rem .6rem;border-radius:99px;border:1px solid transparent;transition:all .3s;';
           }, 3000);
         } else {
-          el.textContent = 'Rascunho salvo';
+          el.textContent = '💾 Auto-save ativo';
+          el.style.cssText = 'display:inline-flex;align-items:center;gap:.35rem;font-size:.72rem;color:var(--text-muted);padding:.25rem .6rem;border-radius:99px;border:1px solid transparent;transition:all .3s;';
         }
       }
 
@@ -12587,10 +11063,8 @@ Para salvar todos os arquivos, execute este SQL no Supabase → SQL Editor:<br>
           const savedAt = draft._savedAt ? new Date(draft._savedAt).toLocaleString('pt-BR') : '?';
           const el = document.getElementById('ne-autosave-indicator');
           if (el) {
-            el.className = 'ne-editor-status draft-exists';
-            el.style.cssText = '';
-            el.textContent = `Rascunho ${savedAt}`;
-            el.title = 'Clique para restaurar o rascunho salvo';
+            el.textContent = `⚠️ Rascunho de ${savedAt} — clique para restaurar`;
+            el.style.cssText = 'display:inline-flex;align-items:center;gap:.35rem;font-size:.72rem;font-weight:600;color:var(--amber);padding:.25rem .6rem;border-radius:99px;border:1px solid rgba(245,158,11,.2);background:var(--amber-soft);cursor:pointer;transition:all .3s;';
             el.onclick = () => neRestoreDraft(draft);
           }
         } catch (e) { /* rascunho inválido */ }
@@ -12770,152 +11244,6 @@ CREATE POLICY "admin_versoes" ON noticia_versoes FOR ALL TO authenticated USING 
         return (str || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-').replace(/-+/g, '-').substring(0, 80);
       }
 
-      function plainTextFromHtml(html) {
-        const tmp = document.createElement('div');
-        tmp.innerHTML = html || '';
-        return (tmp.textContent || '').replace(/\s+/g, ' ').trim();
-      }
-
-      function safePreviewHtml(html) {
-        const tmp = document.createElement('div');
-        tmp.innerHTML = html || '';
-        tmp.querySelectorAll('script,style,object,embed').forEach(el => el.remove());
-        tmp.querySelectorAll('*').forEach(el => {
-          [...el.attributes].forEach(attr => {
-            const name = attr.name.toLowerCase();
-            const val = String(attr.value || '').trim().toLowerCase();
-            if (name.startsWith('on') || val.startsWith('javascript:')) el.removeAttribute(attr.name);
-          });
-        });
-        return tmp.innerHTML || 'O conteúdo formatado aparecerá aqui enquanto você escreve.';
-      }
-
-      function liveImage(targetId, url, emptyText) {
-        const el = document.getElementById(targetId);
-        if (!el) return;
-        if (url) el.innerHTML = `<img src="${escHtml(url)}" alt="">`;
-        else el.textContent = emptyText || 'Imagem de capa';
-      }
-
-      function setIf(id, value) {
-        const el = document.getElementById(id);
-        if (el) el.textContent = value;
-      }
-
-      function setHtmlIf(id, html) {
-        const el = document.getElementById(id);
-        if (el) el.innerHTML = html;
-      }
-
-      function fmtDateShort(value) {
-        if (!value) return 'Sem data definida';
-        try { return new Date(value + 'T00:00:00').toLocaleDateString('pt-BR'); }
-        catch { return value; }
-      }
-
-      function validateUrlLike(value) {
-        if (!value) return true;
-        try { new URL(value); return true; } catch { return false; }
-      }
-
-      function currentEditorText(kind) {
-        const id = kind === 'noticia' ? 'n-rte-body' : kind === 'vaga' ? 've-rte-body' : 'ae-rte-body';
-        const el = document.getElementById(id);
-        return plainTextFromHtml(el ? el.innerHTML : '');
-      }
-
-      function buildPublishReview(kind, data) {
-        const blockers = [];
-        const warnings = [];
-        const summary = Object.assign({ kind }, data || {});
-        const text = (data && data.text) || currentEditorText(kind);
-
-        if (!summary.titulo) blockers.push('Informe um título antes de publicar.');
-        if (text.length < 80) blockers.push('O conteúdo está muito curto para publicação.');
-
-        if (kind === 'noticia') {
-          if (!summary.resumo) blockers.push('Informe um resumo para a notícia.');
-          if (!summary.slug) warnings.push('O slug será gerado automaticamente a partir do título.');
-          if (!summary.imagem) warnings.push('A notícia está sem imagem de capa.');
-          if (!summary.data) warnings.push('A data de publicação não foi definida.');
-          if (summary.imagem && !validateUrlLike(summary.imagem)) blockers.push('A URL da imagem de capa parece inválida.');
-        }
-
-        if (kind === 'vaga') {
-          if (!summary.resumo) warnings.push('A vaga está sem resumo para os cards do site.');
-          if (!summary.prazo) warnings.push('A vaga está sem prazo de inscrição.');
-          if (!summary.imagem) warnings.push('A vaga está sem imagem de capa.');
-          if (!summary.edital) warnings.push('Nenhum edital/documento foi anexado.');
-          if (summary.imagem && !validateUrlLike(summary.imagem)) blockers.push('A URL da imagem de capa parece inválida.');
-        }
-
-        if (kind === 'aviso') {
-          if (!summary.resumo) warnings.push('O aviso está sem resumo para listagem e compartilhamento.');
-          if (!summary.data) warnings.push('O aviso está sem data definida.');
-          if (!summary.imagem) warnings.push('O aviso está sem imagem de capa.');
-          if (summary.imagem && !validateUrlLike(summary.imagem)) blockers.push('A URL da imagem de capa parece inválida.');
-        }
-
-        return { kind, blockers, warnings, summary, textLength: text.length };
-      }
-
-      function confirmPublishReview(review) {
-        return new Promise(resolve => {
-          let overlay = document.getElementById('publish-check-overlay');
-          if (!overlay) {
-            overlay = document.createElement('div');
-            overlay.id = 'publish-check-overlay';
-            overlay.className = 'publish-check-overlay';
-            document.body.appendChild(overlay);
-          }
-
-          const label = { noticia: 'notícia', vaga: 'vaga', aviso: 'aviso' }[review.kind] || review.kind;
-          const article = review.kind === 'aviso' ? 'do' : 'da';
-          const pronoun = review.kind === 'aviso' ? 'deixá-lo' : 'deixá-la';
-          const hasBlockers = review.blockers.length > 0;
-          const warningsHtml = review.warnings.length
-            ? '<div class="publish-check-list">' + review.warnings.map(w => `<div class="publish-check-item warning">⚠ ${escHtml(w)}</div>`).join('') + '</div>'
-            : '<div class="publish-check-ok">Tudo pronto para publicar.</div>';
-          const blockersHtml = review.blockers.length
-            ? '<div class="publish-check-list">' + review.blockers.map(b => `<div class="publish-check-item blocker">✕ ${escHtml(b)}</div>`).join('') + '</div>'
-            : '';
-
-          overlay.innerHTML = `
-            <div class="publish-check-modal" role="dialog" aria-modal="true">
-              <div class="publish-check-head">
-                <h3 class="publish-check-title">Revisar antes de publicar</h3>
-                <p class="publish-check-sub">Confira os pontos principais ${article} ${escHtml(label)} antes de ${pronoun} visível no site.</p>
-              </div>
-              <div class="publish-check-body">
-                <div class="publish-check-summary">
-                  <strong>${escHtml(review.summary.titulo || 'Sem título')}</strong>
-                  <div style="color:var(--text-muted);font-size:.78rem;line-height:1.45;">
-                    ${escHtml(review.summary.resumo || 'Sem resumo')}<br>
-                    Conteúdo: ${review.textLength.toLocaleString('pt-BR')} caracteres
-                  </div>
-                </div>
-                ${blockersHtml}
-                ${warningsHtml}
-              </div>
-              <div class="publish-check-foot">
-                <button class="btn btn-secondary btn-sm" id="publish-check-cancel">Voltar e revisar</button>
-                ${hasBlockers ? '' : '<button class="btn btn-primary btn-sm" id="publish-check-confirm">Publicar assim</button>'}
-              </div>
-            </div>`;
-          overlay.style.display = 'flex';
-
-          const close = (ok) => {
-            overlay.style.display = 'none';
-            overlay.innerHTML = '';
-            resolve(ok);
-          };
-          document.getElementById('publish-check-cancel').onclick = () => close(false);
-          const confirm = document.getElementById('publish-check-confirm');
-          if (confirm) confirm.onclick = () => close(true);
-          overlay.onclick = (ev) => { if (ev.target === overlay) close(false); };
-        });
-      }
-
       function updatePreview() {
         const t = document.getElementById('n-titulo').value || 'Título da notícia…';
         const r = document.getElementById('n-resumo').value || 'Resumo aparecerá aqui…';
@@ -12926,15 +11254,6 @@ CREATE POLICY "admin_versoes" ON noticia_versoes FOR ALL TO authenticated USING 
           slugEl.value = slugify(t === 'Título da notícia…' ? '' : t);
           slugEl.dataset.autoSlug = 'true';
         }
-        const catEl = document.getElementById('n-categoria');
-        const dateEl = document.getElementById('n-data');
-        const img = document.getElementById('n-imagem').value.trim();
-        liveImage('n-live-img', img, 'Imagem de capa');
-        setIf('n-live-cat', catEl ? catEl.options[catEl.selectedIndex].text.replace(/^[^\wÀ-ÿ]+/, '').trim() : 'Geral');
-        setIf('n-live-date', fmtDateShort(dateEl ? dateEl.value : ''));
-        setIf('n-live-title', t);
-        setIf('n-live-summary', r);
-        setHtmlIf('n-live-content', safePreviewHtml(document.getElementById('n-rte-body').innerHTML));
       }
 
       function updateWordCount() {
@@ -13103,18 +11422,17 @@ CREATE POLICY "admin_versoes" ON noticia_versoes FOR ALL TO authenticated USING 
 
       function syncRteToHidden() {
         document.getElementById('n-conteudo').value = document.getElementById('n-rte-body').innerHTML;
-      }
 
-      /* ── Expandir / recolher editores ricos ── */
-      function toggleEditorExpand(overlayId = 'news-editor-overlay', btnId = 'btn-expand-editor') {
-        const overlay = document.getElementById(overlayId);
-        const btn = document.getElementById(btnId);
-        if (!overlay || !btn) return;
-        const expanded = overlay.classList.toggle('rte-expanded');
-        btn.textContent = expanded ? '⛶ Recolher' : '⛶ Expandir';
-        btn.classList.toggle('active', expanded);
+        /* ── Expandir / recolher RTE para tela cheia ── */
+        function toggleEditorExpand() {
+          const overlay = document.getElementById('news-editor-overlay');
+          const btn = document.getElementById('btn-expand-editor');
+          const expanded = overlay.classList.toggle('rte-expanded');
+          btn.textContent = expanded ? '⛶ Recolher' : '⛶ Expandir';
+          btn.classList.toggle('active', expanded);
+        }
+        window.toggleEditorExpand = toggleEditorExpand;
       }
-      window.toggleEditorExpand = toggleEditorExpand;
 
       /* ── RTE ── */
       // ══════════════════════════════════════════
@@ -14838,18 +13156,6 @@ document.addEventListener('DOMContentLoaded',function(){
         syncRteToHidden();
         const data = dataOverride || getNoticiaData();
         if (!data.titulo) { toast('Preencha o título antes de publicar.', 'error'); return; }
-        if (!dataOverride) {
-          const review = buildPublishReview('noticia', {
-            titulo: data.titulo,
-            resumo: data.resumo,
-            text: plainTextFromHtml(data.conteudo),
-            slug: data._slug || slugify(data.titulo),
-            imagem: data.imagem_url,
-            data: data.data_pub
-          });
-          const canPublish = await confirmPublishReview(review);
-          if (!canPublish) return;
-        }
         const token = await getGhTokenAsync();
         if (!token) {
           toast('Configure o token do GitHub em Configurações.', 'error'); goTo('configuracoes',
@@ -15468,7 +13774,6 @@ document.addEventListener('DOMContentLoaded',function(){
         veAnexos = [];
         veRenderAnexos();
         veUpdateImgPreview();
-        veUpdateLivePreview();
         openVagaEditor();
       }
 
@@ -15477,7 +13782,6 @@ document.addEventListener('DOMContentLoaded',function(){
         el.style.display = 'flex';
         document.body.style.overflow = 'hidden';
         setTimeout(() => {
-          veUpdateLivePreview();
           if (window.RTE_AUTOSAVE) RTE_AUTOSAVE.start('ve');
           if (window.RTE_SEO) RTE_SEO.setupAll();
           if (window.RTE_DRAG_IMG) RTE_DRAG_IMG.setupAll();
@@ -15621,26 +13925,7 @@ document.addEventListener('DOMContentLoaded',function(){
           if (placeholder) placeholder.style.display = '';
           if (remBtn) remBtn.style.display = 'none';
         }
-        veUpdateLivePreview();
       }
-
-      function veUpdateLivePreview() {
-        const titulo = document.getElementById('v-titulo').value.trim() || 'Título da vaga…';
-        const resumo = document.getElementById('v-resumo').value.trim() || 'Resumo da vaga aparecerá aqui…';
-        const statusEl = document.getElementById('v-status');
-        const status = statusEl ? statusEl.options[statusEl.selectedIndex].text.replace(/^[^\wÀ-ÿ]+/, '').trim() : 'Aberta';
-        const local = document.getElementById('v-local').value.trim() || 'Carauari/AM';
-        const regime = document.getElementById('v-regime').value || 'CLT';
-        const prazo = document.getElementById('v-prazo').value;
-        const img = document.getElementById('v-imagem-url').value.trim();
-        liveImage('v-live-img', img, 'Imagem de capa');
-        setIf('v-live-status', status || 'Aberta');
-        setIf('v-live-meta', `${local} · ${regime}${prazo ? ' · Inscrições até ' + fmtDateShort(prazo) : ''}`);
-        setIf('v-live-title', titulo);
-        setIf('v-live-summary', resumo);
-        setHtmlIf('v-live-content', safePreviewHtml(document.getElementById('ve-rte-body').innerHTML));
-      }
-      window.veUpdateLivePreview = veUpdateLivePreview;
 
       function veRemoverCapa() {
         document.getElementById('v-imagem-url').value = '';
@@ -15955,6 +14240,9 @@ document.addEventListener('DOMContentLoaded',function(){
       window.logoCancelSelection = logoCancelSelection;
       window.uploadLogo = uploadLogo;
       window.deleteLogo = deleteLogo;
+      window.loadMenuVisibility = loadMenuVisibility;
+      window.saveMenuVisibility = saveMenuVisibility;
+      window.toggleMenuVisibilityLabel = toggleMenuVisibilityLabel;
       window.toggleSidebar = toggleSidebar;
       window.closeSidebar = closeSidebar;
       window.openModal = openModal;
@@ -17359,11 +15647,6 @@ ${corpo}
       window.deleteCandidatura = deleteCandidatura;
       window.saveConfig = saveConfig;
       window.testConnection = testConnection;
-      window.downloadBackup = downloadBackup;
-      window.downloadFullBackup = downloadFullBackup;
-      window.previewBackupImport = previewBackupImport;
-      window.importSelectedBackup = importSelectedBackup;
-      window.resetBackupImport = resetBackupImport;
       window.saveGithubToken = saveGithubToken;
       window.testGithubConnection = testGithubConnection;
       window.publishToGithub = publishToGithub;
@@ -17586,6 +15869,7 @@ ${corpo}
         }
       }
       window.copyDeployLink = copyDeployLink;
+      window.copySnippet = copySnippet;
       window.rteExec = rteExec;
       window.updateWordCount = updateWordCount;
       window.rteSetupSelectionTracking = rteSetupSelectionTracking;
