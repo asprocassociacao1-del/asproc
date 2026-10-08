@@ -3,6 +3,13 @@
 
 <head>
     <meta charset="UTF-8">
+    <script>
+        // Link antigo /noticias/<slug>.html sem arquivo estático → página dinâmica
+        (function () {
+            var m = location.pathname.match(/^\/noticias\/([^\/?#]+)\.html$/i);
+            if (m && m[1] !== 'index') location.replace('/noticias/?n=' + m[1] + location.hash);
+        })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Página não encontrada – ASPROC</title>
     <meta name="description"

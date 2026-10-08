@@ -1840,6 +1840,18 @@
             } catch { return u || '#'; }
         }
 
+        // Link de uma notícia: página dinâmica /noticias/?n=slug (sempre atualizada).
+        // url_externa só é usada quando aponta para OUTRO site.
+        function _newsLink(n) {
+            if (!n) return '#';
+            const ext = String(n.url_externa || '').trim();
+            const own = ext.indexOf('asproc.org.br/noticias/') > -1 || ext.indexOf('github.io/asproc/noticias/') > -1;
+            if (ext && !own) return _url(ext);
+            const sl = String(n.slug || '').trim();
+            if (sl) return 'https://www.asproc.org.br/noticias/?n=' + encodeURIComponent(sl);
+            return ext ? _url(ext) : '#';
+        }
+
         async function loadNoticias() {
             totalNoticias = await fetchTotalNoticias();
             await goToPage(1);
@@ -1906,7 +1918,8 @@
                     const feat = data[0];
                     destaque.style.display = '';
                     destaque.setAttribute('data-tag', feat.categoria || 'geral');
-                    destaque.onclick = feat.url_externa ? () => window.open(_url(feat.url_externa), '_blank') : null;
+                    const featLink = _newsLink(feat);
+                    destaque.onclick = featLink !== '#' ? () => window.open(featLink, '_blank') : null;
                     const catEl = destaque.querySelector('.feat-cat');
                     const dateEl = destaque.querySelector('.feat-date');
                     const titleEl = destaque.querySelector('.feat-title');
@@ -1927,8 +1940,8 @@
                         ? `<img src="${imgUrl}" alt="${_esc(n.titulo)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">`
                         : '';
                     const placeholderStyle = imgUrl ? 'display:none' : 'display:flex';
-                    const linkUrl = n.url_externa ? _url(n.url_externa) : '#';
-                    const linkTarget = n.url_externa ? '_blank' : '_self';
+                    const linkUrl = _newsLink(n);
+                    const linkTarget = linkUrl !== '#' ? '_blank' : '_self';
                     // Hero card: every 3rd starting at 0 (0, 3, 6…)
                     const isHero = idx % 3 === 0;
                     const heroClass = isHero ? ' nc--hero' : '';
@@ -1998,11 +2011,7 @@
                 if (list) {
                     if (Array.isArray(noticias) && noticias.length) {
                         list.innerHTML = noticias.map(n => {
-                            const href = n.url_externa
-                                ? _url(n.url_externa)
-                                : n.slug
-                                    ? `https://www.asproc.org.br/noticias/${n.slug}.html`
-                                    : 'noticias.html';
+                            const href = _newsLink(n) !== '#' ? _newsLink(n) : 'noticias.html';
                             const img = n.imagem_url
                                 ? `<img src="${n.imagem_url}" alt="${n.titulo || 'Notícia ASPROC'}" loading="lazy">`
                                 : '<div style="width:100%;height:100%;background:var(--verde);display:flex;align-items:center;justify-content:center;font-size:1.2rem">🌿</div>';
