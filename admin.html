@@ -924,6 +924,18 @@
       white-space: nowrap;
     }
 
+    /* ── LISTA DE NOTÍCIAS: filtros + paginação ── */
+    .nl-check { display:inline-flex; align-items:center; gap:.35rem; font-size:.78rem; color:var(--text-muted); cursor:pointer; white-space:nowrap; user-select:none; }
+    .nl-check input { accent-color: var(--accent); cursor:pointer; }
+    .nl-pager { display:flex; align-items:center; justify-content:space-between; gap:.75rem; flex-wrap:wrap; padding:.85rem 1rem; border-top:1px solid var(--border); font-size:.78rem; color:var(--text-muted); }
+    .nl-pager:empty { display:none; }
+    .nl-pages { display:flex; gap:.25rem; flex-wrap:wrap; }
+    .nl-pages button { min-width:30px; height:28px; padding:0 .5rem; border-radius:6px; border:1px solid var(--border); background:var(--bg3); color:var(--text-dim); font:inherit; font-size:.78rem; cursor:pointer; }
+    .nl-pages button:hover:not(:disabled) { border-color:var(--accent); color:var(--accent); }
+    .nl-pages button.on { background:var(--accent); border-color:var(--accent); color:#fff; }
+    .nl-pages button:disabled { opacity:.4; cursor:default; }
+    .badge-test { font-size:.62rem; padding:.05rem .4rem; margin-left:.35rem; vertical-align:middle; }
+
     /* ── BADGES ── */
     .badge {
       display: inline-flex;
@@ -3855,9 +3867,9 @@
           <div class="table-wrap">
             <div class="table-header">
               <h3>Notícias</h3>
-              <input class="search-input" type="text" placeholder="Buscar…"
-                oninput="filterTable('noticias-tbody',this.value)">
-              <select class="select-filter" onchange="filterByCat('noticias',this.value)">
+              <input class="search-input" type="text" placeholder="Buscar título, resumo ou slug…"
+                oninput="nlSet('q',this.value)">
+              <select class="select-filter" onchange="nlSet('cat',this.value)">
                 <option value="">Todas categorias</option>
                 <option value="pirarucu">Pirarucu</option>
                 <option value="olea">Oleaginosas</option>
@@ -3866,6 +3878,16 @@
                 <option value="vagas">Vagas</option>
                 <option value="geral">Geral</option>
               </select>
+              <select class="select-filter" id="nl-status" onchange="nlSet('status',this.value)">
+                <option value="">Todos status</option>
+                <option value="pub">Publicadas</option>
+                <option value="rasc">Rascunhos</option>
+                <option value="ag">Agendadas</option>
+              </select>
+              <label class="nl-check" title="Esconde notícias de teste (título com &quot;teste&quot; ou de uma palavra só)">
+                <input type="checkbox" id="nl-hide-tests" checked onchange="nlSet('hideTests',this.checked)">
+                Ocultar testes <span id="nl-tests-count"></span>
+              </label>
               <button class="btn btn-primary btn-sm" onclick="openNewsEditorNew()">+ Nova notícia</button>
             </div>
             <!-- PROGRESS REPUBLICAÇÃO -->
@@ -3899,6 +3921,7 @@
               </thead>
               <tbody id="noticias-tbody"></tbody>
             </table>
+            <div class="nl-pager" id="noticias-pager"></div>
             <div class="empty-state" id="noticias-empty" style="display:none;">
               <div class="es-icon">📰</div>
               <p>Nenhuma notícia encontrada.</p>
@@ -5939,6 +5962,8 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
       async function sbInsert(table, data) { return sbFetch(table, '', { method: 'POST', body: JSON.stringify(data) }); }
       async function sbUpdate(table, id, data) { return sbFetch(table, `id=eq.${id}`, { method: 'PATCH', body: JSON.stringify(data) }); }
       async function sbDelete(table, id) { return sbFetch(table, `id=eq.${id}`, { method: 'DELETE' }); }
+      async function sbRpc(fn, args) { return sbFetch('rpc/' + fn, '', { method: 'POST', body: JSON.stringify(args || {}) }); }
+      window.sbRpc = sbRpc;
       // Expõe ao escopo global para o módulo SCHED (outro <script>)
       window.sbSelect = sbSelect;
       window.sbInsert = sbInsert;
@@ -6807,60 +6832,260 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
          NOTÍCIAS
       ══════════════════════════════════════════ */
       let allNoticias = [];
+      let _noticiaCols = null; // colunas da lista (tudo menos "conteudo", que é pesado)
+      const NL = { q: '', cat: '', status: '', hideTests: true, page: 1, per: 20 };
+
+      /* ── Agendamentos pendentes (para mostrar "⏰ Agendada" nas listas) ── */
+      window._agendaMap = window._agendaMap || {};
+      async function loadAgendaMap() {
+        try {
+          const rows = await sbSelect('publicacoes_agendadas', 'select=tabela,registro_id,publicar_em&status=eq.pendente&order=publicar_em.asc') || [];
+          const m = {};
+          rows.forEach(r => { const k = r.tabela + ':' + r.registro_id; if (!m[k]) m[k] = r.publicar_em; });
+          window._agendaMap = m;
+        } catch (_) { /* tabela pode não existir: segue sem selos */ }
+        return window._agendaMap;
+      }
+      window.loadAgendaMap = loadAgendaMap;
+      function agendadoEm(tabela, id) { return (window._agendaMap || {})[tabela + ':' + id] || null; }
+      function agBadge(tabela, id) {
+        const dt = agendadoEm(tabela, id);
+        if (!dt) return '';
+        const s = new Date(dt).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+        return `<span class="badge badge-purple" title="Publicação automática agendada">⏰ ${s}</span>`;
+      }
 
       async function loadNoticias() {
         showLoading('noticias');
-        try { allNoticias = await sbSelect('noticias', 'select=*&order=data_pub.desc,created_at.desc') || []; renderNoticias(allNoticias); }
-        catch (e) { showError('noticias', e.message); }
+        try {
+          if (!_noticiaCols) {
+            const one = await sbSelect('noticias', 'select=*&limit=1') || [];
+            _noticiaCols = one[0] ? Object.keys(one[0]).filter(k => k !== 'conteudo') : null;
+          }
+          const cols = _noticiaCols ? _noticiaCols.join(',') : '*';
+          const [rows] = await Promise.all([
+            sbSelect('noticias', `select=${cols}&order=data_pub.desc,created_at.desc`),
+            loadAgendaMap(),
+          ]);
+          allNoticias = rows || [];
+          renderNoticias();
+        } catch (e) { showError('noticias', e.message); }
       }
 
-      function renderNoticias(list) {
+      /** A lista não traz o "conteudo"; busca a notícia completa quando precisa (editar, Word, duplicar). */
+      async function ensureNoticiaFull(n, id) {
+        if (n && n.conteudo !== undefined) return n;
+        const rows = await sbSelect('noticias', `select=*&id=eq.${id || (n && n.id)}&limit=1`);
+        if (!rows || !rows[0]) return n || null;
+        if (n) return Object.assign(n, rows[0]);
+        allNoticias.unshift(rows[0]);
+        return rows[0];
+      }
+
+      /** Notícia de teste: título/slug com "teste"/"test" ou título de uma palavra só (ex.: "fwefwef"). */
+      function isNoticiaTeste(n) {
+        const tit = (n.titulo || '').trim();
+        const t = (tit + ' ' + (n.slug || '')).toLowerCase();
+        return /test/.test(t) || (tit.length > 0 && !/\s/.test(tit));
+      }
+
+      function nlStatusOf(n) {
+        if (n.publicado) return 'pub';
+        return agendadoEm('noticias', n.id) ? 'ag' : 'rasc';
+      }
+
+      function nlFiltered() {
+        const q = escSearch(NL.q.trim());
+        return allNoticias.filter(n => {
+          if (NL.hideTests && isNoticiaTeste(n)) return false;
+          if (NL.cat && n.categoria !== NL.cat) return false;
+          if (NL.status && nlStatusOf(n) !== NL.status) return false;
+          if (q && !escSearch((n.titulo || '') + ' ' + (n.resumo || '') + ' ' + (n.slug || '')).includes(q)) return false;
+          return true;
+        });
+      }
+      function nlSet(k, v) { NL[k] = v; NL.page = 1; renderNoticias(); }
+      function nlPage(p) {
+        NL.page = p; renderNoticias();
+        const sec = document.getElementById('sec-noticias'); if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      window.nlSet = nlSet; window.nlPage = nlPage;
+
+      function nlUpdateCounters() {
+        const base = allNoticias.filter(n => !(NL.hideTests && isNoticiaTeste(n)));
+        const c = { pub: 0, rasc: 0, ag: 0 };
+        base.forEach(n => { c[nlStatusOf(n)]++; });
+        const sel = document.getElementById('nl-status');
+        if (sel) {
+          sel.options[0].text = `Todos status (${base.length})`;
+          sel.options[1].text = `Publicadas (${c.pub})`;
+          sel.options[2].text = `Rascunhos (${c.rasc})`;
+          sel.options[3].text = `Agendadas (${c.ag})`;
+        }
+        const nTestes = allNoticias.filter(isNoticiaTeste).length;
+        const el = document.getElementById('nl-tests-count');
+        if (el) el.textContent = nTestes ? `(${nTestes})` : '';
+      }
+
+      function nlPagerHTML(total, pages) {
+        const ini = (NL.page - 1) * NL.per + 1, fim = Math.min(NL.page * NL.per, total);
+        let btns = '';
+        if (pages > 1) {
+          btns += `<button onclick="nlPage(${NL.page - 1})" ${NL.page === 1 ? 'disabled' : ''}>←</button>`;
+          for (let i = 1; i <= pages; i++) {
+            if (i === 1 || i === pages || Math.abs(i - NL.page) <= 1) btns += `<button class="${i === NL.page ? 'on' : ''}" onclick="nlPage(${i})">${i}</button>`;
+            else if (Math.abs(i - NL.page) === 2) btns += `<button disabled>…</button>`;
+          }
+          btns += `<button onclick="nlPage(${NL.page + 1})" ${NL.page === pages ? 'disabled' : ''}>→</button>`;
+        }
+        return `<span>Mostrando ${ini}–${fim} de ${total}</span><div class="nl-pages">${btns}</div>`;
+      }
+
+      function renderNoticias() {
         const tbody = document.getElementById('noticias-tbody');
         const table = document.getElementById('noticias-table');
         const empty = document.getElementById('noticias-empty');
+        const pager = document.getElementById('noticias-pager');
         document.getElementById('noticias-loading').style.display = 'none';
-        if (!list.length) { table.style.display = 'none'; empty.style.display = 'block'; return; }
+        nlUpdateCounters();
+        const list = nlFiltered();
+        if (!list.length) {
+          table.style.display = 'none'; empty.style.display = 'block';
+          if (pager) pager.innerHTML = '';
+          return;
+        }
         table.style.display = 'table'; empty.style.display = 'none';
-        tbody.innerHTML = list.map((n, idx) => `
-      <tr data-search="${escSearch(n.titulo + ' ' + n.resumo)}" data-idx="${idx}">
-        <td class="td-title">${escHtml(n.titulo)}<div class="td-sub">${escHtml((n.resumo || '').substring(0, 80))}…</div></td>
+        const pages = Math.max(1, Math.ceil(list.length / NL.per));
+        if (NL.page > pages) NL.page = pages;
+        const pageList = list.slice((NL.page - 1) * NL.per, NL.page * NL.per);
+
+        tbody.innerHTML = pageList.map((n, idx) => {
+          const st = nlStatusOf(n);
+          const stHtml = st === 'pub' ? '<span class="badge badge-green">Publicada</span>'
+            : st === 'ag' ? agBadge('noticias', n.id)
+            : '<span class="badge badge-muted">Rascunho</span>';
+          const teste = isNoticiaTeste(n) ? '<span class="badge badge-muted badge-test">teste</span>' : '';
+          return `
+      <tr data-idx="${idx}">
+        <td class="td-title">${escHtml(n.titulo)}${teste}<div class="td-sub">${escHtml((n.resumo || '').substring(0, 80))}…</div></td>
         <td>${catBadge(n.categoria)}</td>
         <td style="white-space:nowrap;font-size:.8rem;">${fmtDate(n.data_pub)}</td>
-        <td>${n.publicado ? '<span class="badge badge-green">Publicada</span>' : '<span class="badge badge-muted">Rascunho</span>'}</td>
+        <td>${stHtml}</td>
         <td>${n.destaque ? '<span class="badge badge-amber">Destaque</span>' : '<span style="color:var(--text-muted);font-size:.8rem">—</span>'}</td>
         <td class="td-actions">
-          ${n.publicado ? `<a href="${escHtml(window.AsprocNoticia ? AsprocNoticia.linkFor(n) : (n.url_externa || '#'))}" target="_blank" class="btn btn-secondary btn-xs" title="Abrir no site">↗</a>` : ''}
-          <button class="btn btn-word btn-xs" data-idx="${idx}" data-action="word" title="Exportar para Word (.docx)">
-            <svg class="word-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM8.5 17l1.5-5.5 1.5 5.5h1l1.8-7h-1.1l-1.2 4.8-1.4-4.8H9.4L8 14.8 6.8 10H5.7l1.8 7H8.5z"/></svg>
-            W
-          </button>
+          ${n.publicado ? `<a href="${escHtml(window.AsprocNoticia ? AsprocNoticia.linkFor(n) : (n.url_externa || '#'))}" target="_blank" class="btn btn-secondary btn-xs" title="Abrir no site">↗</a>
+          <button class="btn btn-secondary btn-xs" data-idx="${idx}" data-action="link" title="Copiar link para WhatsApp (com foto e resumo)">🔗</button>` : ''}
+          ${n.publicado
+            ? `<button class="btn btn-secondary btn-xs" data-idx="${idx}" data-action="unpub" title="Tirar do site (volta a ser rascunho)">Despublicar</button>`
+            : `<button class="btn btn-success btn-xs" data-idx="${idx}" data-action="pub" title="Publicar agora no site">Publicar</button>`}
+          <button class="btn btn-secondary btn-xs" data-idx="${idx}" data-action="dup" title="Duplicar como rascunho">⧉</button>
+          <button class="btn btn-word btn-xs" data-idx="${idx}" data-action="word" title="Exportar para Word (.docx)">W</button>
           <button class="btn btn-secondary btn-xs" data-idx="${idx}" data-action="edit">Editar</button>
           <button class="btn btn-danger btn-xs" data-idx="${idx}" data-action="delete">Excluir</button>
         </td>
-      </tr>`).join('');
+      </tr>`;
+        }).join('');
 
-        // Guarda referência à lista renderizada para acesso por índice
-        tbody._renderedList = list;
+        if (pager) pager.innerHTML = nlPagerHTML(list.length, pages);
+        tbody._renderedList = pageList;
 
         // Event delegation: um único listener no tbody
-        tbody.onclick = function (e) {
+        tbody.onclick = async function (e) {
           const btn = e.target.closest('button[data-action]');
           if (!btn) return;
-          const idx = parseInt(btn.dataset.idx, 10);
-          const item = tbody._renderedList[idx];
+          const item = tbody._renderedList[parseInt(btn.dataset.idx, 10)];
           if (!item) return;
-          if (btn.dataset.action === 'edit') editNoticia(item.id);
-          if (btn.dataset.action === 'delete') deleteItem('noticias', item.id, loadNoticias);
-          if (btn.dataset.action === 'word') exportNoticiaWord(item, btn);
+          const a = btn.dataset.action;
+          if (a === 'edit') editNoticia(item.id);
+          if (a === 'delete') deleteItem('noticias', item.id, loadNoticias);
+          if (a === 'pub') noticiaSetPublicado(item, true, btn);
+          if (a === 'unpub') noticiaSetPublicado(item, false, btn);
+          if (a === 'dup') duplicarNoticia(item, btn);
+          if (a === 'link') copiarLinkNoticia(item);
+          if (a === 'word') {
+            try { exportNoticiaWord(await ensureNoticiaFull(item), btn); }
+            catch (err) { toast('❌ ' + err.message, 'error'); }
+          }
         };
       }
 
-      function filterByCat(section, val) {
-        if (section === 'noticias') renderNoticias(val ? allNoticias.filter(n => n.categoria === val) : allNoticias);
+      /** Publica ou despublica direto da lista. */
+      async function noticiaSetPublicado(n, publicar, btn) {
+        if (!publicar) {
+          const ok = await confirmDialog({
+            title: 'Despublicar notícia?',
+            message: 'Ela sai do site (o link deixa de abrir), mas continua salva aqui como rascunho.',
+            confirmText: 'Despublicar', confirmClass: 'btn-danger',
+          });
+          if (!ok) return;
+        }
+        if (btn) btn.disabled = true;
+        const dismiss = toastLoading(publicar ? 'Publicando…' : 'Despublicando…');
+        try {
+          const payload = { publicado: publicar };
+          if (publicar) {
+            const slug = (n.slug || '').trim() || slugify(n.titulo || '');
+            if (!slug) throw new Error('A notícia não tem slug. Abra em "Editar" e preencha.');
+            const dup = await sbSelect('noticias', `select=id&slug=eq.${encodeURIComponent(slug)}&limit=5`);
+            if (Array.isArray(dup) && dup.some(r => r.id !== n.id)) throw new Error('Outra notícia já usa este slug. Abra em "Editar" e troque o slug.');
+            payload.slug = slug;
+            const ext = (n.url_externa || '').trim();
+            if (window.AsprocNoticia && (!ext || AsprocNoticia.isOwnNewsUrl(ext))) payload.url_externa = AsprocNoticia.urlFor(slug);
+          }
+          await sbUpdate('noticias', n.id, payload);
+          // Publicar/despublicar à mão substitui qualquer agendamento pendente
+          if (agendadoEm('noticias', n.id)) {
+            await sbFetch('publicacoes_agendadas', `tabela=eq.noticias&registro_id=eq.${n.id}&status=eq.pendente`,
+              { method: 'PATCH', body: JSON.stringify({ status: 'cancelado' }) }).catch(() => { });
+          }
+          dismiss();
+          toast(publicar ? '✅ Publicada! Já está no site.' : 'Notícia despublicada.', 'success');
+          await loadNoticias(); loadDashboard();
+          if (typeof window.schedAtualizarBadge === 'function') window.schedAtualizarBadge();
+        } catch (e) {
+          dismiss(); toast('❌ ' + e.message, 'error');
+          if (btn) btn.disabled = false;
+        }
       }
 
-      function editNoticia(id) {
-        const n = allNoticias.find(x => x.id === id);
+      /** Cria uma cópia (rascunho) e abre no editor. */
+      async function duplicarNoticia(n, btn) {
+        if (btn) btn.disabled = true;
+        const dismiss = toastLoading('Duplicando…');
+        try {
+          const full = await ensureNoticiaFull(n);
+          const copy = Object.assign({}, full);
+          ['id', 'created_at', 'updated_at'].forEach(k => delete copy[k]);
+          const base = (full.slug || slugify(full.titulo || '') || 'noticia').slice(0, 68);
+          copy.titulo = 'Cópia de ' + (full.titulo || '');
+          copy.slug = base + '-copia-' + Date.now().toString(36).slice(-4);
+          copy.publicado = false;
+          copy.destaque = false;
+          copy.url_externa = null;
+          const ins = await sbInsert('noticias', copy);
+          dismiss();
+          toast('✅ Cópia criada como rascunho.', 'success');
+          await loadNoticias();
+          if (ins && ins[0]) editNoticia(ins[0].id);
+        } catch (e) {
+          dismiss(); toast('❌ Erro ao duplicar: ' + e.message, 'error');
+        } finally { if (btn) btn.disabled = false; }
+      }
+
+      /** Copia o link de compartilhamento (preview com foto e resumo no WhatsApp). */
+      function copiarLinkNoticia(n) {
+        const slug = (n.slug || '').trim();
+        if (!slug || !window.AsprocNoticia) { toast('Esta notícia não tem slug.', 'error'); return; }
+        const url = AsprocNoticia.shareUrlFor(slug);
+        navigator.clipboard.writeText(url)
+          .then(() => toast('🔗 Link copiado! Cole no WhatsApp: aparece com foto e resumo.', 'success'))
+          .catch(() => window.prompt('Copie o link:', url));
+      }
+
+      async function editNoticia(id) {
+        let n = allNoticias.find(x => x.id === id);
+        try { n = await ensureNoticiaFull(n, id); }
+        catch (e) { toast('❌ Erro ao abrir notícia: ' + e.message, 'error'); return; }
         if (!n) return;
         editingId.noticias = id;
         document.getElementById('ne-topbar-title').textContent = 'Editar Notícia';
@@ -6928,7 +7153,7 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
 
       async function loadVagas() {
         showLoading('vagas');
-        try { allVagas = await sbSelect('vagas', 'select=*&order=created_at.desc') || []; renderVagas(allVagas); }
+        try { const [rows] = await Promise.all([sbSelect('vagas', 'select=*&order=created_at.desc'), loadAgendaMap()]); allVagas = rows || []; renderVagas(allVagas); }
         catch (e) { showError('vagas', e.message); }
       }
 
@@ -6945,7 +7170,7 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
         <td style="font-size:.82rem;">${escHtml(v.local)}</td>
         <td><span class="badge badge-blue">${escHtml(v.regime)}</span></td>
         <td style="white-space:nowrap;font-size:.8rem;">${v.prazo ? fmtDate(v.prazo) : '—'}</td>
-        <td>${statusBadge(v.status)}</td>
+        <td>${agendadoEm('vagas', v.id) ? agBadge('vagas', v.id) : statusBadge(v.status)}</td>
         <td class="td-actions">
           <button class="btn btn-secondary btn-xs" data-idx="${idx}" data-action="edit">Editar</button>
           <button class="btn btn-danger btn-xs" data-idx="${idx}" data-action="delete">Excluir</button>
@@ -7066,7 +7291,7 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
 
       async function loadAvisos() {
         showLoading('avisos');
-        try { allAvisos = await sbSelect('avisos', 'select=*&order=data_pub.desc,created_at.desc') || []; renderAvisos(allAvisos); }
+        try { const [rows] = await Promise.all([sbSelect('avisos', 'select=*&order=data_pub.desc,created_at.desc'), loadAgendaMap()]); allAvisos = rows || []; renderAvisos(allAvisos); }
         catch (e) { showError('avisos', e.message); }
       }
 
@@ -7082,7 +7307,7 @@ CREATE POLICY "Admin exclui mensagens" ON mensagens_contato
         <td class="td-title">${escHtml(a.titulo)}<div class="td-sub">${escHtml(stripHtml(a.descricao || '').substring(0, 80))}…</div></td>
         <td>${tipoBadge(a.tipo)}</td>
         <td style="white-space:nowrap;font-size:.8rem;">${fmtDate(a.data_pub)}</td>
-        <td>${a.publicado ? '<span class="badge badge-green">Publicado</span>' : '<span class="badge badge-muted">Oculto</span>'}</td>
+        <td>${a.publicado ? '<span class="badge badge-green">Publicado</span>' : (agendadoEm('avisos', a.id) ? agBadge('avisos', a.id) : '<span class="badge badge-muted">Oculto</span>')}</td>
         <td class="td-actions">
           ${a.doc_url ? `<a href="${escHtml(a.doc_url)}" target="_blank" class="btn btn-secondary btn-xs">📄</a>` : ''}
           <button class="btn btn-secondary btn-xs" data-idx="${idx}" data-action="edit">Editar</button>
@@ -15374,6 +15599,9 @@ ${corpo}
         <button class="sched-tab" data-tab="cancelados" onclick="schedSwitchTab('cancelados')"
           style="background:transparent;color:var(--text-muted);border:1px solid var(--border);border-radius:6px;padding:.35rem .75rem;font-size:.8rem;font-weight:600;cursor:pointer;font-family:inherit;">🗑
           Cancelados</button>
+        <button class="sched-tab" data-tab="erros" onclick="schedSwitchTab('erros')"
+          style="background:transparent;color:var(--text-muted);border:1px solid var(--border);border-radius:6px;padding:.35rem .75rem;font-size:.8rem;font-weight:600;cursor:pointer;font-family:inherit;">⚠️
+          Com erro <span id="sched-err-count"></span></button>
         <button onclick="schedLoadAll()"
           style="margin-left:auto;background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--text-muted);font-size:.78rem;padding:.3rem .65rem;cursor:pointer;font-family:inherit;"
           title="Atualizar lista">↺ Atualizar</button>
@@ -15558,6 +15786,7 @@ CREATE INDEX IF NOT EXISTS idx_agend_status_pub
     const sbSelect = (...a) => window.sbSelect(...a);
     const sbInsert = (...a) => window.sbInsert(...a);
     const sbUpdate = (...a) => window.sbUpdate(...a);
+    const sbRpc = (...a) => window.sbRpc(...a);
     const sbDelete = (...a) => window.sbDelete && window.sbDelete(...a);
     const escHtml = (s) => (window.escHtml ? window.escHtml(s) : String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])));
     const SCHED = {
@@ -15577,8 +15806,63 @@ CREATE INDEX IF NOT EXISTS idx_agend_status_pub
         if (this._timer) { clearInterval(this._timer); this._timer = null; }
       },
 
+      _modoServidor: null,
+
+      _atualizarPill() {
+        const pill = document.getElementById('sched-panel-status');
+        if (!pill || this._modoServidor === null) return;
+        const dot = (c) => `<span style="width:6px;height:6px;background:${c};border-radius:50%;animation:schedPulse 2s infinite;display:inline-block;"></span>`;
+        if (this._modoServidor) {
+          pill.innerHTML = dot('var(--green)') + ' Automático 24h';
+          pill.title = 'Publicado pelo servidor (pg_cron), mesmo com o admin fechado.';
+          pill.style.color = 'var(--green)'; pill.style.background = 'var(--green-soft)';
+        } else {
+          pill.innerHTML = dot('var(--amber)') + ' Só com o admin aberto';
+          pill.title = 'A função publicar_agendados() não está instalada no banco.';
+          pill.style.color = 'var(--amber)'; pill.style.background = 'var(--amber-soft)';
+        }
+      },
+
+      _recarregarListas() {
+        const f = typeof window._adminLoadFns === 'function' ? window._adminLoadFns() : {};
+        if (f.loadNoticias) f.loadNoticias();
+        if (f.loadVagas) f.loadVagas();
+        if (f.loadAvisos) f.loadAvisos();
+        if (f.loadDashboard) f.loadDashboard();
+      },
+
+      async tentarDeNovo(agId) {
+        const _t = window.toast;
+        try {
+          await sbUpdate('publicacoes_agendadas', agId, { status: 'pendente', publicar_em: new Date().toISOString(), erro_msg: null });
+          if (_t) _t('🔁 Tentando publicar de novo…', 'info');
+          await this.verificarEPublicar();
+          await this.loadAll();
+          this._recarregarListas();
+        } catch (e) { if (_t) _t('❌ Erro: ' + e.message, 'error'); }
+      },
+
       // ── Core: busca pendentes e publica os que chegaram no prazo ──
       async verificarEPublicar() {
+        // 1) Servidor: função publicar_agendados() (a mesma que o pg_cron roda a cada minuto)
+        try {
+          const n = await sbRpc('publicar_agendados');
+          this._modoServidor = true;
+          this._atualizarPill();
+          if (n > 0) {
+            const _t = window.toast;
+            if (_t) _t(`🚀 ${n} publicação(ões) agendada(s) foram ao ar!`, 'success', 5000);
+            if (document.getElementById('sched-panel-overlay').style.display !== 'none') await this.loadAll();
+            this._recarregarListas();
+          }
+          if (typeof schedAtualizarBadge === 'function') schedAtualizarBadge();
+          return;
+        } catch (e) {
+          // Função ainda não instalada no banco → usa o modo antigo (navegador)
+          this._modoServidor = false;
+          this._atualizarPill();
+        }
+        // 2) Fallback: publica pelo navegador (só funciona com o admin aberto)
         try {
           const pendentes = await sbSelect(
             'publicacoes_agendadas',
@@ -15789,7 +16073,11 @@ CREATE INDEX IF NOT EXISTS idx_agend_status_pub
         this._countdownTimers = [];
 
         const body = document.getElementById('sched-panel-body');
-        const tabToStatus = { pendentes: 'pendente', publicados: 'publicado', cancelados: 'cancelado' };
+        const tabToStatus = { pendentes: 'pendente', publicados: 'publicado', cancelados: 'cancelado', erros: 'erro' };
+        this._atualizarPill();
+        const nErr = this._agendamentos.filter(a => a.status === 'erro').length;
+        const errEl = document.getElementById('sched-err-count');
+        if (errEl) { errEl.textContent = nErr ? `(${nErr})` : ''; errEl.style.color = nErr ? 'var(--red)' : ''; }
         const lista = this._agendamentos.filter(a => a.status === (tabToStatus[this._tabAtiva] || this._tabAtiva));
 
         if (!lista.length) {
@@ -15797,6 +16085,7 @@ CREATE INDEX IF NOT EXISTS idx_agend_status_pub
             pendentes: '📭 Nenhuma publicação aguardando agendamento.',
             publicados: '📭 Nenhuma publicação foi publicada via agendamento ainda.',
             cancelados: '📭 Nenhum agendamento cancelado.',
+            erros: '✅ Nenhuma publicação com erro.',
           };
           body.innerHTML = `<div style="text-align:center;padding:2.5rem 0;color:var(--text-muted);font-size:.85rem;">${msgs[this._tabAtiva] || 'Nenhum registro.'}</div>`;
           return;
@@ -15823,12 +16112,20 @@ CREATE INDEX IF NOT EXISTS idx_agend_status_pub
           } else if (ag.status === 'cancelado') {
             statusHtml = `<span class="sched-countdown" style="color:var(--text-muted);background:var(--bg3);border-color:var(--border);">🗑 Cancelado</span>`;
           } else if (ag.status === 'erro') {
-            statusHtml = `<span class="sched-countdown soon">❌ Erro: ${escHtml((ag.erro_msg || '').substring(0, 40))}</span>`;
+            statusHtml = `<span class="sched-countdown soon">❌ Falhou</span>`;
           }
 
-          const actions = ag.status === 'pendente' ? `
+          const actions = ag.status === 'erro' ? `
+          <div style="margin-top:.55rem;font-size:.75rem;color:var(--red);background:var(--red-soft, rgba(239,68,68,.08));border:1px solid rgba(239,68,68,.2);border-radius:6px;padding:.45rem .6rem;line-height:1.45;">
+            ${escHtml(ag.erro_msg || 'Erro desconhecido.')}
+          </div>
           <div class="sched-card-actions">
-            <button class="btn btn-secondary btn-xs" onclick="SCHED.reagendar('${ag.id}','${ag.tabela}','${ag.registro_id}',${JSON.stringify(ag.titulo || '')})">🗓 Reagendar</button>
+            <button class="btn btn-success btn-xs" onclick="SCHED.tentarDeNovo('${ag.id}')">🔁 Tentar de novo</button>
+            <button class="btn btn-secondary btn-xs" onclick="SCHED.reagendar('${ag.id}','${ag.tabela}','${ag.registro_id}',${escHtml(JSON.stringify(ag.titulo || ''))})">🗓 Reagendar</button>
+            <button class="btn btn-danger btn-xs" onclick="SCHED.cancelar('${ag.id}')">✕ Cancelar</button>
+          </div>` : ag.status === 'pendente' ? `
+          <div class="sched-card-actions">
+            <button class="btn btn-secondary btn-xs" onclick="SCHED.reagendar('${ag.id}','${ag.tabela}','${ag.registro_id}',${escHtml(JSON.stringify(ag.titulo || ''))})">🗓 Reagendar</button>
             <button class="btn btn-danger btn-xs" onclick="SCHED.cancelar('${ag.id}')">✕ Cancelar</button>
           </div>` : '';
 
@@ -15876,6 +16173,8 @@ CREATE INDEX IF NOT EXISTS idx_agend_status_pub
           await sbUpdate('publicacoes_agendadas', agId, { status: 'cancelado' });
           if (_t) _t('🗑 Agendamento cancelado.', 'info');
           await this.loadAll();
+          this._recarregarListas();
+          schedAtualizarBadge();
         } catch (e) {
           if (_t) _t('❌ Erro: ' + e.message, 'error');
         }
@@ -16014,9 +16313,16 @@ CREATE INDEX IF NOT EXISTS idx_agend_status_pub
 
     async function schedAtualizarBadge() {
       try {
-        const rows = await sbSelect('publicacoes_agendadas', 'select=id&status=eq.pendente');
+        const rows = await sbSelect('publicacoes_agendadas', 'select=id,status&status=in.(pendente,erro)') || [];
         const badge = document.getElementById('badge-agendamentos');
-        if (badge) badge.textContent = (rows || []).length;
+        const nPend = rows.filter(r => r.status === 'pendente').length;
+        const nErr = rows.filter(r => r.status === 'erro').length;
+        if (badge) {
+          badge.textContent = nErr ? `${nPend} · ⚠${nErr}` : nPend;
+          badge.title = nErr ? `${nErr} publicação(ões) agendada(s) falharam — abra Agendados → Com erro` : '';
+          badge.style.background = nErr ? 'var(--red-soft, rgba(239,68,68,.12))' : 'var(--purple-soft)';
+          badge.style.color = nErr ? 'var(--red)' : 'var(--purple)';
+        }
       } catch (_) { }
     }
 
