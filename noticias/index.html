@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notícia – ASPROC</title>
+<meta name="description" content="Notícias da ASPROC – Associação dos Produtores Rurais de Carauari. Comunidades ribeirinhas do Médio Juruá.">
+<meta property="og:site_name" content="ASPROC">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Notícias – ASPROC">
+<meta property="og:description" content="Notícias da ASPROC – Comunidades ribeirinhas do Médio Juruá.">
+<link rel="icon" type="image/x-icon" href="../favicon.ico">
+<style>
+  html,body{margin:0;height:100%;background:#0b150b;color:rgba(245,240,232,.88);font-family:system-ui,-apple-system,'Segoe UI',sans-serif;}
+  .np-wrap{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;padding:2rem;text-align:center;box-sizing:border-box;}
+  .np-spin{width:42px;height:42px;border:3px solid rgba(123,201,92,.2);border-top-color:#7bc95c;border-radius:50%;animation:np-r 0.8s linear infinite;}
+  @keyframes np-r{to{transform:rotate(360deg)}}
+  .np-msg{font-size:.95rem;color:rgba(245,240,232,.55);}
+  .np-wrap h1{font-size:1.6rem;margin:0;color:#f5f0e8;}
+  .np-wrap a{color:#7bc95c;text-decoration:none;font-weight:600;}
+</style>
+<script src="../noticia-template.js"></script>
+</head>
+<body>
+<div class="np-wrap" id="np-state">
+  <div class="np-spin" aria-hidden="true"></div>
+  <div class="np-msg">Carregando notícia…</div>
+</div>
+<script>
+/*
+ * Página pública dinâmica de notícias: /noticias/?n=<slug>
+ * Busca a notícia publicada no Supabase e monta a página com o mesmo
+ * layout do admin (noticia-template.js). Não depende de GitHub/token.
+ */
+(function () {
+  var T = window.AsprocNoticia;
+  var params = new URLSearchParams(location.search);
+  var slug = (params.get('n') || params.get('slug') || '').trim();
+
+  if (!slug) { location.replace('../noticias.html'); return; }
+
+  function showState(title, html) {
+    document.title = title + ' – ASPROC';
+    document.getElementById('np-state').innerHTML = '<h1>' + title + '</h1><div class="np-msg">' + html + '</div>';
+  }
+
+  if (!T) { showState('Erro ao carregar', 'Tente novamente em instantes. <a href="../noticias.html">Ver notícias</a>'); return; }
+
+  function get(params) {
+    return fetch(T.SB.url + '/rest/v1/noticias?' + params, {
+      headers: { apikey: T.SB.key, Authorization: 'Bearer ' + T.SB.key }
+    }).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    });
+  }
+
+  var enc = encodeURIComponent(slug);
+  get('select=*&publicado=eq.true&slug=eq.' + enc + '&limit=1')
+    .then(function (rows) {
+      if (rows && rows.length) return rows[0];
+      // Compatibilidade: link antigo cujo nome de arquivo difere do slug salvo
+      return get('select=*&publicado=eq.true&url_externa=ilike.' + encodeURIComponent('*/' + slug + '.html') + '&limit=1')
+        .then(function (r2) { return r2 && r2.length ? r2[0] : null; });
+    })
+    .then(function (row) {
+      if (!row) {
+        showState('Notícia não encontrada', 'Ela pode ter sido removida ou ainda não foi publicada.<br><br><a href="../noticias.html">← Ver todas as notícias</a>');
+        return;
+      }
+      // Notícias fixadas em "Leia também" — busca os dados delas para os cards
+      var rel = String(row.related_slugs || '').split(/[\n,]+/).map(function (s) { return s.trim(); }).filter(Boolean).slice(0, 4);
+      var poolP = rel.length
+        ? get('select=titulo,categoria,data_pub,imagem_url,url_externa,slug&publicado=eq.true&slug=in.(' + rel.map(encodeURIComponent).join(',') + ')').catch(function () { return []; })
+        : Promise.resolve([]);
+      return poolP.then(function (pool) {
+        var html = T.build(T.fromRow(row), { sb: T.SB, pool: pool });
+        document.open();
+        document.write(html);
+        document.close();
+      });
+    })
+    .catch(function (e) {
+      console.error('[ASPROC] Erro ao carregar notícia:', e);
+      showState('Não foi possível carregar', 'Verifique sua conexão e tente novamente.<br><br><a href="javascript:location.reload()">Tentar de novo</a> · <a href="../noticias.html">Ver notícias</a>');
+    });
+})();
+</script>
+</body>
+</html>
